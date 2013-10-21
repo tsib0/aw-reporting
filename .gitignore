@@ -1,0 +1,11 @@
+aw-report-model/target/*
+
+aw-reporting/target/*
+
+aw-report-model/.classpath
+
+aw-report-model/.project
+
+aw-reporting/.classpath
+
+aw-reporting/.project
