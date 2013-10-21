@@ -1,0 +1,332 @@
+{\rtf1\ansi\ansicpg1252\cocoartf1187\cocoasubrtf400
+{\fonttbl\f0\fswiss\fcharset0 Helvetica;\f1\fnil\fcharset0 LucidaGrande;\f2\fmodern\fcharset0 Courier;
+\f3\fmodern\fcharset0 Courier-Oblique;}
+{\colortbl;\red255\green255\blue255;\red255\green255\blue255;\red38\green38\blue38;\red246\green246\blue246;
+\red52\green110\blue183;}
+{\*\listtable{\list\listtemplateid1\listhybrid{\listlevel\levelnfc23\levelnfcn23\leveljc0\leveljcn0\levelfollow0\levelstartat1\levelspace360\levelindent0{\*\levelmarker \{disc\}}{\leveltext\leveltemplateid1\'01\uc0\u8226 ;}{\levelnumbers;}\fi-360\li720\lin720 }{\listlevel\levelnfc23\levelnfcn23\leveljc0\leveljcn0\levelfollow0\levelstartat1\levelspace360\levelindent0{\*\levelmarker \{circle\}}{\leveltext\leveltemplateid2\'01\uc0\u9702 ;}{\levelnumbers;}\fi-360\li1440\lin1440 }{\listname ;}\listid1}
+{\list\listtemplateid2\listhybrid{\listlevel\levelnfc23\levelnfcn23\leveljc0\leveljcn0\levelfollow0\levelstartat1\levelspace360\levelindent0{\*\levelmarker \{disc\}}{\leveltext\leveltemplateid101\'01\uc0\u8226 ;}{\levelnumbers;}\fi-360\li720\lin720 }{\listname ;}\listid2}}
+{\*\listoverridetable{\listoverride\listid1\listoverridecount0\ls1}{\listoverride\listid2\listoverridecount0\ls2}}
+\margl1440\margr1440\vieww23620\viewh16340\viewkind0
+\deftab720
+\pard\pardeftab720\sa200
+
+\f0\b\fs56 \cf0 \cb2 AdWords Reports to DB (aka. AwReporting)\
+\pard\pardeftab720\sa200
+
+\fs48 \cf0 Overview\
+\pard\pardeftab720\sl440\sa300
+
+\b0\fs28 \cf3 Powerful backend example for doing large scale reporting that uses our API in a very efficient manner, saving us and our premium partners lots of work, ensuring safe and stable delivery of thousands of AdWords accounts. Is a Java project that provides all the necessary components to download and store raw data for the 15 most important AdWords Reports, for all accounts under an MCC. It lets the user select fields for each report and also provides the interfaces and objects necessary to use the data.\
+For better organization and encapsulation, the project groups the reporting workflow into two parts: 
+\b Aw-Report-Model
+\b0  for the logic (API services, downloader and processors) and 
+\b Aw-Reporting
+\b0  for persistence, entities and the CSV mapping to AdWords information.\
+\pard\pardeftab720\sa200
+
+\b\fs48 \cf0 Aw-Report-Model\
+\pard\pardeftab720\sl440\sa300
+
+\b0\fs28 \cf3 Provides all the necessary classes to persist data and the entities\'92 mapping to AdWords report data.\
+\pard\tx220\tx720\pardeftab720\li720\fi-720\sl440\sa300
+\ls1\ilvl0
+\b \cf3 {\listtext	\'95	}Entities:
+\b0  these POJOs define all the available fields for each report kind as java fields, by using annotations. The Entities contain the information to link the java fields to the report fields definition, the csv display name header fields and the datastore fields.\
+\ls1\ilvl0
+\b {\listtext	\'95	}CSV:
+\b0  The CSV classes use the OpenCSV library to convert CSV files into Java beans using annotations. The package also contains two new annotations to define the Report Definition Type and the mapping between java field, report\'92s Column Name and Display Name headers. For example:\
+\pard\tx940\tx1440\pardeftab720\li1440\fi-1440\sl440\sa300
+\ls1\ilvl1\cf3 {\listtext	
+\f1 \uc0\u9702 
+\f0 	}Annotation 
+\b @CsvReport
+\b0  at the Report class level, for example for ReportAccount:
+\f2\fs24 \cb4 @CsvReport(value= ReportDefinitionReportType.ACCOUNT
+\f3\i PERFORMANCE
+\f2\i0 REPORT) public class ReportAccount extends Report \{...
+\f0\fs28 \cb2 \
+{\listtext	
+\f1 \uc0\u9702 
+\f0 	}Annotation 
+\b @CsvField
+\b0  at the java field level, for example for avgCpm:
+\f2\fs24 \cb4 @CsvField (value = "Avg. CPM", reportField = "AverageCpm") public BigDecimal avgCpm;
+\f0\fs28 \cb2 \
+\pard\tx220\tx720\pardeftab720\li720\fi-720\sl440\sa300
+\ls1\ilvl0
+\b \cf3 {\listtext	\'95	}Persistence:
+\b0  The persistence layer uses Spring for bean management, injection and in class annotations, this helps to clearly demarcate the application layers. AuthTokenPersister: is the interface for the authorization token storage, we have implemented it for Mysql and a MongoDB. ReportEntitiesPersister is the interface for the report entities storage, we have implemented it for Mysql and a MongoDB.\
+\pard\pardeftab720\sa200
+
+\b\fs48 \cf0 Quick Start Guide (Aw-Report-Model)\
+\pard\pardeftab720\sl440\sa300
+
+\b0\fs28 \cf3 AwReportModel can be compiled, installed and set for Eclipse using Maven by executing the following on the command line:\
+\pard\pardeftab720\sl440\sa300
+
+\f2\fs24 \cf3 \cb4 $ mvn clean install eclipse:eclipse
+\f0\fs28 \cb2 \
+\pard\pardeftab720\sa200
+
+\b\fs48 \cf0 Aw-Reporting\
+\pard\pardeftab720\sl440\sa300
+
+\b0\fs28 \cf3 Provides the logic (API services, downloader and processors)\
+\pard\tx220\tx720\pardeftab720\li720\fi-720\sl440\sa300
+\ls2\ilvl0
+\b \cf3 {\listtext	\'95	}Downloader:
+\b0  Based on MultipleClientReportDownloader java example (it uses the Library ReportDownloader) the Downloader is on charge of downloading all the report files using multiple threads.\
+\ls2\ilvl0
+\b {\listtext	\'95	}Processors:
+\b0  The ReportProcessor is the class with the main logic, it is responsible for calling the downloader, use the CVS classes for the parsing and call the Persistence helpers for the storage. This class can be replace by a custom processor by changing the bean component in the projects xml configuration files.\
+\ls2\ilvl0
+\b {\listtext	\'95	}API Services:
+\b0  Beside the report Downloader calls to AdHoc Reports, the ManagedCustomerDelegate is the only class talking to the AdWords API, it is on charge of getting all the account ids in the MCC tree.\
+\ls2\ilvl0
+\b {\listtext	\'95	}AwReporting main:
+\b0  The AwReporting main class is on charge of printing the help information, the properties file example and of passing the command line parameters to the processor for execution.\
+\pard\pardeftab720\sa200
+
+\b\fs48 \cf0 Quick Start Guide (Aw-Reporting)\
+\pard\pardeftab720\sl440\sa300
+
+\fs28 \cf3 IMPORTANT
+\b0  Run first 
+\f2\fs24 \cb4 $ mvn clean install eclipse:eclipse 
+\f0\fs28 \cb2 in Aw-Report-Model.\
+AwReporting can be compiled using Maven by executing the following on the command line:\
+\pard\pardeftab720\sl440\sa300
+
+\f2\fs24 \cf3 \cb4 $ mvn compile dependency:copy-dependencies package
+\f0\fs28 \cb2 \
+\pard\pardeftab720\sa200
+
+\b\fs36 \cf3 Create a DB and User/Password with Table creation Privileges, for example:
+\f2\b0\fs24 \cb4 \
+\pard\pardeftab720\sl380
+\cf3   CREATE DATABASE AwReporting DEFAULT CHARACTER SET utf8 DEFAULT COLLATE utf8_general_ci;\
+  CREATE USER 'reportuser'@'localhost' IDENTIFIED BY 'SOME_PASSWORD;\
+  GRANT ALL PRIVILEGES ON *.* TO 'reportuser'@'localhost' WITH GRANT OPTION;\
+\pard\pardeftab720\sl380
+
+\fs26 \cf3 \
+\pard\pardeftab720\sa200
+
+\f0\b\fs36 \cf3 \cb2 Usage\
+\pard\pardeftab720\sl380
+
+\f2\b0\fs24 \cf3 \cb4 java -Xmx1G -jar aw-reporting.jar -startDate YYYYMMDD -endDate YYYYMMDD -file <file>
+\fs26 \
+\
+
+\fs24 java -Xmx1G -jar aw-reporting.jar -generatePdf <htmlTemplateFile> <outputDirectory> -startDate YYYYMMDD -endDate YYYYMMDD -file <file>
+\fs26 \
+\
+\
+
+\fs24 Arguments:\
+\
+   -dateRange              ReportDefinitionDateRangeType.\
+\
+   -endDate <YYYMMDD>      End date for CUSTOM_DATE Reports (YYYYMMDD)\
+\
+   -file <file>            aw-report-sample.properties file.\
+\
+   -generatePdf <htmlTemplateFile> <outputDirectory>\
+\
+                           Generate Monthly Account Reports for all Accounts in PDF\
+\
+                           NOTE: For PDF use aw-report-sample-for-pdf.properties instead, the fields need to be different.\
+\
+   -help                   Print this message.\
+\
+   -startDate <YYYYMMDD>   Start date for CUSTOM_DATE Reports (YYYYMMDD).\
+\
+\pard\pardeftab720\sl380
+
+\fs26 \cf3 \
+\pard\pardeftab720\sa200
+
+\f0\b\fs36 \cf3 \cb2 Properties example: aw-report-sample.properties
+\f2\b0\fs24 \cb4 \
+\pard\pardeftab720\sl380
+\cf3 # Account config properties\
+\
+# ** We are now using OAuth2 **\
+# If you do not have a clientId or clientSecret, please create one in \
+# the API console: https://code.google.com/apis/console#access");\
+\
+mccAccountId=\
+developerToken=\
+clientId=\
+clientSecret=\
+\
+# DB configuration\
+# The options are: SQL, MONGODB\
+aw.report.model.db.type=SQL\
+\
+# SQL config properties\
+aw.report.model.db.sql.driver=com.mysql.jdbc.Driver\
+aw.report.model.db.sql.url=jdbc:mysql://localhost:3306/AWReports?rewriteBatchedStatements=true\
+aw.report.model.db.sql.username=user\
+aw.report.model.db.sql.password=\
+\
+# MongoDB config properties\
+aw.report.model.db.mongodb.url=\
+aw.report.model.db.mongodb.name=\
+\
+\
+# Report downloader configuration\
+\
+# We recommend using no more than 20 threads to process reports simultaneously.\
+aw.report.downloader.num.threads=20\
+# The number of times that the download will be retried if any error occurs.\
+aw.report.downloader.retries.count=5\
+# The wait time between retries.\
+aw.report.downloader.backoff.interval=5000\
+# The buffer size to flush the files the the file system.\
+aw.report.downloader.buffer.size=0x1000\
+\
+\
+# Fields that should be INCLUDED in the reports.\
+# To include properties, just add the field names separated by ','.\
+\
+# Keywords Performance\
+# Available fields: ExternalCustomerId,Date,AccountDescriptiveName,Cost,Clicks,Impressions,\
+#                   Conversions,Ctr,AverageCpm,AverageCpc,AveragePosition,AccountCurrencyCode,\
+#                   AdNetworkType1,AdNetworkType2,Id,QualityScore,KeywordMatchType,KeywordText,\
+#                   DestinationUrl,AdGroupId,CampaignId,Status,Device,ClickType,IsNegative\
+KEYWORDS_PERFORMANCE_REPORT=ExternalCustomerId,Date,AccountDescriptiveName,Cost,Clicks,Impressions,Conversions,Ctr,AverageCpm,AverageCpc,AveragePosition,AccountCurrencyCode,Id,QualityScore,KeywordMatchType,KeywordText,DestinationUrl,AdGroupId,CampaignId,Status,IsNegative\
+\
+# Ads Performance\
+# Available fields: ExternalCustomerId,Date,AccountDescriptiveName,Cost,Clicks,Impressions,\
+#                   Conversions,Ctr,AverageCpm,AverageCpc,AveragePosition,AccountCurrencyCode,\
+#                   AdNetworkType1,AdNetworkType2,Device,ClickType,Id,DisplayUrl,Url,Headline,Description1,\
+#                   Description2,AdGroupId,CampaignId,Status,CreativeApprovalStatus\
+AD_PERFORMANCE_REPORT=ExternalCustomerId,Date,AccountDescriptiveName,Cost,Clicks,Impressions,Conversions,Ctr,AverageCpm,AverageCpc,AveragePosition,AccountCurrencyCode,Id,DisplayUrl,Url,Headline,Description1,Description2,AdGroupId,CampaignId,Status,CreativeApprovalStatus\
+\
+# AdGroups Performance\
+# Available fields: ExternalCustomerId,Date,AccountDescriptiveName,Cost,Clicks,Impressions,\
+#                   Conversions,Ctr,AverageCpm,AverageCpc,AveragePosition,AccountCurrencyCode,Device,ClickType,\
+#                   AdNetworkType1,AdNetworkType2,AdGroupId,AdGroupName,CampaignId,Status\
+ADGROUP_PERFORMANCE_REPORT=ExternalCustomerId,Date,AccountDescriptiveName,Cost,Clicks,Impressions,Conversions,Ctr,AverageCpm,AverageCpc,AveragePosition,AccountCurrencyCode,AdGroupId,AdGroupName,CampaignId,Status\
+\
+# Campaigns Performance\
+# Available fields: ExternalCustomerId,Date,AccountDescriptiveName,Cost,Clicks,Impressions,\
+#                   Conversions,Ctr,AverageCpm,AverageCpc,AveragePosition,AccountCurrencyCode,Device,ClickType,\
+#                   AdNetworkType1,AdNetworkType2,CampaignId,CampaignName,Status,Amount\
+CAMPAIGN_PERFORMANCE_REPORT=ExternalCustomerId,Date,AccountDescriptiveName,Cost,Clicks,Impressions,Conversions,Ctr,AverageCpm,AverageCpc,AveragePosition,AccountCurrencyCode,CampaignId,CampaignName,Status,Amount\
+\
+# Accounts Performance\
+# Available fields: ExternalCustomerId,Date,AccountDescriptiveName,Cost,Clicks,Impressions,\
+#                   Conversions,Ctr,AverageCpm,AverageCpc,AveragePosition,AccountCurrencyCode,\
+#                   AdNetworkType1,AdNetworkType2,Device,ClickType,SearchBudgetLostImpressionShare,\
+#                   SearchRankLostImpressionShare,ContentBudgetLostImpressionShare,\
+#                   ContentRankLostImpressionShare\
+ACCOUNT_PERFORMANCE_REPORT=ExternalCustomerId,Date,AccountDescriptiveName,Cost,Clicks,Impressions,Conversions,Ctr,AverageCpm,AverageCpc,AveragePosition,AccountCurrencyCode,SearchBudgetLostImpressionShare,SearchRankLostImpressionShare,ContentBudgetLostImpressionShare,ContentRankLostImpressionShare\
+\
+# Campaign Negatives Performance\
+# Available fields: Id,KeywordMatchType,KeywordText,CampaignId,IsNegative\
+CAMPAIGN_NEGATIVE_KEYWORDS_PERFORMANCE_REPORT=Id,KeywordMatchType,KeywordText,CampaignId,IsNegative\
+\
+# Ads Extensions Performance\
+# Available fields: Date,Cost,Clicks,Impressions,Conversions,Ctr,AverageCpm,AverageCpc,\
+#                   AveragePosition,AdNetworkType1,AdNetworkType2,CampaignId,AdExtensionId,\
+#                   AdExtensionType,Status,ApprovalStatus,Device,ClickType\
+AD_EXTENSIONS_PERFORMANCE_REPORT=Date,Cost,Clicks,Impressions,Conversions,Ctr,AverageCpm,AverageCpc,AveragePosition,CampaignId,AdExtensionId,AdExtensionType,Status,ApprovalStatus\
+\
+\
+\pard\pardeftab720\sl380
+
+\fs26 \cf3 \
+\pard\pardeftab720\sa200
+
+\f0\b\fs48 \cf0 \cb2 PDF Generation\
+\pard\pardeftab720\sl440\sa300
+
+\b0\fs28 \cf3 PDF generation works monthly and also needs the use of a HTML template like ACCOUNT
+\i PERFORMANCE
+\i0 REPORT.tmpl\
+First run the the date range without the -generatePdf to download the data needed to generate them.\
+\pard\pardeftab720\sa200
+
+\b\fs36 \cf3 Properties example for PDF generation: aw-report-sample-for-pdf.properties
+\f2\b0\fs24 \cb4 \
+\pard\pardeftab720\sl380
+\cf3 # Account config properties\
+\
+# ** We are now using OAuth2 **\
+# If you do not have a clientId or clientSecret, please create one in \
+# the API console: https://code.google.com/apis/console#access");\
+\
+mccAccountId=\
+developerToken=\
+clientId=\
+clientSecret=\
+\
+# DB configuration\
+# The options are: SQL, MONGODB\
+aw.report.model.db.type=SQL\
+\
+# SQL config properties\
+aw.report.model.db.sql.driver=com.mysql.jdbc.Driver\
+aw.report.model.db.sql.url=jdbc:mysql://localhost:3306/AWReports?rewriteBatchedStatements=true\
+aw.report.model.db.sql.username=user\
+aw.report.model.db.sql.password=\
+\
+# MongoDB config properties\
+aw.report.model.db.mongodb.url=\
+aw.report.model.db.mongodb.name=\
+\
+\
+# Report downloader configuration\
+\
+# We recommend using no more than 20 threads to process reports simultaneously.\
+aw.report.downloader.num.threads=20\
+# The number of times that the download will be retried if any error occurs.\
+aw.report.downloader.retries.count=5\
+# The wait time between retries.\
+aw.report.downloader.backoff.interval=5000\
+# The buffer size to flush the files the the file system.\
+aw.report.downloader.buffer.size=0x1000\
+\
+# Accounts Performance for PDF Generation\
+ACCOUNT_PERFORMANCE_REPORT=ExternalCustomerId,AccountDescriptiveName,Month,Cost,Clicks,Impressions,,AverageCpc,AverageCpm,Ctr\
+\
+\pard\pardeftab720\sl380
+
+\fs26 \cf3 \
+\pard\pardeftab720\sa200
+
+\f0\b\fs48 \cf0 \cb2 Fine print\
+\pard\pardeftab720\sl440\sa300
+
+\b0\fs28 \cf3 Pull requests are very much appreciated. Please sign the {\field{\*\fldinst{HYPERLINK "http://code.google.com/legal/individual-cla-v1.0.html"}}{\fldrslt \cf5 Google Code contributor license agreement}} (There is a convenient online form) before submitting.\
+\pard\pardeftab720\sl440
+
+\i\b \cf3 Authors\
+\pard\pardeftab720\sl440
+{\field{\*\fldinst{HYPERLINK "https://plus.google.com/+JulianCToledo/"}}{\fldrslt 
+\i0\b0 \cf5 Juli\'e1n Toledo (Google Inc.)}}
+\i0\b0 \
+\pard\pardeftab720\sl440
+{\field{\*\fldinst{HYPERLINK "https://plus.google.com/+GustavoMenezes/"}}{\fldrslt \cf5 Gustavo Menezes (Google Inc.)}}\
+\pard\pardeftab720\sl440
+
+\i\b \cf3 Copyright\
+\pard\pardeftab720\sl440
+
+\i0\b0 \cf3 Copyright \'a9 2013 Google, Inc.\
+\pard\pardeftab720\sl440
+
+\i\b \cf3 License\
+\pard\pardeftab720\sl440
+
+\i0\b0 \cf3 Apache 2.0\
+\pard\pardeftab720\sl440
+
+\i\b \cf3 Limitations\
+\pard\pardeftab720\sl440
+
+\i0\b0 \cf3 This is example software, use with caution under your own risk.\
+}
