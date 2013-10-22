@@ -1,7 +1,9 @@
 # AwReporting (AdWords Reports to DB)
 
 ## Overview
-Powerful Java backend example for doing large scale reporting that uses our API in a very efficient manner, saving us and our premium partners lots of work, ensuring safe and stable delivery of thousands of AdWords accounts. Is a Java project that provides all the necessary components to download and store raw data for the 15 most important AdWords Reports, for all accounts under an MCC. It lets the user select fields for each report and also provides the interfaces and objects necessary to use the data.
+AwReporting is a powerful Java backend example for doing large scale reporting using our AdWords API in a very efficient manner.
+
+This project provides all the necessary components to download and store raw data for the most important AdWords Reports in a MySQL database or MongoDB, for all accounts under an MCC. It lets the user select fields for each report and also provides the interfaces and objects necessary to use the data.
 
 For better organization and encapsulation, the project groups the reporting workflow into two parts:
 **Aw-Report-Model** for the logic (API services, downloader and processors) and **Aw-Reporting** for persistence, entities and the CSV mapping to AdWords information.
