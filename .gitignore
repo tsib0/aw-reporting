@@ -1,11 +1,21 @@
 aw-report-model/target/*
 
-aw-reporting/target/*
-
 aw-report-model/.classpath
 
 aw-report-model/.project
 
+
+aw-reporting/target/*
+
 aw-reporting/.classpath
 
 aw-reporting/.project
+
+
+examples/kratubackend/target/*
+
+examples/kratubackend/.classpath
+
+examples/kratubackend/.project
+
+examples/kratubackend/.settings
