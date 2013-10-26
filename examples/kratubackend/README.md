@@ -1,4 +1,4 @@
-# AwReporting
+# Kratu Backend
 
 ## Overview
 
@@ -11,29 +11,37 @@ KratuBackend is an AdWords account portfolio analysis tool, it analyzes more tha
 
 KratuBackend can be compiled using Maven by executing the following on the command line: 
 
-$ mvn compile dependency:copy-dependencies package
+<code>$ mvn compile dependency:copy-dependencies package</code>
+
+The project also needs aw-report-model and aw-reporting jars.
 
 
 ## Usage
 
+<pre>
+
 Download Reports:
-java -Xmx4G -jar kratubackend.jar -startDate YYYYMMDD -endDate YYYYMMDD -file <file>
+<code>java -Xmx4G -jar kratubackend.jar -startDate YYYYMMDD -endDate YYYYMMDD -file &lt;file&gt;</code>
  
 Process Kratus:
-java -Xmx4G -jar kratubackend.jar -processKratus -startDate YYYYMMDD -endDate YYYYMMDD -file <file>
+<code>java -Xmx4G -jar kratubackend.jar -processKratus -startDate YYYYMMDD -endDate YYYYMMDD -file &lt;file&gt;</code>
 
 Start Rest Server:
-java -Xmx4G -jar kratubackend.jar -startServer -file <file>
+<code>java -Xmx4G -jar kratubackend.jar -startServer -file -file &lt;file&gt;</code>
+
+<code>Arguments:
 
  -dateRange <DateRangeType>   ReportDefinitionDateRangeType
- -endDate <YYYMMDD>           End date for CUSTOM_DATE Reports (YYYYMMDD)
+ -endDate &lt;YYYMMDD&gt;     End date for CUSTOM_DATE Reports (YYYYMMDD)
  -file <file>                 aw-report-sample.properties file (./aw-report-sample.properties by default if not
                               provided)
  -help                        print this message
  -processKratus               Process Kratus processes the 7 reports peraccount and creates a daily Kratu
- -startDate <YYYYMMDD>        Start date for CUSTOM_DATE Reports (YYYYMMDD)
+ -startDate &lt;YYYMMDD&gt;   Start date for CUSTOM_DATE Reports (YYYYMMDD)
  -startServer                 Starts the Rest Server. No dates required
 
+</code>
+</pre>
 
 ## Server
 
@@ -53,7 +61,7 @@ Genereate Kratus:
 Pull requests are very much appreciated. Please sign the [Google Code contributor license agreement](http://code.google.com/legal/individual-cla-v1.0.html) (There is a convenient online form) before submitting.
 
 <dl>
-  <dt>Authors</dt><dd><a href="https://plus.google.com/+JulianCToledo/">Julian Toledo (Google Inc.)
+  <dt>Authors</dt><dd><a href="https://plus.google.com/+JulianCToledo/">Julian Toledo (Google Inc.)</a></dd>
   <dt>Copyright</dt><dd>Copyright © 2013 Google, Inc.</dd>
   <dt>License</dt><dd>Apache 2.0</dd>
   <dt>Limitations</dt><dd>This is example software, use with caution under your own risk.</dd>
