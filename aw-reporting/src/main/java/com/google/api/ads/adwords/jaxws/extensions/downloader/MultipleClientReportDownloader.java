@@ -18,6 +18,8 @@ import com.google.api.ads.adwords.lib.client.AdWordsSession;
 import com.google.api.ads.adwords.lib.jaxb.v201309.ReportDefinition;
 import com.google.common.base.Stopwatch;
 
+import org.apache.log4j.Logger;
+
 import java.io.File;
 import java.util.Collection;
 import java.util.Set;
@@ -39,6 +41,8 @@ import java.util.concurrent.TimeUnit;
  * @author jtoledo@google.com (Julian Toledo)
  */
 public class MultipleClientReportDownloader {
+
+  private static final Logger LOGGER = Logger.getLogger(MultipleClientReportDownloader.class);
 
   private static final int NUM_THREADS = 20;
 
@@ -84,18 +88,24 @@ public class MultipleClientReportDownloader {
 
     for (final Long cid : cids) {
       RunnableDownloader downloader = new RunnableDownloader(this.retriesCount,
-          this.backoffInterval, this.bufferSize, cid, reportDefinition, sessionBuilder,  results);
+          this.backoffInterval,
+          this.bufferSize,
+          cid,
+          reportDefinition,
+          sessionBuilder,
+          results);
       downloader.setFailed(failed);
       executeRunnableDownloader(downloader, latch);
     }
 
     latch.await();
     stopwatch.stop();
-    return this.printResultsAndReturn(results, stopwatch.elapsed(TimeUnit.MILLISECONDS), failed, cids);
+    return this.printResultsAndReturn(
+        results, stopwatch.elapsed(TimeUnit.MILLISECONDS), failed, cids);
   }
 
-  protected void executeRunnableDownloader(RunnableDownloader runnableDownloader,
-      CountDownLatch latch) {
+  protected void executeRunnableDownloader(
+      RunnableDownloader runnableDownloader, CountDownLatch latch) {
     runnableDownloader.setLatch(latch);
     this.executorService.execute(runnableDownloader);
   }
@@ -111,10 +121,10 @@ public class MultipleClientReportDownloader {
    */
   private Collection<File> printResultsAndReturn(final Collection<File> results, long elapsedTime,
       final Collection<Long> failed, final Set<Long> cids) {
-    System.out.format("\n Downloaded reports for %d accounts in %d s.  %d failures:\n",
-        cids.size(), elapsedTime / 1000, failed.size());
+    LOGGER.error("\n Downloaded reports for " + cids.size() + " accounts in " + (elapsedTime / 1000)
+        + " s. " + failed.size() + " failures:\n");
     for (Long failure : failed) {
-      System.out.println(failure);
+      LOGGER.error(failure);
     }
     return results;
   }
