@@ -36,6 +36,11 @@ import org.apache.commons.cli.Option;
 import org.apache.commons.cli.OptionBuilder;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
+import org.apache.log4j.ConsoleAppender;
+import org.apache.log4j.FileAppender;
+import org.apache.log4j.Level;
+import org.apache.log4j.Logger;
+import org.apache.log4j.PatternLayout;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.core.io.ClassPathResource;
@@ -67,6 +72,8 @@ import java.util.Set;
  * @author gustavomoreira@google.com (Gustavo Moreira)
  */
 public class AwReporting {
+
+  private static final Logger LOGGER = Logger.getLogger(AwReporting.class);
 
   /**
    * The DB type key specified in the properties file.
@@ -105,9 +112,12 @@ public class AwReporting {
         System.exit(0);
       }
 
+      setLogLevel(cmdLine);
+
       if (cmdLine.hasOption("file")) {
         propertiesPath = cmdLine.getOptionValue("file");
       }
+      LOGGER.info("Using properties file: " + propertiesPath);
 
       Set<Long> accountIdsSet = Sets.newHashSet();
       if (cmdLine.hasOption("accountIdsFile")) {
@@ -117,55 +127,68 @@ public class AwReporting {
 
       Properties properties = initApplicationContextAndProperties(propertiesPath);
 
+      LOGGER.debug("Creating ReportProcessor bean...");
       ReportProcessor processor = createReportProcessor();
+      LOGGER.debug("... success.");
 
       if (cmdLine.hasOption("generatePdf")) {
-        
+
+        LOGGER.debug("GeneratePDF option detected.");
+
         // Get HTML template and output directoy
         String[] pdfFiles = cmdLine.getOptionValues("generatePdf");
         File htmlTemplateFile = new File(pdfFiles[0]);
         File outputDirectory = new File(pdfFiles[1]);
 
+        LOGGER.debug("Html template file to be used: " + htmlTemplateFile);
+        LOGGER.debug("Output directory for PDF: " + outputDirectory);
+
         // Generate PDFs
-        generatePdf(cmdLine.getOptionValue("startDate"), cmdLine.getOptionValue("endDate"),
-            properties, htmlTemplateFile, outputDirectory);
+        generatePdf(processor,
+            cmdLine.getOptionValue("startDate"),
+            cmdLine.getOptionValue("endDate"),
+            properties,
+            htmlTemplateFile,
+            outputDirectory);
 
       } else if (cmdLine.hasOption("startDate") && cmdLine.hasOption("endDate")) {
         // Generate Reports
-        System.out.println("Using properties from: " + propertiesPath);
 
         String dateStart = cmdLine.getOptionValue("startDate");
         String dateEnd = cmdLine.getOptionValue("endDate");
+
+        LOGGER.info(
+            "Starting report download for dateStart: " + dateStart + " and dateEnd: " + dateEnd);
 
         processor.generateReportsForMCC(
             ReportDefinitionDateRangeType.CUSTOM_DATE, dateStart, dateEnd, null, properties);
 
       } else if (cmdLine.hasOption("dateRange")) {
-        // Generate Reports using DateRange
-        System.out.println("Using properties from: " + propertiesPath);
 
         ReportDefinitionDateRangeType dateRangeType =
             ReportDefinitionDateRangeType.fromValue(cmdLine.getOptionValue("dateRange"));
+
+        LOGGER.info("Starting report download for dateRange: " + dateRangeType.name());
+
         processor.generateReportsForMCC(dateRangeType, null, null, null, properties);
 
       } else {
         errors = true;
-        System.out.println("Configuration incomplete. Missing options for command line.");
+        LOGGER.error("Configuration incomplete. Missing options for command line.");
       }
     } catch (IOException e) {
       errors = true;
-      System.out.println("File not found: " + e.getMessage());
+      LOGGER.error("File not found: " + e.getMessage());
     } catch (ParseException e) {
       errors = true;
-      System.out.println(
-          "Error parsing the values for the command line options: " + e.getMessage());
+      LOGGER.error("Error parsing the values for the command line options: " + e.getMessage());
     } catch (Exception e) {
       errors = true;
-      System.out.println("Unexpected error accessing the API: " + e.getMessage());
+      LOGGER.error("Unexpected error accessing the API: " + e.getMessage());
+      e.printStackTrace();
     }
 
     if (errors) {
-      printHelpMessage(options);
       System.exit(1);
     } else {
       System.exit(0);
@@ -182,13 +205,18 @@ public class AwReporting {
   protected static void addAccountsFromFile(Set<Long> accountIdsSet, String accountsFileName)
       throws FileNotFoundException {
 
+    LOGGER.info("Using accounts file: " + accountsFileName);
+
     List<String> linesAsStrings = FileUtil.readFileLinesAsStrings(new File(accountsFileName));
 
+    LOGGER.debug("Acount IDs to be queried:");
     for (String line : linesAsStrings) {
 
       String accountIdAsString = line.replaceAll("-", "");
       long accountId = Long.parseLong(accountIdAsString);
       accountIdsSet.add(accountId);
+
+      LOGGER.debug("Acount ID: " + accountId);
     }
   }
 
@@ -251,6 +279,20 @@ public class AwReporting {
     OptionBuilder.isRequired(false);
     options.addOption(OptionBuilder.create("accountIdsFile"));
 
+    OptionBuilder.withArgName("verbose");
+    OptionBuilder.hasArg(false);
+    OptionBuilder.withDescription("The application will print all the tracing on the console");
+    OptionBuilder.isRequired(false);
+    options.addOption(OptionBuilder.create("verbose"));
+
+    OptionBuilder.withArgName("debug");
+    OptionBuilder.hasArg(false);
+    OptionBuilder.withDescription("Will display all the debug information. "
+        + "If the option 'verbose' is activated, "
+        + "all the information will be displayed on the console as well");
+    OptionBuilder.isRequired(false);
+    options.addOption(OptionBuilder.create("debug"));
+
     return options;
   }
 
@@ -265,10 +307,12 @@ public class AwReporting {
     System.out.println();
     HelpFormatter formatter = new HelpFormatter();
     formatter.setWidth(120);
-    formatter.printHelp(" java -Xmx1G -jar aw-reporting.jar -startDate YYYYMMDD -endDate YYYYMMDD "
-        + "-file <file>\n java -Xmx1G -jar aw-reporting.jar "
-        + "-generatePdf <htmlTemplateFile> <outputDirectory> -startDate YYYYMMDD -endDate YYYYMMDD -file <file>",
-        "\nArguments:", options, "");
+    formatter
+        .printHelp(
+            " java -Xmx1G -jar aw-reporting.jar -startDate YYYYMMDD -endDate YYYYMMDD "
+                + "-file <file>\n java -Xmx1G -jar aw-reporting.jar "
+                + "-generatePdf <htmlTemplateFile> <outputDirectory> -startDate YYYYMMDD -endDate YYYYMMDD -file <file>",
+            "\nArguments:", options, "");
     System.out.println();
   }
 
@@ -298,6 +342,41 @@ public class AwReporting {
   }
 
   /**
+   * Sets the Log level based on the command line arguments
+   *
+   * @param commandLine the command line
+   */
+  private static void setLogLevel(CommandLine commandLine) {
+
+    Level logLevel = Level.INFO;
+
+    if (commandLine.hasOption("debug")) {
+      logLevel = Level.DEBUG;
+    }
+
+    ConsoleAppender console = new ConsoleAppender(); // create appender
+    String PATTERN = "%d [%p|%c|%C{1}] %m%n";
+    console.setLayout(new PatternLayout(PATTERN));
+    console.activateOptions();
+    if (commandLine.hasOption("verbose")) {
+      console.setThreshold(logLevel);
+    } else {
+      console.setThreshold(Level.ERROR);
+    }
+    Logger.getLogger("com.google.api.ads.adwords.jaxws.extensions").addAppender(console);
+
+    FileAppender fa = new FileAppender();
+    fa.setName("FileLogger");
+    fa.setFile("aw-reporting.log");
+    fa.setLayout(new PatternLayout("%d %-5p [%c{1}] %m%n"));
+    fa.setThreshold(logLevel);
+    fa.setAppend(true);
+    fa.activateOptions();
+    Logger.getLogger("com.google.api.ads.adwords.jaxws.extensions").addAppender(fa);
+
+  }
+
+  /**
    * Initialize the application context, adding the properties configuration file depending on the
    * specified path.
    *
@@ -312,13 +391,18 @@ public class AwReporting {
     if (!resource.exists()) {
       resource = new FileSystemResource(propertiesPath);
     }
+    LOGGER.trace("Innitializing Spring application context.");
     DynamicPropertyPlaceholderConfigurer.setDynamicResource(resource);
 
     Properties properties = PropertiesLoaderUtils.loadProperties(resource);
     String dbType = (String) properties.get(AW_REPORT_MODEL_DB_TYPE);
     if (dbType != null && dbType.equals(DataBaseType.MONGODB.name())) {
+
+      LOGGER.debug("Using MONGO DB configuration properties.");
       appCtx = new ClassPathXmlApplicationContext("classpath:aw-reporting-mongodb-beans.xml");
     } else {
+
+      LOGGER.debug("Using SQL DB configuration properties.");
       appCtx = new ClassPathXmlApplicationContext("classpath:aw-reporting-sql-beans.xml");
     }
 
@@ -328,22 +412,28 @@ public class AwReporting {
   /**
    * Generates the PDF files from the report data
    *
+   * @param processor the report processo
    * @param dateStart the start date for the reports
    * @param dateEnd the end date for the reports
    * @param properties the properties file containing all the configuration
    * @throws Exception error creating PDF
    */
-  private static void generatePdf(String dateStart, String dateEnd, Properties properties,
-      File htmlTemplateFile, File outputDirectory)
-      throws Exception {
+  private static void generatePdf(ReportProcessor processor,
+      String dateStart,
+      String dateEnd,
+      Properties properties,
+      File htmlTemplateFile,
+      File outputDirectory) throws Exception {
 
-    ReportProcessor processor = createReportProcessor();
     EntityPersister entityPersister = appCtx.getBean(EntityPersister.class);
 
-    System.out.println("Starting PDF Generation");
+    LOGGER.info("Starting PDF Generation");
 
     for (Long accountId : processor.retrieveAccountIds()) {
-      System.out.print(".");
+
+      LOGGER.info(".");
+      LOGGER.debug("Retrieving monthly reports for account: " + accountId);
+
       List<? extends Report> montlyAccountReports = entityPersister.listMonthReports(
           ReportAccount.class, accountId, DateUtil.parseDateTime(dateStart),
           DateUtil.parseDateTime(dateEnd));
@@ -353,9 +443,11 @@ public class AwReporting {
         File htmlFile = new File(outputDirectory, "ReportAccount" + accountId + ".html");
         File pdfFile = new File(outputDirectory, "ReportAccount" + accountId + ".pdf");
 
+        LOGGER.debug("Exporting monthly reports to HTML for account: " + accountId);
         HTMLExporter.exportHTML("Test", ReportDefinitionReportType.ACCOUNT_PERFORMANCE_REPORT,
             montlyAccountReports, htmlTemplateFile, htmlFile);
 
+        LOGGER.debug("Converting HTML to PDF for account: " + accountId);
         HTMLExporter.convertHTMLtoPDF(htmlFile, pdfFile);
       }
     }
