@@ -12,6 +12,7 @@
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <springframework.version>3.2.2.RELEASE</springframework.version>
+    <aw-reporting.version>1.0-SNAPSHOT</aw-reporting.version>
   </properties>
 
   <repositories>
@@ -92,14 +93,14 @@
     <dependency>
       <groupId>com.google</groupId>
       <artifactId>aw-report-model</artifactId>
-      <version>${project.version}</version>
+      <version>${aw-reporting.version}</version>
       <type>jar</type>
     </dependency>
 
     <dependency>
       <groupId>com.google</groupId>
       <artifactId>aw-reporting</artifactId>
-      <version>${project.version}</version>
+      <version>${aw-reporting.version}</version>
       <type>jar</type>
     </dependency>
 
