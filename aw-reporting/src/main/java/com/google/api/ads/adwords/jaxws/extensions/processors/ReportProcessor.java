@@ -14,9 +14,6 @@
 
 package com.google.api.ads.adwords.jaxws.extensions.processors;
 
-import au.com.bytecode.opencsv.CSVReader;
-import au.com.bytecode.opencsv.bean.MappingStrategy;
-
 import com.google.api.ads.adwords.jaxws.extensions.ManagedCustomerDelegate;
 import com.google.api.ads.adwords.jaxws.extensions.downloader.MultipleClientReportDownloader;
 import com.google.api.ads.adwords.jaxws.extensions.report.model.csv.AnnotationBasedMappingStrategy;
@@ -46,6 +43,10 @@ import com.google.api.client.auth.oauth2.Credential;
 import com.google.common.base.Stopwatch;
 import com.google.common.collect.Lists;
 
+import au.com.bytecode.opencsv.CSVReader;
+import au.com.bytecode.opencsv.bean.MappingStrategy;
+
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -73,6 +74,8 @@ import java.util.concurrent.TimeUnit;
  */
 @Component
 public class ReportProcessor {
+
+  private static final Logger LOGGER = Logger.getLogger(ReportProcessor.class);
 
   private static final String USER_AGENT = "AwReporting";
 
@@ -136,15 +139,17 @@ public class ReportProcessor {
     MappingStrategy<R> mappingStrategy = new AnnotationBasedMappingStrategy<R>(reportBeanClass);
 
     // Processing Report Local Files
-    System.out.print(" Procesing reports...");
+    LOGGER.info(" Procesing reports...");
 
     for (File file : localFiles) {
-      System.out.print(".");
+      LOGGER.info(".");
       try {
+
+        LOGGER.debug("Parsing file: " + file.getAbsolutePath());
         this.parseRowsAndPersist(file, csvToBean, mappingStrategy, dateStart, dateEnd);
 
       } catch (Exception e) {
-        System.out.print("Ignoring file (Error when processing): " + file.getAbsolutePath());
+        LOGGER.error("Ignoring file (Error when processing): " + file.getAbsolutePath());
         e.printStackTrace();
       }
     }
@@ -164,10 +169,13 @@ public class ReportProcessor {
       MappingStrategy<R> mappingStrategy, String dateStart, String dateEnd)
       throws UnsupportedEncodingException, FileNotFoundException, IOException {
 
+
     CSVReader csvReader = this.createCsvReader(file);
 
+    LOGGER.debug("Starting parse of report rows...");
     List<R> reportRowsList = csvToBean.parse(mappingStrategy, csvReader);
     csvReader.close();
+    LOGGER.debug("... success.");
 
     for (R report : reportRowsList) {
       // Getting Account Id from File Name for reports that do not have Client Customer Id
@@ -184,7 +192,11 @@ public class ReportProcessor {
 
     // Store report rows
     if (reportRowsList.size() > 0) {
+      LOGGER.debug("Starting report persistence...");
       this.persister.persistReportEntities(reportRowsList);
+      LOGGER.debug("... success.");
+    } else {
+      LOGGER.debug("Nothing to persist. Empty list of report rows.");
     }
   }
 
@@ -199,6 +211,7 @@ public class ReportProcessor {
   private CSVReader createCsvReader(File file)
       throws UnsupportedEncodingException, FileNotFoundException {
 
+    LOGGER.debug("Creating AwReportCsvReader for file: " + file.getAbsolutePath() + ".gunzip");
     return new AwReportCsvReader(
         new InputStreamReader(new FileInputStream(file.getAbsolutePath() + ".gunzip"), "UTF-8"),
         ',', '\"', 1);
@@ -212,8 +225,10 @@ public class ReportProcessor {
    */
   private void saveAuthTokenToStorage(String mccAccountId, String authToken) {
 
+    LOGGER.debug("Persisting refresh token...");
     AuthMcc authMcc = new AuthMcc(mccAccountId, authToken);
     this.authTokenPersister.persistAuthToken(authMcc);
+    LOGGER.debug("... success.");
   }
 
   /**
@@ -239,7 +254,7 @@ public class ReportProcessor {
    * @throws IOException error connecting to authentication server
    * @throws OAuthException error on the OAuth process
    */
-  AdWordsSession.Builder authenticate(boolean force) throws OAuthException, IOException {
+  protected AdWordsSession.Builder authenticate(boolean force) throws OAuthException, IOException {
 
     String authToken = this.retrieveAuthToken(force);
     String localUserAgent = this.buildLocalUserAgent();
@@ -306,22 +321,30 @@ public class ReportProcessor {
    */
   private String retrieveAuthToken(boolean force) throws IOException, OAuthException {
 
+    LOGGER.debug("Retrieving auth token from DB.");
     String authToken = this.getAuthTokenFromStorage(this.mccAccountId);
 
     // Generate a new Auth token if necesary
     if ((authToken == null || force)) {
       try {
+        if (force) {
+          LOGGER.debug("Token refresh FORCED. Getting a new one.");
+        } else {
+          LOGGER.debug("Token not found. Getting one.");
+        }
         authToken = GetRefreshToken.get(this.clientId, this.clientSecret);
+
       } catch (IOException e) {
         if (e.getMessage().contains("Connection reset")) {
-          System.out.println("Connection reset when getting authToken, retrying...");
+          LOGGER.info("Connection reset when getting authToken, retrying...");
           this.authenticate(true);
         } else {
+          LOGGER.error("Error authenticating: " + e.getMessage());
           e.printStackTrace();
           throw e;
         }
       }
-      System.out.println("Saving Refresh Token to DB...\n");
+      LOGGER.info("Saving Refresh Token to DB...");
       this.saveAuthTokenToStorage(this.mccAccountId, authToken);
     }
     return authToken;
@@ -353,11 +376,13 @@ public class ReportProcessor {
     } catch (ApiException e) {
       if (e.getMessage().contains("AuthenticationError")) {
         // retries Auth once for expired Tokens
-        System.out.println("AuthenticationError, Getting a new Token...");
+        LOGGER.info("AuthenticationError, Getting a new Token...");
         accountIdsSet =
             new ManagedCustomerDelegate(this.authenticate(true).build()).getAccountIds();
       } else {
+        LOGGER.error("API error: " + e.getMessage());
         e.printStackTrace();
+        throw e;
       }
     }
     return accountIdsSet;
@@ -377,10 +402,12 @@ public class ReportProcessor {
     } catch (ApiException e) {
       if (e.getMessage().contains("AuthenticationError")) {
         // retries Auth once for expired Tokens
-        System.out.println("AuthenticationError, Getting a new Token...");
+        LOGGER.info("AuthenticationError, Getting a new Token...");
         accounts = new ManagedCustomerDelegate(this.authenticate(true).build()).getAccounts();
       } else {
+        LOGGER.error("API error: " + e.getMessage());
         e.printStackTrace();
+        throw e;
       }
     }
     return accounts;
@@ -405,7 +432,7 @@ public class ReportProcessor {
 
     AdWordsSession.Builder builder = this.authenticate(false);
 
-    System.out.println("\n*** Generating Reports for " + accountIdsSet.size() + " accounts ***");
+    LOGGER.info("*** Generating Reports for " + accountIdsSet.size() + " accounts ***");
 
     Stopwatch stopwatch = new Stopwatch();
     stopwatch.start();
@@ -429,9 +456,8 @@ public class ReportProcessor {
     this.multipleClientReportDownloader.finalizeExecutorService();
 
     stopwatch.stop();
-    System.out.println("\n*** Finished processing all reports in "
-        + (stopwatch.elapsed(TimeUnit.MILLISECONDS) / 1000) + " seconds ***");
-    System.out.println();
+    LOGGER.info("*** Finished processing all reports in "
+        + (stopwatch.elapsed(TimeUnit.MILLISECONDS) / 1000) + " seconds ***\n");
   }
 
   /**
@@ -455,9 +481,8 @@ public class ReportProcessor {
       Properties properties) {
 
     // Download Reports to local files and Generate Report objects
-    System.out.println("\n\n ** Generating: " + reportType.name() + " **");
-    System.out.print(" Downloading reports...");
-    System.out.flush();
+    LOGGER.info("\n\n ** Generating: " + reportType.name() + " **");
+    LOGGER.info(" Downloading reports...");
     Collection<File> localFiles = new ArrayList<File>(acountIdList.size());
     try {
 
@@ -468,6 +493,7 @@ public class ReportProcessor {
           builder, reportDefinition, acountIdList);
 
     } catch (InterruptedException e) {
+      LOGGER.error(e.getMessage());
       e.printStackTrace();
       return;
     }
@@ -501,8 +527,8 @@ public class ReportProcessor {
     this.processFiles(reportBeanClass, localFiles, dateRangeType, dateStart, dateEnd);
 
     stopwatch.stop();
-    System.out.println("\n* DB Process finished in "
-        + (stopwatch.elapsed(TimeUnit.MILLISECONDS) / 1000) + " seconds ***");
+    LOGGER.info("\n* DB Process finished in " + (stopwatch.elapsed(TimeUnit.MILLISECONDS) / 1000)
+        + " seconds ***");
   }
 
   /**
@@ -513,18 +539,18 @@ public class ReportProcessor {
   private void extractGZipFiles(Collection<File> localFiles) {
 
     // Report are GZIPPED_CSV, gUnzipping...
-    System.out.print(" Report are GZIPPED_CSV, gUnzipping...");
+    LOGGER.info(" Report are GZIPPED_CSV, gUnzipping...");
     for (File file : localFiles) {
       File gUnzipFile = new File(file.getAbsolutePath() + ".gunzip");
       try {
         FileUtil.gUnzip(file, gUnzipFile);
       } catch (IOException e) {
-        System.out.print("Ignoring file (Error when UnZipping): " + file.getAbsolutePath());
+        LOGGER.info("Ignoring file (Error when UnZipping): " + file.getAbsolutePath());
         localFiles.remove(file);
       }
-      System.out.print(".");
+      LOGGER.info(".");
     }
-    System.out.println();
+    LOGGER.info("\n");
   }
 
   /**
@@ -537,15 +563,14 @@ public class ReportProcessor {
       Collection<File> localFiles, ReportDefinitionReportType reportType) {
 
     // Delete temporary report files
-    System.out.print("\n Deleting temporary report files after Parsing...");
+    LOGGER.info("\n Deleting temporary report files after Parsing...");
     for (File file : localFiles) {
       File gUnzipFile = new File(file.getAbsolutePath() + ".gunzip");
       gUnzipFile.delete();
       file.delete();
-      System.out.print(".");
+      LOGGER.info(".");
     }
-    System.out.println("\n ** Finished: " + reportType.name() + " **");
-    System.out.flush();
+    LOGGER.info("\n ** Finished: " + reportType.name() + " **");
   }
 
   /**

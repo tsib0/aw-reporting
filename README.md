@@ -94,6 +94,10 @@ Set the following command line options before running the project:
 
    -dateRange <DateRangeType>             ReportDefinitionDateRangeType.
 
+   -debug                                 Will display all the debug information. If the option 'verbose' is
+                                          activated, all the information will be displayed on the console as
+                                          well
+
    -endDate &lt;YYYMMDD&gt;      End date for CUSTOM_DATE Reports (YYYYMMDD)
 
    -file &lt;file&gt;            aw-report-sample.properties file.
@@ -107,6 +111,8 @@ Set the following command line options before running the project:
    -help                   Print this message.
 
    -startDate &lt;YYYYMMDD&gt;   Start date for CUSTOM_DATE Reports (YYYYMMDD).
+
+   -verbose                The application will print all the tracing on the console
 
 </code>
 </pre>
