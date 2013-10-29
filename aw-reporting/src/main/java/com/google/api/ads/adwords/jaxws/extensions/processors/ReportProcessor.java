@@ -426,6 +426,8 @@ public class ReportProcessor {
   public void generateReportsForMCC(ReportDefinitionDateRangeType dateRangeType, String dateStart,
       String dateEnd, Set<Long> accountIdsSet, Properties properties) throws Exception {
 
+    LOGGER.info("*** Retrieving account IDs ***");
+
     if (accountIdsSet == null || accountIdsSet.size() == 0) {
       accountIdsSet = this.retrieveAccountIds();
     }
@@ -548,7 +550,7 @@ public class ReportProcessor {
         LOGGER.info("Ignoring file (Error when UnZipping): " + file.getAbsolutePath());
         localFiles.remove(file);
       }
-      LOGGER.info(".");
+      LOGGER.info("Done: " + file.getName());
     }
     LOGGER.info("\n");
   }
