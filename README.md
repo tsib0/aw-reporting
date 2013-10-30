@@ -92,11 +92,15 @@ Set the following command line options before running the project:
 
 <code>Arguments:
 
+   -accountIdsFile &lt;file&gt;           Defines a file that contains all the account IDs, one per line, to be used
+                                          instead of getting the accounts from the API. The list can contain all the accounts,
+                                          or just a specific set of accounts
+
    -dateRange <DateRangeType>             ReportDefinitionDateRangeType.
 
-   -debug                                 Will display all the debug information. If the option 'verbose' is
-                                          activated, all the information will be displayed on the console as
-                                          well
+   -debug     Will display all the debug information. If the option 'verbose' is
+              activated, all the information will be displayed on the console as
+              well
 
    -endDate &lt;YYYMMDD&gt;      End date for CUSTOM_DATE Reports (YYYYMMDD)
 
