@@ -24,6 +24,8 @@ import com.google.api.ads.adwords.jaxws.v201309.mcm.ManagedCustomerServiceInterf
 import com.google.api.ads.adwords.lib.client.AdWordsSession;
 import com.google.common.collect.Lists;
 
+import org.apache.log4j.Logger;
+
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -37,6 +39,8 @@ import java.util.Set;
  * @author gustavomoreira@google.com (Gustavo Moreira)
  */
 public class ManagedCustomerDelegate {
+
+  private static final Logger LOGGER = Logger.getLogger(ManagedCustomerDelegate.class);
 
   /**
    * The amount of results paginated when retrieving the next page of resuts.
@@ -75,7 +79,7 @@ public class ManagedCustomerDelegate {
    */
   public Set<Long> getAccountIds() throws ApiException {
     Set<Long> accountIdsSet = new HashSet<Long>();
-    List<ManagedCustomer> accounts = getAccounts();
+    List<ManagedCustomer> accounts = this.getAccounts();
 
     if (accounts != null) {
       for (ManagedCustomer account : accounts) {
@@ -99,7 +103,7 @@ public class ManagedCustomerDelegate {
     // Paging results to avoid RESPONSE_SIZE_LIMIT_EXCEEDED
     List<ManagedCustomer> accountList = Lists.newArrayList();
     try {
-      retrieveAccounts(selector, accountList);
+      this.retrieveAccounts(selector, accountList);
     } catch (ExceptionInInitializerError e) {
       throw new ApiException(
           "Error on managedCustomerService.get(selector), probably an AuthenticationError",
@@ -117,6 +121,7 @@ public class ManagedCustomerDelegate {
    */
   private void retrieveAccounts(Selector selector, List<ManagedCustomer> accountList)
       throws ApiException {
+
     int startIndex = 0;
     Paging paging = new Paging();
     selector.setPaging(paging);
@@ -124,8 +129,14 @@ public class ManagedCustomerDelegate {
     do {
       paging.setStartIndex(startIndex);
       paging.setNumberResults(NUMBER_OF_RESULTS);
+
+      LOGGER.info("Retrieving next " + NUMBER_OF_RESULTS + " accounts.");
+
       managedCustomerPage = managedCustomerService.get(selector);
       accountList.addAll(managedCustomerPage.getEntries());
+
+      LOGGER.info(accountList.size() + " accounts retrieved.");
+
       startIndex = startIndex + NUMBER_OF_RESULTS;
     } while (managedCustomerPage.getTotalNumEntries() > startIndex);
   }
