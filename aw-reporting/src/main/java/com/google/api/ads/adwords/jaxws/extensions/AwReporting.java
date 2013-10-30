@@ -116,6 +116,9 @@ public class AwReporting {
 
       if (cmdLine.hasOption("file")) {
         propertiesPath = cmdLine.getOptionValue("file");
+      } else {
+        LOGGER.error("Missing required option: 'file'");
+        System.exit(0);
       }
       LOGGER.info("Using properties file: " + propertiesPath);
 
@@ -160,8 +163,8 @@ public class AwReporting {
         LOGGER.info(
             "Starting report download for dateStart: " + dateStart + " and dateEnd: " + dateEnd);
 
-        processor.generateReportsForMCC(
-            ReportDefinitionDateRangeType.CUSTOM_DATE, dateStart, dateEnd, null, properties);
+        processor.generateReportsForMCC(ReportDefinitionDateRangeType.CUSTOM_DATE, dateStart,
+            dateEnd, accountIdsSet, properties);
 
       } else if (cmdLine.hasOption("dateRange")) {
 
@@ -170,7 +173,7 @@ public class AwReporting {
 
         LOGGER.info("Starting report download for dateRange: " + dateRangeType.name());
 
-        processor.generateReportsForMCC(dateRangeType, null, null, null, properties);
+        processor.generateReportsForMCC(dateRangeType, null, null, accountIdsSet, properties);
 
       } else {
         errors = true;
@@ -181,7 +184,8 @@ public class AwReporting {
       LOGGER.error("File not found: " + e.getMessage());
     } catch (ParseException e) {
       errors = true;
-      LOGGER.error("Error parsing the values for the command line options: " + e.getMessage());
+      System.err.println(
+          "Error parsing the values for the command line options: " + e.getMessage());
     } catch (Exception e) {
       errors = true;
       LOGGER.error("Unexpected error accessing the API: " + e.getMessage());
@@ -244,7 +248,7 @@ public class AwReporting {
     OptionBuilder.withArgName("file");
     OptionBuilder.hasArg(true);
     OptionBuilder.withDescription("aw-report-sample.properties file.");
-    OptionBuilder.isRequired(true);
+    OptionBuilder.isRequired(false);
     options.addOption(OptionBuilder.create("file"));
 
     OptionBuilder.withArgName("YYYYMMDD");
@@ -273,7 +277,7 @@ public class AwReporting {
     options.addOption(OptionBuilder.create("generatePdf"));
 
     OptionBuilder.withArgName("accountIdsFile");
-    OptionBuilder.hasArg(false);
+    OptionBuilder.hasArg(true);
     OptionBuilder.withDescription(
         "Consider ONLY the account IDs specified on the file to run the report");
     OptionBuilder.isRequired(false);
