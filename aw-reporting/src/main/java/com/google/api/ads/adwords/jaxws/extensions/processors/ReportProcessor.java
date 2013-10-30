@@ -47,6 +47,7 @@ import au.com.bytecode.opencsv.CSVReader;
 import au.com.bytecode.opencsv.bean.MappingStrategy;
 
 import org.apache.log4j.Logger;
+import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -54,9 +55,12 @@ import org.springframework.stereotype.Component;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
@@ -76,6 +80,8 @@ import java.util.concurrent.TimeUnit;
 public class ReportProcessor {
 
   private static final Logger LOGGER = Logger.getLogger(ReportProcessor.class);
+
+  private static final DateFormat TIMESTAMPFORMAT = new SimpleDateFormat("yyyy-MM-dd-HH_mm");
 
   private static final String USER_AGENT = "AwReporting";
 
@@ -372,20 +378,56 @@ public class ReportProcessor {
 
     Set<Long> accountIdsSet = new HashSet<Long>();
     try {
+
+      LOGGER.info("Account IDs being recovered from the API. This may take a while...");
       accountIdsSet = new ManagedCustomerDelegate(this.authenticate(false).build()).getAccountIds();
+
     } catch (ApiException e) {
       if (e.getMessage().contains("AuthenticationError")) {
+
         // retries Auth once for expired Tokens
         LOGGER.info("AuthenticationError, Getting a new Token...");
+        LOGGER.info("Account IDs being recovered from the API. This may take a while...");
         accountIdsSet =
             new ManagedCustomerDelegate(this.authenticate(true).build()).getAccountIds();
+
       } else {
         LOGGER.error("API error: " + e.getMessage());
         e.printStackTrace();
         throw e;
       }
     }
+
+    this.cacheAccountsToFile(accountIdsSet);
+
     return accountIdsSet;
+  }
+
+  /**
+   * Caches the accounts into a temporary file.
+   *
+   * @param accountIdsSet the set with all the accounts
+   */
+  private void cacheAccountsToFile(Set<Long> accountIdsSet) {
+
+    DateTime now = new DateTime();
+    String nowFormat = TIMESTAMPFORMAT.format(now.toDate());
+
+    try {
+      File tempFile = File.createTempFile(nowFormat + "-accounts-ids", ".txt");
+      LOGGER.info("Cache file created for accounts: " + tempFile.getAbsolutePath());
+
+      FileWriter writer = new FileWriter(tempFile);
+      for (Long accountId : accountIdsSet) {
+        writer.write(Long.toString(accountId) + "\n");
+      }
+      writer.close();
+      LOGGER.info("All account IDs added to cache file.");
+
+    } catch (IOException e) {
+      LOGGER.error("Could not create temporary file with the accounts. Accounts won't be cached.");
+      e.printStackTrace();
+    }
   }
 
   /**
@@ -430,6 +472,8 @@ public class ReportProcessor {
 
     if (accountIdsSet == null || accountIdsSet.size() == 0) {
       accountIdsSet = this.retrieveAccountIds();
+    } else {
+      LOGGER.info("Accounts loaded from file.");
     }
 
     AdWordsSession.Builder builder = this.authenticate(false);
