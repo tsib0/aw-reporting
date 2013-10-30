@@ -1,3 +1,5 @@
+*.log
+
 aw-report-model/target/*
 
 aw-report-model/.classpath
