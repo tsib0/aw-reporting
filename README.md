@@ -85,6 +85,8 @@ Set the following command line options before running the project:
 
 <pre>
 
+Note: aw-reporting.jar is in the aw-reporting/aw-reporting/target/ directory.
+
 <code>java -Xmx1G -jar aw-reporting.jar -startDate YYYYMMDD -endDate YYYYMMDD -file &lt;file&gt;</code>
 
 <code>java -Xmx1G -jar aw-reporting.jar -generatePdf &lt;htmlTemplateFile&gt; &lt;outputDirectory&gt; -startDate YYYYMMDD -endDate YYYYMMDD -file &lt;file&gt;</code>
