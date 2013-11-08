@@ -121,7 +121,7 @@ public class MultipleClientReportDownloader {
    */
   private Collection<File> printResultsAndReturn(final Collection<File> results, long elapsedTime,
       final Collection<Long> failed, final Set<Long> cids) {
-    LOGGER.error("\n Downloaded reports for " + cids.size() + " accounts in " + (elapsedTime / 1000)
+    LOGGER.info("\n Downloaded reports for " + cids.size() + " accounts in " + (elapsedTime / 1000)
         + " s. " + failed.size() + " failures:\n");
     for (Long failure : failed) {
       LOGGER.error(failure);
