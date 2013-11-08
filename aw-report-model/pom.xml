@@ -111,7 +111,7 @@
     <dependency>
       <groupId>com.google.api-ads</groupId>
       <artifactId>ads-lib</artifactId>
-      <version>1.20.0</version>
+      <version>RELEASE</version>
     </dependency>
 
 
