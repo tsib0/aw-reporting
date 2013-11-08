@@ -40,6 +40,7 @@ import com.google.api.ads.common.lib.auth.OfflineCredentials.Api;
 import com.google.api.ads.common.lib.exception.OAuthException;
 import com.google.api.ads.common.lib.exception.ValidationException;
 import com.google.api.client.auth.oauth2.Credential;
+import com.google.api.client.util.Sets;
 import com.google.common.base.Stopwatch;
 import com.google.common.collect.Lists;
 
@@ -61,9 +62,7 @@ import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Properties;
 import java.util.Set;
@@ -376,7 +375,7 @@ public class ReportProcessor {
    */
   public Set<Long> retrieveAccountIds() throws Exception {
 
-    Set<Long> accountIdsSet = new HashSet<Long>();
+    Set<Long> accountIdsSet = Sets.newHashSet();
     try {
 
       LOGGER.info("Account IDs being recovered from the API. This may take a while...");
@@ -529,7 +528,7 @@ public class ReportProcessor {
     // Download Reports to local files and Generate Report objects
     LOGGER.info("\n\n ** Generating: " + reportType.name() + " **");
     LOGGER.info(" Downloading reports...");
-    Collection<File> localFiles = new ArrayList<File>(acountIdList.size());
+    Collection<File> localFiles = Lists.newArrayList();
     try {
 
       ReportDefinition reportDefinition =
