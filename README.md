@@ -1,4 +1,7 @@
-# AwReporting
+# AwReporting (Beta)
+
+## Special Note
+Please let us know if you run into issues in the project's issue tracker (https://github.com/googleads/aw-reporting/issues), this Beta release may not fit your needs if you work with very large accounts but we are working to make the project better, your feedback is very important.
 
 ## Overview
 AwReporting is an open-source Java framework for large scale AdWords API reporting.
