@@ -59,8 +59,8 @@ public class ModifiedCsvToBean<T> extends CsvToBean<T> {
       try {
         PropertyDescriptor prop = mapper.findDescriptor(col);
         if (null != prop) {
-          String value = trimIfPossible(line[col], prop);
-          Object obj = convertValue(value, prop);
+          String value = this.trimIfPossible(line[col], prop);
+          Object obj = this.convertValue(value, prop);
           prop.getWriteMethod().invoke(bean, obj);
         }
       } catch (Exception e) {
