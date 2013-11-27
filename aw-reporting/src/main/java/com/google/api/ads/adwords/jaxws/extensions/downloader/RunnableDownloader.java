@@ -14,6 +14,7 @@
 
 package com.google.api.ads.adwords.jaxws.extensions.downloader;
 
+import com.google.api.ads.adwords.jaxws.extensions.util.FileUtil;
 import com.google.api.ads.adwords.lib.client.AdWordsSession;
 import com.google.api.ads.adwords.lib.jaxb.v201309.ReportDefinition;
 import com.google.api.ads.adwords.lib.utils.ReportDownloadResponse;
@@ -22,6 +23,8 @@ import com.google.api.ads.adwords.lib.utils.ReportException;
 import com.google.api.ads.adwords.lib.utils.v201309.DetailedReportDownloadResponseException;
 import com.google.api.ads.adwords.lib.utils.v201309.ReportDownloader;
 import com.google.api.ads.common.lib.exception.ValidationException;
+
+import org.apache.log4j.Logger;
 
 import java.io.BufferedOutputStream;
 import java.io.File;
@@ -48,6 +51,8 @@ import java.util.concurrent.CountDownLatch;
  */
 public class RunnableDownloader implements Runnable {
 
+  private static final Logger LOGGER = Logger.getLogger(RunnableDownloader.class);
+  
   private final AdWordsSessionBuilderSynchronizer sessionBuilder;
 
   private final int retriesCount;
@@ -111,6 +116,7 @@ public class RunnableDownloader implements Runnable {
         try {
           reportFile = this.downloadFileToFileSystem();
           if (reportFile != null) {
+            this.handleReportFileResult(reportFile);
             System.out.print(".");
             break;
           }
@@ -147,7 +153,6 @@ public class RunnableDownloader implements Runnable {
           break;
         }
       }
-      this.handleReportFileResult(reportFile);
 
     } finally {
       if (this.latch != null) {
@@ -203,7 +208,14 @@ public class RunnableDownloader implements Runnable {
     if (reportFile == null && this.failed != null) {
       this.failed.add(this.cid);
     } else {
-      this.results.add(reportFile);
+      File gUnzipFile = new File(reportFile.getAbsolutePath() + ".gunzip");
+      try {
+        // gUnzips downloeded file
+        FileUtil.gUnzip(reportFile, gUnzipFile);
+        this.results.add(reportFile);
+      } catch (IOException e) {
+        LOGGER.info("Ignoring file (Error when UnZipping): " + reportFile.getAbsolutePath());
+      }
     }
   }
 

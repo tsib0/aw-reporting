@@ -14,6 +14,9 @@
 
 package com.google.api.ads.adwords.jaxws.extensions.processors;
 
+import au.com.bytecode.opencsv.CSVReader;
+import au.com.bytecode.opencsv.bean.MappingStrategy;
+
 import com.google.api.ads.adwords.jaxws.extensions.ManagedCustomerDelegate;
 import com.google.api.ads.adwords.jaxws.extensions.downloader.MultipleClientReportDownloader;
 import com.google.api.ads.adwords.jaxws.extensions.report.model.csv.AnnotationBasedMappingStrategy;
@@ -24,7 +27,6 @@ import com.google.api.ads.adwords.jaxws.extensions.report.model.entities.Report;
 import com.google.api.ads.adwords.jaxws.extensions.report.model.persistence.AuthTokenPersister;
 import com.google.api.ads.adwords.jaxws.extensions.report.model.persistence.EntityPersister;
 import com.google.api.ads.adwords.jaxws.extensions.report.model.util.ModifiedCsvToBean;
-import com.google.api.ads.adwords.jaxws.extensions.util.FileUtil;
 import com.google.api.ads.adwords.jaxws.extensions.util.GetRefreshToken;
 import com.google.api.ads.adwords.jaxws.v201309.mcm.ApiException;
 import com.google.api.ads.adwords.jaxws.v201309.mcm.ManagedCustomer;
@@ -43,9 +45,6 @@ import com.google.api.client.auth.oauth2.Credential;
 import com.google.api.client.util.Sets;
 import com.google.common.base.Stopwatch;
 import com.google.common.collect.Lists;
-
-import au.com.bytecode.opencsv.CSVReader;
-import au.com.bytecode.opencsv.bean.MappingStrategy;
 
 import org.apache.log4j.Logger;
 import org.joda.time.DateTime;
@@ -543,8 +542,6 @@ public class ReportProcessor {
       return;
     }
 
-    this.extractGZipFiles(localFiles);
-
     this.processLocalFiles(reportType, localFiles, dateStart, dateEnd, dateRangeType);
 
     this.deleteTemporaryFiles(localFiles, reportType);
@@ -574,28 +571,6 @@ public class ReportProcessor {
     stopwatch.stop();
     LOGGER.info("\n* DB Process finished in " + (stopwatch.elapsed(TimeUnit.MILLISECONDS) / 1000)
         + " seconds ***");
-  }
-
-  /**
-   * Extracts the downloaded files.
-   *
-   * @param localFiles the downloaded files.
-   */
-  private void extractGZipFiles(Collection<File> localFiles) {
-
-    // Report are GZIPPED_CSV, gUnzipping...
-    LOGGER.info(" Report are GZIPPED_CSV, gUnzipping...");
-    for (File file : localFiles) {
-      File gUnzipFile = new File(file.getAbsolutePath() + ".gunzip");
-      try {
-        FileUtil.gUnzip(file, gUnzipFile);
-      } catch (IOException e) {
-        LOGGER.info("Ignoring file (Error when UnZipping): " + file.getAbsolutePath());
-        localFiles.remove(file);
-      }
-      LOGGER.info("Done: " + file.getName());
-    }
-    LOGGER.info("\n");
   }
 
   /**
