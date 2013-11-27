@@ -21,7 +21,6 @@ import com.google.api.ads.adwords.jaxws.extensions.report.model.util.DateUtil;
 import org.joda.time.DateTime;
 
 import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.util.Date;
 
 import javax.persistence.Column;
@@ -330,7 +329,7 @@ public abstract class ReportBase extends Report {
   }
 
   public String getAvgPosition() {
-    return avgPosition.setScale(2, RoundingMode.HALF_UP).toPlainString();
+    return BigDecimalUtil.formatAsReadable(avgPosition);
   }
 
   public BigDecimal getAvgPositionBigDecimal() {

@@ -271,7 +271,7 @@ public class ReportUrl extends ReportBase {
   }
 
   public String getConversionRate() {
-    return conversionRate.toString();
+    return BigDecimalUtil.formatAsReadable(conversionRate);
   }
 
   public void setConversionRate(BigDecimal conversionRate) {
@@ -283,7 +283,7 @@ public class ReportUrl extends ReportBase {
   }
 
   public String getConversionRateManyPerClick() {
-    return conversionRateManyPerClick.toString();
+    return BigDecimalUtil.formatAsReadable(conversionRateManyPerClick);
   }
 
   public void setConversionRateManyPerClick(BigDecimal conversionRateManyPerClick) {
@@ -312,7 +312,7 @@ public class ReportUrl extends ReportBase {
   }
 
   public String getCostPerConversion() {
-    return costPerConversion.toString();
+    return BigDecimalUtil.formatAsReadable(costPerConversion);
   }
 
   public void setCostPerConversion(BigDecimal costPerConversion) {
@@ -324,7 +324,7 @@ public class ReportUrl extends ReportBase {
   }
 
   public String getCostPerConversionManyPerClick() {
-    return costPerConversionManyPerClick.toString();
+    return BigDecimalUtil.formatAsReadable(costPerConversionManyPerClick);
   }
 
   public void setCostPerConversionManyPerClick(BigDecimal costPerConversionManyPerClick) {
@@ -449,7 +449,7 @@ public class ReportUrl extends ReportBase {
   }
 
   public String getValuePerConv() {
-    return valuePerConv.toString();
+    return BigDecimalUtil.formatAsReadable(valuePerConv);
   }
 
   public void setValuePerConv(BigDecimal valuePerConv) {
@@ -473,7 +473,7 @@ public class ReportUrl extends ReportBase {
   }
 
   public String getValuePerConversionManyPerClick() {
-    return valuePerConversionManyPerClick.toString();
+    return BigDecimalUtil.formatAsReadable(valuePerConversionManyPerClick);
   }
 
   public void setValuePerConversionManyPerClick(BigDecimal valuePerConversionManyPerClick) {
@@ -486,7 +486,7 @@ public class ReportUrl extends ReportBase {
   }
 
   public String getValuePerConvManyPerClick() {
-    return valuePerConvManyPerClick.toString();
+    return BigDecimalUtil.formatAsReadable(valuePerConvManyPerClick);
   }
 
   public void setValuePerConvManyPerClick(BigDecimal valuePerConvManyPerClick) {
