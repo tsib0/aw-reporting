@@ -444,11 +444,14 @@ public class AwReporting {
 
       if (montlyAccountReports != null && montlyAccountReports.size() > 0) {
 
-        File htmlFile = new File(outputDirectory, "ReportAccount" + accountId + ".html");
-        File pdfFile = new File(outputDirectory, "ReportAccount" + accountId + ".pdf");
+        File htmlFile = new File(outputDirectory,
+            "ReportAccount_" + accountId + "_" + dateStart + "_" + dateEnd + ".html");
+        File pdfFile = new File(outputDirectory,
+            "ReportAccount_" + accountId + "_" + dateStart +  "_" + dateEnd + ".pdf");
 
         LOGGER.debug("Exporting monthly reports to HTML for account: " + accountId);
-        HTMLExporter.exportHTML("Test", ReportDefinitionReportType.ACCOUNT_PERFORMANCE_REPORT,
+        HTMLExporter.exportHTML("",
+            ReportDefinitionReportType.ACCOUNT_PERFORMANCE_REPORT,
             montlyAccountReports, htmlTemplateFile, htmlFile);
 
         LOGGER.debug("Converting HTML to PDF for account: " + accountId);
