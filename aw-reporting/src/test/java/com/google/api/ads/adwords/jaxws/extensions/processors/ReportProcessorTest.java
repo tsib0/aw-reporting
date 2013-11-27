@@ -27,7 +27,6 @@ import com.google.api.ads.adwords.jaxws.extensions.report.model.entities.Report;
 import com.google.api.ads.adwords.jaxws.extensions.report.model.persistence.AuthTokenPersister;
 import com.google.api.ads.adwords.jaxws.extensions.report.model.persistence.EntityPersister;
 import com.google.api.ads.adwords.jaxws.extensions.util.DynamicPropertyPlaceholderConfigurer;
-import com.google.api.ads.adwords.jaxws.extensions.util.FileUtil;
 import com.google.api.ads.adwords.lib.client.AdWordsSession;
 import com.google.api.ads.adwords.lib.jaxb.v201309.ReportDefinition;
 import com.google.api.ads.adwords.lib.jaxb.v201309.ReportDefinitionDateRangeType;
@@ -36,6 +35,7 @@ import com.google.api.ads.common.lib.exception.OAuthException;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Lists;
 
+import org.apache.commons.io.FileUtils;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
@@ -204,9 +204,14 @@ public class ReportProcessorTest {
   private Collection<File> getReportFiles(String fileName, int numberOfFiles) throws IOException {
     final Collection<File> files = Lists.newArrayList();
     for (int i = 1; i <= numberOfFiles; i++) {
-      File gZipfile = new File("src/test/resources/csv/" + fileName + i + ".gzip");
-      FileUtil.gZip(new File("src/test/resources/csv/" + fileName), gZipfile);
-      files.add(gZipfile);
+
+      File newFile = new File("src/test/resources/csv/" + fileName + i);
+      File newFile2 = new File("src/test/resources/csv/" + fileName + i + ".gunzip");
+
+      FileUtils.copyFile(new File("src/test/resources/csv/" + fileName), newFile);
+      FileUtils.copyFile(new File("src/test/resources/csv/" + fileName), newFile2);
+
+      files.add(newFile);
     }
     return files;
   }
