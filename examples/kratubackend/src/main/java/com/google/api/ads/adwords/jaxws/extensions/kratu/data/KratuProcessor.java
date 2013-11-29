@@ -40,7 +40,7 @@ public class KratuProcessor {
 
   @Autowired
   public KratuProcessor(@Value("${mccAccountId}") String mccAccountId) {
-    this.mccAccountId = mccAccountId;
+    this.mccAccountId = mccAccountId.replaceAll("-", "");
   }
 
   public void processKratus(String dateStart, String dateEnd) throws InterruptedException {
