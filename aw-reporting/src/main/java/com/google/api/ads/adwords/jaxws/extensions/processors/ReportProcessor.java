@@ -151,7 +151,7 @@ public class ReportProcessor {
       try {
 
         LOGGER.debug("Parsing file: " + file.getAbsolutePath());
-        this.parseRowsAndPersist(file, csvToBean, mappingStrategy, dateStart, dateEnd);
+        this.parseRowsAndPersist(file, csvToBean, mappingStrategy, dateRangeType, dateStart, dateEnd);
 
       } catch (Exception e) {
         LOGGER.error("Ignoring file (Error when processing): " + file.getAbsolutePath());
@@ -171,9 +171,9 @@ public class ReportProcessor {
    * @throws IOException
    */
   private <R extends Report> void parseRowsAndPersist(File file, ModifiedCsvToBean<R> csvToBean,
-      MappingStrategy<R> mappingStrategy, String dateStart, String dateEnd)
-      throws UnsupportedEncodingException, FileNotFoundException, IOException {
-
+      MappingStrategy<R> mappingStrategy, ReportDefinitionDateRangeType dateRangeType,
+      String dateStart, String dateEnd)
+          throws UnsupportedEncodingException, FileNotFoundException, IOException {
 
     CSVReader csvReader = this.createCsvReader(file);
 
@@ -191,6 +191,7 @@ public class ReportProcessor {
       }
       report.setId();
       report.setTopAccountId(Long.parseLong(this.mccAccountId.replaceAll("-", "")));
+      report.setDateRangeType(dateRangeType.value());
       report.setDateStart(dateStart);
       report.setDateEnd(dateEnd);
     }
