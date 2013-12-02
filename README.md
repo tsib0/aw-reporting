@@ -22,25 +22,17 @@ You will need Java, Maven and MySQL installed before configuring the project.
 
 <code>$ git clone https://github.com/googleads/aw-reporting</code>
 
-<code>$ cd aw-reporting</code>
-
-<code>$ cd aw-report-model</code>
-
 <code>$ mvn clean install eclipse:eclipse</code>
-
-<code>$ cd ../aw-reporting</code>
-
-<code>$ mvn eclipse:eclipse</code>
 
 <code>$ mvn compile dependency:copy-dependencies package</code>
 
 ### Configure your MySQL database
 
-<code>CREATE DATABASE AwReporting DEFAULT CHARACTER SET utf8 DEFAULT COLLATE utf8_general_ci;</code>
+<code>CREATE DATABASE AWReports DEFAULT CHARACTER SET utf8 DEFAULT COLLATE utf8_general_ci;</code>
 
 <code>CREATE USER 'reportuser'@'localhost' IDENTIFIED BY 'SOME_PASSWORD';</code>
 
-<code>GRANT ALL PRIVILEGES ON AwReporting.\* TO 'reportuser'@'localhost' WITH GRANT OPTION;</code>
+<code>GRANT ALL PRIVILEGES ON AWReports.\* TO 'reportuser'@'localhost' WITH GRANT OPTION;</code>
 
 ### Configure AwReporting 
 
@@ -62,7 +54,7 @@ Fill in the following fields with your MCC acount ID, and developer token.
 
 Fill in the following with your database connection.
 
-> aw.report.model.db.sql.url=jdbc:mysql://localhost:3306/AWReporting?rewriteBatchedStatements=true
+> aw.report.model.db.sql.url=jdbc:mysql://localhost:3306/AWReports?rewriteBatchedStatements=true
 
 >aw.report.model.db.sql.username=reportuser
 
@@ -138,7 +130,7 @@ As it's running, the project will provide status messages about the reports it's
 
 Check your database when the run finishes to be sure it's been populated with the reporting data, e.g.:
 
-> SELECT * FROM AwReporting.AW_ReportAd limit 1;
+> SELECT * FROM AWReports.AW_ReportAd limit 1;
 
 
 ## Details about the code
