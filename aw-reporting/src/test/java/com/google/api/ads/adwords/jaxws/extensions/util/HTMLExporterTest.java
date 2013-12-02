@@ -21,6 +21,7 @@ import com.google.api.ads.adwords.lib.jaxb.v201309.ReportDefinitionReportType;
 
 import com.lowagie.text.DocumentException;
 
+import org.joda.time.DateTime;
 import org.junit.Test;
 
 import java.io.File;
@@ -69,6 +70,7 @@ public class HTMLExporterTest {
   private ReportPlaceholderFeedItem createFeedItemReportRow(Long idNumber) {
 
     ReportPlaceholderFeedItem reportPHFI = new ReportPlaceholderFeedItem();
+    reportPHFI.setMonth(DateTime.now());
     reportPHFI.setAccountDescriptiveName("Test Account Name");
     reportPHFI.setAccountId(idNumber);
     reportPHFI.setCampaignId(idNumber);
@@ -121,6 +123,7 @@ public class HTMLExporterTest {
   private ReportAccount createAccountReportRow(Long idNumber) {
 
     ReportAccount reportAccount = new ReportAccount();
+    reportAccount.setMonth(DateTime.now());
     reportAccount.setAccountDescriptiveName("Test Account Name");
     reportAccount.setAccountId(idNumber);
     reportAccount.setImpressions(99l);
