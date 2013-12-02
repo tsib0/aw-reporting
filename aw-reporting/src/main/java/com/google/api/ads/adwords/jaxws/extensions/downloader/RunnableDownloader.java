@@ -117,7 +117,7 @@ public class RunnableDownloader implements Runnable {
           reportFile = this.downloadFileToFileSystem();
           if (reportFile != null) {
             this.handleReportFileResult(reportFile);
-            System.out.print(".");
+            LOGGER.trace(".");
             break;
           }
 

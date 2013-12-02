@@ -146,7 +146,7 @@ public class ReportProcessor {
     LOGGER.info(" Procesing reports...");
 
     for (File file : localFiles) {
-      LOGGER.info(".");
+      LOGGER.trace(".");
       try {
 
         LOGGER.debug("Parsing file: " + file.getAbsolutePath());
@@ -589,7 +589,7 @@ public class ReportProcessor {
       File gUnzipFile = new File(file.getAbsolutePath() + ".gunzip");
       gUnzipFile.delete();
       file.delete();
-      LOGGER.info(".");
+      LOGGER.trace(".");
     }
     LOGGER.info("\n ** Finished: " + reportType.name() + " **");
   }
