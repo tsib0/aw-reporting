@@ -127,10 +127,17 @@ public abstract class ReportBase extends Report {
     if (this.getMonth() != null) {
       return "-" + DateUtil.formatYearMonth(this.getMonthDateTime());
     }
-    // Set Month to LAST_MONTH in yyyy-MM format
-    if (this.getDateRangeType() != null && this.getDateRangeType().equals("LAST_MONTH")) {
-      this.setMonth(DateUtil.lastMonthInYearMonthFormat());
-      return "-" + DateUtil.lastMonthInYearMonthFormat();
+    if (this.getDateRangeType() != null) {
+      // Set Month to LAST_MONTH in yyyy-MM format
+      if (this.getDateRangeType().equals("LAST_MONTH")) {
+        this.setMonth(DateUtil.lastMonthInYearMonthFormat());
+        return "-" + DateUtil.lastMonthInYearMonthFormat();
+      }
+      // Set Month to THIS_MONTH in yyyy-MM format
+      if (this.getDateRangeType().equals("THIS_MONTH")) {
+        this.setMonth(DateUtil.formatYearMonth(DateTime.now()));
+        return "-" + DateUtil.formatYearMonth(DateTime.now());
+      }
     }
     if (this.getDateStart() != null && this.getDateEnd() != null) {
       return "-" + this.getDateStart() + "-" + this.getDateEnd();
@@ -194,7 +201,11 @@ public abstract class ReportBase extends Report {
   }
 
   public String getMonth() {
-    return DateUtil.formatYearMonthDay(month);
+    if (month != null) {
+      return DateUtil.formatYearMonthDay(month);
+    } else {
+      return null;
+    }
   }
 
   public DateTime getMonthDateTime() {
