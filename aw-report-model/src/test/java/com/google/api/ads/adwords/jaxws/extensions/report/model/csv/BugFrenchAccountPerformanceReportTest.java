@@ -4,7 +4,6 @@ import com.google.api.ads.adwords.jaxws.extensions.report.model.entities.ReportA
 import com.google.api.ads.adwords.jaxws.extensions.report.model.util.ModifiedCsvToBean;
 
 import au.com.bytecode.opencsv.CSVReader;
-
 import junit.framework.Assert;
 
 import org.junit.Test;
@@ -14,6 +13,7 @@ import java.io.FileNotFoundException;
 import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.util.List;
+import java.util.Locale;
 
 /**
  * Test the bug with the french characters in the CSV file.
@@ -22,6 +22,8 @@ public class BugFrenchAccountPerformanceReportTest {
 
   @Test
   public void testAnnotationMapping() throws UnsupportedEncodingException, FileNotFoundException {
+
+    Locale.setDefault(Locale.US);
 
     CSVReader csvReader = new AwReportCsvReader(new InputStreamReader(
         new FileInputStream("src/test/resources/csv/bug-account-france.csv"), "UTF-8"), ',', '\"',
