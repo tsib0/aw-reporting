@@ -1,19 +1,19 @@
 package com.google.api.ads.adwords.jaxws.extensions.report.model.csv;
 
-import au.com.bytecode.opencsv.CSVReader;
-
 import com.google.api.ads.adwords.jaxws.extensions.report.model.entities.ReportAd;
 import com.google.api.ads.adwords.jaxws.extensions.report.model.util.ModifiedCsvToBean;
 
 import org.junit.Test;
+
+import au.com.bytecode.opencsv.CSVReader;
+import junit.framework.Assert;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.util.List;
-
-import junit.framework.Assert;
+import java.util.Locale;
 
 /**
  * Test case for the {@link AnnotationBasedMappingStrategy}.
@@ -28,8 +28,9 @@ public class AnnotationBasedMappingStrategyTest {
    *
    */
   @Test
-  public void testAnnotationMapping() throws UnsupportedEncodingException, FileNotFoundException {
-
+  public void testAnnotationMapping() throws UnsupportedEncodingException, FileNotFoundException {  
+    
+    Locale.setDefault(Locale.US);
 
     CSVReader csvReader = new AwReportCsvReader(new InputStreamReader(
         new FileInputStream("src/test/resources/csv/ad-performance.csv"), "UTF-8"), ',', '\"', 1);

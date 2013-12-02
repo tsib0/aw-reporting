@@ -15,6 +15,8 @@
 package com.google.api.ads.adwords.jaxws.extensions.report.model.util;
 
 import org.joda.time.DateTime;
+import org.joda.time.DateTimeZone;
+import org.joda.time.LocalDateTime;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 
@@ -132,7 +134,8 @@ public final class DateUtil {
 
       for (DateTimeFormatter formatter : DateUtil.formatters) {
         try {
-          return formatter.parseDateTime(timestamp);
+          LocalDateTime localDateTime = formatter.parseLocalDateTime(timestamp);
+          return localDateTime.plusHours(12).toDateTime(DateTimeZone.UTC);
 
         } catch (IllegalArgumentException e) {
           // silently skips to the next formatter
