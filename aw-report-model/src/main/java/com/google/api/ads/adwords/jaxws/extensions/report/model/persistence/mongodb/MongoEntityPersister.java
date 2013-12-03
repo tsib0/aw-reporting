@@ -184,8 +184,8 @@ public class MongoEntityPersister implements EntityPersister {
     }
     return get(t, keyValueList, numToSkip, limit);
   }
-  
-  
+
+
   @Override
   public <T> List<T> get(Class<T> t,
       String key,
@@ -197,8 +197,8 @@ public class MongoEntityPersister implements EntityPersister {
     if (key != null) {
       keyValueList.put(key, value);
     }
-    keyValueList.put(dateKey, BasicDBObjectBuilder.start(
-        "$gte", dateStart).add("$lte", dateEnd).get());      
+    keyValueList.put(
+        dateKey, BasicDBObjectBuilder.start("$gte", dateStart).add("$lte", dateEnd).get());
     return get(t, keyValueList);
   }
 
@@ -303,7 +303,6 @@ public class MongoEntityPersister implements EntityPersister {
    * Adds a field as a DB index
    *
    * @param classT the entity T class
-   * @param entities the list with the entities
    */
   @Override
   public <T> void createIndex(Class<T> classT, String key) {
@@ -315,7 +314,6 @@ public class MongoEntityPersister implements EntityPersister {
    * Adds a list of fields as DB indexes
    *
    * @param classT the entity T class
-   * @param entities the list with the entities
    */
   @Override
   public <T> void createIndex(Class<T> classT, List<String> keys) {

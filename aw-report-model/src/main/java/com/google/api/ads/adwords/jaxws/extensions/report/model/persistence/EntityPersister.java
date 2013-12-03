@@ -134,7 +134,7 @@ public interface EntityPersister {
       String dateKey,
       Date dateStart,
       Date dateEnd);
-  
+
   <T> List<T> get(Class<T> classT,
       String key,
       Object value,
@@ -218,7 +218,7 @@ public interface EntityPersister {
    * Adds a field as a DB index
    *
    * @param classT the entity T class
-   * @param entities the list with the entities
+   * @param key the entity key
    */
   <T> void createIndex(Class<T> classT, String key);
 
@@ -226,7 +226,7 @@ public interface EntityPersister {
    * Adds a list of fields as DB indexes
    *
    * @param classT the entity T class
-   * @param entities the list with the entities
+   * @param keys the entity keys
    */
   <T> void createIndex(Class<T> classT, List<String> keys);
 
