@@ -19,6 +19,24 @@ import java.util.List;
 public class ModifiedCsvToBean<T> extends CsvToBean<T> {
 
   /**
+   * Parses the CSV lazily, letting the client class decide when getting new elements.
+   * 
+   * @param mapper the mapping strategy for the file
+   * @param csv the CSV file reader
+   * @return the Iterator to go over the CSV elements
+   */
+  public CsvParserIterator<T> lazyParse(MappingStrategy<T> mapper, CSVReader csv) {
+
+    try {
+      mapper.captureHeader(csv);
+      return new CsvParserIterator<T>(mapper, csv, this);
+      
+    } catch (Exception e) {
+      throw new RuntimeException("Error parsing CSV!", e);
+    }
+  }
+
+  /**
    * @see au.com.bytecode.opencsv.bean.CsvToBean
    *      #parse(au.com.bytecode.opencsv.bean.MappingStrategy, au.com.bytecode.opencsv.CSVReader)
    */
