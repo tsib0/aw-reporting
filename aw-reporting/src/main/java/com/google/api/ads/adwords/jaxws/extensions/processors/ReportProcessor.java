@@ -14,9 +14,6 @@
 
 package com.google.api.ads.adwords.jaxws.extensions.processors;
 
-import au.com.bytecode.opencsv.CSVReader;
-import au.com.bytecode.opencsv.bean.MappingStrategy;
-
 import com.google.api.ads.adwords.jaxws.extensions.ManagedCustomerDelegate;
 import com.google.api.ads.adwords.jaxws.extensions.downloader.MultipleClientReportDownloader;
 import com.google.api.ads.adwords.jaxws.extensions.report.model.csv.AnnotationBasedMappingStrategy;
@@ -26,6 +23,7 @@ import com.google.api.ads.adwords.jaxws.extensions.report.model.entities.AuthMcc
 import com.google.api.ads.adwords.jaxws.extensions.report.model.entities.Report;
 import com.google.api.ads.adwords.jaxws.extensions.report.model.persistence.AuthTokenPersister;
 import com.google.api.ads.adwords.jaxws.extensions.report.model.persistence.EntityPersister;
+import com.google.api.ads.adwords.jaxws.extensions.report.model.util.CsvParserIterator;
 import com.google.api.ads.adwords.jaxws.extensions.report.model.util.ModifiedCsvToBean;
 import com.google.api.ads.adwords.jaxws.extensions.util.GetRefreshToken;
 import com.google.api.ads.adwords.jaxws.v201309.mcm.ApiException;
@@ -45,6 +43,9 @@ import com.google.api.client.auth.oauth2.Credential;
 import com.google.api.client.util.Sets;
 import com.google.common.base.Stopwatch;
 import com.google.common.collect.Lists;
+
+import au.com.bytecode.opencsv.CSVReader;
+import au.com.bytecode.opencsv.bean.MappingStrategy;
 
 import org.apache.log4j.Logger;
 import org.joda.time.DateTime;
@@ -76,6 +77,8 @@ import java.util.concurrent.TimeUnit;
  */
 @Component
 public class ReportProcessor {
+
+  public static final int REPORT_BUFFER_DB = 25;
 
   private static final Logger LOGGER = Logger.getLogger(ReportProcessor.class);
 
@@ -150,7 +153,12 @@ public class ReportProcessor {
       try {
 
         LOGGER.debug("Parsing file: " + file.getAbsolutePath());
-        this.parseRowsAndPersist(file, csvToBean, mappingStrategy, dateRangeType, dateStart, dateEnd);
+        this.parseRowsAndPersist(file,
+            csvToBean,
+            mappingStrategy,
+            dateRangeType,
+            dateStart,
+            dateEnd);
 
       } catch (Exception e) {
         LOGGER.error("Ignoring file (Error when processing): " + file.getAbsolutePath());
@@ -169,19 +177,25 @@ public class ReportProcessor {
    * @throws FileNotFoundException
    * @throws IOException
    */
-  private <R extends Report> void parseRowsAndPersist(File file, ModifiedCsvToBean<R> csvToBean,
-      MappingStrategy<R> mappingStrategy, ReportDefinitionDateRangeType dateRangeType,
-      String dateStart, String dateEnd)
-          throws UnsupportedEncodingException, FileNotFoundException, IOException {
+  private <R extends Report> void parseRowsAndPersist(File file,
+      ModifiedCsvToBean<R> csvToBean,
+      MappingStrategy<R> mappingStrategy,
+      ReportDefinitionDateRangeType dateRangeType,
+      String dateStart,
+      String dateEnd) throws UnsupportedEncodingException, FileNotFoundException, IOException {
 
     CSVReader csvReader = this.createCsvReader(file);
 
     LOGGER.debug("Starting parse of report rows...");
-    List<R> reportRowsList = csvToBean.parse(mappingStrategy, csvReader);
-    csvReader.close();
+    CsvParserIterator<R> reportRowsList = csvToBean.lazyParse(mappingStrategy, csvReader);
     LOGGER.debug("... success.");
 
-    for (R report : reportRowsList) {
+    LOGGER.debug("Starting report persistence...");
+    List<R> reportBuffer = Lists.newArrayList();
+    while (reportRowsList.hasNext()) {
+
+      R report = reportRowsList.next();
+
       // Getting Account Id from File Name for reports that do not have Client Customer Id
       if (report.getAccountId() == null && file.getName().contains("-")
           && file.getName().split("-") != null && file.getName().split("-").length > 2
@@ -193,16 +207,28 @@ public class ReportProcessor {
       report.setDateRangeType(dateRangeType.value());
       report.setDateStart(dateStart);
       report.setDateEnd(dateEnd);
+
+      reportBuffer.add(report);
+
+      if (reportBuffer.size() >= REPORT_BUFFER_DB) {
+        this.persister.persistReportEntities(reportBuffer);
+        reportBuffer.clear();
+      }
     }
+    if (reportBuffer.size() > 0) {
+      this.persister.persistReportEntities(reportBuffer);
+    }
+    LOGGER.debug("... success.");
+    csvReader.close();
 
     // Store report rows
-    if (reportRowsList.size() > 0) {
-      LOGGER.debug("Starting report persistence...");
-      this.persister.persistReportEntities(reportRowsList);
-      LOGGER.debug("... success.");
-    } else {
-      LOGGER.debug("Nothing to persist. Empty list of report rows.");
-    }
+    // if (reportRowsList.hasNext()) {
+    // LOGGER.debug("Starting report persistence...");
+    // this.persister.persistReportEntities(reportRowsList);
+    // LOGGER.debug("... success.");
+    // } else {
+    // LOGGER.debug("Nothing to persist. Empty list of report rows.");
+    // }
   }
 
   /**

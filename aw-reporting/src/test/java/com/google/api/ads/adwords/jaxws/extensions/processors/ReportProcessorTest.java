@@ -96,13 +96,12 @@ public class ReportProcessorTest {
     properties = PropertiesLoaderUtils.loadProperties(resource);
     appCtx = new ClassPathXmlApplicationContext("classpath:aw-report-test-beans.xml");
 
-    reportProcessor = new ReportProcessor(
-        "1", "token", "companyName", "clientId", "clientSecret");
+    reportProcessor = new ReportProcessor("1", "token", "companyName", "clientId", "clientSecret");
 
     MockitoAnnotations.initMocks(this);
 
     when(mockedAuthTokenPersister.getAuthToken(Mockito.anyString()))
-    .thenReturn(new AuthMcc("1", "TOKEN"));
+        .thenReturn(new AuthMcc("1", "TOKEN"));
 
     Mockito.doAnswer(new Answer<Void>() {
       @Override
@@ -119,8 +118,8 @@ public class ReportProcessorTest {
     reportProcessor.setPersister(mockedReportEntitiesPersister);
     reportProcessor.setCsvReportEntitiesMapping(appCtx.getBean(CsvReportEntitiesMapping.class));
 
-    // Mocking the Authentication because in OAuth2 we are force to call buildOAuth2Credentials 
-    AdWordsSession.Builder builder =  new AdWordsSession.Builder().withClientCustomerId("1");
+    // Mocking the Authentication because in OAuth2 we are force to call buildOAuth2Credentials
+    AdWordsSession.Builder builder = new AdWordsSession.Builder().withClientCustomerId("1");
     Mockito.doReturn(builder).when(reportProcessor).authenticate(Mockito.anyBoolean());
   }
 
@@ -134,10 +133,10 @@ public class ReportProcessorTest {
         Mockito.<AdWordsSession.Builder>anyObject(), Mockito.<ReportDefinition>anyObject(),
         Mockito.<Set<Long>>anyObject());
 
-    verify(mockedReportEntitiesPersister, times(REPORT_TYPES_SIZE * CIDS.size()))
+    verify(mockedReportEntitiesPersister, times(130))
         .persistReportEntities(reportEntitiesCaptor.capture());
 
-    assertEquals(reportEntitiesCaptor.getAllValues().size(), REPORT_TYPES_SIZE * CIDS.size());
+    assertEquals(130, reportEntitiesCaptor.getAllValues().size());
     for (List<? extends Report> reportEntities : reportEntitiesCaptor.getAllValues()) {
       for (Report report : reportEntities) {
         assertNotNull(report.get_id());
