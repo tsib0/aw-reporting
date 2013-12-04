@@ -103,6 +103,8 @@ public class ReportProcessor {
   private String mccAccountId = null;
   private String companyName = null;
 
+  private int reportRowsSetSize = REPORT_BUFFER_DB;
+
   /**
    * Constructor.
    *
@@ -111,19 +113,25 @@ public class ReportProcessor {
    * @param companyName the company name (optional)
    * @param clientId the OAuth2 authentication clientId
    * @param clientSecret the OAuth2 authentication clientSecret
+   * @param reportRowsSetSize the size of the set parsed before send to the DB
    */
   @Autowired
   public ReportProcessor(@Value("${mccAccountId}") String mccAccountId,
       @Value("${developerToken}") String developerToken,
       @Value(value = "${companyName:}") String companyName,
       @Value(value = "${clientId}") String clientId,
-      @Value(value = "${clientSecret}") String clientSecret) {
+      @Value(value = "${clientSecret}") String clientSecret,
+      @Value(value = "${aw.report.processor.rows.size:}") Integer reportRowsSetSize) {
 
     this.mccAccountId = mccAccountId;
     this.developerToken = developerToken;
     this.companyName = companyName;
     this.clientId = clientId;
     this.clientSecret = clientSecret;
+
+    if (reportRowsSetSize != null && reportRowsSetSize > 0) {
+      this.reportRowsSetSize = reportRowsSetSize;
+    }
   }
 
   /**
@@ -210,7 +218,7 @@ public class ReportProcessor {
 
       reportBuffer.add(report);
 
-      if (reportBuffer.size() >= REPORT_BUFFER_DB) {
+      if (reportBuffer.size() >= this.reportRowsSetSize) {
         this.persister.persistReportEntities(reportBuffer);
         reportBuffer.clear();
       }
