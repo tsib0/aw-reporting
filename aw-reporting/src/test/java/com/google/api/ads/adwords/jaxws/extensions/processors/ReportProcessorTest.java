@@ -96,7 +96,8 @@ public class ReportProcessorTest {
     properties = PropertiesLoaderUtils.loadProperties(resource);
     appCtx = new ClassPathXmlApplicationContext("classpath:aw-report-test-beans.xml");
 
-    reportProcessor = new ReportProcessor("1", "token", "companyName", "clientId", "clientSecret");
+    reportProcessor =
+        new ReportProcessor("1", "token", "companyName", "clientId", "clientSecret", null);
 
     MockitoAnnotations.initMocks(this);
 
