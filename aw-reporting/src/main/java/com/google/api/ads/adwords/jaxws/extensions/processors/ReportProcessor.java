@@ -78,7 +78,7 @@ import java.util.concurrent.TimeUnit;
 @Component
 public class ReportProcessor {
 
-  public static final int REPORT_BUFFER_DB = 25;
+  public static final int REPORT_BUFFER_DB = 1000;
 
   private static final Logger LOGGER = Logger.getLogger(ReportProcessor.class);
 
