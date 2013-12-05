@@ -44,14 +44,14 @@ import com.google.api.client.util.Sets;
 import com.google.common.base.Stopwatch;
 import com.google.common.collect.Lists;
 
-import au.com.bytecode.opencsv.CSVReader;
-import au.com.bytecode.opencsv.bean.MappingStrategy;
-
 import org.apache.log4j.Logger;
 import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
+
+import au.com.bytecode.opencsv.CSVReader;
+import au.com.bytecode.opencsv.bean.MappingStrategy;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -66,6 +66,9 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Properties;
 import java.util.Set;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -146,7 +149,7 @@ public class ReportProcessor {
    * @param dateStart the starting date.
    * @param dateEnd the ending date.
    */
-  private <R extends Report> void processFiles(Class<R> reportBeanClass,
+  private <R extends Report> void processFiles2(Class<R> reportBeanClass,
       Collection<File> localFiles, ReportDefinitionDateRangeType dateRangeType, String dateStart,
       String dateEnd) {
 
@@ -173,6 +176,51 @@ public class ReportProcessor {
         e.printStackTrace();
       }
     }
+  }
+
+  private <R extends Report> void processFiles(Class<R> reportBeanClass,
+      Collection<File> localFiles, ReportDefinitionDateRangeType dateRangeType, String dateStart,
+      String dateEnd) {
+
+    final CountDownLatch latch = new CountDownLatch(localFiles.size());
+    ExecutorService executorService = Executors.newFixedThreadPool(8);
+
+    // Processing Report Local Files
+    LOGGER.info(" Procesing reports...");
+
+    Stopwatch stopwatch = new Stopwatch();
+    stopwatch.start();
+    
+    for (File file : localFiles) {
+      LOGGER.trace(".");
+      try {
+        
+        ModifiedCsvToBean<R> csvToBean = new ModifiedCsvToBean<R>();
+        MappingStrategy<R> mappingStrategy = new AnnotationBasedMappingStrategy<R>(reportBeanClass);
+
+        LOGGER.debug("Parsing file: " + file.getAbsolutePath());
+        RunnableProcessor<R> runnableProcesor = new RunnableProcessor<R>(
+            file, csvToBean, mappingStrategy, dateRangeType, dateStart, dateEnd, mccAccountId, persister);
+        runnableProcesor.setLatch(latch);
+        executorService.execute(runnableProcesor);
+
+      } catch (Exception e) {
+        LOGGER.error("Ignoring file (Error when processing): " + file.getAbsolutePath());
+        e.printStackTrace();
+      }
+    }
+
+    try {
+      latch.await();
+    } catch (InterruptedException e) {
+      LOGGER.error(e.getMessage());
+      e.printStackTrace();
+    }
+
+    executorService.shutdown();
+    stopwatch.stop();
+    LOGGER.info("*** Finished processing all reports in "
+        + (stopwatch.elapsed(TimeUnit.MILLISECONDS) / 1000) + " seconds ***\n");
   }
 
   /**
@@ -228,15 +276,6 @@ public class ReportProcessor {
     }
     LOGGER.debug("... success.");
     csvReader.close();
-
-    // Store report rows
-    // if (reportRowsList.hasNext()) {
-    // LOGGER.debug("Starting report persistence...");
-    // this.persister.persistReportEntities(reportRowsList);
-    // LOGGER.debug("... success.");
-    // } else {
-    // LOGGER.debug("Nothing to persist. Empty list of report rows.");
-    // }
   }
 
   /**
@@ -345,7 +384,6 @@ public class ReportProcessor {
       throw new IllegalStateException("Builder not set properly. "
           + "This might mean a bug with the authentication, "
           + "or the credential values are incorrect.", e);
-
     }
   }
 
@@ -363,7 +401,7 @@ public class ReportProcessor {
     LOGGER.debug("Retrieving auth token from DB.");
     String authToken = this.getAuthTokenFromStorage(this.mccAccountId);
 
-    // Generate a new Auth token if necesary
+    // Generate a new Auth token if necessary
     if ((authToken == null || force)) {
       try {
         if (force) {
@@ -543,7 +581,7 @@ public class ReportProcessor {
    * Downloads all the files from the API and process all the rows, saving the data to the
    * configured data base.
    *
-   * @param builder the sesion buider.
+   * @param builder the session builder.
    * @param reportType the report type.
    * @param dateRangeType the date range type.
    * @param dateStart the start date.
@@ -765,5 +803,4 @@ public class ReportProcessor {
   public void setAuthTokenPersister(AuthTokenPersister authTokenPersister) {
     this.authTokenPersister = authTokenPersister;
   }
-
 }
