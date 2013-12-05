@@ -46,15 +46,20 @@ Fill in the following fields with your MCC acount ID, and developer token.
 
 >developerToken=
 
- Fill in your OAuth credentials. If you need to create them, visit: <a href>https://code.google.com/apis/console#access</a>
+Fill in your OAuth credentials. If you need to create them, visit: <a href>https://code.google.com/apis/console#access</a>
 
 >clientId=
 
 >clientSecret=
 
+Fill in the following with the number of rows that will be parsed from the CSV file before persisting to the DB.
+The bigger the number, the bigger the memory usage, but also might give an improvement in performance.
+
+>aw.report.processor.rows.size=1000
+
 Fill in the following with your database connection.
 
-> aw.report.model.db.sql.url=jdbc:mysql://localhost:3306/AWReports?rewriteBatchedStatements=true
+>aw.report.model.db.sql.url=jdbc:mysql://localhost:3306/AWReports?rewriteBatchedStatements=true
 
 >aw.report.model.db.sql.username=reportuser
 
