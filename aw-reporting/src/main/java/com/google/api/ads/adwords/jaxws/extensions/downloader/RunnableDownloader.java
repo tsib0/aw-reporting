@@ -210,7 +210,7 @@ public class RunnableDownloader implements Runnable {
     } else {
       File gUnzipFile = new File(reportFile.getAbsolutePath() + ".gunzip");
       try {
-        // gUnzips downloeded file
+        // gUnzips downloaded file
         FileUtil.gUnzip(reportFile, gUnzipFile);
         this.results.add(reportFile);
       } catch (IOException e) {
