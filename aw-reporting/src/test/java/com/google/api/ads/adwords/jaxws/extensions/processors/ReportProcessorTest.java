@@ -134,10 +134,10 @@ public class ReportProcessorTest {
         Mockito.<AdWordsSession.Builder>anyObject(), Mockito.<ReportDefinition>anyObject(),
         Mockito.<Set<Long>>anyObject());
 
-    verify(mockedReportEntitiesPersister, times(130))
+    verify(mockedReportEntitiesPersister, times(80))
         .persistReportEntities(reportEntitiesCaptor.capture());
 
-    assertEquals(130, reportEntitiesCaptor.getAllValues().size());
+    assertEquals(80, reportEntitiesCaptor.getAllValues().size());
     for (List<? extends Report> reportEntities : reportEntitiesCaptor.getAllValues()) {
       for (Report report : reportEntities) {
         assertNotNull(report.get_id());
