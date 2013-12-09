@@ -229,14 +229,6 @@ public class ReportProcessor {
     LOGGER.debug("... success.");
     csvReader.close();
 
-    // Store report rows
-    // if (reportRowsList.hasNext()) {
-    // LOGGER.debug("Starting report persistence...");
-    // this.persister.persistReportEntities(reportRowsList);
-    // LOGGER.debug("... success.");
-    // } else {
-    // LOGGER.debug("Nothing to persist. Empty list of report rows.");
-    // }
   }
 
   /**
