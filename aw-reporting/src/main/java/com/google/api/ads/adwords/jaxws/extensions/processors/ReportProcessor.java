@@ -14,16 +14,16 @@
 
 package com.google.api.ads.adwords.jaxws.extensions.processors;
 
+import au.com.bytecode.opencsv.bean.MappingStrategy;
+
 import com.google.api.ads.adwords.jaxws.extensions.ManagedCustomerDelegate;
 import com.google.api.ads.adwords.jaxws.extensions.downloader.MultipleClientReportDownloader;
 import com.google.api.ads.adwords.jaxws.extensions.report.model.csv.AnnotationBasedMappingStrategy;
-import com.google.api.ads.adwords.jaxws.extensions.report.model.csv.AwReportCsvReader;
 import com.google.api.ads.adwords.jaxws.extensions.report.model.csv.CsvReportEntitiesMapping;
 import com.google.api.ads.adwords.jaxws.extensions.report.model.entities.AuthMcc;
 import com.google.api.ads.adwords.jaxws.extensions.report.model.entities.Report;
 import com.google.api.ads.adwords.jaxws.extensions.report.model.persistence.AuthTokenPersister;
 import com.google.api.ads.adwords.jaxws.extensions.report.model.persistence.EntityPersister;
-import com.google.api.ads.adwords.jaxws.extensions.report.model.util.CsvParserIterator;
 import com.google.api.ads.adwords.jaxws.extensions.report.model.util.ModifiedCsvToBean;
 import com.google.api.ads.adwords.jaxws.extensions.util.GetRefreshToken;
 import com.google.api.ads.adwords.jaxws.v201309.mcm.ApiException;
@@ -50,16 +50,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
-import au.com.bytecode.opencsv.CSVReader;
-import au.com.bytecode.opencsv.bean.MappingStrategy;
-
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.UnsupportedEncodingException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Collection;
@@ -82,6 +75,8 @@ import java.util.concurrent.TimeUnit;
 public class ReportProcessor {
 
   public static final int REPORT_BUFFER_DB = 1000;
+  
+  public static final int NUMBER_OF_REPORT_PROCESSORS = 4;
 
   private static final Logger LOGGER = Logger.getLogger(ReportProcessor.class);
 
@@ -107,6 +102,7 @@ public class ReportProcessor {
   private String companyName = null;
 
   private int reportRowsSetSize = REPORT_BUFFER_DB;
+  private int numberOfReportProcessors = NUMBER_OF_REPORT_PROCESSORS;
 
   /**
    * Constructor.
@@ -124,7 +120,8 @@ public class ReportProcessor {
       @Value(value = "${companyName:}") String companyName,
       @Value(value = "${clientId}") String clientId,
       @Value(value = "${clientSecret}") String clientSecret,
-      @Value(value = "${aw.report.processor.rows.size:}") Integer reportRowsSetSize) {
+      @Value(value = "${aw.report.processor.rows.size:}") Integer reportRowsSetSize,
+      @Value(value = "${aw.report.processor.threads:}") Integer numberOfReportProcessors) {
 
     this.mccAccountId = mccAccountId;
     this.developerToken = developerToken;
@@ -135,46 +132,8 @@ public class ReportProcessor {
     if (reportRowsSetSize != null && reportRowsSetSize > 0) {
       this.reportRowsSetSize = reportRowsSetSize;
     }
-  }
-
-  /**
-   * Process the files accordingly to the configured persistence. The files must read and stored
-   * properly.
-   *
-   * The files are stored locally, and only read operations should be needed.
-   *
-   * @param reportBeanClass the report bean class.
-   * @param localFiles the list of local files.
-   * @param dateRangeType the type of date range.
-   * @param dateStart the starting date.
-   * @param dateEnd the ending date.
-   */
-  private <R extends Report> void processFiles2(Class<R> reportBeanClass,
-      Collection<File> localFiles, ReportDefinitionDateRangeType dateRangeType, String dateStart,
-      String dateEnd) {
-
-    ModifiedCsvToBean<R> csvToBean = new ModifiedCsvToBean<R>();
-    MappingStrategy<R> mappingStrategy = new AnnotationBasedMappingStrategy<R>(reportBeanClass);
-
-    // Processing Report Local Files
-    LOGGER.info(" Procesing reports...");
-
-    for (File file : localFiles) {
-      LOGGER.trace(".");
-      try {
-
-        LOGGER.debug("Parsing file: " + file.getAbsolutePath());
-        this.parseRowsAndPersist(file,
-            csvToBean,
-            mappingStrategy,
-            dateRangeType,
-            dateStart,
-            dateEnd);
-
-      } catch (Exception e) {
-        LOGGER.error("Ignoring file (Error when processing): " + file.getAbsolutePath());
-        e.printStackTrace();
-      }
+    if (numberOfReportProcessors != null && numberOfReportProcessors > 0) {
+      this.numberOfReportProcessors = numberOfReportProcessors;
     }
   }
 
@@ -183,7 +142,7 @@ public class ReportProcessor {
       String dateEnd) {
 
     final CountDownLatch latch = new CountDownLatch(localFiles.size());
-    ExecutorService executorService = Executors.newFixedThreadPool(8);
+    ExecutorService executorService = Executors.newFixedThreadPool(numberOfReportProcessors);
 
     // Processing Report Local Files
     LOGGER.info(" Procesing reports...");
@@ -200,7 +159,8 @@ public class ReportProcessor {
 
         LOGGER.debug("Parsing file: " + file.getAbsolutePath());
         RunnableProcessor<R> runnableProcesor = new RunnableProcessor<R>(
-            file, csvToBean, mappingStrategy, dateRangeType, dateStart, dateEnd, mccAccountId, persister);
+            file, csvToBean, mappingStrategy, dateRangeType, dateStart, dateEnd, mccAccountId,
+            persister, reportRowsSetSize);
         runnableProcesor.setLatch(latch);
         executorService.execute(runnableProcesor);
 
@@ -221,78 +181,6 @@ public class ReportProcessor {
     stopwatch.stop();
     LOGGER.info("*** Finished processing all reports in "
         + (stopwatch.elapsed(TimeUnit.MILLISECONDS) / 1000) + " seconds ***\n");
-  }
-
-  /**
-   * Parse the rows in the CSV file for the report type, and persists the beans into the data base.
-   *
-   * @param file the CSV file.
-   * @param csvToBean the {@code CsvToBean}
-   * @param mappingStrategy
-   * @throws UnsupportedEncodingException
-   * @throws FileNotFoundException
-   * @throws IOException
-   */
-  private <R extends Report> void parseRowsAndPersist(File file,
-      ModifiedCsvToBean<R> csvToBean,
-      MappingStrategy<R> mappingStrategy,
-      ReportDefinitionDateRangeType dateRangeType,
-      String dateStart,
-      String dateEnd) throws UnsupportedEncodingException, FileNotFoundException, IOException {
-
-    CSVReader csvReader = this.createCsvReader(file);
-
-    LOGGER.debug("Starting parse of report rows...");
-    CsvParserIterator<R> reportRowsList = csvToBean.lazyParse(mappingStrategy, csvReader);
-    LOGGER.debug("... success.");
-
-    LOGGER.debug("Starting report persistence...");
-    List<R> reportBuffer = Lists.newArrayList();
-    while (reportRowsList.hasNext()) {
-
-      R report = reportRowsList.next();
-
-      // Getting Account Id from File Name for reports that do not have Client Customer Id
-      if (report.getAccountId() == null && file.getName().contains("-")
-          && file.getName().split("-") != null && file.getName().split("-").length > 2
-          && file.getName().split("-")[2].matches("\\d*")) {
-        report.setAccountId(Long.parseLong(file.getName().split("-")[2]));
-      }
-      report.setId();
-      report.setTopAccountId(Long.parseLong(this.mccAccountId.replaceAll("-", "")));
-      report.setDateRangeType(dateRangeType.value());
-      report.setDateStart(dateStart);
-      report.setDateEnd(dateEnd);
-
-      reportBuffer.add(report);
-
-      if (reportBuffer.size() >= this.reportRowsSetSize) {
-        this.persister.persistReportEntities(reportBuffer);
-        reportBuffer.clear();
-      }
-    }
-    if (reportBuffer.size() > 0) {
-      this.persister.persistReportEntities(reportBuffer);
-    }
-    LOGGER.debug("... success.");
-    csvReader.close();
-  }
-
-  /**
-   * Creates the proper {@link CSVReader} to parse the AW reports.
-   *
-   * @param file the CSV file.
-   * @return the {@code CSVReader}
-   * @throws UnsupportedEncodingException should not happen.
-   * @throws FileNotFoundException in case the file has been deleted before the reading.
-   */
-  private CSVReader createCsvReader(File file)
-      throws UnsupportedEncodingException, FileNotFoundException {
-
-    LOGGER.debug("Creating AwReportCsvReader for file: " + file.getAbsolutePath() + ".gunzip");
-    return new AwReportCsvReader(
-        new InputStreamReader(new FileInputStream(file.getAbsolutePath() + ".gunzip"), "UTF-8"),
-        ',', '\"', 1);
   }
 
   /**
