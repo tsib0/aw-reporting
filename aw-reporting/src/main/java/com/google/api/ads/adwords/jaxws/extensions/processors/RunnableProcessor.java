@@ -24,7 +24,6 @@ import com.google.api.ads.adwords.lib.jaxb.v201309.ReportDefinitionDateRangeType
 import com.google.common.collect.Lists;
 
 import org.apache.log4j.Logger;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import au.com.bytecode.opencsv.CSVReader;
 import au.com.bytecode.opencsv.bean.MappingStrategy;
@@ -54,15 +53,11 @@ import java.util.concurrent.CountDownLatch;
  * @author jtoledo@google.com (Julian Toledo)
  */
 public class RunnableProcessor<R extends Report> implements Runnable {
-  
-  public static final int REPORT_BUFFER_DB = 1000;
 
   private static final Logger LOGGER = Logger.getLogger(RunnableProcessor.class);
 
   private CountDownLatch latch;
-  
-  private int reportRowsSetSize = REPORT_BUFFER_DB;
-    
+
   private File file;
   private ModifiedCsvToBean<R> csvToBean;
   private MappingStrategy<R> mappingStrategy;
@@ -71,6 +66,7 @@ public class RunnableProcessor<R extends Report> implements Runnable {
   private String dateEnd;
   private String mccAccountId;
   private EntityPersister persister;
+  private int reportRowsSetSize;
 
   /**
    * C'tor.
@@ -81,7 +77,8 @@ public class RunnableProcessor<R extends Report> implements Runnable {
    */
   public RunnableProcessor(File file,  ModifiedCsvToBean<R> csvToBean,
       MappingStrategy<R> mappingStrategy, ReportDefinitionDateRangeType dateRangeType,
-      String dateStart, String dateEnd, String mccAccountId, EntityPersister persister) {
+      String dateStart, String dateEnd, String mccAccountId, EntityPersister persister,
+      Integer reportRowsSetSize) {
     this.file = file;
     this.csvToBean = csvToBean;
     this.mappingStrategy = mappingStrategy;
@@ -90,6 +87,7 @@ public class RunnableProcessor<R extends Report> implements Runnable {
     this.dateEnd = dateEnd;
     this.mccAccountId = mccAccountId;
     this.persister = persister;
+    this.reportRowsSetSize = reportRowsSetSize;
   }
 
   /**
@@ -125,11 +123,12 @@ public class RunnableProcessor<R extends Report> implements Runnable {
             && file.getName().split("-")[2].matches("\\d*")) {
           report.setAccountId(Long.parseLong(file.getName().split("-")[2]));
         }
-        report.setId();
+
         report.setTopAccountId(Long.parseLong(this.mccAccountId.replaceAll("-", "")));
         report.setDateRangeType(dateRangeType.value());
         report.setDateStart(dateStart);
         report.setDateEnd(dateEnd);
+        report.setId();
 
         reportBuffer.add(report);
 
@@ -182,13 +181,5 @@ public class RunnableProcessor<R extends Report> implements Runnable {
    */
   public void setLatch(CountDownLatch latch) {
     this.latch = latch;
-  }
-
-  /**
-   * @param persister the persister to set
-   */
-  @Autowired
-  public void setPersister(EntityPersister persister) {
-    this.persister = persister;
   }
 }
