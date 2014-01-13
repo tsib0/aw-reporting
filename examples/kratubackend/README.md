@@ -31,14 +31,26 @@ Start Rest Server:
 
 <code>Arguments:
 
+ -accountIdsFile <accountIdsFile>   Consider ONLY the account IDs specified on the file to run the report
+ 
  -dateRange <DateRangeType>   ReportDefinitionDateRangeType
+ 
+ -debug                       Will display all the debug information. If the option 'verbose' is activated, all
+                              the information will be displayed on the console as well
+ 
  -endDate &lt;YYYMMDD&gt;     End date for CUSTOM_DATE Reports (YYYYMMDD)
+ 
  -file <file>                 aw-report-sample.properties file (./aw-report-sample.properties by default if not
                               provided)
  -help                        print this message
+ 
  -processKratus               Process Kratus processes the 7 reports peraccount and creates a daily Kratu
+ 
  -startDate &lt;YYYMMDD&gt;   Start date for CUSTOM_DATE Reports (YYYYMMDD)
+ 
  -startServer                 Starts the Rest Server. No dates required
+ 
+ -verbose                     The application will print all the tracing on the console
 
 </code>
 </pre>
