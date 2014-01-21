@@ -41,50 +41,23 @@ public class HTMLExporter {
   /**
    * Exports an HTML file of the given report
    *
-   * @param reportTitle The Title text to use
    * @param reports the data from the Report
    * @param templateFile where to read out the HTML template
    * @param outputFile where to write out the HTML
    * @throws IOException error writing HTML file
    * @throws FileNotFoundException error reading template file
    */
-  public static void exportHTML(final String reportTitle,
-      final Map<String, Object> map, File templateFile, final File outputFile)
-          throws IOException {
+  public static void exportHTML(final Map<String, Object> map,
+      File templateFile, final File outputFile) throws IOException {
 
     FileReader templateReader = new FileReader(templateFile);
     FileWriter fileWriter = new FileWriter(outputFile);
 
-    Object feed = createFeedObject(reportTitle, map);
-
-    Mustache.compiler().compile(templateReader).execute(feed, fileWriter);
+    Mustache.compiler().compile(templateReader).execute((Object) map, fileWriter);
 
     fileWriter.flush();
     fileWriter.close();
     templateReader.close();
-  }
-
-  /**
-   * Creates the object that will be used on the template.
-   *
-   * @param reportTitle the report title
-   * @param reports the list with the report rows
-   * @return the feed Object containing the properties to be set on the template
-   */
-  private static Object createFeedObject(
-      final String reportTitle, final Map<String, Object> reportMap) {
-
-    return new Object() {
-      String title = reportTitle;
-
-      @SuppressWarnings("unused")
-      String title() {
-        return title;
-      }
-
-      @SuppressWarnings("unused")
-      Object reportTables = reportMap;        
-    };
   }
 
   /**
