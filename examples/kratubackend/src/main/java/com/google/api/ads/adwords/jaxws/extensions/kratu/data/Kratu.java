@@ -298,6 +298,9 @@ public class Kratu {
     return summarizedKratu;
   }
 
+  /*
+   * Retrieves 7 reports types per account and creates a Kratu data object for each day.
+   */
   protected static Kratu createDailyKratuFromDB(
       StorageHelper storageHelper,
       Long topAccountId,
@@ -340,8 +343,14 @@ public class Kratu {
           kratu.conversions += reportAccount.getConversions();
           kratu.totalClicksSearch = reportAccount.getClicks();
           kratu.impressionsSearch = reportAccount.getImpressions();
-          kratu.lostImpressionsDueToBudgetSearch = reportAccount.getSearchLostISBudgetBigDecimal();
-          kratu.lostImpressionsDueToBidAdRankSearch = reportAccount.getSearchLostISRankBigDecimal();
+          // Setting lostImpressionsDueToBudgetSearch as total number instead of percentage
+          kratu.lostImpressionsDueToBudgetSearch =
+              reportAccount.getSearchLostISBudgetBigDecimal().multiply(
+                  new BigDecimal(kratu.impressionsSearch/100));
+          // Setting lostImpressionsDueToBidAdRankSearch as total number instead of percentage
+          kratu.lostImpressionsDueToBidAdRankSearch =
+              reportAccount.getSearchLostISRankBigDecimal().multiply(
+                  new BigDecimal(kratu.impressionsSearch/100));
           kratu.ctrSearch = reportAccount.getCtrBigDecimal();
           kratu.averageCpcSearch = reportAccount.getAvgCpcBigDecimal();
           kratu.averageCpmSearch = reportAccount.getAvgCpmBigDecimal();
@@ -354,8 +363,14 @@ public class Kratu {
           kratu.conversions += reportAccount.getConversions();
           kratu.totalClicksDisplay = reportAccount.getClicks();
           kratu.impressionsDisplay = reportAccount.getImpressions();
-          kratu.lostImpressionsDueToBudgetDisplay = reportAccount.getContentLostISBudgetBigDecimal();
-          kratu.lostImpressionsDueToBidAdRankDisplay = reportAccount.getContentLostISRankBigDecimal();
+          // Setting lostImpressionsDueToBudgetDisplay as total number instead of percentage
+          kratu.lostImpressionsDueToBudgetDisplay =
+              reportAccount.getContentLostISBudgetBigDecimal().multiply(
+                  new BigDecimal(kratu.impressionsDisplay/100));
+          // Setting lostImpressionsDueToBidAdRankDisplay as total number instead of percentage
+          kratu.lostImpressionsDueToBidAdRankDisplay =
+              reportAccount.getContentLostISRankBigDecimal().multiply(
+                  new BigDecimal(kratu.impressionsDisplay/100));
           kratu.ctrDisplay = reportAccount.getCtrBigDecimal();
           kratu.averageCpcDisplay = reportAccount.getAvgCpcBigDecimal();
           kratu.averageCpmDisplay = reportAccount.getAvgCpmBigDecimal();
