@@ -62,8 +62,7 @@ public class HTMLExporterTest {
     Map<String, Object> reportMap = Maps.newHashMap();
     reportMap.put(ReportDefinitionReportType.PLACEHOLDER_FEED_ITEM_REPORT.name(), list);
 
-    HTMLExporter.exportHTML(
-        "Test Report", reportMap, templateFile, htmlFile);
+    HTMLExporter.exportHTML(reportMap, templateFile, htmlFile);
 
     HTMLExporter.convertHTMLtoPDF(htmlFile, pdfFile);
   }
@@ -118,8 +117,7 @@ public class HTMLExporterTest {
     Map<String, Object> reportMap = Maps.newHashMap();
     reportMap.put(ReportDefinitionReportType.ACCOUNT_PERFORMANCE_REPORT.name(), list);
     
-    HTMLExporter.exportHTML(
-        "Test Report", reportMap, templateFile, htmlFile);
+    HTMLExporter.exportHTML(reportMap, templateFile, htmlFile);
 
     HTMLExporter.convertHTMLtoPDF(htmlFile, pdfFile);
   }
