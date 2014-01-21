@@ -789,7 +789,7 @@ public class ReportProcessor {
             "Report_" + accountId + "_" + dateStart +  "_" + dateEnd + ".pdf");
 
         LOGGER.debug("Exporting monthly reports to HTML for account: " + accountId);
-        HTMLExporter.exportHTML("", reportMap, htmlTemplateFile, htmlFile);
+        HTMLExporter.exportHTML(reportMap, htmlTemplateFile, htmlFile);
 
         LOGGER.debug("Converting HTML to PDF for account: " + accountId);
         HTMLExporter.convertHTMLtoPDF(htmlFile, pdfFile);
