@@ -18,6 +18,7 @@ import com.google.api.ads.adwords.jaxws.extensions.report.model.entities.Report;
 import com.google.api.ads.adwords.jaxws.extensions.report.model.entities.ReportAccount;
 import com.google.api.ads.adwords.jaxws.extensions.report.model.entities.ReportPlaceholderFeedItem;
 import com.google.api.ads.adwords.lib.jaxb.v201309.ReportDefinitionReportType;
+import com.google.api.client.util.Maps;
 
 import com.lowagie.text.DocumentException;
 
@@ -29,6 +30,7 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author markbowyer@google.com (Mark R. Bowyer)
@@ -56,9 +58,12 @@ public class HTMLExporterTest {
     
     final File templateFile =
         new File("src/main/resources/templates/PLACEHOLDER_FEED_ITEM_REPORT.tmpl");
+    
+    Map<String, Object> reportMap = Maps.newHashMap();
+    reportMap.put(ReportDefinitionReportType.PLACEHOLDER_FEED_ITEM_REPORT.name(), list);
 
     HTMLExporter.exportHTML(
-        "Test Report", ReportDefinitionReportType.PLACEHOLDER_FEED_ITEM_REPORT, list, templateFile, htmlFile);
+        "Test Report", reportMap, templateFile, htmlFile);
 
     HTMLExporter.convertHTMLtoPDF(htmlFile, pdfFile);
   }
@@ -110,8 +115,11 @@ public class HTMLExporterTest {
     final File templateFile =
         new File("src/main/resources/templates/ACCOUNT_PERFORMANCE_REPORT.tmpl");
 
+    Map<String, Object> reportMap = Maps.newHashMap();
+    reportMap.put(ReportDefinitionReportType.ACCOUNT_PERFORMANCE_REPORT.name(), list);
+    
     HTMLExporter.exportHTML(
-        "Test Report", ReportDefinitionReportType.ACCOUNT_PERFORMANCE_REPORT, list, templateFile, htmlFile);
+        "Test Report", reportMap, templateFile, htmlFile);
 
     HTMLExporter.convertHTMLtoPDF(htmlFile, pdfFile);
   }
