@@ -16,16 +16,10 @@ package com.google.api.ads.adwords.jaxws.extensions;
 
 import com.google.api.ads.adwords.jaxws.extensions.processors.ReportProcessor;
 import com.google.api.ads.adwords.jaxws.extensions.proxy.JaxWsProxySelector;
-import com.google.api.ads.adwords.jaxws.extensions.report.model.entities.Report;
-import com.google.api.ads.adwords.jaxws.extensions.report.model.entities.ReportAccount;
-import com.google.api.ads.adwords.jaxws.extensions.report.model.persistence.EntityPersister;
-import com.google.api.ads.adwords.jaxws.extensions.report.model.util.DateUtil;
 import com.google.api.ads.adwords.jaxws.extensions.util.DataBaseType;
 import com.google.api.ads.adwords.jaxws.extensions.util.DynamicPropertyPlaceholderConfigurer;
 import com.google.api.ads.adwords.jaxws.extensions.util.FileUtil;
-import com.google.api.ads.adwords.jaxws.extensions.util.HTMLExporter;
 import com.google.api.ads.adwords.lib.jaxb.v201309.ReportDefinitionDateRangeType;
-import com.google.api.ads.adwords.lib.jaxb.v201309.ReportDefinitionReportType;
 import com.google.api.client.util.Sets;
 
 import org.apache.commons.cli.BasicParser;
@@ -138,7 +132,7 @@ public class AwReporting {
 
         LOGGER.debug("GeneratePDF option detected.");
 
-        // Get HTML template and output directoy
+        // Get HTML template and output directory
         String[] pdfFiles = cmdLine.getOptionValues("generatePdf");
         File htmlTemplateFile = new File(pdfFiles[0]);
         File outputDirectory = new File(pdfFiles[1]);
@@ -147,12 +141,8 @@ public class AwReporting {
         LOGGER.debug("Output directory for PDF: " + outputDirectory);
 
         // Generate PDFs
-        generatePdf(processor,
-            cmdLine.getOptionValue("startDate"),
-            cmdLine.getOptionValue("endDate"),
-            properties,
-            htmlTemplateFile,
-            outputDirectory);
+        processor.generatePdf(cmdLine.getOptionValue("startDate"), cmdLine.getOptionValue("endDate"),
+            properties, htmlTemplateFile, outputDirectory);
 
       } else if (cmdLine.hasOption("startDate") && cmdLine.hasOption("endDate")) {
         // Generate Reports
@@ -411,52 +401,5 @@ public class AwReporting {
     }
 
     return properties;
-  }
-
-  /**
-   * Generates the PDF files from the report data
-   *
-   * @param processor the report processo
-   * @param dateStart the start date for the reports
-   * @param dateEnd the end date for the reports
-   * @param properties the properties file containing all the configuration
-   * @throws Exception error creating PDF
-   */
-  private static void generatePdf(ReportProcessor processor,
-      String dateStart,
-      String dateEnd,
-      Properties properties,
-      File htmlTemplateFile,
-      File outputDirectory) throws Exception {
-
-    EntityPersister entityPersister = appCtx.getBean(EntityPersister.class);
-
-    LOGGER.info("Starting PDF Generation");
-
-    for (Long accountId : processor.retrieveAccountIds()) {
-
-      LOGGER.info(".");
-      LOGGER.debug("Retrieving monthly reports for account: " + accountId);
-
-      List<? extends Report> montlyAccountReports = entityPersister.listMonthReports(
-          ReportAccount.class, accountId, DateUtil.parseDateTime(dateStart),
-          DateUtil.parseDateTime(dateEnd));
-
-      if (montlyAccountReports != null && montlyAccountReports.size() > 0) {
-
-        File htmlFile = new File(outputDirectory,
-            "ReportAccount_" + accountId + "_" + dateStart + "_" + dateEnd + ".html");
-        File pdfFile = new File(outputDirectory,
-            "ReportAccount_" + accountId + "_" + dateStart +  "_" + dateEnd + ".pdf");
-
-        LOGGER.debug("Exporting monthly reports to HTML for account: " + accountId);
-        HTMLExporter.exportHTML("",
-            ReportDefinitionReportType.ACCOUNT_PERFORMANCE_REPORT,
-            montlyAccountReports, htmlTemplateFile, htmlFile);
-
-        LOGGER.debug("Converting HTML to PDF for account: " + accountId);
-        HTMLExporter.convertHTMLtoPDF(htmlFile, pdfFile);
-      }
-    }
   }
 }
