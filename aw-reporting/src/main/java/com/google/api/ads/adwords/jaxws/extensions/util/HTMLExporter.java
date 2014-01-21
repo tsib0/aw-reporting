@@ -14,9 +14,6 @@
 
 package com.google.api.ads.adwords.jaxws.extensions.util;
 
-import com.google.api.ads.adwords.jaxws.extensions.report.model.entities.Report;
-import com.google.api.ads.adwords.lib.jaxb.v201309.ReportDefinitionReportType;
-
 import com.lowagie.text.DocumentException;
 import com.samskivert.mustache.Mustache;
 
@@ -30,7 +27,7 @@ import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.List;
+import java.util.Map;
 
 /**
  * Class to export reports to HTML using JMoustache, and convert HTML to PDF using Flying Saucer
@@ -44,51 +41,23 @@ public class HTMLExporter {
   /**
    * Exports an HTML file of the given report
    *
-   * @param reportTitle The Title text to use
-   * @param reportType the report type, which selects the template file
    * @param reports the data from the Report
    * @param templateFile where to read out the HTML template
    * @param outputFile where to write out the HTML
    * @throws IOException error writing HTML file
    * @throws FileNotFoundException error reading template file
    */
-  public static void exportHTML(final String reportTitle, ReportDefinitionReportType reportType,
-      final List<? extends Report> reports, File templateFile, final File outputFile)
-          throws IOException {
+  public static void exportHTML(final Map<String, Object> map,
+      File templateFile, final File outputFile) throws IOException {
 
     FileReader templateReader = new FileReader(templateFile);
     FileWriter fileWriter = new FileWriter(outputFile);
 
-    Object feed = createFeedObject(reportTitle, reports);
-
-    Mustache.compiler().compile(templateReader).execute(feed, fileWriter);
+    Mustache.compiler().compile(templateReader).execute((Object) map, fileWriter);
 
     fileWriter.flush();
     fileWriter.close();
     templateReader.close();
-  }
-
-  /**
-   * Creates the object that will be used on the template.
-   *
-   * @param reportTitle the report title
-   * @param reports the list with the report rows
-   * @return the feed Object containing the properties to be set on the template
-   */
-  private static Object createFeedObject(
-      final String reportTitle, final List<? extends Report> reports) {
-
-    return new Object() {
-      String title = reportTitle;
-
-      @SuppressWarnings("unused")
-      String title() {
-        return title;
-      }
-
-      @SuppressWarnings("unused")
-      Object rows = reports;
-    };
   }
 
   /**
