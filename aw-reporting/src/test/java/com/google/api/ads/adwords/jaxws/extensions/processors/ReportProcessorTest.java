@@ -84,7 +84,9 @@ public class ReportProcessorTest {
 
   private static final Set<Long> CIDS = ImmutableSet.of(1L, 2L, 3L, 4L, 5L, 6L, 7L, 8L, 9L, 10L);
 
-  private static final int REPORT_TYPES_SIZE = 8;
+  private static final int REPORT_TYPES_SIZE = 9;
+  
+  private static final int ROW_COUNT_CSV_TOTAL = 260;
 
   @Captor
   ArgumentCaptor<List<? extends Report>> reportEntitiesCaptor;
@@ -134,10 +136,10 @@ public class ReportProcessorTest {
         Mockito.<AdWordsSession.Builder>anyObject(), Mockito.<ReportDefinition>anyObject(),
         Mockito.<Set<Long>>anyObject());
 
-    verify(mockedReportEntitiesPersister, times(250))
+    verify(mockedReportEntitiesPersister, times(ROW_COUNT_CSV_TOTAL))
         .persistReportEntities(reportEntitiesCaptor.capture());
 
-    assertEquals(250, reportEntitiesCaptor.getAllValues().size());
+    assertEquals(ROW_COUNT_CSV_TOTAL, reportEntitiesCaptor.getAllValues().size());
     for (List<? extends Report> reportEntities : reportEntitiesCaptor.getAllValues()) {
       for (Report report : reportEntities) {
         assertNotNull(report.get_id());
@@ -192,6 +194,11 @@ public class ReportProcessorTest {
           return getReportFiles(
               "reportDownload-PLACEHOLDER_FEED_ITEM_REPORT-128401167-1378740342878.report",
               numberOfFiles);
+        }
+        if (reportType.equals(ReportDefinitionReportType.CRITERIA_PERFORMANCE_REPORT)) {
+            return getReportFiles(
+                "reportDownload-CRITERIA_PERFORMANCE_REPORT-2752283680-1378903912127.report",
+                numberOfFiles);
         }
         // Undefined report type on this test
         throw (new Exception("Undefined report type on Tests: " + reportType.value()));
