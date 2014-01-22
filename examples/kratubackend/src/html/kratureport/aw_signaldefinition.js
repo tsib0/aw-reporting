@@ -289,7 +289,7 @@ function KratuSignalDefinitions(kratu) {
     hMin: 20,
     hMax: 40,
     range: {min: 0, max: 100, step: 1},
-    format: signals.kratu.formatters.percentage,
+    format: signals.kratu.formatters.singleDecimal,
     getData: function(account) {
       return account.lostImpressionsDueToBidAdRankSearch
     },
@@ -301,7 +301,7 @@ function KratuSignalDefinitions(kratu) {
     hMin: 30,
     hMax: 50,
     range: {min: 0, max: 100, step: 1},
-    format: signals.kratu.formatters.percentage,
+    format: signals.kratu.formatters.singleDecimal,
     getData: function(account) {
       return account.lostImpressionsDueToBidAdRankDisplay;
     },
@@ -313,7 +313,7 @@ function KratuSignalDefinitions(kratu) {
     hMin: 1,
     hMax: 10,
     range: {min: 0, max: 100, step: 1},
-    format: signals.kratu.formatters.percentage,
+    format: signals.kratu.formatters.singleDecimal,
     getData: function(account) {
       return account.lostImpressionsDueToBudgetSearch;
     },
@@ -325,7 +325,7 @@ function KratuSignalDefinitions(kratu) {
     hMin: 5,
     hMax: 30,
     range: {min: 0, max: 100, step: 1},
-    format: signals.kratu.formatters.percentage,
+    format: signals.kratu.formatters.singleDecimal,
     getData: function(account) {
       return account.lostImpressionsDueToBudgetDisplay;
     },

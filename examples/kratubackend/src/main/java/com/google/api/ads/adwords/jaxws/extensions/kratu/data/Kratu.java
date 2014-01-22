@@ -133,6 +133,12 @@ public class Kratu {
   @Column(name = "CONVERSIONS")
   protected Long conversions = 0l;
   
+  @Column(name = "ELEGIBLE_IMPRESSION_SEARCH")
+  private BigDecimal elegibleImpressionsSearch = new BigDecimal(0);
+  
+  @Column(name = "ELEGIBLE_IMPRESSION_DISPLAY")
+  private BigDecimal elegibleImpressionsDisplay = new BigDecimal(0);
+  
   @Column(name = "LOST_IMPRESSIONS_DUE_TO_BUDGET_SEARCH")
   protected BigDecimal lostImpressionsDueToBudgetSearch = new BigDecimal(0);
   
@@ -144,7 +150,6 @@ public class Kratu {
   
   @Column(name = "LOST_IMPRESSIONS_DUE_TO_BID_RANK_DISPLAY")
   protected BigDecimal lostImpressionsDueToBidAdRankDisplay = new BigDecimal(0);
-
   
   @Column(name = "NUMBER_OF_ACTIVE_CAMPAINGS")
   protected BigDecimal numberOfActiveCampaigns = new BigDecimal(0);
@@ -245,9 +250,8 @@ public class Kratu {
 
       summarizedKratu.totalClicksSearch += dailyKratu.totalClicksSearch;
       summarizedKratu.impressionsSearch += dailyKratu.impressionsSearch;
-
-      //summarizedKratu.lostImpressionsDueToBudgetSearch = summarizedKratu.lostImpressionsDueToBudgetSearch.add(dailyKratu.lostImpressionsDueToBudgetSearch.divide(daysInRange, 2, RoundingMode.HALF_UP));
-      //summarizedKratu.lostImpressionsDueToBidAdRankSearch = summarizedKratu.lostImpressionsDueToBidAdRankSearch.add(dailyKratu.lostImpressionsDueToBidAdRankSearch.divide(daysInRange, 2, RoundingMode.HALF_UP));
+      
+      summarizedKratu.elegibleImpressionsSearch = summarizedKratu.elegibleImpressionsSearch.add(dailyKratu.elegibleImpressionsSearch);
       summarizedKratu.lostImpressionsDueToBudgetSearch = summarizedKratu.lostImpressionsDueToBudgetSearch.add(dailyKratu.lostImpressionsDueToBudgetSearch);
       summarizedKratu.lostImpressionsDueToBidAdRankSearch = summarizedKratu.lostImpressionsDueToBidAdRankSearch.add(dailyKratu.lostImpressionsDueToBidAdRankSearch);
 
@@ -258,8 +262,11 @@ public class Kratu {
 
       summarizedKratu.totalClicksDisplay += dailyKratu.totalClicksDisplay;
       summarizedKratu.impressionsDisplay += dailyKratu.impressionsDisplay;
-      summarizedKratu.lostImpressionsDueToBudgetDisplay = summarizedKratu.lostImpressionsDueToBudgetDisplay.add(dailyKratu.lostImpressionsDueToBudgetDisplay.divide(daysInRange, 2, RoundingMode.HALF_UP));
-      summarizedKratu.lostImpressionsDueToBidAdRankDisplay = summarizedKratu.lostImpressionsDueToBidAdRankDisplay.add(dailyKratu.lostImpressionsDueToBidAdRankDisplay.divide(daysInRange, 2, RoundingMode.HALF_UP));
+
+      summarizedKratu.elegibleImpressionsDisplay = summarizedKratu.elegibleImpressionsDisplay.add(dailyKratu.elegibleImpressionsDisplay);
+      summarizedKratu.lostImpressionsDueToBudgetDisplay = summarizedKratu.lostImpressionsDueToBudgetDisplay.add(dailyKratu.lostImpressionsDueToBudgetDisplay);
+      summarizedKratu.lostImpressionsDueToBidAdRankDisplay = summarizedKratu.lostImpressionsDueToBidAdRankDisplay.add(dailyKratu.lostImpressionsDueToBidAdRankDisplay);
+
       summarizedKratu.ctrDisplay = summarizedKratu.ctrDisplay.add(dailyKratu.ctrDisplay.divide(daysInRange, 2, RoundingMode.HALF_UP));
       summarizedKratu.averageCpcDisplay = summarizedKratu.averageCpcDisplay.add(dailyKratu.averageCpcDisplay.divide(daysInRange, 2, RoundingMode.HALF_UP));
       summarizedKratu.averageCpmDisplay = summarizedKratu.averageCpmDisplay.add(dailyKratu.averageCpmDisplay.divide(daysInRange, 2, RoundingMode.HALF_UP));
@@ -347,13 +354,13 @@ public class Kratu {
           kratu.conversions += reportAccount.getConversions();
           kratu.totalClicksSearch = reportAccount.getClicks();
           kratu.impressionsSearch = reportAccount.getImpressions();
-          
-          //kratu.lostImpressionsDueToBudgetSearch = reportAccount.getSearchLostISBudgetBigDecimal();
-          kratu.lostImpressionsDueToBudgetSearch = reportAccount.getSearchLostISBudgetBigDecimal().divide(new BigDecimal(100)).multiply(new BigDecimal(kratu.impressionsSearch));
-          
-          //kratu.lostImpressionsDueToBidAdRankSearch = reportAccount.getSearchLostISRankBigDecimal();
-          kratu.lostImpressionsDueToBidAdRankSearch = reportAccount.getSearchLostISRankBigDecimal().divide(new BigDecimal(100)).multiply(new BigDecimal(kratu.impressionsSearch));
-          
+
+          kratu.elegibleImpressionsSearch = 
+              new BigDecimal(kratu.impressionsSearch).divide(reportAccount.getSearchImpressionShareBigDecimal().divide(new BigDecimal(100)), 2, RoundingMode.HALF_UP);
+
+          kratu.lostImpressionsDueToBudgetSearch = reportAccount.getSearchLostISBudgetBigDecimal().divide(new BigDecimal(100)).multiply(kratu.elegibleImpressionsSearch);
+          kratu.lostImpressionsDueToBidAdRankSearch = reportAccount.getSearchLostISRankBigDecimal().divide(new BigDecimal(100)).multiply(kratu.elegibleImpressionsSearch);
+
           kratu.ctrSearch = reportAccount.getCtrBigDecimal();
           kratu.averageCpcSearch = reportAccount.getAvgCpcBigDecimal();
           kratu.averageCpmSearch = reportAccount.getAvgCpmBigDecimal();
@@ -366,8 +373,13 @@ public class Kratu {
           kratu.conversions += reportAccount.getConversions();
           kratu.totalClicksDisplay = reportAccount.getClicks();
           kratu.impressionsDisplay = reportAccount.getImpressions();
-          kratu.lostImpressionsDueToBudgetDisplay = reportAccount.getContentLostISBudgetBigDecimal();
-          kratu.lostImpressionsDueToBidAdRankDisplay = reportAccount.getContentLostISRankBigDecimal();
+
+          kratu.elegibleImpressionsDisplay =
+              new BigDecimal(kratu.impressionsDisplay).divide(reportAccount.getContentImpressionShareBigDecimal().divide(new BigDecimal(100)), 2, RoundingMode.HALF_UP);
+
+          kratu.lostImpressionsDueToBudgetDisplay = reportAccount.getContentLostISBudgetBigDecimal().divide(new BigDecimal(100)).multiply(kratu.elegibleImpressionsDisplay);
+          kratu.lostImpressionsDueToBidAdRankDisplay = reportAccount.getContentLostISRankBigDecimal().divide(new BigDecimal(100)).multiply(kratu.elegibleImpressionsDisplay);          
+
           kratu.ctrDisplay = reportAccount.getCtrBigDecimal();
           kratu.averageCpcDisplay = reportAccount.getAvgCpcBigDecimal();
           kratu.averageCpmDisplay = reportAccount.getAvgCpmBigDecimal();

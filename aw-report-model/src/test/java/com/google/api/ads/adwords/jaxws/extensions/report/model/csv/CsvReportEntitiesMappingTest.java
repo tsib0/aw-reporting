@@ -102,8 +102,10 @@ public class CsvReportEntitiesMappingTest {
     Assert.assertTrue(propertiesToSelect.contains("AverageCpc"));
     Assert.assertTrue(propertiesToSelect.contains("AveragePosition"));
     Assert.assertTrue(propertiesToSelect.contains("AccountCurrencyCode"));
+    Assert.assertTrue(propertiesToSelect.contains("SearchImpressionShare"));
     Assert.assertTrue(propertiesToSelect.contains("SearchBudgetLostImpressionShare"));
     Assert.assertTrue(propertiesToSelect.contains("SearchRankLostImpressionShare"));
+    Assert.assertTrue(propertiesToSelect.contains("ContentImpressionShare"));
     Assert.assertTrue(propertiesToSelect.contains("ContentBudgetLostImpressionShare"));
     Assert.assertTrue(propertiesToSelect.contains("ContentRankLostImpressionShare"));
     Assert.assertTrue(propertiesToSelect.contains("Date"));
@@ -113,7 +115,7 @@ public class CsvReportEntitiesMappingTest {
     Assert.assertTrue(propertiesToSelect.contains("AdNetworkType1"));
     Assert.assertTrue(propertiesToSelect.contains("AdNetworkType2"));
 
-    Assert.assertEquals(21, propertiesToSelect.size());
+    Assert.assertEquals(23, propertiesToSelect.size());
   }
 
   /**
