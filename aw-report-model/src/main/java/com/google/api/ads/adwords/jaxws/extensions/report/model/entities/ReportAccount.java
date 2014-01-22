@@ -35,6 +35,10 @@ import javax.persistence.Table;
 @CsvReport(value = ReportDefinitionReportType.ACCOUNT_PERFORMANCE_REPORT)
 public class ReportAccount extends ReportBase {
 
+  @Column(name = "SEARCH_IMPRESSION_SHARE")
+  @CsvField(value = "Search Impr. share", reportField = "SearchImpressionShare")
+  private BigDecimal searchImpressionShare;
+
   @Column(name = "SEARCH_LOST_IS_BUDGET")
   @CsvField(value = "Search Lost IS (budget)", reportField = "SearchBudgetLostImpressionShare")
   private BigDecimal searchLostISBudget;
@@ -42,6 +46,10 @@ public class ReportAccount extends ReportBase {
   @Column(name = "SEARCH_LOST_IS_RANK")
   @CsvField(value = "Search Lost IS (rank)", reportField = "SearchRankLostImpressionShare")
   private BigDecimal searchLostISRank;
+
+  @Column(name = "CONTENT_IMPRESSION_SHARE")
+  @CsvField(value = "Content Impr. share", reportField = "ContentImpressionShare")
+  private BigDecimal contentImpressionShare;
 
   @Column(name = "CONTENT_LOST_IS_BUDGET")
   @CsvField(value = "Content Lost IS (budget)", reportField = "ContentBudgetLostImpressionShare")
@@ -68,7 +76,7 @@ public class ReportAccount extends ReportBase {
     this._id = this.getAccountId().toString();
 
     this._id += setIdDates();
-    
+
     // Adding extra fields for unique ID
     if (this.getAdNetwork() != null && this.getAdNetwork().length() > 0) {
       this._id += "-" + this.getAdNetwork();
@@ -84,6 +92,19 @@ public class ReportAccount extends ReportBase {
     }
   }
 
+  public String getSearchImpressionShare() {
+    return BigDecimalUtil.formatAsReadable(this.searchImpressionShare);
+  }
+
+  public BigDecimal getSearchImpressionShareBigDecimal() {
+    return searchImpressionShare;
+  }
+
+  public void setSearchImpressionShare(String searchImpressionShare) {
+    searchImpressionShare = searchImpressionShare.replaceAll("--", "0");
+    this.searchImpressionShare = new BigDecimal(searchImpressionShare.replaceAll("\\s|%|>|<", ""));
+  }
+  
   public String getSearchLostISBudget() {
     return BigDecimalUtil.formatAsReadable(this.searchLostISBudget);
   }
@@ -108,6 +129,19 @@ public class ReportAccount extends ReportBase {
   public void setSearchLostISRank(String lostISRank) {
     lostISRank = lostISRank.replaceAll("--", "0");
     this.searchLostISRank = new BigDecimal(lostISRank.replaceAll("\\s|%|>|<", ""));
+  }
+
+  public String getContentImpressionShare() {
+    return BigDecimalUtil.formatAsReadable(this.contentImpressionShare);
+  }
+
+  public BigDecimal getContentImpressionShareBigDecimal() {
+    return contentImpressionShare;
+  }
+
+  public void setContentImpressionShare(String contentImpressionShare) {
+    contentImpressionShare = contentImpressionShare.replaceAll("--", "0");
+    this.contentImpressionShare = new BigDecimal(contentImpressionShare.replaceAll("\\s|%|>|<", ""));
   }
 
   public String getContentLostISBudget() {
