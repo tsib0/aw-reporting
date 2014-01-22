@@ -245,8 +245,12 @@ public class Kratu {
 
       summarizedKratu.totalClicksSearch += dailyKratu.totalClicksSearch;
       summarizedKratu.impressionsSearch += dailyKratu.impressionsSearch;
+
+      //summarizedKratu.lostImpressionsDueToBudgetSearch = summarizedKratu.lostImpressionsDueToBudgetSearch.add(dailyKratu.lostImpressionsDueToBudgetSearch.divide(daysInRange, 2, RoundingMode.HALF_UP));
+      //summarizedKratu.lostImpressionsDueToBidAdRankSearch = summarizedKratu.lostImpressionsDueToBidAdRankSearch.add(dailyKratu.lostImpressionsDueToBidAdRankSearch.divide(daysInRange, 2, RoundingMode.HALF_UP));
       summarizedKratu.lostImpressionsDueToBudgetSearch = summarizedKratu.lostImpressionsDueToBudgetSearch.add(dailyKratu.lostImpressionsDueToBudgetSearch);
       summarizedKratu.lostImpressionsDueToBidAdRankSearch = summarizedKratu.lostImpressionsDueToBidAdRankSearch.add(dailyKratu.lostImpressionsDueToBidAdRankSearch);
+
       summarizedKratu.ctrSearch = summarizedKratu.ctrSearch.add(dailyKratu.ctrSearch.divide(daysInRange, 2, RoundingMode.HALF_UP));
       summarizedKratu.averageCpcSearch = summarizedKratu.averageCpcSearch.add(dailyKratu.ctrSearch.divide(daysInRange, 2, RoundingMode.HALF_UP));
       summarizedKratu.averageCpmSearch = summarizedKratu.averageCpmSearch.add(dailyKratu.averageCpmSearch.divide(daysInRange, 2, RoundingMode.HALF_UP));
@@ -254,8 +258,8 @@ public class Kratu {
 
       summarizedKratu.totalClicksDisplay += dailyKratu.totalClicksDisplay;
       summarizedKratu.impressionsDisplay += dailyKratu.impressionsDisplay;
-      summarizedKratu.lostImpressionsDueToBudgetDisplay = summarizedKratu.lostImpressionsDueToBudgetDisplay.add(dailyKratu.lostImpressionsDueToBudgetDisplay);
-      summarizedKratu.lostImpressionsDueToBidAdRankDisplay = summarizedKratu.lostImpressionsDueToBidAdRankDisplay.add(dailyKratu.lostImpressionsDueToBidAdRankDisplay);
+      summarizedKratu.lostImpressionsDueToBudgetDisplay = summarizedKratu.lostImpressionsDueToBudgetDisplay.add(dailyKratu.lostImpressionsDueToBudgetDisplay.divide(daysInRange, 2, RoundingMode.HALF_UP));
+      summarizedKratu.lostImpressionsDueToBidAdRankDisplay = summarizedKratu.lostImpressionsDueToBidAdRankDisplay.add(dailyKratu.lostImpressionsDueToBidAdRankDisplay.divide(daysInRange, 2, RoundingMode.HALF_UP));
       summarizedKratu.ctrDisplay = summarizedKratu.ctrDisplay.add(dailyKratu.ctrDisplay.divide(daysInRange, 2, RoundingMode.HALF_UP));
       summarizedKratu.averageCpcDisplay = summarizedKratu.averageCpcDisplay.add(dailyKratu.averageCpcDisplay.divide(daysInRange, 2, RoundingMode.HALF_UP));
       summarizedKratu.averageCpmDisplay = summarizedKratu.averageCpmDisplay.add(dailyKratu.averageCpmDisplay.divide(daysInRange, 2, RoundingMode.HALF_UP));
@@ -265,29 +269,29 @@ public class Kratu {
       summarizedKratu.numberOfActiveAdGroups = summarizedKratu.numberOfActiveAdGroups.add(dailyKratu.numberOfActiveAdGroups.divide(daysInRange, 2, RoundingMode.HALF_UP));
       summarizedKratu.numberOfActiveAds = summarizedKratu.numberOfActiveAds.add(dailyKratu.numberOfActiveAds.divide(daysInRange, 2, RoundingMode.HALF_UP));
       summarizedKratu.numberOfPositiveActiveKeywords = summarizedKratu.numberOfPositiveActiveKeywords.add(dailyKratu.numberOfPositiveActiveKeywords.divide(daysInRange, 2, RoundingMode.HALF_UP));
-      
+
       summarizedKratu.numberOfActiveBroadMatchingKeywords = summarizedKratu.numberOfActiveBroadMatchingKeywords.add(dailyKratu.numberOfActiveBroadMatchingKeywords.divide(daysInRange, 2, RoundingMode.HALF_UP));
       summarizedKratu.numberOfActivePhraseMatchingKeywords = summarizedKratu.numberOfActivePhraseMatchingKeywords.add(dailyKratu.numberOfActivePhraseMatchingKeywords.divide(daysInRange, 2, RoundingMode.HALF_UP));
       summarizedKratu.numberOfActiveExactMatchingKeywords = summarizedKratu.numberOfActivePhraseMatchingKeywords.add(dailyKratu.numberOfActivePhraseMatchingKeywords.divide(daysInRange, 2, RoundingMode.HALF_UP));
-      
+
       summarizedKratu.numberOfNegativeActiveKeywords = summarizedKratu.numberOfNegativeActiveKeywords.add(dailyKratu.numberOfNegativeActiveKeywords.divide(daysInRange, 2, RoundingMode.HALF_UP));
       summarizedKratu.numberOfCampaignNegativeActiveKeywords = summarizedKratu.numberOfNegativeActiveKeywords.add(dailyKratu.numberOfNegativeActiveKeywords.divide(daysInRange, 2, RoundingMode.HALF_UP));
       summarizedKratu.numberOfAdGroupNegativeActiveKeywords = summarizedKratu.numberOfAdGroupNegativeActiveKeywords.add(dailyKratu.numberOfAdGroupNegativeActiveKeywords.divide(daysInRange, 2, RoundingMode.HALF_UP));
       summarizedKratu.numberOfActiveGoodQualityScoreKeywords = summarizedKratu.numberOfActiveGoodQualityScoreKeywords.add(dailyKratu.numberOfActiveGoodQualityScoreKeywords.divide(daysInRange, 2, RoundingMode.HALF_UP));
       summarizedKratu.numberOfActiveAverageQualityScoreKeywords = summarizedKratu.numberOfActiveAverageQualityScoreKeywords.add(dailyKratu.numberOfActiveAverageQualityScoreKeywords.divide(daysInRange, 2, RoundingMode.HALF_UP));
       summarizedKratu.numberOfActivePoorQualityScoreKeywords = summarizedKratu.numberOfActivePoorQualityScoreKeywords.add(dailyKratu.numberOfActivePoorQualityScoreKeywords.divide(daysInRange, 2, RoundingMode.HALF_UP));
-     
+
       summarizedKratu.numberOfCampaignsWithCallExtensionEnabled = summarizedKratu.numberOfCampaignsWithCallExtensionEnabled.add(dailyKratu.numberOfCampaignsWithCallExtensionEnabled.divide(daysInRange, 2, RoundingMode.HALF_UP));
       summarizedKratu.numberOfCampaignsWithLocationExtensionEnabled = summarizedKratu.numberOfCampaignsWithLocationExtensionEnabled.add(dailyKratu.numberOfCampaignsWithLocationExtensionEnabled.divide(daysInRange, 2, RoundingMode.HALF_UP));
       summarizedKratu.numberOfCampaignsWithSiteLinksEnabled = summarizedKratu.numberOfCampaignsWithSiteLinksEnabled.add(dailyKratu.numberOfCampaignsWithSiteLinksEnabled.divide(daysInRange, 2, RoundingMode.HALF_UP));
-      
+
       summarizedKratu.numberOfAdgroupsWithoneActiveAd = summarizedKratu.numberOfAdgroupsWithoneActiveAd.add(dailyKratu.numberOfAdgroupsWithoneActiveAd.divide(daysInRange, 2, RoundingMode.HALF_UP));
       summarizedKratu.numberOfAdgroupsWithTwoActiveAds = summarizedKratu.numberOfAdgroupsWithTwoActiveAds.add(dailyKratu.numberOfAdgroupsWithTwoActiveAds.divide(daysInRange, 2, RoundingMode.HALF_UP));
       summarizedKratu.numberOfDisapprovedAds = summarizedKratu.numberOfDisapprovedAds.add(dailyKratu.numberOfDisapprovedAds.divide(daysInRange, 2, RoundingMode.HALF_UP));
 
       summarizedKratu.weightedAverageKeywordPosition = summarizedKratu.weightedAverageKeywordPosition.add(dailyKratu.weightedAverageKeywordPosition.divide(daysInRange, 2, RoundingMode.HALF_UP));
       summarizedKratu.weightedAverageQualityScore = summarizedKratu.weightedAverageQualityScore.add(dailyKratu.weightedAverageQualityScore.divide(daysInRange, 2, RoundingMode.HALF_UP));
-      
+
       summarizedKratu.sumBudget = summarizedKratu.sumBudget.add(dailyKratu.sumBudget);
       System.out.print(".");
     }
@@ -343,14 +347,13 @@ public class Kratu {
           kratu.conversions += reportAccount.getConversions();
           kratu.totalClicksSearch = reportAccount.getClicks();
           kratu.impressionsSearch = reportAccount.getImpressions();
-          // Setting lostImpressionsDueToBudgetSearch as total number instead of percentage
-          kratu.lostImpressionsDueToBudgetSearch =
-              reportAccount.getSearchLostISBudgetBigDecimal().multiply(
-                  new BigDecimal(kratu.impressionsSearch/100));
-          // Setting lostImpressionsDueToBidAdRankSearch as total number instead of percentage
-          kratu.lostImpressionsDueToBidAdRankSearch =
-              reportAccount.getSearchLostISRankBigDecimal().multiply(
-                  new BigDecimal(kratu.impressionsSearch/100));
+          
+          //kratu.lostImpressionsDueToBudgetSearch = reportAccount.getSearchLostISBudgetBigDecimal();
+          kratu.lostImpressionsDueToBudgetSearch = reportAccount.getSearchLostISBudgetBigDecimal().divide(new BigDecimal(100)).multiply(new BigDecimal(kratu.impressionsSearch));
+          
+          //kratu.lostImpressionsDueToBidAdRankSearch = reportAccount.getSearchLostISRankBigDecimal();
+          kratu.lostImpressionsDueToBidAdRankSearch = reportAccount.getSearchLostISRankBigDecimal().divide(new BigDecimal(100)).multiply(new BigDecimal(kratu.impressionsSearch));
+          
           kratu.ctrSearch = reportAccount.getCtrBigDecimal();
           kratu.averageCpcSearch = reportAccount.getAvgCpcBigDecimal();
           kratu.averageCpmSearch = reportAccount.getAvgCpmBigDecimal();
@@ -363,14 +366,8 @@ public class Kratu {
           kratu.conversions += reportAccount.getConversions();
           kratu.totalClicksDisplay = reportAccount.getClicks();
           kratu.impressionsDisplay = reportAccount.getImpressions();
-          // Setting lostImpressionsDueToBudgetDisplay as total number instead of percentage
-          kratu.lostImpressionsDueToBudgetDisplay =
-              reportAccount.getContentLostISBudgetBigDecimal().multiply(
-                  new BigDecimal(kratu.impressionsDisplay/100));
-          // Setting lostImpressionsDueToBidAdRankDisplay as total number instead of percentage
-          kratu.lostImpressionsDueToBidAdRankDisplay =
-              reportAccount.getContentLostISRankBigDecimal().multiply(
-                  new BigDecimal(kratu.impressionsDisplay/100));
+          kratu.lostImpressionsDueToBudgetDisplay = reportAccount.getContentLostISBudgetBigDecimal();
+          kratu.lostImpressionsDueToBidAdRankDisplay = reportAccount.getContentLostISRankBigDecimal();
           kratu.ctrDisplay = reportAccount.getCtrBigDecimal();
           kratu.averageCpcDisplay = reportAccount.getAvgCpcBigDecimal();
           kratu.averageCpmDisplay = reportAccount.getAvgCpmBigDecimal();
