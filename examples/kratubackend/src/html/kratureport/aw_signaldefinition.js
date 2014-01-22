@@ -291,12 +291,7 @@ function KratuSignalDefinitions(kratu) {
     range: {min: 0, max: 100, step: 1},
     format: signals.kratu.formatters.percentage,
     getData: function(account) {
-      var sumImpressions = account.impressionsSearch +
-          account.lostImpressionsDueToBudgetSearch +
-          account.lostImpressionsDueToBidAdRankSearch;
-      if (!sumImpressions) return 0;
-      var value = account.lostImpressionsDueToBidAdRankSearch / sumImpressions;
-      return value * 100;
+      return account.lostImpressionsDueToBidAdRankSearch
     },
     headerEventHandlers: headerEventHandlers
   };
@@ -308,12 +303,7 @@ function KratuSignalDefinitions(kratu) {
     range: {min: 0, max: 100, step: 1},
     format: signals.kratu.formatters.percentage,
     getData: function(account) {
-      var sumImpressions = account.impressionsDisplay +
-          account.lostImpressionsDueToBudgetDisplay +
-          account.lostImpressionsDueToBidAdRankDisplay;
-      if (!sumImpressions) {return 0;}
-      var value = account.lostImpressionsDueToBidAdRankDisplay / sumImpressions;
-      return value * 100;
+      return account.lostImpressionsDueToBidAdRankDisplay;
     },
     headerEventHandlers: headerEventHandlers
   };
@@ -325,11 +315,7 @@ function KratuSignalDefinitions(kratu) {
     range: {min: 0, max: 100, step: 1},
     format: signals.kratu.formatters.percentage,
     getData: function(account) {
-      var sumImpressions = account.impressionsSearch +
-          account.lostImpressionsDueToBudgetSearch +
-          account.lostImpressionsDueToBidAdRankSearch;
-      if (!sumImpressions) {return 0;}
-      return account.lostImpressionsDueToBudgetSearch / sumImpressions * 100;
+      return account.lostImpressionsDueToBudgetSearch;
     },
     headerEventHandlers: headerEventHandlers
   };
@@ -341,11 +327,7 @@ function KratuSignalDefinitions(kratu) {
     range: {min: 0, max: 100, step: 1},
     format: signals.kratu.formatters.percentage,
     getData: function(account) {
-      var sumImpressions = account.impressionsDisplay +
-          account.lostImpressionsDueToBudgetDisplay +
-          account.lostImpressionsDueToBidAdRankDisplay;
-      if (!sumImpressions) {return 0;}
-      return account.lostImpressionsDueToBudgetDisplay / sumImpressions * 100;
+      return account.lostImpressionsDueToBudgetDisplay;
     },
     headerEventHandlers: headerEventHandlers
   };

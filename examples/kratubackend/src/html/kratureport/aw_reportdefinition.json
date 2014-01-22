@@ -1,6 +1,6 @@
 {
 	"name":"AdWords Account Optimizations",
-	"signalDefinitionUrl":"http://google.github.io/kratu/examples/adwordshealthcheck/aw_signaldefinition.js",
+	"signalDefinitionUrl":"aw_signaldefinition.js",
 		"summaryRows":[
 	  {
 			"location":"bottom",
