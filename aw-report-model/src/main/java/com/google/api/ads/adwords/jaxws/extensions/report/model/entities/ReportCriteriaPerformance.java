@@ -29,6 +29,7 @@ import javax.persistence.Table;
  * Specific report class for ReportKeyword
  * 
  * @author jtoledo@google.com (Julian Toledo)
+ * @author joeltoby@gmail.com (Joel Toby)
  */
 @Entity
 @Table(name = "AW_ReportCriteria")
@@ -41,7 +42,7 @@ public class ReportCriteriaPerformance extends ReportBase {
 
   @Column(name = "AD_GROUP_ID")
   @CsvField(value = "Ad group ID", reportField = "AdGroupId")
-  private String adGroupId;
+  private Long adGroupId;
 
   @Column(name = "AD_GROUP_NAME")
   @CsvField(value = "Ad group", reportField = "AdGroupName")
@@ -65,7 +66,7 @@ public class ReportCriteriaPerformance extends ReportBase {
 
   @Column(name = "CAMPAIGN_ID")
   @CsvField(value = "Campaign ID", reportField = "CampaignId")
-  private String campaignId;
+  private Long campaignId;
 
   @Column(name = "CAMPAIGN_NAME")
   @CsvField(value = "Campaign", reportField = "CampaignName")
@@ -109,7 +110,7 @@ public class ReportCriteriaPerformance extends ReportBase {
 
   @Column(name = "CONVERSIONS_MANY_PER_CLICK")
   @CsvField(value = "Conv. (many-per-click)", reportField = "ConversionsManyPerClick")
-  private String conversionsManyPerClick;
+  private Long conversionsManyPerClick;
 
   @Column(name = "CONVERSION_TYPE_NAME")
   @CsvField(value = "Conversion action name", reportField = "ConversionTypeName")
@@ -117,7 +118,7 @@ public class ReportCriteriaPerformance extends ReportBase {
 
   @Column(name = "CONVERSION_VALUE")
   @CsvField(value = "Total conv. value", reportField = "ConversionValue")
-  private String conversionValue;
+  private Long conversionValue;
 
   @Column(name = "COST_PER_CONVERSION_MANY_PER_CLICK")
   @CsvField(value = "Cost / conv. (many-per-click)", reportField = "CostPerConversionManyPerClick")
@@ -298,11 +299,11 @@ public class ReportCriteriaPerformance extends ReportBase {
     this.accountTimeZoneId = accountTimeZoneId;
   }
 
-  public String getAdGroupId() {
+  public Long getAdGroupId() {
     return adGroupId;
   }
 
-  public void setAdGroupId(String adGroupId) {
+  public void setAdGroupId(Long adGroupId) {
     this.adGroupId = adGroupId;
   }
 
@@ -347,11 +348,11 @@ public class ReportCriteriaPerformance extends ReportBase {
     this.bidModifier = BigDecimalUtil.parseFromNumberString(bidModifier);
   }
 
-  public String getCampaignId() {
+  public Long getCampaignId() {
     return campaignId;
   }
 
-  public void setCampaignId(String campaignId) {
+  public void setCampaignId(Long campaignId) {
     this.campaignId = campaignId;
   }
 
@@ -438,11 +439,11 @@ public class ReportCriteriaPerformance extends ReportBase {
     this.conversionSignificance = conversionSignificance;
   }
 
-  public String getConversionsManyPerClick() {
+  public Long getConversionsManyPerClick() {
     return conversionsManyPerClick;
   }
 
-  public void setConversionsManyPerClick(String conversionsManyPerClick) {
+  public void setConversionsManyPerClick(Long conversionsManyPerClick) {
     this.conversionsManyPerClick = conversionsManyPerClick;
   }
 
@@ -454,11 +455,11 @@ public class ReportCriteriaPerformance extends ReportBase {
     this.conversionTypeName = conversionTypeName;
   }
 
-  public String getConversionValue() {
+  public Long getConversionValue() {
     return conversionValue;
   }
 
-  public void setConversionValue(String conversionValue) {
+  public void setConversionValue(Long conversionValue) {
     this.conversionValue = conversionValue;
   }
 
