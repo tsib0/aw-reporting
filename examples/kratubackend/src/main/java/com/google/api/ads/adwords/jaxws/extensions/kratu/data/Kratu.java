@@ -48,6 +48,8 @@ import javax.persistence.Table;
 @org.hibernate.annotations.Table(appliesTo = "AW_Kratu", indexes = {
     @org.hibernate.annotations.Index(name = "ID-DAY", columnNames = {"EXTERNAL_CUSTOMER_ID", "DAY"})})
 public class Kratu {
+  
+  private static final BigDecimal BIGDECIMAL_100 = new BigDecimal(100);
 
   protected static final String _topAccountId = "topAccountId";
   protected static final String _externalCustomerId = "externalCustomerId";
@@ -95,16 +97,16 @@ public class Kratu {
   protected Long impressionsSearch = 0l;
   
   @Column(name = "CTR_SEARCH")
-  protected BigDecimal ctrSearch = new BigDecimal(0);
+  protected BigDecimal ctrSearch = BigDecimal.ZERO;
   
   @Column(name = "AVERAGE_CPC_SEARCH")
-  protected BigDecimal averageCpcSearch = new BigDecimal(0);
+  protected BigDecimal averageCpcSearch = BigDecimal.ZERO;
   
   @Column(name = "AVERAGE_CPM_SEARCH")
-  protected BigDecimal averageCpmSearch = new BigDecimal(0);
+  protected BigDecimal averageCpmSearch = BigDecimal.ZERO;
   
   @Column(name = "AVERAGE_POSITION_SEARCH")
-  protected BigDecimal averagePositionSearch = new BigDecimal(0);
+  protected BigDecimal averagePositionSearch = BigDecimal.ZERO;
   
   @Column(name = "TOTAL_CLICKS_DISPLAY")
   protected Long totalClicksDisplay = 0l;
@@ -113,112 +115,112 @@ public class Kratu {
   protected Long impressionsDisplay = 0l;
   
   @Column(name = "CTR_DISPLAY")
-  protected BigDecimal ctrDisplay = new BigDecimal(0);
+  protected BigDecimal ctrDisplay = BigDecimal.ZERO;
   
   @Column(name = "AVERAGE_CPC_DISPLAY")
-  protected BigDecimal averageCpcDisplay = new BigDecimal(0);
+  protected BigDecimal averageCpcDisplay = BigDecimal.ZERO;
   
   @Column(name = "AVERAGE_CPM_DISPLAY")
-  protected BigDecimal averageCpmDisplay = new BigDecimal(0);
+  protected BigDecimal averageCpmDisplay = BigDecimal.ZERO;
   
   @Column(name = "AVERAGE_POSITION_DISPLAY")
-  protected BigDecimal averagePositionDisplay = new BigDecimal(0);
+  protected BigDecimal averagePositionDisplay = BigDecimal.ZERO;
   
   @Column(name = "DAY")
   protected Date day;
   
   @Column(name = "SPEND")
-  protected BigDecimal spend = new BigDecimal(0);
+  protected BigDecimal spend = BigDecimal.ZERO;
   
   @Column(name = "CONVERSIONS")
   protected Long conversions = 0l;
   
   @Column(name = "ELEGIBLE_IMPRESSION_SEARCH")
-  private BigDecimal elegibleImpressionsSearch = new BigDecimal(0);
+  private BigDecimal elegibleImpressionsSearch = BigDecimal.ZERO;
   
   @Column(name = "ELEGIBLE_IMPRESSION_DISPLAY")
-  private BigDecimal elegibleImpressionsDisplay = new BigDecimal(0);
+  private BigDecimal elegibleImpressionsDisplay = BigDecimal.ZERO;
   
   @Column(name = "LOST_IMPRESSIONS_DUE_TO_BUDGET_SEARCH")
-  protected BigDecimal lostImpressionsDueToBudgetSearch = new BigDecimal(0);
+  protected BigDecimal lostImpressionsDueToBudgetSearch = BigDecimal.ZERO;
   
   @Column(name = "LOST_IMPRESSIONS_DUE_TO_BID_RANK_SEARCH")
-  protected BigDecimal lostImpressionsDueToBidAdRankSearch = new BigDecimal(0);
+  protected BigDecimal lostImpressionsDueToBidAdRankSearch = BigDecimal.ZERO;
   
   @Column(name = "LOST_IMPRESSIONS_DUE_TO_BUDGET_DISPLAY")
-  protected BigDecimal lostImpressionsDueToBudgetDisplay = new BigDecimal(0);
+  protected BigDecimal lostImpressionsDueToBudgetDisplay = BigDecimal.ZERO;
   
   @Column(name = "LOST_IMPRESSIONS_DUE_TO_BID_RANK_DISPLAY")
-  protected BigDecimal lostImpressionsDueToBidAdRankDisplay = new BigDecimal(0);
+  protected BigDecimal lostImpressionsDueToBidAdRankDisplay = BigDecimal.ZERO;
   
   @Column(name = "NUMBER_OF_ACTIVE_CAMPAINGS")
-  protected BigDecimal numberOfActiveCampaigns = new BigDecimal(0);
+  protected BigDecimal numberOfActiveCampaigns = BigDecimal.ZERO;
   
   @Column(name = "NUMBER_OF_ACTIVE_ADGROUPS")
-  protected BigDecimal numberOfActiveAdGroups = new BigDecimal(0);
+  protected BigDecimal numberOfActiveAdGroups = BigDecimal.ZERO;
   
   @Column(name = "NUMBER_OF_ACTIVE_ADS")
-  protected BigDecimal numberOfActiveAds = new BigDecimal(0);
+  protected BigDecimal numberOfActiveAds = BigDecimal.ZERO;
   
   @Column(name = "NUMBER_OF_POSITIVE_ACTIVE_KEYWORDS")
-  protected BigDecimal numberOfPositiveActiveKeywords = new BigDecimal(0);
+  protected BigDecimal numberOfPositiveActiveKeywords = BigDecimal.ZERO;
   
   @Column(name = "NUMBER_OF_ACTIVE_BROAD_MATCHING_KEYWORDS")
-  protected BigDecimal numberOfActiveBroadMatchingKeywords = new BigDecimal(0);
+  protected BigDecimal numberOfActiveBroadMatchingKeywords = BigDecimal.ZERO;
   
   @Column(name = "NUMBER_OF_ACTIVE_PHRASE_MATCHING_KEYWORDS")
-  protected BigDecimal numberOfActivePhraseMatchingKeywords = new BigDecimal(0);
+  protected BigDecimal numberOfActivePhraseMatchingKeywords = BigDecimal.ZERO;
   
   @Column(name = "NUMBER_OF_ACTIVE_EXACT_MATCHING_KEYWORDS")
-  protected BigDecimal numberOfActiveExactMatchingKeywords = new BigDecimal(0);
+  protected BigDecimal numberOfActiveExactMatchingKeywords = BigDecimal.ZERO;
   
   @Column(name = "NUMBER_OF_NEGATIVE_ACTIVE_KEYWORDS")
-  protected BigDecimal numberOfNegativeActiveKeywords = new BigDecimal(0);
+  protected BigDecimal numberOfNegativeActiveKeywords = BigDecimal.ZERO;
   
   @Column(name = "NUMBER_OF_CAMPAIGN_NEGATIVE_ACTIVE_KEYWORDS")
-  protected BigDecimal numberOfCampaignNegativeActiveKeywords = new BigDecimal(0);
+  protected BigDecimal numberOfCampaignNegativeActiveKeywords = BigDecimal.ZERO;
   
   @Column(name = "NUMBER_OF_ADGROUP_NEGATIVE_ACTIVE_KEYWORDS")
-  protected BigDecimal numberOfAdGroupNegativeActiveKeywords = new BigDecimal(0);
+  protected BigDecimal numberOfAdGroupNegativeActiveKeywords = BigDecimal.ZERO;
   
   @Column(name = "NUMBER_OF_ACTIVE_GOOD_QUALITY_SCORE_KEYWORDS")
-  protected BigDecimal numberOfActiveGoodQualityScoreKeywords = new BigDecimal(0);
+  protected BigDecimal numberOfActiveGoodQualityScoreKeywords = BigDecimal.ZERO;
   
   @Column(name = "NUMBER_OF_ACTIVE_AVERAGE_QUALITY_SCORE_KEYWORDS")
-  protected BigDecimal numberOfActiveAverageQualityScoreKeywords = new BigDecimal(0);
+  protected BigDecimal numberOfActiveAverageQualityScoreKeywords = BigDecimal.ZERO;
   
   @Column(name = "NUMBER_OF_ACTIVE_POOR_QUALITY_SCORE_KEYWORDS")
-  protected BigDecimal numberOfActivePoorQualityScoreKeywords = new BigDecimal(0);
+  protected BigDecimal numberOfActivePoorQualityScoreKeywords = BigDecimal.ZERO;
   
   @Column(name = "NUMBER_OF_CAMPAIGNS_WITH_CALL_EXTENSIONS_ENABLE")
-  protected BigDecimal numberOfCampaignsWithCallExtensionEnabled = new BigDecimal(0);
+  protected BigDecimal numberOfCampaignsWithCallExtensionEnabled = BigDecimal.ZERO;
   
   @Column(name = "NUMBER_OF_CAMPAIGNS_WITH_LOCATION_EXTENSIONS_ENABLE")
-  protected BigDecimal numberOfCampaignsWithLocationExtensionEnabled = new BigDecimal(0);
+  protected BigDecimal numberOfCampaignsWithLocationExtensionEnabled = BigDecimal.ZERO;
   
   @Column(name = "NUMBER_OF_CAMPAIGNS_WITH_SITELINKS_ENABLE")
-  protected BigDecimal numberOfCampaignsWithSiteLinksEnabled = new BigDecimal(0);
+  protected BigDecimal numberOfCampaignsWithSiteLinksEnabled = BigDecimal.ZERO;
   
   @Column(name = "WEIHTED_AVERAGE_KEYWORD_POSITION")
-  protected BigDecimal weightedAverageKeywordPosition = new BigDecimal(0);
+  protected BigDecimal weightedAverageKeywordPosition = BigDecimal.ZERO;
   
   @Column(name = "WEIHTED_AVERAGE_QUALITY_SCORE")
-  protected BigDecimal weightedAverageQualityScore = new BigDecimal(0);
+  protected BigDecimal weightedAverageQualityScore = BigDecimal.ZERO;
   
   @Column(name = "SUM_BUDGET")
-  protected BigDecimal sumBudget = new BigDecimal(0);
+  protected BigDecimal sumBudget = BigDecimal.ZERO;
   
   @Column(name = "ACCOUNT_SUSPENDED")
   protected Boolean accountSuspended = false;
   
   @Column(name = "NUMBER_OF_ADGROUPS_WITH_ONE_ACTIVE_AD")
-  protected BigDecimal numberOfAdgroupsWithoneActiveAd = new BigDecimal(0);
+  protected BigDecimal numberOfAdgroupsWithoneActiveAd = BigDecimal.ZERO;
   
   @Column(name = "NUMBER_OF_ADGROUPS_WITH_TWO_ACTIVE_AD")
-  protected BigDecimal numberOfAdgroupsWithTwoActiveAds = new BigDecimal(0);
+  protected BigDecimal numberOfAdgroupsWithTwoActiveAds = BigDecimal.ZERO;
   
   @Column(name = "NUMBER_OF_DISAPPROVED_ADS")
-  protected BigDecimal numberOfDisapprovedAds = new BigDecimal(0);
+  protected BigDecimal numberOfDisapprovedAds = BigDecimal.ZERO;
 
   /**
    * C'tor to satisfy Hibernate.
@@ -232,7 +234,7 @@ public class Kratu {
 
     Kratu summarizedKratu = new Kratu();
 
-    BigDecimal daysInRange = new BigDecimal(Days.daysBetween(new DateTime(startDate.getTime()), new DateTime(endDate.getTime())).getDays()).add(new BigDecimal(1));
+    BigDecimal daysInRange = new BigDecimal(Days.daysBetween(new DateTime(startDate.getTime()), new DateTime(endDate.getTime())).getDays()).add(BigDecimal.ONE);
 
     if (dailyKratus != null && dailyKratus.size() > 0) {
       summarizedKratu.topAccountId = dailyKratus.get(0).topAccountId;
@@ -243,14 +245,13 @@ public class Kratu {
       summarizedKratu.accountSuspended = dailyKratus.get(0).accountSuspended;
     }
 
-    for (Kratu dailyKratu : dailyKratus) {      
+    for (Kratu dailyKratu : dailyKratus) {
       summarizedKratu.spend = summarizedKratu.spend.add(dailyKratu.spend);
       summarizedKratu.spend = summarizedKratu.spend.setScale(2, RoundingMode.HALF_UP);
       summarizedKratu.conversions += dailyKratu.conversions;
-
       summarizedKratu.totalClicksSearch += dailyKratu.totalClicksSearch;
-      summarizedKratu.impressionsSearch += dailyKratu.impressionsSearch;
-      
+      summarizedKratu.impressionsSearch += dailyKratu.impressionsSearch;      
+
       summarizedKratu.elegibleImpressionsSearch = summarizedKratu.elegibleImpressionsSearch.add(dailyKratu.elegibleImpressionsSearch);
       summarizedKratu.lostImpressionsDueToBudgetSearch = summarizedKratu.lostImpressionsDueToBudgetSearch.add(dailyKratu.lostImpressionsDueToBudgetSearch);
       summarizedKratu.lostImpressionsDueToBidAdRankSearch = summarizedKratu.lostImpressionsDueToBidAdRankSearch.add(dailyKratu.lostImpressionsDueToBidAdRankSearch);
@@ -302,10 +303,11 @@ public class Kratu {
       summarizedKratu.sumBudget = summarizedKratu.sumBudget.add(dailyKratu.sumBudget);
       System.out.print(".");
     }
+
     if (summarizedKratu.impressionsDisplay + summarizedKratu.impressionsSearch > 0) {
       summarizedKratu.accountActive = "Yes"; 
     }
-    
+
     return summarizedKratu;
   }
 
@@ -335,7 +337,7 @@ public class Kratu {
       kratu.day = day;
       kratu._id = accountId + "-" + DateUtil.formatYearMonthDayNoDash(day);
       //kratu.accountName = reportAccountList.get(0).getAccountDescriptiveName();
-      kratu.spend = new BigDecimal(0);
+      kratu.spend = BigDecimal.ZERO;
 
       List<ReportCampaign> reportCampaignList = storageHelper.getReportByAccountId(ReportCampaign.class, accountId, day, day);
       List<ReportAdGroup> reportAdGroupList = storageHelper.getReportByAccountId(ReportAdGroup.class, accountId, day, day);
@@ -356,10 +358,10 @@ public class Kratu {
           kratu.impressionsSearch = reportAccount.getImpressions();
 
           kratu.elegibleImpressionsSearch = 
-              new BigDecimal(kratu.impressionsSearch).divide(reportAccount.getSearchImpressionShareBigDecimal().divide(new BigDecimal(100)), 2, RoundingMode.HALF_UP);
+              new BigDecimal(kratu.impressionsSearch).divide(reportAccount.getSearchImpressionShareBigDecimal().divide(BIGDECIMAL_100), 2, RoundingMode.HALF_UP);
 
-          kratu.lostImpressionsDueToBudgetSearch = reportAccount.getSearchLostISBudgetBigDecimal().divide(new BigDecimal(100)).multiply(kratu.elegibleImpressionsSearch);
-          kratu.lostImpressionsDueToBidAdRankSearch = reportAccount.getSearchLostISRankBigDecimal().divide(new BigDecimal(100)).multiply(kratu.elegibleImpressionsSearch);
+          kratu.lostImpressionsDueToBudgetSearch = reportAccount.getSearchLostISBudgetBigDecimal().divide(BIGDECIMAL_100).multiply(kratu.elegibleImpressionsSearch);
+          kratu.lostImpressionsDueToBidAdRankSearch = reportAccount.getSearchLostISRankBigDecimal().divide(BIGDECIMAL_100).multiply(kratu.elegibleImpressionsSearch);
 
           kratu.ctrSearch = reportAccount.getCtrBigDecimal();
           kratu.averageCpcSearch = reportAccount.getAvgCpcBigDecimal();
@@ -375,10 +377,10 @@ public class Kratu {
           kratu.impressionsDisplay = reportAccount.getImpressions();
 
           kratu.elegibleImpressionsDisplay =
-              new BigDecimal(kratu.impressionsDisplay).divide(reportAccount.getContentImpressionShareBigDecimal().divide(new BigDecimal(100)), 2, RoundingMode.HALF_UP);
+              new BigDecimal(kratu.impressionsDisplay).divide(reportAccount.getContentImpressionShareBigDecimal().divide(BIGDECIMAL_100), 2, RoundingMode.HALF_UP);
 
-          kratu.lostImpressionsDueToBudgetDisplay = reportAccount.getContentLostISBudgetBigDecimal().divide(new BigDecimal(100)).multiply(kratu.elegibleImpressionsDisplay);
-          kratu.lostImpressionsDueToBidAdRankDisplay = reportAccount.getContentLostISRankBigDecimal().divide(new BigDecimal(100)).multiply(kratu.elegibleImpressionsDisplay);          
+          kratu.lostImpressionsDueToBudgetDisplay = reportAccount.getContentLostISBudgetBigDecimal().divide(BIGDECIMAL_100).multiply(kratu.elegibleImpressionsDisplay);
+          kratu.lostImpressionsDueToBidAdRankDisplay = reportAccount.getContentLostISRankBigDecimal().divide(BIGDECIMAL_100).multiply(kratu.elegibleImpressionsDisplay);          
 
           kratu.ctrDisplay = reportAccount.getCtrBigDecimal();
           kratu.averageCpcDisplay = reportAccount.getAvgCpcBigDecimal();
@@ -395,7 +397,7 @@ public class Kratu {
       // Process Campaigns
       for (ReportCampaign reportCampaign : reportCampaignList) {
         if (reportCampaign.getStatus().equals(ACTIVE)) {
-          kratu.numberOfActiveCampaigns = kratu.numberOfActiveCampaigns.add(new BigDecimal(1));
+          kratu.numberOfActiveCampaigns = kratu.numberOfActiveCampaigns.add(BigDecimal.ONE);
         }
 
         if (reportCampaign.getBudgetBigDecimal() != null) {
@@ -407,7 +409,7 @@ public class Kratu {
       // Process AdGroups
       for (ReportAdGroup reportAdGroup : reportAdGroupList) {
         if (reportAdGroup.getStatus().equals(ENABLE)) {
-          kratu.numberOfActiveAdGroups = kratu.numberOfActiveAdGroups.add(new BigDecimal(1));
+          kratu.numberOfActiveAdGroups = kratu.numberOfActiveAdGroups.add(BigDecimal.ONE);
         }
       }
       reportAdGroupList = null;
@@ -416,7 +418,7 @@ public class Kratu {
       Map<Long, Integer> activeAdsPerAdGroup = new HashMap<Long, Integer>();
       for (ReportAd reportAd : reportAdList) {
         if (reportAd.getAdState().equals(ENABLE)) {
-          kratu.numberOfActiveAds = kratu.numberOfActiveAds.add(new BigDecimal(1));
+          kratu.numberOfActiveAds = kratu.numberOfActiveAds.add(BigDecimal.ONE);
           // Adding activeAdsPerAdGroup
           if (activeAdsPerAdGroup.containsKey(reportAd.getAdGroupId())) {
             activeAdsPerAdGroup.put(reportAd.getAdGroupId(),
@@ -426,7 +428,7 @@ public class Kratu {
           }
         }
         if (reportAd.getCreativeApprovalStatus().equals(DISAPPROVED)) {
-          kratu.numberOfDisapprovedAds = kratu.numberOfDisapprovedAds.add(new BigDecimal(1));
+          kratu.numberOfDisapprovedAds = kratu.numberOfDisapprovedAds.add(BigDecimal.ONE);
         }
       }
       reportAdList = null;
@@ -434,44 +436,44 @@ public class Kratu {
       // Process activeAdsPerAdGroup
       for (Integer activeAds : activeAdsPerAdGroup.values()) {
         if (activeAds == 1) {
-          kratu.numberOfAdgroupsWithoneActiveAd = kratu.numberOfAdgroupsWithoneActiveAd.add(new BigDecimal(1));
+          kratu.numberOfAdgroupsWithoneActiveAd = kratu.numberOfAdgroupsWithoneActiveAd.add(BigDecimal.ONE);
         }
         if (activeAds == 2) {
-          kratu.numberOfAdgroupsWithTwoActiveAds = kratu.numberOfAdgroupsWithTwoActiveAds.add(new BigDecimal(1));
+          kratu.numberOfAdgroupsWithTwoActiveAds = kratu.numberOfAdgroupsWithTwoActiveAds.add(BigDecimal.ONE);
         }
       }
 
       // Process Keywords
       Long sumImpressions = 0l;
-      BigDecimal totalPositions = new BigDecimal(0);
-      BigDecimal totalWeight = new BigDecimal(0);
+      BigDecimal totalPositions = BigDecimal.ZERO;
+      BigDecimal totalWeight = BigDecimal.ZERO;
       for (ReportKeyword reportKeyword : reportKeywordList) {
         if (reportKeyword.getStatus().equals(ENABLE)) {
           if (!reportKeyword.isNegative()) {
-            kratu.numberOfPositiveActiveKeywords = kratu.numberOfPositiveActiveKeywords.add(new BigDecimal(1));
+            kratu.numberOfPositiveActiveKeywords = kratu.numberOfPositiveActiveKeywords.add(BigDecimal.ONE);
 
             // numberOfActiveGoodQualityScoreKeywords: QS > 7
             if (reportKeyword.getQualityScoreAsBigDecimal().compareTo(BigDecimal.valueOf(7)) == 1) {
-              kratu.numberOfActiveGoodQualityScoreKeywords = kratu.numberOfActiveGoodQualityScoreKeywords.add(new BigDecimal(1));
+              kratu.numberOfActiveGoodQualityScoreKeywords = kratu.numberOfActiveGoodQualityScoreKeywords.add(BigDecimal.ONE);
             }
             // numberOfActiveAverageQualityScoreKeywords: QS>4 && <=7
             if (reportKeyword.getQualityScoreAsBigDecimal().compareTo(BigDecimal.valueOf(4)) == 1
                 && reportKeyword.getQualityScoreAsBigDecimal().compareTo(BigDecimal.valueOf(7)) < 1) {
-              kratu.numberOfActiveAverageQualityScoreKeywords = kratu.numberOfActiveAverageQualityScoreKeywords.add(new BigDecimal(1));
+              kratu.numberOfActiveAverageQualityScoreKeywords = kratu.numberOfActiveAverageQualityScoreKeywords.add(BigDecimal.ONE);
             }
             // numberOfActivePoorQualityScoreKeywords: QS <= 4
             if (reportKeyword.getQualityScoreAsBigDecimal().compareTo(BigDecimal.valueOf(4)) < 1) {
-              kratu.numberOfActivePoorQualityScoreKeywords = kratu.numberOfActivePoorQualityScoreKeywords.add(new BigDecimal(1));
+              kratu.numberOfActivePoorQualityScoreKeywords = kratu.numberOfActivePoorQualityScoreKeywords.add(BigDecimal.ONE);
             }
 
             if (reportKeyword.getKeywordMatchType().equals(BROAD))
-              kratu.numberOfActiveBroadMatchingKeywords = kratu.numberOfActiveBroadMatchingKeywords.add(new BigDecimal(1));
+              kratu.numberOfActiveBroadMatchingKeywords = kratu.numberOfActiveBroadMatchingKeywords.add(BigDecimal.ONE);
 
             if (reportKeyword.getKeywordMatchType().equals(PHRASE))
-              kratu.numberOfActivePhraseMatchingKeywords = kratu.numberOfActivePhraseMatchingKeywords.add(new BigDecimal(1));
+              kratu.numberOfActivePhraseMatchingKeywords = kratu.numberOfActivePhraseMatchingKeywords.add(BigDecimal.ONE);
 
             if (reportKeyword.getKeywordMatchType().equals(EXACT))
-              kratu.numberOfActiveExactMatchingKeywords = kratu.numberOfActiveExactMatchingKeywords.add(new BigDecimal(1));
+              kratu.numberOfActiveExactMatchingKeywords = kratu.numberOfActiveExactMatchingKeywords.add(BigDecimal.ONE);
 
             sumImpressions += reportKeyword.getImpressions();
             totalPositions = totalPositions.add(reportKeyword.getAvgPositionBigDecimal().multiply(
@@ -480,8 +482,8 @@ public class Kratu {
                 BigDecimal.valueOf(reportKeyword.getImpressions())));
 
           } else {
-            kratu.numberOfNegativeActiveKeywords = kratu.numberOfNegativeActiveKeywords.add(new BigDecimal(1));
-            kratu.numberOfAdGroupNegativeActiveKeywords = kratu.numberOfAdGroupNegativeActiveKeywords.add(new BigDecimal(1));
+            kratu.numberOfNegativeActiveKeywords = kratu.numberOfNegativeActiveKeywords.add(BigDecimal.ONE);
+            kratu.numberOfAdGroupNegativeActiveKeywords = kratu.numberOfAdGroupNegativeActiveKeywords.add(BigDecimal.ONE);
           }
         }
       }
@@ -498,15 +500,15 @@ public class Kratu {
         if (reportAdExtension.getStatus().equals(ACTIVE)) {
           if (reportAdExtension.getAdExtensionType().equals(LOCATION_EXTENSION)) {
             kratu.numberOfCampaignsWithLocationExtensionEnabled =
-                kratu.numberOfCampaignsWithLocationExtensionEnabled.add(new BigDecimal(1));
+                kratu.numberOfCampaignsWithLocationExtensionEnabled.add(BigDecimal.ONE);
           }
           if (reportAdExtension.getAdExtensionType().equals(MOBILE_EXTENSION)) {
             kratu.numberOfCampaignsWithCallExtensionEnabled =
-                kratu.numberOfCampaignsWithCallExtensionEnabled.add(new BigDecimal(1));
+                kratu.numberOfCampaignsWithCallExtensionEnabled.add(BigDecimal.ONE);
           }
           if (reportAdExtension.getAdExtensionType().equals(SITE_LINKS_EXTENSION)) {
             kratu.numberOfCampaignsWithSiteLinksEnabled =
-                kratu.numberOfCampaignsWithSiteLinksEnabled.add(new BigDecimal(1));
+                kratu.numberOfCampaignsWithSiteLinksEnabled.add(BigDecimal.ONE);
           }
         }
       }
