@@ -22,7 +22,7 @@ color:white; }
 
 		<IMG SRC="FILE:google.jpg" width="200px"></IMG>
 		<div id="logo" class="media"
-		  data-src="google.jpg"
+		  data-src="src/main/resources/templates/google.jpg"
 		  style="width: 300px;" />
 		<CENTER>
 		<H1 style="font-size: 250%; font-weight: 700; text-align: center;">
@@ -34,18 +34,11 @@ color:white; }
 		<tr>
 			<th>Account Name</th>
 			<th>AccountId</th>
-			<th>PrimaryCustomerName</th>
-			<th>ExternalCustomerId</th>
-			<th>Campaign Name</th>
-			<th>CampaignId</th>
-			<th>Status</th>
 			<th>Impressions</th>
+			<th>Cost</th>
 			<th>Clicks</th>
 			<th>AvgCPC</th>
 			<th>AvgCPM</th>
-			<th>AvgPos</th>
-			<th>ConvRate1</th>
-			<th>ConvRateM</th>
 		</tr>
 		</thead>
 		<tbody>
@@ -53,18 +46,11 @@ color:white; }
 			<tr>
 				<td>{{AccountDescriptiveName}}</td>
 				<td style="text-align: right;">{{AccountId}}</td>
-				<td>{{PrimaryCustomerName}}</td>
-				<td style="text-align: right;">{{externalCustomerId}}</td>
-				<td>{{campaignName}}</td>
-				<td style="text-align: right;">{{campaignId}}</td>
-				<td>{{status}}</td>
 				<td style="text-align: right;">{{impressions}}</td>
+				<td style="text-align: right;">{{cost}}</td>
 				<td style="text-align: right;">{{clicks}}</td>
 				<td style="text-align: right;">{{avgCpc}}</td>
 				<td style="text-align: right;">{{avgCpm}}</td>
-				<td style="text-align: right;">{{avgPosition}}</td>
-				<td style="text-align: right;">{{conversionRate1}}</td>
-				<td style="text-align: right;">{{conversionRateMany}}</td>
 				</tr>
 			{{/ACCOUNT_PERFORMANCE_REPORT}}
 		</tbody>
