@@ -54,7 +54,7 @@ import java.util.Set;
 /**
  * Main class that executes the report processing logic delegating to the {@link ReportProcessor}.
  *
- *  This class holds a Spring application context that manages the creation of all the beans needed.
+ * This class holds a Spring application context that manages the creation of all the beans needed.
  * No configuration is done in this class.
  *
  *  Credentials and properties are pulled from the ~/aw-report-sample.properties.properties file or
@@ -141,8 +141,8 @@ public class AwReporting {
         LOGGER.debug("Output directory for PDF: " + outputDirectory);
 
         // Generate PDFs
-        processor.generatePdf(cmdLine.getOptionValue("startDate"), cmdLine.getOptionValue("endDate"),
-            properties, htmlTemplateFile, outputDirectory);
+        processor.generatePdf(cmdLine.getOptionValue("startDate"),
+            cmdLine.getOptionValue("endDate"), properties, htmlTemplateFile, outputDirectory);
 
       } else if (cmdLine.hasOption("startDate") && cmdLine.hasOption("endDate")) {
         // Generate Reports
@@ -263,7 +263,8 @@ public class AwReporting {
     OptionBuilder.withValueSeparator(' ');
     OptionBuilder.hasArgs(2);
     OptionBuilder.withDescription("Generate Monthly Account Reports for all Accounts in PDF\n"
-        + "NOTE: For PDF use aw-report-sample-for-pdf.properties instead, the fields need to be different.");
+        + "NOTE: For PDF use aw-report-sample-for-pdf.properties instead, "
+        + "the fields need to be different.");
     options.addOption(OptionBuilder.create("generatePdf"));
 
     OptionBuilder.withArgName("accountIdsFile");
@@ -305,7 +306,8 @@ public class AwReporting {
         .printHelp(
             " java -Xmx1G -jar aw-reporting.jar -startDate YYYYMMDD -endDate YYYYMMDD "
                 + "-file <file>\n java -Xmx1G -jar aw-reporting.jar "
-                + "-generatePdf <htmlTemplateFile> <outputDirectory> -startDate YYYYMMDD -endDate YYYYMMDD -file <file>",
+                + "-generatePdf <htmlTemplateFile> <outputDirectory> "
+                + "-startDate YYYYMMDD -endDate YYYYMMDD -file <file>",
             "\nArguments:", options, "");
     System.out.println();
   }
@@ -349,8 +351,8 @@ public class AwReporting {
     }
 
     ConsoleAppender console = new ConsoleAppender(); // create appender
-    String PATTERN = "%d [%p|%c|%C{1}] %m%n";
-    console.setLayout(new PatternLayout(PATTERN));
+    String pattern = "%d [%p|%c|%C{1}] %m%n";
+    console.setLayout(new PatternLayout(pattern));
     console.activateOptions();
     if (commandLine.hasOption("verbose")) {
       console.setThreshold(logLevel);

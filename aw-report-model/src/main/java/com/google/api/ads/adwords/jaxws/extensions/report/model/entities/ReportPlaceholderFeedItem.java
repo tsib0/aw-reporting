@@ -117,52 +117,52 @@ public class ReportPlaceholderFeedItem extends ReportBase {
   @Override
   public void setId() {
 
-    // Generating unique _id after having date and accountId
+    // Generating unique id after having date and accountId
     if (this.getAccountId() != null) {
-      this._id = this.getAccountId().toString();
+      this.id = this.getAccountId().toString();
     } else {
-      this._id = "null";
+      this.id = "null";
     }
     if (this.getCampaignId() != null) {
-      this._id += "-" + this.getCampaignId().toString();
+      this.id += "-" + this.getCampaignId().toString();
     } else {
-      this._id += "null";
+      this.id += "null";
     }
     if (this.getAdGroupId() != null) {
-      this._id += "-" + this.getAdGroupId().toString();
+      this.id += "-" + this.getAdGroupId().toString();
     } else {
-      this._id += "null";
+      this.id += "null";
     }
     if (this.getAdId() != null) {
-      this._id += "-" + this.getAdId().toString();
+      this.id += "-" + this.getAdId().toString();
     } else {
-      this._id += "null";
+      this.id += "null";
     }
     if (this.getFeedItemId() != null) {
-      this._id += "-" + this.getFeedItemId().toString();
+      this.id += "-" + this.getFeedItemId().toString();
     } else {
-      this._id += "null";
+      this.id += "null";
     }
     if (this.getFeedId() != null) {
-      this._id += "-" + this.getFeedId().toString();
+      this.id += "-" + this.getFeedId().toString();
     } else {
-      this._id += "null";
+      this.id += "null";
     }
 
-    this._id += setIdDates();
+    this.id += setIdDates();
 
     // Adding extra fields for unique ID
     if (this.getAdNetwork() != null && this.getAdNetwork().length() > 0) {
-      this._id += "-" + this.getAdNetwork();
+      this.id += "-" + this.getAdNetwork();
     }
     if (this.getAdNetworkPartners() != null && this.getAdNetworkPartners().length() > 0) {
-      this._id += "-" + this.getAdNetworkPartners();
+      this.id += "-" + this.getAdNetworkPartners();
     }
     if (this.getDevice() != null && this.getDevice().length() > 0) {
-      this._id += "-" + this.getDevice();
+      this.id += "-" + this.getDevice();
     }
     if (this.getClickType() != null && this.getClickType().length() > 0) {
-      this._id += "-" + this.getClickType();
+      this.id += "-" + this.getClickType();
     }
   }
 

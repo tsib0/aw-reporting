@@ -41,6 +41,7 @@ import java.util.Map;
  *
  * @author gustavomoreira@google.com (Gustavo Moreira)
  *
+ * @param <T> type of sub Report.
  */
 public class AnnotationBasedMappingStrategy<T extends Report> implements MappingStrategy<T> {
 

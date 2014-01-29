@@ -23,10 +23,10 @@ import com.google.api.ads.adwords.jaxws.extensions.report.model.util.ModifiedCsv
 import com.google.api.ads.adwords.lib.jaxb.v201309.ReportDefinitionDateRangeType;
 import com.google.common.collect.Lists;
 
-import org.apache.log4j.Logger;
-
 import au.com.bytecode.opencsv.CSVReader;
 import au.com.bytecode.opencsv.bean.MappingStrategy;
+
+import org.apache.log4j.Logger;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -39,18 +39,21 @@ import java.util.List;
 import java.util.concurrent.CountDownLatch;
 
 /**
- * This {@link Runnable} implements the core logic to download the report file from the AdWords API.
+ * This {@link Runnable} implements the core logic to download the report file
+ * from the AdWords API.
  *
  * The {@link Collection}s passed to this runner are considered to be synchronized and thread safe.
  * This class has no blocking logic when adding elements to the collections.
  *
- * Also the {@link AdWordsSessionBuilderSynchronizer} is kept by the client class, and should handle
- * all the concurrent threads.
+ * Also the {@link AdWordsSessionBuilderSynchronizer} is kept by the client class, and should
+ * handle all the concurrent threads.
  *
  * Parse the rows in the CSV file for the report type, and persists the beans into the data base.
  *
  * @author gustavomoreira@google.com (Gustavo Moreira)
  * @author jtoledo@google.com (Julian Toledo)
+ * 
+ * @param <R> type of sub Report.
  */
 public class RunnableProcessor<R extends Report> implements Runnable {
 
