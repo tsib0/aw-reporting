@@ -89,25 +89,26 @@ public class ReportAd extends ReportBase {
 
   @Override
   public void setId() {
-    // Generating unique _id after having accountId, campaignId, adGroupId and date
+    // Generating unique id after having accountId, campaignId, adGroupId and date
     if (this.getAccountId() != null && this.getCampaignId() != null && this.getAdGroupId() != null
-        && this.getAdId() != null) this._id = this.getAccountId() + "-" + this.getCampaignId() + "-"
-        + this.getAdGroupId() + "-" + this.getAdId();
-
-    this._id += setIdDates();
+        && this.getAdId() != null) {
+      this.id = this.getAccountId() + "-" + this.getCampaignId() + "-" +
+        this.getAdGroupId() + "-" + this.getAdId();
+    }
+    this.id += setIdDates();
 
     // Adding extra fields for unique ID
     if (this.getAdNetwork() != null && this.getAdNetwork().length() > 0) {
-      this._id += "-" + this.getAdNetwork();
+      this.id += "-" + this.getAdNetwork();
     }
     if (this.getAdNetworkPartners() != null && this.getAdNetworkPartners().length() > 0) {
-      this._id += "-" + this.getAdNetworkPartners();
+      this.id += "-" + this.getAdNetworkPartners();
     }
     if (this.getDevice() != null && this.getDevice().length() > 0) {
-      this._id += "-" + this.getDevice();
+      this.id += "-" + this.getDevice();
     }
     if (this.getClickType() != null && this.getClickType().length() > 0) {
-      this._id += "-" + this.getClickType();
+      this.id += "-" + this.getClickType();
     }
   }
 

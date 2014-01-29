@@ -85,7 +85,7 @@ public class ReportProcessorTest {
   private static final Set<Long> CIDS = ImmutableSet.of(1L, 2L, 3L, 4L, 5L, 6L, 7L, 8L, 9L, 10L);
 
   private static final int REPORT_TYPES_SIZE = 9;
-  
+
   private static final int ROW_COUNT_CSV_TOTAL = 260;
 
   @Captor
@@ -104,7 +104,7 @@ public class ReportProcessorTest {
     MockitoAnnotations.initMocks(this);
 
     when(mockedAuthTokenPersister.getAuthToken(Mockito.anyString()))
-        .thenReturn(new AuthMcc("1", "TOKEN"));
+    .thenReturn(new AuthMcc("1", "TOKEN"));
 
     Mockito.doAnswer(new Answer<Void>() {
       @Override
@@ -112,7 +112,7 @@ public class ReportProcessorTest {
         return null;
       }
     }).when(mockedReportEntitiesPersister)
-        .persistReportEntities(Mockito.<List<? extends Report>>anyObject());
+    .persistReportEntities(Mockito.<List<? extends Report>>anyObject());
 
     mockDownloadReports(CIDS.size());
 
@@ -137,12 +137,12 @@ public class ReportProcessorTest {
         Mockito.<Set<Long>>anyObject());
 
     verify(mockedReportEntitiesPersister, times(ROW_COUNT_CSV_TOTAL))
-        .persistReportEntities(reportEntitiesCaptor.capture());
+    .persistReportEntities(reportEntitiesCaptor.capture());
 
     assertEquals(ROW_COUNT_CSV_TOTAL, reportEntitiesCaptor.getAllValues().size());
     for (List<? extends Report> reportEntities : reportEntitiesCaptor.getAllValues()) {
       for (Report report : reportEntities) {
-        assertNotNull(report.get_id());
+        assertNotNull(report.getId());
         assertNotNull(report.getAccountId());
       }
     }
@@ -178,7 +178,9 @@ public class ReportProcessorTest {
         if (reportType.equals(
             ReportDefinitionReportType.CAMPAIGN_NEGATIVE_KEYWORDS_PERFORMANCE_REPORT)) {
           return getReportFiles(
-              "reportDownload-CAMPAIGN_NEGATIVE_KEYWORDS_PERFORMANCE_REPORT-2602198216-1370029913872.report", numberOfFiles);
+              "reportDownload-CAMPAIGN_NEGATIVE_KEYWORDS_PERFORMANCE_REPORT" + 
+                  "-2602198216-1370029913872.report",
+                  numberOfFiles);
         }
         if (reportType.equals(ReportDefinitionReportType.CAMPAIGN_PERFORMANCE_REPORT)) {
           return getReportFiles(
@@ -196,9 +198,9 @@ public class ReportProcessorTest {
               numberOfFiles);
         }
         if (reportType.equals(ReportDefinitionReportType.CRITERIA_PERFORMANCE_REPORT)) {
-            return getReportFiles(
-                "reportDownload-CRITERIA_PERFORMANCE_REPORT-2752283680-1378903912127.report",
-                numberOfFiles);
+          return getReportFiles(
+              "reportDownload-CRITERIA_PERFORMANCE_REPORT-2752283680-1378903912127.report",
+              numberOfFiles);
         }
         // Undefined report type on this test
         throw (new Exception("Undefined report type on Tests: " + reportType.value()));

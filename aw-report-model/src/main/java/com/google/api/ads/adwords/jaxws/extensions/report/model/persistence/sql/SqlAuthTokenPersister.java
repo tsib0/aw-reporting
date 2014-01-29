@@ -45,7 +45,8 @@ public class SqlAuthTokenPersister implements AuthTokenPersister {
 
   /**
    * @see com.google.api.ads.adwords.jaxws.extensions.report.model.persistence.AuthTokenPersister#
-   *      persistAuthToken(com.google.api.ads.adwords.jaxws.extensions.report.model.entities.AuthMcc)
+   *      persistAuthToken(
+   *      com.google.api.ads.adwords.jaxws.extensions.report.model.entities.AuthMcc)
    */
   @Override
   @Transactional

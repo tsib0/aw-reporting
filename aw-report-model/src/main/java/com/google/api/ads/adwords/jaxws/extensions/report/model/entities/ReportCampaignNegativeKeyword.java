@@ -78,22 +78,22 @@ public class ReportCampaignNegativeKeyword extends Report {
 
   @Override
   public void setId() {
-    // Generating unique _id after having campaignId, adGroupId and date
+    // Generating unique id after having campaignId, adGroupId and date
 
     if (this.getAccountId() != null) {
-      this._id = String.valueOf(this.getAccountId());
+      this.id = String.valueOf(this.getAccountId());
     }
     if (this.getCampaignId() != null) {
-      this._id += "-" + this.getCampaignId();
+      this.id += "-" + this.getCampaignId();
     }
     if (this.getKeywordId() != null) {
-      this._id += "-" + this.getKeywordId();
+      this.id += "-" + this.getKeywordId();
     }
     if (this.getKeywordMatchType() != null) {
-      this._id += "-" + this.getKeywordMatchType();
+      this.id += "-" + this.getKeywordMatchType();
     }
 
-    this._id += setIdDates();
+    this.id += setIdDates();
   }
 
   // keywordId

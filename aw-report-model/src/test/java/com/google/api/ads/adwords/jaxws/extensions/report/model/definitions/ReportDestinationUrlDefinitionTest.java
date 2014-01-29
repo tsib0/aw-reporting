@@ -1,4 +1,21 @@
+// Copyright 2013 Google Inc. All Rights Reserved.
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+// http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
 package com.google.api.ads.adwords.jaxws.extensions.report.model.definitions;
+
+import com.google.api.ads.adwords.jaxws.extensions.report.model.entities.ReportDestinationUrl;
+import com.google.api.ads.adwords.lib.jaxb.v201309.ReportDefinitionReportType;
 
 import junit.framework.Assert;
 
@@ -6,15 +23,13 @@ import org.junit.runner.RunWith;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import com.google.api.ads.adwords.jaxws.extensions.report.model.entities.ReportDestinationUrl;
-import com.google.api.ads.adwords.lib.jaxb.v201309.ReportDefinitionReportType;
-
 /**
  * Tests the Ad Performance report definition.
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration("classpath:aw-report-model-test-beans.xml")
-public class ReportDestinationUrlDefinitionTest extends AbstractReportDefinitionTest<ReportDestinationUrl> {
+public class ReportDestinationUrlDefinitionTest
+extends AbstractReportDefinitionTest<ReportDestinationUrl> {
 
   /**
    * C'tor
@@ -25,80 +40,83 @@ public class ReportDestinationUrlDefinitionTest extends AbstractReportDefinition
   }
 
   /**
-   * @see com.google.api.ads.adwords.jaxws.extensions.report.model.definitions.AbstractReportDefinitionTest
-   *      #testFirstEntry(com.google.api.ads.adwords.jaxws.extensions.report.model.entities.Report)
+   * @see com.google.api.ads.adwords.jaxws.extensions.report.model.definitions.
+   * AbstractReportDefinitionTest#testFirstEntry(
+   * com.google.api.ads.adwords.jaxws.extensions.report.model.entities.Report)
    */
   @Override
   protected void testFirstEntry(ReportDestinationUrl row) {
 
-	  Assert.assertEquals("(GMT+01:00) Paris", row.getAccountTimeZoneId());
-	  Assert.assertEquals(3448007340L, row.getAdGroupId().longValue());
-	  Assert.assertEquals("Ad Group #1", row.getAdGroupName());
-	  Assert.assertEquals("enabled", row.getAdGroupStatus());
-	  Assert.assertEquals(84058260L , row.getCampaignId().longValue());
-	  Assert.assertEquals("CAMPAGNE", row.getCampaignName());
-	  Assert.assertEquals("active", row.getCampaignStatus());
-	  Assert.assertEquals("0.00", row.getConversionRate());
-	  Assert.assertEquals("0.00", row.getConversionRateManyPerClick());
-	  Assert.assertEquals(0L, row.getConversionsManyPerClick().longValue());
-	  Assert.assertEquals(null, row.getConversionValue());
-	  Assert.assertEquals("0.00", row.getCostPerConversion());
-	  Assert.assertEquals("0.00", row.getCostPerConversionManyPerClick());
-	  Assert.assertEquals("" , row.getCriteriaDestinationUrl());
-	  Assert.assertEquals("+immo +benodet", row.getCriteriaParameters());
-	  Assert.assertEquals("enabled", row.getCriteriaStatus());
-	  Assert.assertEquals("Broad", row.getCriteriaTypeName());
-	  Assert.assertEquals("Era Rouxelimmo - Plomelin", row.getCustomerDescriptiveName());
-	  Assert.assertEquals("Sunday", row.getDayOfWeek());
-	  Assert.assertEquals("http://www.era-immobilier-plomelin.fr", row.getEffectiveDestinationUrl());
-	  Assert.assertEquals("false" , row.getIsNegative());
-	  Assert.assertEquals("September" , row.getMonthOfYear());
-	  Assert.assertEquals("", row.getPrimaryCompanyName());
-	  Assert.assertEquals("", row.getPrimaryUserLogin());
-	  Assert.assertEquals("2013-07-01", row.getQuarter());
-	  Assert.assertEquals("0.00" , row.getTotalConvValue());
+    Assert.assertEquals("(GMT+01:00) Paris", row.getAccountTimeZoneId());
+    Assert.assertEquals(3448007340L, row.getAdGroupId().longValue());
+    Assert.assertEquals("Ad Group #1", row.getAdGroupName());
+    Assert.assertEquals("enabled", row.getAdGroupStatus());
+    Assert.assertEquals(84058260L , row.getCampaignId().longValue());
+    Assert.assertEquals("CAMPAGNE", row.getCampaignName());
+    Assert.assertEquals("active", row.getCampaignStatus());
+    Assert.assertEquals("0.00", row.getConversionRate());
+    Assert.assertEquals("0.00", row.getConversionRateManyPerClick());
+    Assert.assertEquals(0L, row.getConversionsManyPerClick().longValue());
+    Assert.assertEquals(null, row.getConversionValue());
+    Assert.assertEquals("0.00", row.getCostPerConversion());
+    Assert.assertEquals("0.00", row.getCostPerConversionManyPerClick());
+    Assert.assertEquals("" , row.getCriteriaDestinationUrl());
+    Assert.assertEquals("+immo +benodet", row.getCriteriaParameters());
+    Assert.assertEquals("enabled", row.getCriteriaStatus());
+    Assert.assertEquals("Broad", row.getCriteriaTypeName());
+    Assert.assertEquals("Era Rouxelimmo - Plomelin", row.getCustomerDescriptiveName());
+    Assert.assertEquals("Sunday", row.getDayOfWeek());
+    Assert.assertEquals("http://www.era-immobilier-plomelin.fr", row.getEffectiveDestinationUrl());
+    Assert.assertEquals("false" , row.getIsNegative());
+    Assert.assertEquals("September" , row.getMonthOfYear());
+    Assert.assertEquals("", row.getPrimaryCompanyName());
+    Assert.assertEquals("", row.getPrimaryUserLogin());
+    Assert.assertEquals("2013-07-01", row.getQuarter());
+    Assert.assertEquals("0.00" , row.getTotalConvValue());
 
   }
 
   /**
-   * @see com.google.api.ads.adwords.jaxws.extensions.report.model.definitions.AbstractReportDefinitionTest
-   *      #testLastEntry(com.google.api.ads.adwords.jaxws.extensions.report.model.entities.Report)
+   * @see com.google.api.ads.adwords.jaxws.extensions.report.model.definitions.
+   * AbstractReportDefinitionTest#testLastEntry(
+   * com.google.api.ads.adwords.jaxws.extensions.report.model.entities.Report)
    */
   @Override
   protected void testLastEntry(ReportDestinationUrl row) {
 
 
-	  
-	  Assert.assertEquals("(GMT+01:00) Paris", row.getAccountTimeZoneId());
-	  Assert.assertEquals(5827855980L, row.getAdGroupId().longValue());
-	  Assert.assertEquals("Ad Group #1", row.getAdGroupName());
-	  Assert.assertEquals("enabled", row.getAdGroupStatus());
-	  Assert.assertEquals(118203540L , row.getCampaignId().longValue());
-	  Assert.assertEquals("DISPLAY", row.getCampaignName());
-	  Assert.assertEquals("active", row.getCampaignStatus());
-	  Assert.assertEquals("0.00", row.getConversionRate());
-	  Assert.assertEquals("0.00", row.getConversionRateManyPerClick());
-	  Assert.assertEquals(0L, row.getConversionsManyPerClick().longValue());
-	  Assert.assertEquals(null, row.getConversionValue());
-	  Assert.assertEquals("0.00", row.getCostPerConversion());
-	  Assert.assertEquals("0.00", row.getCostPerConversionManyPerClick());
-	  Assert.assertEquals("" , row.getCriteriaDestinationUrl());
-	  Assert.assertEquals("Content", row.getCriteriaParameters());
-	  Assert.assertEquals("enabled", row.getCriteriaStatus());
-	  Assert.assertEquals("Broad", row.getCriteriaTypeName());
-	  Assert.assertEquals("Era Rouxelimmo - Plomelin", row.getCustomerDescriptiveName());
-	  Assert.assertEquals("Sunday", row.getDayOfWeek());
-	  Assert.assertEquals("http://www.era-immobilier-plomelin.fr", row.getEffectiveDestinationUrl());
-	  Assert.assertEquals("false" , row.getIsNegative());
-	  Assert.assertEquals("September" , row.getMonthOfYear());
-	  Assert.assertEquals("", row.getPrimaryCompanyName());
-	  Assert.assertEquals("", row.getPrimaryUserLogin());
-	  Assert.assertEquals("2013-07-01", row.getQuarter());
-	  Assert.assertEquals("0.00" , row.getTotalConvValue());
 
-	  Assert.assertEquals(true, true);
+    Assert.assertEquals("(GMT+01:00) Paris", row.getAccountTimeZoneId());
+    Assert.assertEquals(5827855980L, row.getAdGroupId().longValue());
+    Assert.assertEquals("Ad Group #1", row.getAdGroupName());
+    Assert.assertEquals("enabled", row.getAdGroupStatus());
+    Assert.assertEquals(118203540L , row.getCampaignId().longValue());
+    Assert.assertEquals("DISPLAY", row.getCampaignName());
+    Assert.assertEquals("active", row.getCampaignStatus());
+    Assert.assertEquals("0.00", row.getConversionRate());
+    Assert.assertEquals("0.00", row.getConversionRateManyPerClick());
+    Assert.assertEquals(0L, row.getConversionsManyPerClick().longValue());
+    Assert.assertEquals(null, row.getConversionValue());
+    Assert.assertEquals("0.00", row.getCostPerConversion());
+    Assert.assertEquals("0.00", row.getCostPerConversionManyPerClick());
+    Assert.assertEquals("" , row.getCriteriaDestinationUrl());
+    Assert.assertEquals("Content", row.getCriteriaParameters());
+    Assert.assertEquals("enabled", row.getCriteriaStatus());
+    Assert.assertEquals("Broad", row.getCriteriaTypeName());
+    Assert.assertEquals("Era Rouxelimmo - Plomelin", row.getCustomerDescriptiveName());
+    Assert.assertEquals("Sunday", row.getDayOfWeek());
+    Assert.assertEquals("http://www.era-immobilier-plomelin.fr",
+        row.getEffectiveDestinationUrl());
+    Assert.assertEquals("false" , row.getIsNegative());
+    Assert.assertEquals("September" , row.getMonthOfYear());
+    Assert.assertEquals("", row.getPrimaryCompanyName());
+    Assert.assertEquals("", row.getPrimaryUserLogin());
+    Assert.assertEquals("2013-07-01", row.getQuarter());
+    Assert.assertEquals("0.00" , row.getTotalConvValue());
 
-/*    Assert.assertEquals(1001270004L, last.getAccountId().longValue());
+    Assert.assertEquals(true, true);
+
+    /*    Assert.assertEquals(1001270004L, last.getAccountId().longValue());
     Assert.assertEquals("2013-05-10", last.getDay());
     Assert.assertEquals("1.46", last.getCost());
     Assert.assertEquals(2L, last.getClicks().longValue());
@@ -119,8 +137,8 @@ public class ReportDestinationUrlDefinitionTest extends AbstractReportDefinition
   }
 
   /**
-   * @see com.google.api.ads.adwords.jaxws.extensions.report.model.definitions.AbstractReportDefinitionTest
-   *      #retrieveCsvEntries()
+   * @see com.google.api.ads.adwords.jaxws.extensions.report.model.definitions.
+   * AbstractReportDefinitionTest#retrieveCsvEntries()
    */
   @Override
   protected int retrieveCsvEntries() {
@@ -128,62 +146,62 @@ public class ReportDestinationUrlDefinitionTest extends AbstractReportDefinition
   }
 
   /**
-   * @see com.google.api.ads.adwords.jaxws.extensions.report.model.definitions.AbstractReportDefinitionTest
-   *      #retrievePropertiesToBeSelected()
+   * @see com.google.api.ads.adwords.jaxws.extensions.report.model.definitions.
+   * AbstractReportDefinitionTest#retrievePropertiesToBeSelected()
    */
   @Override
   protected String[] retrievePropertiesToBeSelected() {
 
     return new String[] {
-    		"AccountTimeZoneId",
-    		"AdGroupId",
-    		"AdGroupName",
-    		"AdGroupStatus",
-    		"CampaignId",
-    		"CampaignName",
-    		"CampaignStatus",
-    		"ConversionRate",
-    		"ConversionRateManyPerClick",
-    		"ConversionsManyPerClick",
-    		"ConversionValue",
-    		"CostPerConversion",
-    		"CostPerConversionManyPerClick",
-    		"CriteriaDestinationUrl",
-    		"CriteriaParameters",
-    		"CriteriaStatus",
-    		"CriteriaTypeName",
-    		"CustomerDescriptiveName",
-    		"DayOfWeek",
-    		"EffectiveDestinationUrl",
-    		"IsNegative",
-    		"MonthOfYear",
-    		"PrimaryCompanyName",
-    		"PrimaryUserLogin",
-    		"Quarter",
-    		"TotalConvValue",
-    		"ValuePerConv",
-    		"ValuePerConversion",
-    		"ValuePerConversionManyPerClick",
-    		"ValuePerConvManyPerClick",
-    		"ViewThroughConversions",
-    		"Week",
-    		"Year",
-    		"ExternalCustomerId",
-    		"Date",
-    		"Month",
-    		"AccountDescriptiveName",
-    		"Cost",
-    		"Clicks",
-    		"Impressions",
-    		"Conversions",
-    		"Ctr",
-    		"AverageCpm",
-    		"AverageCpc",
-    		"AveragePosition",
-    		"AccountCurrencyCode",
-    		"Device",
-    		"ClickType",
-    		"AdNetworkType1",
-    		"AdNetworkType2"};
+        "AccountTimeZoneId",
+        "AdGroupId",
+        "AdGroupName",
+        "AdGroupStatus",
+        "CampaignId",
+        "CampaignName",
+        "CampaignStatus",
+        "ConversionRate",
+        "ConversionRateManyPerClick",
+        "ConversionsManyPerClick",
+        "ConversionValue",
+        "CostPerConversion",
+        "CostPerConversionManyPerClick",
+        "CriteriaDestinationUrl",
+        "CriteriaParameters",
+        "CriteriaStatus",
+        "CriteriaTypeName",
+        "CustomerDescriptiveName",
+        "DayOfWeek",
+        "EffectiveDestinationUrl",
+        "IsNegative",
+        "MonthOfYear",
+        "PrimaryCompanyName",
+        "PrimaryUserLogin",
+        "Quarter",
+        "TotalConvValue",
+        "ValuePerConv",
+        "ValuePerConversion",
+        "ValuePerConversionManyPerClick",
+        "ValuePerConvManyPerClick",
+        "ViewThroughConversions",
+        "Week",
+        "Year",
+        "ExternalCustomerId",
+        "Date",
+        "Month",
+        "AccountDescriptiveName",
+        "Cost",
+        "Clicks",
+        "Impressions",
+        "Conversions",
+        "Ctr",
+        "AverageCpm",
+        "AverageCpc",
+        "AveragePosition",
+        "AccountCurrencyCode",
+        "Device",
+        "ClickType",
+        "AdNetworkType1",
+    "AdNetworkType2"};
   }
 }
