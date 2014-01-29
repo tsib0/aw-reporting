@@ -45,13 +45,13 @@ import com.google.api.client.util.Sets;
 import com.google.common.base.Stopwatch;
 import com.google.common.collect.Lists;
 
+import au.com.bytecode.opencsv.bean.MappingStrategy;
+
 import org.apache.log4j.Logger;
 import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
-
-import au.com.bytecode.opencsv.bean.MappingStrategy;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -753,7 +753,6 @@ public class ReportProcessor {
   /**
    * Generates the PDF files from the report data
    *
-   * @param processor the report processor
    * @param dateStart the start date for the reports
    * @param dateEnd the end date for the reports
    * @param properties the properties file containing all the configuration

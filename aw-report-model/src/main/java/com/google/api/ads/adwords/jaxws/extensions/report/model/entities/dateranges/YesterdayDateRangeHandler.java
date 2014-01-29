@@ -12,15 +12,30 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package com.google.api.ads.adwords.jaxws.extensions.util;
+package com.google.api.ads.adwords.jaxws.extensions.report.model.entities.dateranges;
+
+import org.joda.time.DateTime;
 
 /**
- * Enum to describe the database type
- *
- * @author gustavomoreira@google.com (Gustavo Moreira)
+ * Handles the date range for the YESTERDAY type.
+ * 
+ * @author gustavomoreira
  */
-public enum DataBaseType {
+public class YesterdayDateRangeHandler implements DateRangeHandler {
 
-  SQL, MONGODB
+  @Override
+  public DateTime retrieveDateStart(DateTime date) {
+    return date.minusDays(1);
+  }
+
+  @Override
+  public DateTime retrieveDateEnd(DateTime date) {
+    return date.minusDays(1);
+  }
+
+  @Override
+  public DateTime retrieveMonth(DateTime date) {
+    return null;
+  }
 
 }

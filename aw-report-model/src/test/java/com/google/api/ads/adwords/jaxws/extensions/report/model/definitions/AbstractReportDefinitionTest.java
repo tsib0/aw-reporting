@@ -1,3 +1,17 @@
+// Copyright 2013 Google Inc. All Rights Reserved.
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+// http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
 package com.google.api.ads.adwords.jaxws.extensions.report.model.definitions;
 
 import com.google.api.ads.adwords.jaxws.extensions.report.model.csv.AnnotationBasedMappingStrategy;
@@ -9,12 +23,12 @@ import com.google.api.ads.adwords.jaxws.extensions.report.model.persistence.Enti
 import com.google.api.ads.adwords.jaxws.extensions.report.model.util.ModifiedCsvToBean;
 import com.google.api.ads.adwords.lib.jaxb.v201309.ReportDefinitionReportType;
 
+import au.com.bytecode.opencsv.CSVReader;
+
 import org.junit.Assert;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-
-import au.com.bytecode.opencsv.CSVReader;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -28,6 +42,8 @@ import java.util.Set;
 
 /**
  * Abstraction for the report definition tests.
+ * 
+ * @param <T> type of sub Report.
  */
 public abstract class AbstractReportDefinitionTest<T extends Report> {
 
@@ -89,8 +105,8 @@ public abstract class AbstractReportDefinitionTest<T extends Report> {
 
     Assert.assertEquals(
         "The number of properties mapped is different from the properties specified on the test.\n"
-        + "expected: " + Arrays.toString(reportProperties) + "\nfound: "
-        + propertiesToSelect.toString(), reportProperties.length, propertiesToSelect.size());
+            + "expected: " + Arrays.toString(reportProperties) + "\nfound: "
+            + propertiesToSelect.toString(), reportProperties.length, propertiesToSelect.size());
 
     for (int i = 0; i < reportProperties.length; i++) {
       Assert.assertTrue(propertiesToSelect.contains(reportProperties[i]));
@@ -214,7 +230,7 @@ public abstract class AbstractReportDefinitionTest<T extends Report> {
           return 1;
         }
         return report1base.getDay().compareTo(report2base.getDay());
-      
+
       } else {
 
         if (report1.getDateStart() == null || report2.getDateStart() == null ||
