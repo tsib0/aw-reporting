@@ -63,118 +63,118 @@ public class StorageHelper {
 
   // Report (Generic for all kinds)
   public <R extends Report> List<R> getReportById(Class<R> classR, String id) {
-    return entityPersister.get(classR, Report.__id, id);
+    return entityPersister.get(classR, Report.ID, id);
   }
 
   public <R extends Report> List<R> getReportByAccountId(Class<R> classR, Long accountId, Date dateStart,
       Date dateEnd) {
-    return entityPersister.get(classR, Report._accountId, accountId, Report._day, dateStart, dateEnd);
+    return entityPersister.get(classR, Report.ACCOUNT_ID, accountId, Report.DAY, dateStart, dateEnd);
   }
 
   public <R extends Report> List<R> getReportByTopAccountId(Class<R> classR, Long topAccountId,
       Date dateStart, Date dateEnd) {
     
     return entityPersister.get(
-        classR, ReportAccount._topAccountId, topAccountId, Report._day, dateStart, dateEnd);
+        classR, ReportAccount.TOP_ACCOUNT_ID, topAccountId, Report.DAY, dateStart, dateEnd);
   }
 
   public <R extends Report> List<R> getReportByDates(Class<R> classR, Date dateStart,
       Date dateEnd) {
     
-    return entityPersister.get(classR, null, null, Report._day, dateStart, dateEnd);
+    return entityPersister.get(classR, null, null, Report.DAY, dateStart, dateEnd);
   }
 
   // ReportCampaign
   public List<ReportCampaign> getReportCampaignByCampaignId(Long campaignId, Date dateStart,
       Date dateEnd) {
-    return entityPersister.get(ReportCampaign.class, ReportCampaign._campaignId, campaignId,
-        Report._day, dateStart, dateEnd);
+    return entityPersister.get(ReportCampaign.class, ReportCampaign.CAMPAIGN_ID, campaignId,
+        Report.DAY, dateStart, dateEnd);
   }
 
   // ReportAdGroup
   public List<ReportAdGroup> getReportAdGroupByCampaignId(Long campaignId, Date dateStart,
       Date dateEnd) {
-    return entityPersister.get(ReportAdGroup.class, ReportAdGroup._campaignId, campaignId,
-        Report._day, dateStart, dateEnd);
+    return entityPersister.get(ReportAdGroup.class, ReportAdGroup.CAMPAIGN_ID, campaignId,
+        Report.DAY, dateStart, dateEnd);
   }
 
   public List<ReportAdGroup> getReportAdGroupByAdGroupId(Long adGroupId, Date dateStart,
       Date dateEnd) {
-    return entityPersister.get(ReportAdGroup.class, ReportAdGroup._adGroupId, adGroupId, Report._day,
+    return entityPersister.get(ReportAdGroup.class, ReportAdGroup.ADGROUP_ID, adGroupId, Report.DAY,
         dateStart, dateEnd);
   }
 
   // ReportAd
   public List<ReportAd> getReportAdByCampaignId(Long campaignId, Date dateStart, Date dateEnd) {
-    return entityPersister.get(ReportAd.class, ReportAd._campaignId, campaignId, Report._day,
+    return entityPersister.get(ReportAd.class, ReportAd.CAMPAIGN_ID, campaignId, Report.DAY,
         dateStart, dateEnd);
   }
 
   public List<ReportAd> getReportAdByAdGroupId(Long adGroupId, Date dateStart, Date dateEnd) {
-    return entityPersister.get(ReportAd.class, ReportAd._adGroupId, adGroupId, Report._day, dateStart,
+    return entityPersister.get(ReportAd.class, ReportAd.ADGROUP_ID, adGroupId, Report.DAY, dateStart,
         dateEnd);
   }
 
   public List<ReportAd> getReportAdByAdId(Long adId, Date dateStart, Date dateEnd) {
-    return entityPersister.get(ReportAd.class, ReportAd._adId, adId, Report._day, dateStart, dateEnd);
+    return entityPersister.get(ReportAd.class, ReportAd.AD_ID, adId, Report.DAY, dateStart, dateEnd);
   }
 
   // ReportKeyword
   public List<ReportKeyword> getReportKeywordByCampaignId(Long campaignId, Date dateStart,
       Date dateEnd) {
-    return entityPersister.get(ReportKeyword.class, ReportKeyword._campaignId, campaignId,
-        Report._day, dateStart, dateEnd);
+    return entityPersister.get(ReportKeyword.class, ReportKeyword.CAMPAIGN_ID, campaignId,
+        Report.DAY, dateStart, dateEnd);
   }
 
   public List<ReportKeyword> getReportKeywordByAdGroupId(Long adGroupId, Date dateStart,
       Date dateEnd) {
-    return entityPersister.get(ReportKeyword.class, ReportKeyword._adGroupId, adGroupId, Report._day,
+    return entityPersister.get(ReportKeyword.class, ReportKeyword.ADGROUP_ID, adGroupId, Report.DAY,
         dateStart, dateEnd);
   }
 
   public List<ReportKeyword> getReportKeywordByKeywordId(Long keywordId, Date dateStart,
       Date dateEnd) {
-    return entityPersister.get(ReportKeyword.class, ReportKeyword._keywordId, keywordId, Report._day,
+    return entityPersister.get(ReportKeyword.class, ReportKeyword.KEYWORD_ID, keywordId, Report.DAY,
         dateStart, dateEnd);
   }
 
   // ReportAdExtension
   public List<ReportAdExtension> getReportAdExtensionByCampaignId(Long campaignId, Date dateStart,
       Date dateEnd) {
-    return entityPersister.get(ReportAdExtension.class, ReportAdExtension._campaignId, campaignId,
-        Report._day, dateStart, dateEnd);
+    return entityPersister.get(ReportAdExtension.class, ReportAdExtension.CAMPAIGN_ID, campaignId,
+        Report.DAY, dateStart, dateEnd);
   }
 
   public List<ReportAdExtension> getReportAdExtensionByAdExtensionId(Long adExtensionId, Date dateStart,
       Date dateEnd) {
-    return entityPersister.get(ReportAdExtension.class, ReportAdExtension._adExtensionId, adExtensionId, Report._day,
+    return entityPersister.get(ReportAdExtension.class, ReportAdExtension.ADEXTENSION_ID, adExtensionId, Report.DAY,
         dateStart, dateEnd);
   }
 
   // ReportCampaignNegativeKeyword
   public List<ReportCampaignNegativeKeyword> getReportCampaignNegativeKeywordByCampaignId(Long keywordId, Date dateStart,
       Date dateEnd) {
-    return entityPersister.get(ReportCampaignNegativeKeyword.class, ReportCampaignNegativeKeyword._campaignId, keywordId, Report._day,
+    return entityPersister.get(ReportCampaignNegativeKeyword.class, ReportCampaignNegativeKeyword.CAMPAIGN_ID, keywordId, Report.DAY,
         dateStart, dateEnd);
   }
 
   public List<ReportCampaignNegativeKeyword> getReportCampaignNegativeKeywordByKeywordId(Long keywordId, Date dateStart,
       Date dateEnd) {
-    return entityPersister.get(ReportCampaignNegativeKeyword.class, ReportCampaignNegativeKeyword._keywordId, keywordId, Report._day,
+    return entityPersister.get(ReportCampaignNegativeKeyword.class, ReportCampaignNegativeKeyword.KEYWORD_ID, keywordId, Report.DAY,
         dateStart, dateEnd);
   }
 
   public List<ReportCampaignNegativeKeyword> getReportCampaignNegativeKeywordByEndDateInRange(
       Date dateStart, Date dateEnd) {
 
-    return entityPersister.get(ReportCampaignNegativeKeyword.class, null, null, Report._dateEnd,
+    return entityPersister.get(ReportCampaignNegativeKeyword.class, null, null, Report.DATE_END,
         DateUtil.formatYearMonthDayNoDash(dateStart), DateUtil.formatYearMonthDayNoDash(dateEnd));
   }
   
   public List<ReportCampaignNegativeKeyword> getReportCampaignNegativeKeywordByAccountAndEndDateInRange(
       Long accountId, Date dateStart, Date dateEnd) {
 
-    return entityPersister.get(ReportCampaignNegativeKeyword.class, Report._accountId, accountId, Report._dateEnd,
+    return entityPersister.get(ReportCampaignNegativeKeyword.class, Report.ACCOUNT_ID, accountId, Report.DATE_END,
         DateUtil.formatYearMonthDayNoDash(dateStart), DateUtil.formatYearMonthDayNoDash(dateEnd));
   }
 
@@ -223,8 +223,8 @@ public class StorageHelper {
   public void createReportIndexes() {
     // Crete Indexes
     List<String> indexes = Lists.newArrayList();
-    indexes.add(Report._accountId);
-    indexes.add(Report._day);
+    indexes.add(Report.ACCOUNT_ID);
+    indexes.add(Report.DAY);
     entityPersister.createIndex(ReportAccount.class, indexes);
     entityPersister.createIndex(ReportCampaign.class, indexes);
     entityPersister.createIndex(ReportAdGroup.class, indexes);
