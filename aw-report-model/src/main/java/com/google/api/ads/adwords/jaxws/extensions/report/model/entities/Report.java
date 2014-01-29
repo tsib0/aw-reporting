@@ -37,22 +37,22 @@ import javax.persistence.MappedSuperclass;
 public abstract class Report {
 
   // Variables for Persistence queries
-  public static final String __id = "_id";
-  public static final String _partnerId = "partnerId";
-  public static final String _topAccountId = "topAccountId";
-  public static final String _accountId = "accountId";
-  public static final String _campaignId = "campaignId";
-  public static final String _adGroupId = "adGroupId";
-  public static final String _keywordId = "keywordId";
-  public static final String _adId = "adId";
-  public static final String _adExtensionId = "adExtensionId";
-  public static final String _day = "day";
-  public static final String _dateStart = "dateStart";
-  public static final String _dateEnd = "dateEnd";
+  public static final String ID = "id";
+  public static final String PARTNER_ID = "partnerId";
+  public static final String TOP_ACCOUNT_ID = "topAccountId";
+  public static final String ACCOUNT_ID = "accountId";
+  public static final String CAMPAIGN_ID = "campaignId";
+  public static final String ADGROUP_ID = "adGroupId";
+  public static final String KEYWORD_ID = "keywordId";
+  public static final String AD_ID = "adId";
+  public static final String ADEXTENSION_ID = "adExtensionId";
+  public static final String DAY = "day";
+  public static final String DATE_START = "dateStart";
+  public static final String DATE_END = "dateEnd";
 
   @Id
   @Column(name = "ROW_ID")
-  protected String _id;
+  protected String id;
 
   @Column(name = "PARTNER_ID")
   protected Long partnerId;
@@ -95,8 +95,8 @@ public abstract class Report {
     return "";
   }
 
-  public String get_id() {
-    return _id;
+  public String getId() {
+    return id;
   }
 
   public Long getPartnerId() {
@@ -159,7 +159,7 @@ public abstract class Report {
   public int hashCode() {
     final int prime = 31;
     int result = 1;
-    result = prime * result + ((_id == null) ? 0 : _id.hashCode());
+    result = prime * result + ((id == null) ? 0 : id.hashCode());
     result = prime * result + ((accountId == null) ? 0 : accountId.hashCode());
     result = prime * result + ((dateEnd == null) ? 0 : dateEnd.hashCode());
     result = prime * result + ((dateRangeType == null) ? 0 : dateRangeType.hashCode());
@@ -182,11 +182,11 @@ public abstract class Report {
       return false;
     }
     Report other = (Report) obj;
-    if (_id == null) {
-      if (other._id != null) {
+    if (id == null) {
+      if (other.id != null) {
         return false;
       }
-    } else if (!_id.equals(other._id)) {
+    } else if (!id.equals(other.id)) {
       return false;
     }
     if (accountId == null) {

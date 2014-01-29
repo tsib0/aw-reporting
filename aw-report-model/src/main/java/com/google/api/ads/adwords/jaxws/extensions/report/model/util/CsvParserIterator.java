@@ -7,6 +7,8 @@ import au.com.bytecode.opencsv.bean.MappingStrategy;
 
 /**
  * Iterator to read one line at a time from the CSV file.
+ * 
+ * @param <T> type of class to map.
  */
 public class CsvParserIterator<T> extends AbstractIterator<T> {
 
