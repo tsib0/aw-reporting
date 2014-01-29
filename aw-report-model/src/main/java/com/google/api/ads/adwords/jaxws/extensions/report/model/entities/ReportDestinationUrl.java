@@ -148,7 +148,8 @@ public class ReportDestinationUrl extends ReportBase {
   private BigDecimal valuePerConversion;
 
   @Column(name = "VALUEPERCONVERSIONMANYPERCLICK")
-  @CsvField(value = "Value / conv. (many-per-click)", reportField = "ValuePerConversionManyPerClick")
+  @CsvField(value = "Value / conv. (many-per-click)",
+  reportField = "ValuePerConversionManyPerClick")
   private BigDecimal valuePerConversionManyPerClick;
 
   @Column(name = "VALUEPERCONVMANYPERCLICK")
@@ -181,44 +182,44 @@ public class ReportDestinationUrl extends ReportBase {
   @Override
   public void setId() {
 
-    // Generating unique _id after having accountId, campaignId, adGroupId and date
-    this._id = "";
+    // Generating unique id after having accountId, campaignId, adGroupId and date
+    this.id = "";
     if (this.getAccountId() != null) {
-      this._id += this.getAccountId() + "-";
+      this.id += this.getAccountId() + "-";
     }
     if (this.getCampaignId() != null) {
-      this._id += this.getCampaignId() + "-";
+      this.id += this.getCampaignId() + "-";
     }
     if (this.getAdGroupId() != null) {
-      this._id += this.getAdGroupId() + "-";
+      this.id += this.getAdGroupId() + "-";
     }
     if (this.getAdNetwork() != null) {
-      this._id += this.getAdNetwork() + "-";
+      this.id += this.getAdNetwork() + "-";
     }
     if (this.getAdNetworkPartners() != null) {
-      this._id += this.getAdNetworkPartners() + "-";
+      this.id += this.getAdNetworkPartners() + "-";
     }
     if (this.getClickType() != null) {
-      this._id += this.getClickType() + "-";
+      this.id += this.getClickType() + "-";
     }
     if (this.getCriteriaParameters() != null) { 
-      this._id += this.getCriteriaParameters() + "-";
+      this.id += this.getCriteriaParameters() + "-";
     }
 
-    this._id += setIdDates();
+    this.id += setIdDates();
 
     // Adding extra fields for unique ID
     if (this.getAdNetwork() != null && this.getAdNetwork().length() > 0) {
-      this._id += "-" + this.getAdNetwork();
+      this.id += "-" + this.getAdNetwork();
     }
     if (this.getAdNetworkPartners() != null && this.getAdNetworkPartners().length() > 0) {
-      this._id += "-" + this.getAdNetworkPartners();
+      this.id += "-" + this.getAdNetworkPartners();
     }
     if (this.getDevice() != null && this.getDevice().length() > 0) {
-      this._id += "-" + this.getDevice();
+      this.id += "-" + this.getDevice();
     }
     if (this.getClickType() != null && this.getClickType().length() > 0) {
-      this._id += "-" + this.getClickType();
+      this.id += "-" + this.getClickType();
     }
   }
 
@@ -295,7 +296,8 @@ public class ReportDestinationUrl extends ReportBase {
   }
 
   public void setConversionRateManyPerClick(String conversionRateManyPerClick) {
-    this.conversionRateManyPerClick = BigDecimalUtil.parseFromNumberString(conversionRateManyPerClick);
+    this.conversionRateManyPerClick =
+        BigDecimalUtil.parseFromNumberString(conversionRateManyPerClick);
   }
 
   public void setConversionRateManyPerClick(BigDecimal conversionRateManyPerClick) {
@@ -335,7 +337,8 @@ public class ReportDestinationUrl extends ReportBase {
   }
 
   public void setCostPerConversionManyPerClick(String costPerConversionManyPerClick) {
-    this.costPerConversionManyPerClick = BigDecimalUtil.parseFromNumberString(costPerConversionManyPerClick);
+    this.costPerConversionManyPerClick =
+        BigDecimalUtil.parseFromNumberString(costPerConversionManyPerClick);
   }
 
   public void setCostPerConversionManyPerClick(BigDecimal costPerConversionManyPerClick) {
@@ -479,7 +482,8 @@ public class ReportDestinationUrl extends ReportBase {
   }
 
   public void setValuePerConversionManyPerClick(String valuePerConversionManyPerClick) {
-    this.valuePerConversionManyPerClick = BigDecimalUtil.parseFromNumberString(valuePerConversionManyPerClick);
+    this.valuePerConversionManyPerClick =
+        BigDecimalUtil.parseFromNumberString(valuePerConversionManyPerClick);
   }
 
   public void setValuePerConversionManyPerClick(BigDecimal valuePerConversionManyPerClick) {

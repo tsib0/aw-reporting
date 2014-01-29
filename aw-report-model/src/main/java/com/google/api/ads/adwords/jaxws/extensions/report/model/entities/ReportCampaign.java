@@ -64,25 +64,25 @@ public class ReportCampaign extends ReportBase {
 
   @Override
   public void setId() {
-    // Generating unique _id after having accountId, campaignId and date
+    // Generating unique id after having accountId, campaignId and date
     if (this.getAccountId() != null && this.getCampaignId() != null) {
-      this._id = this.getAccountId() + "-" + this.getCampaignId();
+      this.id = this.getAccountId() + "-" + this.getCampaignId();
     }
 
-    this._id += setIdDates();
+    this.id += setIdDates();
 
     // Adding extra fields for unique ID
     if (this.getAdNetwork() != null && this.getAdNetwork().length() > 0) {
-      this._id += "-" + this.getAdNetwork();
+      this.id += "-" + this.getAdNetwork();
     }
     if (this.getAdNetworkPartners() != null && this.getAdNetworkPartners().length() > 0) {
-      this._id += "-" + this.getAdNetworkPartners();
+      this.id += "-" + this.getAdNetworkPartners();
     }
     if (this.getDevice() != null && this.getDevice().length() > 0) {
-      this._id += "-" + this.getDevice();
+      this.id += "-" + this.getDevice();
     }
     if (this.getClickType() != null && this.getClickType().length() > 0) {
-      this._id += "-" + this.getClickType();
+      this.id += "-" + this.getClickType();
     }
   }
 

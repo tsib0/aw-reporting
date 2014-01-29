@@ -31,6 +31,8 @@ import com.mongodb.MongoClientURI;
 import com.mongodb.MongoException;
 import com.mongodb.WriteConcern;
 
+import org.joda.time.DateTime;
+
 import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -38,8 +40,6 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import org.joda.time.DateTime;
 
 /**
  * MongoDB implementation of NoSqlStorage
@@ -332,7 +332,8 @@ public class MongoEntityPersister implements EntityPersister {
   }
 
   /**
-   * @see com.google.api.ads.adwords.jaxws.extensions.report.model.persistence.EntityPersister#persistReportEntities(java.util.List)
+   * @see com.google.api.ads.adwords.jaxws.extensions.report.model.persistence.EntityPersister#
+   * persistReportEntities(java.util.List)
    */
   @Override
   public void persistReportEntities(List<? extends Report> reportEntities) {
@@ -341,7 +342,8 @@ public class MongoEntityPersister implements EntityPersister {
   }
 
   /**
-   * @see com.google.api.ads.adwords.jaxws.extensions.report.model.persistence.EntityPersister#listReports(java.lang.Class)
+   * @see com.google.api.ads.adwords.jaxws.extensions.report.model.persistence.EntityPersister#
+   * listReports(java.lang.Class)
    */
   @Override
   public <T extends Report> List<T> listReports(Class<T> clazz) {
@@ -350,7 +352,8 @@ public class MongoEntityPersister implements EntityPersister {
   }
 
   /**
-   * @see com.google.api.ads.adwords.jaxws.extensions.report.model.persistence.EntityPersister#removeReportEntities(java.util.Collection)
+   * @see com.google.api.ads.adwords.jaxws.extensions.report.model.persistence.EntityPersister#
+   * removeReportEntities(java.util.Collection)
    */
   @Override
   public void removeReportEntities(Collection<? extends Report> reportEntities) {

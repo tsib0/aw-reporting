@@ -12,15 +12,30 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package com.google.api.ads.adwords.jaxws.extensions.util;
+package com.google.api.ads.adwords.jaxws.extensions.report.model.entities.dateranges;
+
+import org.joda.time.DateTime;
 
 /**
- * Enum to describe the database type
- *
- * @author gustavomoreira@google.com (Gustavo Moreira)
+ * Handles the date range for the LAST_WEEK type.
+ * 
+ * @author gustavomoreira
  */
-public enum DataBaseType {
+public class LastWeekDateRangeHandler implements DateRangeHandler {
 
-  SQL, MONGODB
+  @Override
+  public DateTime retrieveDateStart(DateTime date) {
+    return date.minusWeeks(1).minusDays(date.getDayOfWeek() - 1);
+  }
+
+  @Override
+  public DateTime retrieveDateEnd(DateTime date) {
+    return date.minusWeeks(1).plusDays(7 - date.getDayOfWeek());
+  }
+
+  @Override
+  public DateTime retrieveMonth(DateTime date) {
+    return null;
+  }
 
 }
