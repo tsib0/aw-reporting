@@ -75,12 +75,12 @@ public class ReportBudget extends ReportBase {
 
   @Override
   public void setId() {
-    // Generating unique _id after having date and accountId
-    this._id = this.getBudgetId().toString();
+    // Generating unique id after having date and accountId
+    this.id = this.getBudgetId().toString();
 
     // Adding extra fields for unique ID
     if (this.getPeriod() != null && this.getPeriod().length() > 0) {
-      this._id += "-" + this.getPeriod();
+      this.id += "-" + this.getPeriod();
     }
   }
 

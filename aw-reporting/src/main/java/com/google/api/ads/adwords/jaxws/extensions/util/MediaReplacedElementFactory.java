@@ -1,7 +1,20 @@
+// Copyright 2013 Google Inc. All Rights Reserved.
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+// http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
 package com.google.api.ads.adwords.jaxws.extensions.util;
 
-import java.io.FileInputStream;
-import java.io.InputStream;
+import com.lowagie.text.Image;
 
 import org.apache.commons.io.IOUtils;
 import org.w3c.dom.Element;
@@ -15,11 +28,12 @@ import org.xhtmlrenderer.pdf.ITextImageElement;
 import org.xhtmlrenderer.render.BlockBox;
 import org.xhtmlrenderer.simple.extend.FormSubmissionListener;
 
-import com.lowagie.text.Image;
+import java.io.FileInputStream;
+import java.io.InputStream;
 
 /**
- * Replaced element in order to replace elements like <tt>&lt;div class="media" data-src="image.png"
- * /></tt> with the real media content.
+ * Replaced element in order to replace elements like
+ * <tt>&lt;div class="media" data-src="image.png"/></tt> with the real media content.
  *
  * @author markbowyer borrowed totally from "Alex" on StackOverflow.
  */
@@ -50,7 +64,8 @@ public class MediaReplacedElementFactory implements ReplacedElementFactory {
     if ("div".equals(nodeName) && "media".equals(className)) {
       if (!element.hasAttribute("data-src")) {
         throw new RuntimeException(
-            "An element with class `media` is missing a `data-src` attribute indicating the media file.");
+            "An element with class `media` is missing a `data-src` "
+                + "attribute indicating the media file.");
       }
       InputStream input = null;
       try {

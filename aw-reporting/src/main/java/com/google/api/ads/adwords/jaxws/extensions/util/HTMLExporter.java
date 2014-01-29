@@ -41,7 +41,7 @@ public class HTMLExporter {
   /**
    * Exports an HTML file of the given report
    *
-   * @param reports the data from the Report
+   * @param map the data from the Report
    * @param templateFile where to read out the HTML template
    * @param outputFile where to write out the HTML
    * @throws IOException error writing HTML file
@@ -53,7 +53,7 @@ public class HTMLExporter {
     FileReader templateReader = new FileReader(templateFile);
     FileWriter fileWriter = new FileWriter(outputFile);
 
-    Mustache.compiler().compile(templateReader).execute((Object) map, fileWriter);
+    Mustache.compiler().compile(templateReader).execute(map, fileWriter);
 
     fileWriter.flush();
     fileWriter.close();

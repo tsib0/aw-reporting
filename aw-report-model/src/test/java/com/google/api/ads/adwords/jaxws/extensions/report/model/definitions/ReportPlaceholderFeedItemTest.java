@@ -1,18 +1,28 @@
-/**
- * 
- */
+// Copyright 2013 Google Inc. All Rights Reserved.
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+// http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
 package com.google.api.ads.adwords.jaxws.extensions.report.model.definitions;
+
+import com.google.api.ads.adwords.jaxws.extensions.report.model.entities.ReportPlaceholderFeedItem;
+import com.google.api.ads.adwords.jaxws.extensions.report.model.util.BigDecimalUtil;
+import com.google.api.ads.adwords.lib.jaxb.v201309.ReportDefinitionReportType;
 
 import junit.framework.Assert;
 
 import org.junit.runner.RunWith;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-
-import com.google.api.ads.adwords.jaxws.extensions.report.model.definitions.AbstractReportDefinitionTest;
-import com.google.api.ads.adwords.jaxws.extensions.report.model.entities.ReportPlaceholderFeedItem;
-import com.google.api.ads.adwords.jaxws.extensions.report.model.util.BigDecimalUtil;
-import com.google.api.ads.adwords.lib.jaxb.v201309.ReportDefinitionReportType;
 
 /**
  * Tests the Placeholder Feed Item report definition.
@@ -23,7 +33,7 @@ import com.google.api.ads.adwords.lib.jaxb.v201309.ReportDefinitionReportType;
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration("classpath:aw-report-model-test-beans.xml")
 public class ReportPlaceholderFeedItemTest extends
-    AbstractReportDefinitionTest<ReportPlaceholderFeedItem> {
+AbstractReportDefinitionTest<ReportPlaceholderFeedItem> {
 
   /**
    * C'tor
@@ -31,8 +41,8 @@ public class ReportPlaceholderFeedItemTest extends
   public ReportPlaceholderFeedItemTest() {
 
     super(ReportPlaceholderFeedItem.class,
-    ReportDefinitionReportType.PLACEHOLDER_FEED_ITEM_REPORT,
-    "src/test/resources/csv/placeholder-feeditem.csv") ;
+        ReportDefinitionReportType.PLACEHOLDER_FEED_ITEM_REPORT,
+        "src/test/resources/csv/placeholder-feeditem.csv");
   }
 
   @Override
@@ -42,17 +52,24 @@ public class ReportPlaceholderFeedItemTest extends
     Assert.assertEquals(421887, first.getFeedId().longValue());
     Assert.assertEquals(1785447, first.getFeedItemId().longValue());
     Assert.assertEquals(1, first.getFeedPlaceholderType());
-    Assert.assertEquals(BigDecimalUtil.parseFromNumberString("0.0"), BigDecimalUtil.parseFromNumberString(first.getValuePerConversion1()));
-    Assert.assertEquals(BigDecimalUtil.parseFromNumberString("0.0"), BigDecimalUtil.parseFromNumberString(first.getValuePerConversionMany()));
+    Assert.assertEquals(BigDecimalUtil.parseFromNumberString("0.0"),
+        BigDecimalUtil.parseFromNumberString(first.getValuePerConversion1()));
+    Assert.assertEquals(BigDecimalUtil.parseFromNumberString("0.0"),
+        BigDecimalUtil.parseFromNumberString(first.getValuePerConversionMany()));
     Assert.assertEquals("Les Ecuries De Kerballan - Gommenech", first.getAccountDescriptiveName());
-    Assert.assertEquals(BigDecimalUtil.parseFromNumberString("0.7"), BigDecimalUtil.parseFromNumberString(first.getCost()));
+    Assert.assertEquals(BigDecimalUtil.parseFromNumberString("0.7"),
+        BigDecimalUtil.parseFromNumberString(first.getCost()));
     Assert.assertEquals(9, first.getClicks().intValue());
     Assert.assertEquals(74, first.getImpressions().intValue());
     Assert.assertEquals(0, first.getConversions().intValue());
-    Assert.assertEquals(BigDecimalUtil.parseFromNumberString("12.16"), BigDecimalUtil.parseFromNumberString(first.getCtr()));
-    Assert.assertEquals(BigDecimalUtil.parseFromNumberString("9.46"), BigDecimalUtil.parseFromNumberString(first.getAvgCpm()));
-    Assert.assertEquals(BigDecimalUtil.parseFromNumberString("0.08"), BigDecimalUtil.parseFromNumberString(first.getAvgCpc()));
-    Assert.assertEquals(BigDecimalUtil.parseFromNumberString("2.2"), BigDecimalUtil.parseFromNumberString(first.getAvgPosition()));
+    Assert.assertEquals(BigDecimalUtil.parseFromNumberString("12.16"),
+        BigDecimalUtil.parseFromNumberString(first.getCtr()));
+    Assert.assertEquals(BigDecimalUtil.parseFromNumberString("9.46"),
+        BigDecimalUtil.parseFromNumberString(first.getAvgCpm()));
+    Assert.assertEquals(BigDecimalUtil.parseFromNumberString("0.08"),
+        BigDecimalUtil.parseFromNumberString(first.getAvgCpc()));
+    Assert.assertEquals(BigDecimalUtil.parseFromNumberString("2.2"),
+        BigDecimalUtil.parseFromNumberString(first.getAvgPosition()));
     Assert.assertEquals("Headline", first.getClickType());
     Assert.assertEquals("Search Network", first.getAdNetwork());    
   }
@@ -64,17 +81,24 @@ public class ReportPlaceholderFeedItemTest extends
     Assert.assertEquals(421887, last.getFeedId().longValue());
     Assert.assertEquals(1785567, last.getFeedItemId().longValue());
     Assert.assertEquals(1, last.getFeedPlaceholderType());
-    Assert.assertEquals(BigDecimalUtil.parseFromNumberString("0.0"), BigDecimalUtil.parseFromNumberString(last.getValuePerConversion1()));
-    Assert.assertEquals(BigDecimalUtil.parseFromNumberString("0.0"), BigDecimalUtil.parseFromNumberString(last.getValuePerConversionMany()));
+    Assert.assertEquals(BigDecimalUtil.parseFromNumberString("0.0"),
+        BigDecimalUtil.parseFromNumberString(last.getValuePerConversion1()));
+    Assert.assertEquals(BigDecimalUtil.parseFromNumberString("0.0"),
+        BigDecimalUtil.parseFromNumberString(last.getValuePerConversionMany()));
     Assert.assertEquals("Les Ecuries De Kerballan - Gommenech", last.getAccountDescriptiveName());
-    Assert.assertEquals(BigDecimalUtil.parseFromNumberString("0.0"), BigDecimalUtil.parseFromNumberString(last.getCost()));
+    Assert.assertEquals(BigDecimalUtil.parseFromNumberString("0.0"),
+        BigDecimalUtil.parseFromNumberString(last.getCost()));
     Assert.assertEquals(0, last.getClicks().intValue());
     Assert.assertEquals(130, last.getImpressions().intValue());
     Assert.assertEquals(0, last.getConversions().intValue());
-    Assert.assertEquals(BigDecimalUtil.parseFromNumberString("0.0"), BigDecimalUtil.parseFromNumberString(last.getCtr()));
-    Assert.assertEquals(BigDecimalUtil.parseFromNumberString("0.0"), BigDecimalUtil.parseFromNumberString(last.getAvgCpm()));
-    Assert.assertEquals(BigDecimalUtil.parseFromNumberString("0.0"), BigDecimalUtil.parseFromNumberString(last.getAvgCpc()));
-    Assert.assertEquals(BigDecimalUtil.parseFromNumberString("2.8"), BigDecimalUtil.parseFromNumberString(last.getAvgPosition()));
+    Assert.assertEquals(BigDecimalUtil.parseFromNumberString("0.0"),
+        BigDecimalUtil.parseFromNumberString(last.getCtr()));
+    Assert.assertEquals(BigDecimalUtil.parseFromNumberString("0.0"),
+        BigDecimalUtil.parseFromNumberString(last.getAvgCpm()));
+    Assert.assertEquals(BigDecimalUtil.parseFromNumberString("0.0"),
+        BigDecimalUtil.parseFromNumberString(last.getAvgCpc()));
+    Assert.assertEquals(BigDecimalUtil.parseFromNumberString("2.8"),
+        BigDecimalUtil.parseFromNumberString(last.getAvgPosition()));
     Assert.assertEquals("Sitelink", last.getClickType());
     Assert.assertEquals("Search Network", last.getAdNetwork());
   }
@@ -123,6 +147,6 @@ public class ReportPlaceholderFeedItemTest extends
         "PrimaryCompanyName",
         "TotalConvValue",
         "ValuePerConv",
-        "ValuePerConvManyPerClick"};
+    "ValuePerConvManyPerClick"};
   }
 }

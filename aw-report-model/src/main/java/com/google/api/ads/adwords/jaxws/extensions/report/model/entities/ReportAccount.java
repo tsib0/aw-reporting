@@ -72,23 +72,23 @@ public class ReportAccount extends ReportBase {
 
   @Override
   public void setId() {
-    // Generating unique _id after having date and accountId
-    this._id = this.getAccountId().toString();
+    // Generating unique id after having date and accountId
+    this.id = this.getAccountId().toString();
 
-    this._id += setIdDates();
+    this.id += setIdDates();
 
     // Adding extra fields for unique ID
     if (this.getAdNetwork() != null && this.getAdNetwork().length() > 0) {
-      this._id += "-" + this.getAdNetwork();
+      this.id += "-" + this.getAdNetwork();
     }
     if (this.getAdNetworkPartners() != null && this.getAdNetworkPartners().length() > 0) {
-      this._id += "-" + this.getAdNetworkPartners();
+      this.id += "-" + this.getAdNetworkPartners();
     }
     if (this.getDevice() != null && this.getDevice().length() > 0) {
-      this._id += "-" + this.getDevice();
+      this.id += "-" + this.getDevice();
     }
     if (this.getClickType() != null && this.getClickType().length() > 0) {
-      this._id += "-" + this.getClickType();
+      this.id += "-" + this.getClickType();
     }
   }
 
@@ -141,7 +141,8 @@ public class ReportAccount extends ReportBase {
 
   public void setContentImpressionShare(String contentImpressionShare) {
     contentImpressionShare = contentImpressionShare.replaceAll("--", "0");
-    this.contentImpressionShare = new BigDecimal(contentImpressionShare.replaceAll("\\s|%|>|<", ""));
+    this.contentImpressionShare =
+        new BigDecimal(contentImpressionShare.replaceAll("\\s|%|>|<", ""));
   }
 
   public String getContentLostISBudget() {

@@ -132,7 +132,7 @@ public class HTMLExporterTest {
     reportAccount.setMonth(DateTime.now());
     reportAccount.setAccountDescriptiveName("Test Account Name");
     reportAccount.setAccountId(idNumber);
-    reportAccount.setImpressions(99l);
+    reportAccount.setImpressions(99L);
     reportAccount.setCost(new BigDecimal(99.99));
     reportAccount.setAvgCpc(new BigDecimal(2.00));
     reportAccount.setAvgCpm(new BigDecimal(1.00));
