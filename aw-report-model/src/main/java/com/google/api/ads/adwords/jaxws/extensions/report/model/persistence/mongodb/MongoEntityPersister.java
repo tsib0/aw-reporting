@@ -63,17 +63,14 @@ public class MongoEntityPersister implements EntityPersister {
    *      #get(java.lang.Class, java.util.Map, int, int)
    */
   @Override
-  public <T, V> List<T> get(Class<T> t, Map<String, V> keyValueList, int numToSkip, int limit) {
-    DBCollection dbcollection;
-    dbcollection = db.getCollection(t.getCanonicalName());
-
+  public <T, V> List<T> get(Class<T> classT, Map<String, V> keyValueList, int numToSkip, int limit) {
     BasicDBObject query = new BasicDBObject();
     if (keyValueList != null) {
       for (String key : keyValueList.keySet()) {
         query.put(key, keyValueList.get(key));
       }
     }
-    DBCursor cur = dbcollection.find(query);
+    DBCursor cur = getCollection(classT).find(query);
 
     if (limit > 0) {
       cur.limit(limit);
@@ -85,7 +82,7 @@ public class MongoEntityPersister implements EntityPersister {
     List<T> list = new ArrayList<T>();
     while (cur.hasNext()) {
       DBObject dbObject = cur.next();
-      list.add(gson.fromJson(com.mongodb.util.JSON.serialize(dbObject), t));
+      list.add(gson.fromJson(com.mongodb.util.JSON.serialize(dbObject), classT));
     }
     return list;
   }
@@ -203,6 +200,19 @@ public class MongoEntityPersister implements EntityPersister {
   }
 
   /**
+   * Gets the DB Collection for the Object type T
+   * 
+   * @returns the DBCollection for the Object type T
+   */
+  private <T> DBCollection getCollection(Class<T> classT) {
+    if (db.collectionExists(classT.getCanonicalName())) {
+      return  db.getCollection(classT.getCanonicalName());
+    } else {
+      return db.createCollection(classT.getCanonicalName(), new BasicDBObject());
+    }
+  }
+
+  /**
    * @see com.google.api.ads.adwords.jaxws.extensions.report.model.persistence.EntityPersister
    *      #save(java.lang.Object)
    */
@@ -211,18 +221,16 @@ public class MongoEntityPersister implements EntityPersister {
     T newT = null;
     if (t != null) {
 
-      DBCollection dbcollection;
-      if (db.collectionExists(t.getClass().getCanonicalName())) {
-        dbcollection = db.getCollection(t.getClass().getCanonicalName());
-      } else {
-        dbcollection = db.createCollection(t.getClass().getCanonicalName(), new BasicDBObject());
-      }
-
       String jsonObject;
       jsonObject = gson.toJson(t);
       DBObject dbObject = (DBObject) com.mongodb.util.JSON.parse(jsonObject.toString());
       dbObject.put("safe", "true");
-      dbcollection.save(dbObject, WriteConcern.SAFE);
+
+      if (t instanceof Report) {
+        dbObject.put("_id", ((Report) t).getId());
+      }
+
+      getCollection(t.getClass()).save(dbObject, WriteConcern.SAFE);
     }
     return newT;
   }
@@ -234,23 +242,15 @@ public class MongoEntityPersister implements EntityPersister {
   @Override
   public <T> void save(List<T> listT) {
     if (listT != null && listT.size() > 0) {
-      DBCollection dbcollection;
       for (T t : listT) {
-        String classTName = t.getClass().getCanonicalName();
-
-        if (db.collectionExists(classTName)) {
-          dbcollection = db.getCollection(classTName);
-        } else {
-          dbcollection = db.createCollection(classTName, new BasicDBObject());
-        }
-
-        if (classTName.equals("model.adwords.ModelCampaign")) {
-          System.out.println(classTName);
-        }
         String jsonObject = gson.toJson(t);
-
         DBObject dbObject = (DBObject) com.mongodb.util.JSON.parse(jsonObject.toString());
-        dbcollection.save(dbObject);
+
+        if (t instanceof Report) {
+          dbObject.put("_id", ((Report) t).getId());
+        }
+
+        getCollection(t.getClass()).save(dbObject);
       }
     }
   }
@@ -262,16 +262,9 @@ public class MongoEntityPersister implements EntityPersister {
   @Override
   public <T> void remove(T t) {
     if (t != null) {
-      DBCollection dbcollection;
-      if (db.collectionExists(t.getClass().getCanonicalName())) {
-        dbcollection = db.getCollection(t.getClass().getCanonicalName());
-      } else {
-        dbcollection = db.createCollection(t.getClass().getCanonicalName(), new BasicDBObject());
-      }
-
       String jsonObject = gson.toJson(t);
       DBObject dbObject = (DBObject) com.mongodb.util.JSON.parse(jsonObject.toString());
-      dbcollection.remove(dbObject);
+      getCollection(t.getClass()).remove(dbObject);
     }
   }
 
@@ -282,19 +275,10 @@ public class MongoEntityPersister implements EntityPersister {
   @Override
   public <T> void remove(Collection<T> listT) {
     if (listT != null && listT.size() > 0) {
-      DBCollection dbcollection;
       for (T t : listT) {
-
-        String classTName = t.getClass().getCanonicalName();
-        if (db.collectionExists(classTName)) {
-          dbcollection = db.getCollection(classTName);
-        } else {
-          dbcollection = db.createCollection(classTName, new BasicDBObject());
-        }
-
         String jsonObject = gson.toJson(t);
         DBObject dbObject = (DBObject) com.mongodb.util.JSON.parse(jsonObject.toString());
-        dbcollection.remove(dbObject);
+        getCollection(t.getClass()).remove(dbObject);
       }
     }
   }
@@ -306,8 +290,7 @@ public class MongoEntityPersister implements EntityPersister {
    */
   @Override
   public <T> void createIndex(Class<T> classT, String key) {
-    DBCollection dbcollection = db.getCollection(classT.getCanonicalName());
-    dbcollection.ensureIndex(new BasicDBObject(key, 1));
+    getCollection(classT).ensureIndex(new BasicDBObject(key, 1));
   }
 
   /**
@@ -323,7 +306,7 @@ public class MongoEntityPersister implements EntityPersister {
         dbObject.put(key, 1);
       }
     }
-    DBCollection dbcollection = db.getCollection(classT.getCanonicalName());
+    DBCollection dbcollection =  getCollection(classT);
     dbcollection.ensureIndex(dbObject);
     List<DBObject> list = dbcollection.getIndexInfo();
     for (DBObject o : list) {
