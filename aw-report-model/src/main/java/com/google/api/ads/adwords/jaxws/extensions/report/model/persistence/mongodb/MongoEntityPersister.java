@@ -220,14 +220,14 @@ public class MongoEntityPersister implements EntityPersister {
   public <T> T save(T t) {
     T newT = null;
     if (t != null) {
-
       String jsonObject;
       jsonObject = gson.toJson(t);
       DBObject dbObject = (DBObject) com.mongodb.util.JSON.parse(jsonObject.toString());
       dbObject.put("safe", "true");
 
-      if (t instanceof Report) {
-        dbObject.put("_id", ((Report) t).getId());
+      // Set the proper _id from the MongoEntity ID
+      if (t instanceof MongoEntity) {
+        dbObject.put("_id", ((MongoEntity) t).getId()); 
       }
 
       getCollection(t.getClass()).save(dbObject, WriteConcern.SAFE);
@@ -246,8 +246,9 @@ public class MongoEntityPersister implements EntityPersister {
         String jsonObject = gson.toJson(t);
         DBObject dbObject = (DBObject) com.mongodb.util.JSON.parse(jsonObject.toString());
 
-        if (t instanceof Report) {
-          dbObject.put("_id", ((Report) t).getId());
+        // Set the proper _id from the MongoEntity ID
+        if (t instanceof MongoEntity) {
+          dbObject.put("_id", ((MongoEntity) t).getId()); 
         }
 
         getCollection(t.getClass()).save(dbObject);
