@@ -21,6 +21,7 @@ import com.google.api.ads.adwords.jaxws.extensions.report.model.entities.ReportA
 import com.google.api.ads.adwords.jaxws.extensions.report.model.entities.ReportCampaign;
 import com.google.api.ads.adwords.jaxws.extensions.report.model.entities.ReportCampaignNegativeKeyword;
 import com.google.api.ads.adwords.jaxws.extensions.report.model.entities.ReportKeyword;
+import com.google.api.ads.adwords.jaxws.extensions.report.model.persistence.mongodb.MongoEntity;
 import com.google.api.ads.adwords.jaxws.extensions.report.model.util.DateUtil;
 
 import org.joda.time.DateTime;
@@ -47,7 +48,7 @@ import javax.persistence.Table;
 @Table(name = "AW_Kratu")
 @org.hibernate.annotations.Table(appliesTo = "AW_Kratu", indexes = {
     @org.hibernate.annotations.Index(name = "ID-DAY", columnNames = {"EXTERNAL_CUSTOMER_ID", "DAY"})})
-public class Kratu {
+public class Kratu implements MongoEntity {
   
   private static final BigDecimal BIGDECIMAL_100 = new BigDecimal(100);
 
@@ -70,7 +71,7 @@ public class Kratu {
 
   @Id
   @Column(name = "ID")
-  protected String _id;
+  protected String id;
 
   @Column(name = "EXTERNAL_CUSTOMER_ID")
   protected Long externalCustomerId;
@@ -227,6 +228,10 @@ public class Kratu {
    */
   private Kratu() {
   }
+  
+  public String getId() {
+    return id;
+  }
 
   // Creates a Kratu, summarizing for a DateRange and for the same externalCustomerId.
   // Each item on the list is one Day.
@@ -335,7 +340,7 @@ public class Kratu {
       kratu.currencyCode = account.getCurrencyCode();
       kratu.dateTimeZone = account.getDateTimeZone();
       kratu.day = day;
-      kratu._id = accountId + "-" + DateUtil.formatYearMonthDayNoDash(day);
+      kratu.id = accountId + "-" + DateUtil.formatYearMonthDayNoDash(day);
       //kratu.accountName = reportAccountList.get(0).getAccountDescriptiveName();
       kratu.spend = BigDecimal.ZERO;
 
