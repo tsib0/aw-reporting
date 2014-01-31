@@ -14,6 +14,8 @@
 
 package com.google.api.ads.adwords.jaxws.extensions.report.model.entities;
 
+import com.google.api.ads.adwords.jaxws.extensions.report.model.persistence.mongodb.MongoEntity;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -27,7 +29,7 @@ import javax.persistence.Table;
  */
 @Entity
 @Table(name = "AW_AuthMcc")
-public class AuthMcc {
+public class AuthMcc implements MongoEntity {
 
   @Id
   @Column(name = "TOP_ACCOUNT_ID")
@@ -50,6 +52,10 @@ public class AuthMcc {
     this.authToken = authToken;
   }
 
+  public String getId() {
+    return topAccountId;
+  }
+  
   public String getTopAccountId() {
     return topAccountId;
   }
