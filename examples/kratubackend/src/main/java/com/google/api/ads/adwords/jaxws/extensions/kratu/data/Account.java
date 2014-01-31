@@ -14,6 +14,7 @@
 
 package com.google.api.ads.adwords.jaxws.extensions.kratu.data;
 
+import com.google.api.ads.adwords.jaxws.extensions.report.model.persistence.mongodb.MongoEntity;
 import com.google.api.ads.adwords.jaxws.v201309.mcm.ManagedCustomer;
 import com.google.common.collect.Lists;
 
@@ -31,13 +32,13 @@ import javax.persistence.Table;
  */
 @Entity
 @Table(name = "AW_Account")
-public class Account {
+public class Account implements MongoEntity {
 
   public static final String __id = "_id";
 
   @Id
   @Column(name = "ID")
-  private String _id;
+  private String id;
 
   @Column(name = "EXTERNAL_CUSTOMER_ID")
   private Long externalCustomerId;
@@ -61,7 +62,7 @@ public class Account {
   }
 
   Account(ManagedCustomer managedCustomer) {
-    _id = String.valueOf(managedCustomer.getCustomerId());
+    id = String.valueOf(managedCustomer.getCustomerId());
     externalCustomerId = managedCustomer.getCustomerId();
     name = managedCustomer.getName();
     currencyCode = managedCustomer.getCurrencyCode();
@@ -77,12 +78,12 @@ public class Account {
     return returnList;
   }
 
-  public String get_id() {
-    return _id;
+  public String getId() {
+    return id;
   }
 
-  public void set_id(String _id) {
-    this._id = _id;
+  public void setIid(String id) {
+    this.id = id;
   }
 
   public Long getExternalCustomerId() {
