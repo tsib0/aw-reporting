@@ -15,6 +15,7 @@
 package com.google.api.ads.adwords.jaxws.extensions.report.model.entities;
 
 import com.google.api.ads.adwords.jaxws.extensions.report.model.csv.annotation.CsvField;
+import com.google.api.ads.adwords.jaxws.extensions.report.model.persistence.mongodb.MongoEntity;
 
 import org.joda.time.DateTime;
 
@@ -34,7 +35,7 @@ import javax.persistence.MappedSuperclass;
  * @author gustavomoreira@google.com (Gustavo Moreira)
  */
 @MappedSuperclass
-public abstract class Report {
+public abstract class Report implements MongoEntity {
 
   // Variables for Persistence queries
   public static final String ID = "id";
