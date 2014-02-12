@@ -2,7 +2,6 @@ package com.google.api.ads.adwords.jaxws.extensions.report.model.util;
 
 import java.math.BigDecimal;
 import java.math.MathContext;
-import java.math.RoundingMode;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.text.NumberFormat;
