@@ -63,6 +63,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
@@ -114,7 +115,7 @@ public class ReportProcessor {
 
   private int reportRowsSetSize = REPORT_BUFFER_DB;
   private int numberOfReportProcessors = NUMBER_OF_REPORT_PROCESSORS;
-  
+
   /**
    * Constructor.
    * 
@@ -779,41 +780,42 @@ public class ReportProcessor {
           List<Report> monthlyReports = Lists.newArrayList(persister.listMonthReports(
               csvReportEntitiesMapping.getReportBeanClass(reportType), accountId,
               DateUtil.parseDateTime(dateStart), DateUtil.parseDateTime(dateEnd)));
-          
+
           if (sumAdExtensions && reportType.name() == "PLACEHOLDER_FEED_ITEM_REPORT") {
             Map<String, NameImprClicks> adExtensionsMap = new HashMap<String, NameImprClicks>();
-            NameImprClicks totnic = new NameImprClicks();
-            totnic.clickType = "Headline Totals";
+            int sitelinks = 0;
             for (Report report : monthlyReports) {
               String clickType = ((ReportPlaceholderFeedItem)report).getClickType();
               Long impressions = ((ReportPlaceholderFeedItem)report).getImpressions();
               Long clicks = ((ReportPlaceholderFeedItem)report).getClicks();
-              if (clickType.equals("Headline")){
-                totnic.clicks += clicks;
-                totnic.impressions += impressions;
-              } else if (adExtensionsMap.containsKey(clickType)) {
-                NameImprClicks oldValues = adExtensionsMap.get(clickType);
-                oldValues.impressions += impressions;
-                oldValues.clicks += clicks;
-                adExtensionsMap.put(clickType, oldValues);
-              } else {
-                NameImprClicks Values = new NameImprClicks(); 
-                Values.impressions = impressions;
-                Values.clicks = clicks;
-                adExtensionsMap.put(clickType, Values);
+              if (!clickType.equals("Headline")){
+                if (clickType.equals("Sitelink")) sitelinks++;
+                if (adExtensionsMap.containsKey(clickType)) {
+                  NameImprClicks oldValues = adExtensionsMap.get(clickType);
+                  oldValues.impressions += impressions;
+                  oldValues.clicks += clicks;
+                  adExtensionsMap.put(clickType, oldValues);
+                } else {
+                  NameImprClicks Values = new NameImprClicks(); 
+                  Values.impressions = impressions;
+                  Values.clicks = clicks;
+                  adExtensionsMap.put(clickType, Values);
+                }
               }
             }
-            
+
             List<NameImprClicks> adExtensions = new ArrayList<NameImprClicks>();
-            
+
             for (Map.Entry<String, NameImprClicks> entry : adExtensionsMap.entrySet()) { 
               NameImprClicks nic = new NameImprClicks();
               nic.clickType = entry.getKey();
+              if (nic.clickType.equals("Sitelink")) {
+                nic.clickType = "Sitelinks (x" + sitelinks + ")";
+              }
               nic.clicks = entry.getValue().clicks;
               nic.impressions = entry.getValue().impressions;
               adExtensions.add(nic);
             }
-            adExtensions.add(totnic);
             reportMap.put("ADEXTENSIONS", adExtensions);
           }
 
