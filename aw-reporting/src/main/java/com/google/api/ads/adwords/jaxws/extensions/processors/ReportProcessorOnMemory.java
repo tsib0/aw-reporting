@@ -413,8 +413,7 @@ public class ReportProcessorOnMemory {
     LOGGER.info("*** Generating Reports for " + accountIdsSet.size()
         + " accounts ***");
 
-    Stopwatch stopwatch = new Stopwatch();
-    stopwatch.start();
+    Stopwatch stopwatch = Stopwatch.createStarted();
 
     Set<ReportDefinitionReportType> reports = this.csvReportEntitiesMapping
         .getDefinedReports();
@@ -477,8 +476,7 @@ public class ReportProcessorOnMemory {
     // Processing Report Local Files
     LOGGER.info(" Procesing reports...");
 
-    Stopwatch stopwatch = new Stopwatch();
-    stopwatch.start();
+    Stopwatch stopwatch = Stopwatch.createStarted();
 
     for (Long accountId : acountIdList) {
       LOGGER.trace(".");
