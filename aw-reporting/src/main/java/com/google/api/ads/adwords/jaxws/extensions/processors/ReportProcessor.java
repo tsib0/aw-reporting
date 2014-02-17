@@ -47,13 +47,13 @@ import com.google.api.client.util.Sets;
 import com.google.common.base.Stopwatch;
 import com.google.common.collect.Lists;
 
-import au.com.bytecode.opencsv.bean.MappingStrategy;
-
 import org.apache.log4j.Logger;
 import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
+
+import au.com.bytecode.opencsv.bean.MappingStrategy;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -63,7 +63,6 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
@@ -168,8 +167,7 @@ public class ReportProcessor {
     // Processing Report Local Files
     LOGGER.info(" Procesing reports...");
 
-    Stopwatch stopwatch = new Stopwatch();
-    stopwatch.start();
+    Stopwatch stopwatch = Stopwatch.createStarted();
 
     for (File file : localFiles) {
       LOGGER.trace(".");
@@ -500,8 +498,7 @@ public class ReportProcessor {
     LOGGER.info("*** Generating Reports for " + accountIdsSet.size()
         + " accounts ***");
 
-    Stopwatch stopwatch = new Stopwatch();
-    stopwatch.start();
+    Stopwatch stopwatch = Stopwatch.createStarted();
 
     Set<ReportDefinitionReportType> reports = this.csvReportEntitiesMapping
         .getDefinedReports();
@@ -592,8 +589,7 @@ public class ReportProcessor {
       String dateStart, String dateEnd,
       ReportDefinitionDateRangeType dateRangeType) {
 
-    Stopwatch stopwatch = new Stopwatch();
-    stopwatch.start();
+    Stopwatch stopwatch = Stopwatch.createStarted();
 
     @SuppressWarnings("unchecked")
     Class<R> reportBeanClass = (Class<R>) this.csvReportEntitiesMapping
