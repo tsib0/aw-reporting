@@ -20,6 +20,8 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import com.google.api.ads.adwords.jaxws.extensions.authentication.Authenticator;
+import com.google.api.ads.adwords.jaxws.extensions.authentication.InstalledOAuth2Authenticator;
 import com.google.api.ads.adwords.jaxws.extensions.downloader.MultipleClientReportDownloader;
 import com.google.api.ads.adwords.jaxws.extensions.report.model.csv.CsvReportEntitiesMapping;
 import com.google.api.ads.adwords.jaxws.extensions.report.model.entities.AuthMcc;
@@ -77,6 +79,9 @@ public class ReportProcessorTest {
 
   @Spy
   private ReportProcessor reportProcessor;
+  
+  @Mock
+  private Authenticator authenticator;
 
   private Properties properties;
 
@@ -98,13 +103,13 @@ public class ReportProcessorTest {
     properties = PropertiesLoaderUtils.loadProperties(resource);
     appCtx = new ClassPathXmlApplicationContext("classpath:aw-report-test-beans.xml");
 
-    reportProcessor =
-        new ReportProcessor("1", "token", "companyName", "clientId", "clientSecret", 10, 2);
+    reportProcessor = new ReportProcessor("1", 10, 2);
+    authenticator = new InstalledOAuth2Authenticator("DevToken","ClientId", "ClientSecret");
 
     MockitoAnnotations.initMocks(this);
 
-    when(mockedAuthTokenPersister.getAuthToken(Mockito.anyString()))
-    .thenReturn(new AuthMcc("1", "TOKEN"));
+    when(mockedAuthTokenPersister.getAuthToken(Mockito.anyString())).thenReturn(
+        new AuthMcc("1", "TOKEN"));
 
     Mockito.doAnswer(new Answer<Void>() {
       @Override
@@ -117,13 +122,14 @@ public class ReportProcessorTest {
     mockDownloadReports(CIDS.size());
 
     reportProcessor.setMultipleClientReportDownloader(mockedMultipleClientReportDownloader);
-    reportProcessor.setAuthTokenPersister(mockedAuthTokenPersister);
     reportProcessor.setPersister(mockedReportEntitiesPersister);
-    reportProcessor.setCsvReportEntitiesMapping(appCtx.getBean(CsvReportEntitiesMapping.class));
+    reportProcessor.setCsvReportEntitiesMapping(appCtx.getBean(CsvReportEntitiesMapping.class));    
+    reportProcessor.setAuthentication(authenticator);
 
     // Mocking the Authentication because in OAuth2 we are force to call buildOAuth2Credentials
     AdWordsSession.Builder builder = new AdWordsSession.Builder().withClientCustomerId("1");
-    Mockito.doReturn(builder).when(reportProcessor).authenticate(Mockito.anyBoolean());
+    Mockito.doReturn(builder).when(authenticator).authenticate(
+        Mockito.anyString(), Mockito.anyBoolean());
   }
 
   @Test
