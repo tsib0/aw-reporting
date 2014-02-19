@@ -5,19 +5,21 @@
 	.header table { border-collapse: collapse; text-align: center; width: 100%; } 
 	.header table th { font-size: 18; font-weight: bold; }
 	.datagrid table { border-collapse: collapse; text-align: left; width: 100%; } 
-	.datagrid {font: normal 12px/150% Arial, Helvetica, sans-serif; background: #fff; overflow: hidden; border: 1px solid #006699; -webkit-border-radius: 6px; -moz-border-radius: 6px; border-radius: 6px; }
+	.datagrid {font: normal 12px/150% helvetica, helvetica, sans-serif; background: #fff; overflow: hidden; border: 1px solid #006699; -webkit-border-radius: 6px; -moz-border-radius: 6px; border-radius: 6px; }
 	.datagrid table td, .datagrid table th { padding: 3px 10px; }
 	.datagrid table thead, .datagrid table th {background:-webkit-gradient( linear, left top, left bottom, color-stop(0.05, #4285f4), color-stop(1, #00557F) );background:-moz-linear-gradient( center top, #4285f4 5%, #00557F 100% );filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#006699', endColorstr='#00557F');background-color:#4285f4; color:#FFFFFF; font-size: 15px; font-weight: bold; border-left: 1px solid #0070A8; } 
 	.datagrid table thead th:first-child { border: none; }
-	.datagrid table tbody td { color: #00496B; border-left: 1px solid #E1EEF4;font-size: 12px;font-weight: normal; }
+	.datagrid table tbody td { color: #00496B; border-left: 1px solid #E1EEF4;font-size: 12px; font-weight: normal; }
 	.datagrid table tbody .alt td { background: #E1EEF4; color: #00496B; }
 	.datagrid table tbody td:first-child { border-left: none; }
 	.datagrid table tbody tr:last-child td { border-bottom: none; }
 	.datagrid table tr:hover { background-color: lightblue; }
 	H2, h2 {font-size: 120%; font-weight: 700; text-align: left;}
+	H1, h1 {font-size: 150%; font-weight: 700; text-align: left;}
 	</style>
 </head>
-<body>
+<body style="">
+	<FONT FACE="helvetica">
 	<TABLE WIDTH = "100%"><TR><TD>
 	<IMG SRC="FILE:partners-badge.png" width="300px"></IMG>
 		<div id="Partnerlogo" class="media"
@@ -63,13 +65,13 @@
 					<H2 style="font-size: 200%; font-weight: 700;">{{cost}} {{currencyCode}}</H2> on Adwords this month.
 				</td></tr>
 				<tr>
-				<td style="padding: 40px 100px; text-align: right; font-size: 160%; background: #4285f4; color: #00496B;">Your ads were shown <H2 style="font-size: 200%; font-weight: 700;">{{impressions}}</H2><BR /> times, 
+				<td style="padding: 40px 100px; text-align: right; font-size: 160%; background: #4285f4; color: #FFFFFF;">Your ads were shown <H2 style="font-size: 200%; font-weight: 700;">{{impressions}}</H2><BR /> times, 
 				</td></tr>
 				<tr>
 				<td	style="padding: 40px 100px; text-align: right; font-size: 160%; background: #E1EEF4; color: #00496B;">Were clicked on <BR /> <H2 style="font-size: 200%; font-weight: 700;">{{clicks}}</H2><BR /> times,
 				</td></tr>
 				<tr>
-				<td style="padding: 40px 40px; text-align: right; font-size: 160%; background: #4285f4; color: #00496B;">And this gained you 
+				<td style="padding: 40px 40px; text-align: right; font-size: 160%; background: #4285f4; color: #FFFFFF;">And this gained you 
 				<H2 style="font-size: 200%; font-weight: 700;">{{conversions}}</H2> registered conversions
 			    </td></tr>
 			</table>
@@ -84,23 +86,21 @@
 </td></tr></table>
 </BR>
 			<table CELLPADDING="100" CELLSPACING="10" BORDER="1" style="width: 100%; border: 1"><tr>
-				<td style="text-align: left; font-size: 120%">
-					Average Cost Per Click: <H2 style="font-size: 160%; font-weight: 300;">{{avgCpc}} {{currencyCode}}</H2>
+				<td style="padding: 40px 40px; width: 33%; text-align: center; font-size: 100%">
+					Average Cost Per Click:  <P />  <H2 style="font-size: 160%; font-weight: 300;">{{avgCpc}} {{currencyCode}}</H2>
 				</td>
-				<td style="text-align: center; font-size: 120%; background: #E1EEF4; color: #00496B;">
+				<td style="padding: 40px 40px; width: 33%; text-align: center; font-size: 100%; background: #E1EEF4; color: #00496B;">
 					Average Cost Per Thousand Impressions: <H2 style="font-size: 160%; font-weight: 300;">{{avgCpm}} {{currencyCode}}</H2>
 				</td>
-				<td style="text-align: right; font-size: 120%">and a Click Through Rate of: 
-				<H2 style="font-size: 160%; font-weight: 300;">{{ctr}}</H2>
-			</td></tr></table>
-			<BR />
-			<table WIDTH="100%" CELLPADDING="100" CELLSPACING="40" BORDER="1" style="width: 100%; border: 1"><tr>
-				<td style="text-align: left; font-size: 120%; background: #E1EEF4; color: #66496B;">Search Impression Share: 
-					<H2 style="font-size: 160%; font-weight: 300;">{{searchImpressionShare}}</H2> </td>
-				<td style="text-align: center; font-size: 120%">Lost Impression Share due to your Budget: 
-					<H2 style="font-size: 160%; font-weight: 300;">{{searchLostISBudget}}</H2> </td>
-				<td style="text-align: right; font-size: 120%; background: #E1EEF4; color: #00496B;">Lost Impression Share due to your Ranking: 
-					<H2 style="font-size: 160%; font-weight: 300;">{{searchLostISRank}} </H2></td>
+				<td style="padding: 40px 40px; width: 33%; text-align: center; font-size: 100%">A Click Through Rate of: 
+				<H2 style="font-size: 160%; font-weight: 300;">{{ctr}}%</H2>
+			</td></tr><tr>
+				<td style="padding: 40px 40px; width: 33%; text-align: center; font-size: 100%; background: #E1EEF4; color: #00496B;">Search Impression Share:   <BR />
+					<H2 style="font-size: 160%; font-weight: 300;">{{searchImpressionShare}}%</H2></td>
+				<td style="padding: 40px 40px; width: 33%; text-align: center; font-size: 100%">Lost Impression Share due to your Budget:   <BR />
+					<H2 style="font-size: 160%; font-weight: 300;">{{searchLostISBudget}}%</H2></td>
+				<td style="padding: 40px 40px; width: 33%; text-align: center; font-size: 100%; background: #E1EEF4; color: #00496B;">Lost Impression Share due to your Ranking:  <BR />
+					<H2 style="font-size: 160%; font-weight: 300;">{{searchLostISRank}}%</H2></td>
 			</tr></table>
 
 			{{/ACCOUNT_PERFORMANCE_REPORT}}
@@ -170,6 +170,6 @@
         </table>
 
 	</div>
-
+</FONT>
 </body>
 </html>
