@@ -59,7 +59,7 @@ public abstract class ReportProcessor {
 
   private static final Logger LOGGER = Logger
       .getLogger(ReportProcessor.class);
-  
+
   private static final int REPORT_BUFFER_DB = 1000;
   private static final int NUMBER_OF_REPORT_PROCESSORS = 20;
 
@@ -68,22 +68,22 @@ public abstract class ReportProcessor {
   protected CsvReportEntitiesMapping csvReportEntitiesMapping;
 
   protected EntityPersister persister;
-  
+
   protected Authenticator authenticator;
 
   protected String mccAccountId = null;
-  
+
   protected int reportRowsSetSize = REPORT_BUFFER_DB;
-  
+
   protected int numberOfReportProcessors = NUMBER_OF_REPORT_PROCESSORS;
-  
+
   abstract protected void cacheAccounts(Set<Long> accountIdsSet);
-  
+
   abstract public void generateReportsForMCC(
       ReportDefinitionDateRangeType dateRangeType, String dateStart,
       String dateEnd, Set<Long> accountIdsSet, Properties properties)
           throws Exception;
-  
+
   /**
    * Uses the API to retrieve the managed accounts, and extract their IDs.
    * 
