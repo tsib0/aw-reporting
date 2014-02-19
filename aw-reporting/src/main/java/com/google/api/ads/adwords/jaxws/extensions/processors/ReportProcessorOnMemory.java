@@ -14,19 +14,16 @@
 
 package com.google.api.ads.adwords.jaxws.extensions.processors;
 
-import com.google.api.ads.adwords.jaxws.extensions.ManagedCustomerDelegate;
+import com.google.api.ads.adwords.jaxws.extensions.authentication.Authenticator;
 import com.google.api.ads.adwords.jaxws.extensions.report.model.csv.AnnotationBasedMappingStrategy;
 import com.google.api.ads.adwords.jaxws.extensions.report.model.csv.CsvReportEntitiesMapping;
-import com.google.api.ads.adwords.jaxws.extensions.report.model.entities.AuthMcc;
 import com.google.api.ads.adwords.jaxws.extensions.report.model.entities.Report;
-import com.google.api.ads.adwords.jaxws.extensions.report.model.persistence.AuthTokenPersister;
 import com.google.api.ads.adwords.jaxws.extensions.report.model.persistence.EntityPersister;
 import com.google.api.ads.adwords.jaxws.extensions.report.model.util.DateUtil;
 import com.google.api.ads.adwords.jaxws.extensions.report.model.util.ModifiedCsvToBean;
-import com.google.api.ads.adwords.jaxws.extensions.util.GetRefreshToken;
 import com.google.api.ads.adwords.jaxws.extensions.util.HTMLExporter;
+import com.google.api.ads.adwords.jaxws.extensions.util.ManagedCustomerDelegate;
 import com.google.api.ads.adwords.jaxws.v201309.mcm.ApiException;
-import com.google.api.ads.adwords.jaxws.v201309.mcm.ManagedCustomer;
 import com.google.api.ads.adwords.lib.client.AdWordsSession;
 import com.google.api.ads.adwords.lib.jaxb.v201309.DateRange;
 import com.google.api.ads.adwords.lib.jaxb.v201309.DownloadFormat;
@@ -34,11 +31,6 @@ import com.google.api.ads.adwords.lib.jaxb.v201309.ReportDefinition;
 import com.google.api.ads.adwords.lib.jaxb.v201309.ReportDefinitionDateRangeType;
 import com.google.api.ads.adwords.lib.jaxb.v201309.ReportDefinitionReportType;
 import com.google.api.ads.adwords.lib.jaxb.v201309.Selector;
-import com.google.api.ads.common.lib.auth.OfflineCredentials;
-import com.google.api.ads.common.lib.auth.OfflineCredentials.Api;
-import com.google.api.ads.common.lib.exception.OAuthException;
-import com.google.api.ads.common.lib.exception.ValidationException;
-import com.google.api.client.auth.oauth2.Credential;
 import com.google.api.client.util.Maps;
 import com.google.api.client.util.Sets;
 import com.google.common.base.Stopwatch;
@@ -52,7 +44,6 @@ import org.springframework.stereotype.Component;
 import au.com.bytecode.opencsv.bean.MappingStrategy;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
@@ -77,10 +68,7 @@ public class ReportProcessorOnMemory {
 
   public static final int NUMBER_OF_REPORT_PROCESSORS = 4;
 
-  private static final Logger LOGGER = Logger
-      .getLogger(ReportProcessorOnMemory.class);
-
-  private static final String USER_AGENT = "AwReporting";
+  private static final Logger LOGGER = Logger.getLogger(ReportProcessorOnMemory.class);
 
   private static final String REPORT_PREFIX = "AwReporting-";
 
@@ -88,14 +76,9 @@ public class ReportProcessorOnMemory {
 
   private EntityPersister persister;
 
-  private AuthTokenPersister authTokenPersister;
-
-  // AdWords Authentication Properties
-  private String clientId = null;
-  private String clientSecret = null;
-  private String developerToken = null;
+  private Authenticator authenticator;
+  
   private String mccAccountId = null;
-  private String companyName = null;
 
   private int reportRowsSetSize = REPORT_BUFFER_DB;
   private int numberOfReportProcessors = NUMBER_OF_REPORT_PROCESSORS;
@@ -119,18 +102,10 @@ public class ReportProcessorOnMemory {
   @Autowired
   public ReportProcessorOnMemory(
       @Value("${mccAccountId}") String mccAccountId,
-      @Value("${developerToken}") String developerToken,
-      @Value(value = "${companyName:}") String companyName,
-      @Value(value = "${clientId}") String clientId,
-      @Value(value = "${clientSecret}") String clientSecret,
       @Value(value = "${aw.report.processor.rows.size:}") Integer reportRowsSetSize,
       @Value(value = "${aw.report.processor.threads:}") Integer numberOfReportProcessors) {
 
     this.mccAccountId = mccAccountId;
-    this.developerToken = developerToken;
-    this.companyName = companyName;
-    this.clientId = clientId;
-    this.clientSecret = clientSecret;
 
     if (reportRowsSetSize != null && reportRowsSetSize > 0) {
       this.reportRowsSetSize = reportRowsSetSize;
@@ -141,184 +116,20 @@ public class ReportProcessorOnMemory {
   }
 
   /**
-   * The implementation must persist the token to be retrieved later.
-   * 
-   * @param mccAccountId
-   *            the MCC account ID.
-   * @param authToken
-   *            the authentication token.
-   */
-  private void saveAuthTokenToStorage(String mccAccountId, String authToken) {
-
-    LOGGER.debug("Persisting refresh token...");
-    AuthMcc authMcc = new AuthMcc(mccAccountId, authToken);
-    this.authTokenPersister.persistAuthToken(authMcc);
-    LOGGER.debug("... success.");
-  }
-
-  /**
-   * The implementation should retrieve the authentication token previously
-   * persisted.
-   * 
-   * @param mccAccountId
-   *            the MCC account ID.
-   * @return the authentication token.
-   */
-  private String getAuthTokenFromStorage(String mccAccountId) {
-
-    AuthMcc authToken = this.authTokenPersister.getAuthToken(mccAccountId);
-    if (authToken != null) {
-      return authToken.getAuthToken();
-    }
-    return null;
-  }
-
-  /**
-   * Authenticates the user against the API.
-   * 
-   * @param force
-   *            true if the authentication token must be renewed.
-   * @return the session builder after the authentication.
-   * @throws IOException
-   *             error connecting to authentication server
-   * @throws OAuthException
-   *             error on the OAuth process
-   */
-  protected AdWordsSession.Builder authenticate(boolean force)
-      throws OAuthException, IOException {
-
-    String authToken = this.retrieveAuthToken(force);
-    String localUserAgent = this.buildLocalUserAgent();
-
-    Credential oAuth2Credential = null;
-    try {
-      oAuth2Credential = this.buildOAuth2Credentials(authToken);
-
-    } catch (OAuthException e) {
-      if (e.getMessage().contains("Credential could not be refreshed")) {
-        System.out
-        .println("**ERROR** Credential could not be refreshed,"
-            + " we need a new OAuth2 Token");
-
-        authToken = GetRefreshToken.get(this.clientId,
-            this.clientSecret);
-        oAuth2Credential = this.buildOAuth2Credentials(authToken);
-
-        System.out.println("Saving Refresh Token to DB...\n");
-        this.saveAuthTokenToStorage(this.mccAccountId, authToken);
-
-      } else {
-        e.printStackTrace();
-        throw e;
-      }
-    }
-
-    return new AdWordsSession.Builder()
-    .withOAuth2Credential(oAuth2Credential)
-    .withUserAgent(localUserAgent)
-    .withClientCustomerId(this.mccAccountId)
-    .withDeveloperToken(this.developerToken);
-  }
-
-  /**
-   * Builds the OAuth 2.0 credential for the user
-   * 
-   * @param authToken
-   *            the last authentication token
-   * @return the new {@link Credential}
-   * @throws OAuthException
-   *             error creating the credentials
-   */
-  private Credential buildOAuth2Credentials(String authToken)
-      throws OAuthException {
-
-    try {
-      return new OfflineCredentials.Builder().forApi(Api.ADWORDS)
-          .withRefreshToken(authToken)
-          .withClientSecrets(this.clientId, this.clientSecret)
-          .build().generateCredential();
-    } catch (ValidationException e) {
-
-      e.printStackTrace();
-      throw new IllegalStateException("Builder not set properly. "
-          + "This might mean a bug with the authentication, "
-          + "or the credential values are incorrect.", e);
-    }
-  }
-
-  /**
-   * Retrieves the authentication token by refreshing it if necessary, and
-   * persisting the updated token into the DB.
-   * 
-   * @param force
-   *            if the actual token should be refreshed
-   * @return the valid token for the moment
-   * @throws IOException
-   *             error connecting to authentication server
-   * @throws OAuthException
-   *             error on the OAuth process
-   */
-  private String retrieveAuthToken(boolean force) throws IOException,
-  OAuthException {
-
-    LOGGER.debug("Retrieving auth token from DB.");
-    String authToken = this.getAuthTokenFromStorage(this.mccAccountId);
-
-    // Generate a new Auth token if necessary
-    if ((authToken == null || force)) {
-      try {
-        if (force) {
-          LOGGER.debug("Token refresh FORCED. Getting a new one.");
-        } else {
-          LOGGER.debug("Token not found. Getting one.");
-        }
-        authToken = GetRefreshToken.get(this.clientId,
-            this.clientSecret);
-
-      } catch (IOException e) {
-        if (e.getMessage().contains("Connection reset")) {
-          LOGGER.info("Connection reset when getting authToken, retrying...");
-          this.authenticate(true);
-        } else {
-          LOGGER.error("Error authenticating: " + e.getMessage());
-          e.printStackTrace();
-          throw e;
-        }
-      }
-      LOGGER.info("Saving Refresh Token to DB...");
-      this.saveAuthTokenToStorage(this.mccAccountId, authToken);
-    }
-    return authToken;
-  }
-
-  /**
-   * @return the local user agent built from the global user agent and the
-   *         company name
-   */
-  private String buildLocalUserAgent() {
-
-    String localUserAgent = USER_AGENT;
-    if (this.companyName != null && this.companyName.length() > 0) {
-      localUserAgent += "-" + this.companyName;
-    }
-    return localUserAgent;
-  }
-
-  /**
    * Uses the API to retrieve the managed accounts, and extract their IDs.
    * 
    * @return the account IDs for all the managed accounts.
    * @throws Exception
    *             error reading the API.
    */
-  public Set<Long> retrieveAccountIds() throws Exception {
+  private Set<Long> retrieveAccountIds() throws Exception {
 
     Set<Long> accountIdsSet = Sets.newHashSet();
     try {
 
       LOGGER.info("Account IDs being recovered from the API. This may take a while...");
-      accountIdsSet = new ManagedCustomerDelegate(this
-          .authenticate(false).build()).getAccountIds();
+      accountIdsSet = new ManagedCustomerDelegate(
+          authenticator.authenticate(mccAccountId, false).build()).getAccountIds();
 
     } catch (ApiException e) {
       if (e.getMessage().contains("AuthenticationError")) {
@@ -326,8 +137,8 @@ public class ReportProcessorOnMemory {
         // retries Auth once for expired Tokens
         LOGGER.info("AuthenticationError, Getting a new Token...");
         LOGGER.info("Account IDs being recovered from the API. This may take a while...");
-        accountIdsSet = new ManagedCustomerDelegate(this.authenticate(
-            true).build()).getAccountIds();
+        accountIdsSet = new ManagedCustomerDelegate(
+            authenticator.authenticate(mccAccountId, true).build()).getAccountIds();
 
       } else {
         LOGGER.error("API error: " + e.getMessage());
@@ -349,34 +160,6 @@ public class ReportProcessorOnMemory {
    */
   private void cacheAccounts(Set<Long> accountIdsSet) {
     // TODO: Cache accounts on DB insted of File.
-  }
-
-  /**
-   * Uses the API to retrieve the managed accounts, and extract their IDs.
-   * 
-   * @return the account IDs for all the managed accounts.
-   * @throws Exception
-   *             error reading the API.
-   */
-  public List<ManagedCustomer> getAccounts() throws Exception {
-
-    List<ManagedCustomer> accounts = Lists.newArrayList();
-    try {
-      accounts = new ManagedCustomerDelegate(this.authenticate(false)
-          .build()).getAccounts();
-    } catch (ApiException e) {
-      if (e.getMessage().contains("AuthenticationError")) {
-        // retries Auth once for expired Tokens
-        LOGGER.info("AuthenticationError, Getting a new Token...");
-        accounts = new ManagedCustomerDelegate(this.authenticate(true)
-            .build()).getAccounts();
-      } else {
-        LOGGER.error("API error: " + e.getMessage());
-        e.printStackTrace();
-        throw e;
-      }
-    }
-    return accounts;
   }
 
   /**
@@ -408,13 +191,12 @@ public class ReportProcessorOnMemory {
       LOGGER.info("Accounts loaded from file.");
     }
 
-    AdWordsSession.Builder builder = this.authenticate(false);
+    AdWordsSession.Builder builder = authenticator.authenticate(mccAccountId, false);
 
     LOGGER.info("*** Generating Reports for " + accountIdsSet.size()
         + " accounts ***");
 
-    Stopwatch stopwatch = new Stopwatch();
-    stopwatch.start();
+    Stopwatch stopwatch = Stopwatch.createStarted();
 
     Set<ReportDefinitionReportType> reports = this.csvReportEntitiesMapping
         .getDefinedReports();
@@ -477,8 +259,7 @@ public class ReportProcessorOnMemory {
     // Processing Report Local Files
     LOGGER.info(" Procesing reports...");
 
-    Stopwatch stopwatch = new Stopwatch();
-    stopwatch.start();
+    Stopwatch stopwatch = Stopwatch.createStarted();
 
     for (Long accountId : acountIdList) {
       LOGGER.trace(".");
@@ -709,11 +490,11 @@ public class ReportProcessorOnMemory {
   }
 
   /**
-   * @param authTokenPersister
-   *            the authTokenPersister to set
+   * @param authentication
+   *            the helper class for Auth
    */
   @Autowired
-  public void setAuthTokenPersister(AuthTokenPersister authTokenPersister) {
-    this.authTokenPersister = authTokenPersister;
+  public void setAuthentication(Authenticator authenticator) {
+    this.authenticator = authenticator;
   }
 }
