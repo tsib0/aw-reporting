@@ -18,6 +18,8 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import com.google.api.ads.adwords.jaxws.extensions.report.model.entities.Report;
+import com.google.api.ads.adwords.jaxws.extensions.report.model.entities.ReportAccount;
 import com.google.api.ads.adwords.jaxws.extensions.report.model.persistence.EntityPersister;
 import com.google.api.ads.adwords.jaxws.extensions.report.model.util.DateUtil;
 import com.google.api.ads.adwords.lib.utils.ReportDownloadResponseException;
@@ -33,6 +35,7 @@ import org.mockito.Spy;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.Date;
 
 /**
  * Test case for the {@code RunnableKratu} class.
@@ -50,18 +53,21 @@ public class RunnableKratuTest {
   private StorageHelper  storageHelper;
 
   private ImmutableList<Account> accountList;
+  
+  private final Date dateStart = DateUtil.parseDateTime("20140101").toDate();
+  private final Date dateEnd = DateUtil.parseDateTime("20140131").toDate();
 
   @Before
   public void setUp() {
     // creating one list wuth 3 nonMCC accounts
     Account account1 = new Account();
     account1.setIsCanManageClients(false);
+    account1.setExternalCustomerId(123L);
     accountList = ImmutableList.of(account1, account1, account1);
 
     storageHelper = new StorageHelper();
 
-    mockedRunnableKratu = new RunnableKratu(123L, storageHelper,
-        DateUtil.parseDateTime("20140101").toDate(), DateUtil.parseDateTime("20140131").toDate());
+    mockedRunnableKratu = new RunnableKratu(123L, storageHelper, dateStart, dateEnd);
 
     MockitoAnnotations.initMocks(this);
 
@@ -76,8 +82,11 @@ public class RunnableKratuTest {
       ReportException,
       ReportDownloadResponseException,
       IOException {
-    
+
     mockedRunnableKratu.run();
     verify(mockedRunnableKratu, times(1)).run();
+
+    verify(mockedEntitiesPersister, times(3)).get(
+        ReportAccount.class, Report.ACCOUNT_ID, 123L, Report.DAY, dateStart, dateStart);    
   }
 }
