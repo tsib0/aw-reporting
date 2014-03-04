@@ -74,7 +74,7 @@ public class RunnableProcessorOnMemory<R extends Report> implements Runnable {
   private String dateStart;
   private String dateEnd;
   private String mccAccountId;
-  private EntityPersister persister;
+  private EntityPersister entityPersister;
   private int reportRowsSetSize;
 
   private final AdWordsSessionBuilderSynchronizer sessionBuilder;
@@ -92,7 +92,7 @@ public class RunnableProcessorOnMemory<R extends Report> implements Runnable {
   public RunnableProcessorOnMemory(Long accountId, AdWordsSession.Builder builder, 
       ReportDefinition reportDefinition, ModifiedCsvToBean<R> csvToBean,
       MappingStrategy<R> mappingStrategy, ReportDefinitionDateRangeType dateRangeType,
-      String dateStart, String dateEnd, String mccAccountId, EntityPersister persister,
+      String dateStart, String dateEnd, String mccAccountId, EntityPersister entityPersister,
       Integer reportRowsSetSize) {
     this.accountId = accountId;
     this.sessionBuilder = new AdWordsSessionBuilderSynchronizer(builder);
@@ -103,7 +103,7 @@ public class RunnableProcessorOnMemory<R extends Report> implements Runnable {
     this.dateStart = dateStart;
     this.dateEnd = dateEnd;
     this.mccAccountId = mccAccountId;
-    this.persister = persister;
+    this.entityPersister = entityPersister;
     this.reportRowsSetSize = reportRowsSetSize;
   }
 
@@ -142,12 +142,12 @@ public class RunnableProcessorOnMemory<R extends Report> implements Runnable {
         reportBuffer.add(report);
 
         if (reportBuffer.size() >= this.reportRowsSetSize) {
-          this.persister.persistReportEntities(reportBuffer);
+          this.entityPersister.persistReportEntities(reportBuffer);
           reportBuffer.clear();
         }
       }
       if (reportBuffer.size() > 0) {
-        this.persister.persistReportEntities(reportBuffer);
+        this.entityPersister.persistReportEntities(reportBuffer);
       }
       LOGGER.debug("... success.");
       csvReader.close();
@@ -219,5 +219,13 @@ public class RunnableProcessorOnMemory<R extends Report> implements Runnable {
           "getHttpResponseMessage():" + reportDownloadResponse.getHttpResponseMessage());
     }
     return inputStream;
+  }
+  
+  /**
+   * @param entityPersister
+   *            the entityPersister to set
+   */
+  public void setPersister(EntityPersister entityPersister) {
+    this.entityPersister = entityPersister;
   }
 }
