@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package com.google.api.ads.adwords.jaxws.extensions.processors;
+package com.google.api.ads.adwords.jaxws.extensions.processors.onfile;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -63,11 +63,11 @@ import java.util.Properties;
 import java.util.Set;
 
 /**
- * Test case for the {@code ReportProcessor} class.
+ * Test case for the {@code ReportProcessorOnFile} class.
  *
  * @author jtoledo@google.com (Julian Toledo)
  */
-public class ReportProcessorTest {
+public class ReportProcessorOnFileTest {
 
   @Mock
   private AuthTokenPersister mockedAuthTokenPersister;
