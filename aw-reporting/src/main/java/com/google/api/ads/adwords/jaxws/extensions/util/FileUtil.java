@@ -133,7 +133,7 @@ public final class FileUtil {
    * @param outputStream the {@code OutputStream}.
    * @throws IOException error handling files.
    */
-  private static void copy(InputStream inputStream, OutputStream outputStream) throws IOException {
+  public static void copy(InputStream inputStream, OutputStream outputStream) throws IOException {
 
     byte[] buffer = new byte[8 * 1024];
     int count = 0;
