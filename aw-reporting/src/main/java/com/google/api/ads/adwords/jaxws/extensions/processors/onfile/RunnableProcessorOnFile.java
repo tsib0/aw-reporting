@@ -68,7 +68,7 @@ public class RunnableProcessorOnFile<R extends Report> implements Runnable {
   private String dateStart;
   private String dateEnd;
   private String mccAccountId;
-  private EntityPersister persister;
+  private EntityPersister entityPersister;
   private int reportRowsSetSize;
 
   /**
@@ -80,7 +80,7 @@ public class RunnableProcessorOnFile<R extends Report> implements Runnable {
    */
   public RunnableProcessorOnFile(File file,  ModifiedCsvToBean<R> csvToBean,
       MappingStrategy<R> mappingStrategy, ReportDefinitionDateRangeType dateRangeType,
-      String dateStart, String dateEnd, String mccAccountId, EntityPersister persister,
+      String dateStart, String dateEnd, String mccAccountId, EntityPersister entityPersister,
       Integer reportRowsSetSize) {
     this.file = file;
     this.csvToBean = csvToBean;
@@ -89,7 +89,7 @@ public class RunnableProcessorOnFile<R extends Report> implements Runnable {
     this.dateStart = dateStart;
     this.dateEnd = dateEnd;
     this.mccAccountId = mccAccountId;
-    this.persister = persister;
+    this.entityPersister = entityPersister;
     this.reportRowsSetSize = reportRowsSetSize;
   }
 
@@ -136,12 +136,12 @@ public class RunnableProcessorOnFile<R extends Report> implements Runnable {
         reportBuffer.add(report);
 
         if (reportBuffer.size() >= this.reportRowsSetSize) {
-          this.persister.persistReportEntities(reportBuffer);
+          this.entityPersister.persistReportEntities(reportBuffer);
           reportBuffer.clear();
         }
       }
       if (reportBuffer.size() > 0) {
-        this.persister.persistReportEntities(reportBuffer);
+        this.entityPersister.persistReportEntities(reportBuffer);
       }
       LOGGER.debug("... success.");
       csvReader.close();
@@ -184,5 +184,13 @@ public class RunnableProcessorOnFile<R extends Report> implements Runnable {
    */
   public void setLatch(CountDownLatch latch) {
     this.latch = latch;
+  }
+
+  /**
+   * @param entityPersister
+   *            the entityPersister to set
+   */
+  public void setPersister(EntityPersister entityPersister) {
+    this.entityPersister = entityPersister;
   }
 }
