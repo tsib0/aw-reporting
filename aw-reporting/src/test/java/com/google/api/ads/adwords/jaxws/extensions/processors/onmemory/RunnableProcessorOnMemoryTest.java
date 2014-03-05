@@ -94,7 +94,7 @@ public class RunnableProcessorOnMemoryTest {
   }
 
   @Test
-  public void test_run() {
+  public void testRun() {
     runnableProcessorOnMemory.run();
     verify(runnableProcessorOnMemory, times(1)).run();
     verify(mockedEntitiesPersister, times(2)).persistReportEntities(

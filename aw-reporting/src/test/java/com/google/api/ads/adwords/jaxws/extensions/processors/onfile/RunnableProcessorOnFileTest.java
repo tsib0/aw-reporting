@@ -85,7 +85,7 @@ public class RunnableProcessorOnFileTest {
   }
 
   @Test
-  public void test_run() {
+  public void testRun() {
     runnableProcessorOnFile.run();
     verify(runnableProcessorOnFile, times(1)).run();
     verify(mockedEntitiesPersister, times(2)).persistReportEntities(
