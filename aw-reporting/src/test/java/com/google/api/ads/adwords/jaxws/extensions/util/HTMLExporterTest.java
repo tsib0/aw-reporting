@@ -17,9 +17,11 @@ package com.google.api.ads.adwords.jaxws.extensions.util;
 import com.google.api.ads.adwords.jaxws.extensions.report.model.entities.Report;
 import com.google.api.ads.adwords.jaxws.extensions.report.model.entities.ReportAccount;
 import com.google.api.ads.adwords.jaxws.extensions.report.model.entities.ReportPlaceholderFeedItem;
+import com.google.api.ads.adwords.jaxws.extensions.reportwriter.FileSystemReportWriter;
+import com.google.api.ads.adwords.jaxws.extensions.reportwriter.ReportWriter;
+import com.google.api.ads.adwords.jaxws.extensions.reportwriter.ReportWriter.ReportFileType;
 import com.google.api.ads.adwords.lib.jaxb.v201309.ReportDefinitionReportType;
 import com.google.api.client.util.Maps;
-
 import com.lowagie.text.DocumentException;
 
 import org.joda.time.DateTime;
@@ -53,18 +55,24 @@ public class HTMLExporterTest {
     reportPHFI = createFeedItemReportRow(246813579L);
     list.add(reportPHFI);
 
-    File htmlFile = new File("target/testPReport.html");
-    File pdfFile = new File("target/testPReport.pdf");
+//    File htmlFile = new File("target/testReport.html");
+    File htmlFile = new File("target/Report_0_20140101_20140131.html");
+//    File pdfFile = new File("target/testPReport.pdf");
+    File outputDirectory = new File("target");
     
     final File templateFile =
         new File("src/main/resources/templates/PLACEHOLDER_FEED_ITEM_REPORT.tmpl");
     
     Map<String, Object> reportMap = Maps.newHashMap();
     reportMap.put(ReportDefinitionReportType.PLACEHOLDER_FEED_ITEM_REPORT.name(), list);
-
-    HTMLExporter.exportHTML(reportMap, templateFile, htmlFile);
-
-    HTMLExporter.convertHTMLtoPDF(htmlFile, pdfFile);
+    
+    ReportWriter htmlReportWriter = new FileSystemReportWriter.FileSystemReportWriterBuilder(
+        outputDirectory, 0, "20140101", "20140131", ReportFileType.HTML).build();
+    HTMLExporter.exportHTML(reportMap, templateFile, htmlReportWriter);
+    
+    ReportWriter pdfReportWriter = new FileSystemReportWriter.FileSystemReportWriterBuilder(
+        outputDirectory, 0, "20140101", "20140131", ReportFileType.PDF).build();
+    HTMLExporter.convertHTMLtoPDF(htmlFile, pdfReportWriter);
   }
 
   /**
@@ -110,8 +118,9 @@ public class HTMLExporterTest {
     reportAccount = createAccountReportRow(246813579L);
     list.add(reportAccount);
 
-    File htmlFile = new File("target/testAReport.html");
-    File pdfFile = new File("target/testAReport.pdf");
+    File htmlFile = new File("target/Report_0_20140101_20140131.html");
+    File pdfFile = new File("target/Report_0_20140101_20140131.html");
+    File outputDirectory = new File("target");
     
     final File templateFile =
         new File("src/main/resources/templates/ACCOUNT_PERFORMANCE_REPORT.tmpl");
@@ -119,9 +128,13 @@ public class HTMLExporterTest {
     Map<String, Object> reportMap = Maps.newHashMap();
     reportMap.put(ReportDefinitionReportType.ACCOUNT_PERFORMANCE_REPORT.name(), list);
     
-    HTMLExporter.exportHTML(reportMap, templateFile, htmlFile);
-
-    HTMLExporter.convertHTMLtoPDF(htmlFile, pdfFile);
+    ReportWriter htmlReportWriter = new FileSystemReportWriter.FileSystemReportWriterBuilder(
+        outputDirectory, 0, "20140101", "20140131", ReportFileType.HTML).build();
+    HTMLExporter.exportHTML(reportMap, templateFile, htmlReportWriter);
+    
+    ReportWriter pdfReportWriter = new FileSystemReportWriter.FileSystemReportWriterBuilder(
+        outputDirectory, 0, "20140101", "20140131", ReportFileType.PDF).build();
+    HTMLExporter.convertHTMLtoPDF(htmlFile, pdfReportWriter);
   }
 
   /**
