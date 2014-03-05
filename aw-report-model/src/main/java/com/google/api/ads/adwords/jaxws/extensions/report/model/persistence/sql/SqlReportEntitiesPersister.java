@@ -371,11 +371,10 @@ public class SqlReportEntitiesPersister implements EntityPersister {
    */
   @Override
   @Transactional
-  public List<? extends Report> listMonthReports(
-      Class<? extends Report> clazz, long accountId, DateTime startDate, DateTime endDate) {
+  public <T extends Report> List<T> listMonthReports(
+      Class<T> classT, long accountId, DateTime startDate, DateTime endDate) {
 
-    Criteria criteria = this.createCriteria(clazz);
-
+    Criteria criteria = this.createCriteria(classT);
     return this.listMonthReportsForCriteria(accountId, startDate, endDate, criteria);
   }
 
@@ -385,15 +384,14 @@ public class SqlReportEntitiesPersister implements EntityPersister {
    */
   @Override
   @Transactional
-  public List<? extends Report> listMonthReports(Class<? extends Report> clazz,
+  public <T extends Report> List<T> listMonthReports(Class<T> classT,
       long accountId,
       DateTime startDate,
       DateTime endDate,
       int page,
       int amount) {
 
-    Criteria criteria = this.createPaginatedCriteria(clazz, page, amount);
-
+    Criteria criteria = this.createPaginatedCriteria(classT, page, amount);
     return this.listMonthReportsForCriteria(accountId, startDate, endDate, criteria);
   }
 
@@ -404,7 +402,7 @@ public class SqlReportEntitiesPersister implements EntityPersister {
    * @return the list of reports grouped by month
    */
   @SuppressWarnings("unchecked")
-  private List<? extends Report> listMonthReportsForCriteria(
+  private <T extends Report> List<T> listMonthReportsForCriteria(
       long accountId, DateTime startDate, DateTime endDate, Criteria criteria) {
     criteria.add(Restrictions.isNull("day"));
     criteria.add(Restrictions.isNotNull("month"));
