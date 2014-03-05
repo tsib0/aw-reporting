@@ -69,8 +69,8 @@ public interface EntityPersister {
    * @param endDate the ending date
    * @return the list of reports found
    */
-  List<? extends Report> listMonthReports(
-      Class<? extends Report> classT, long accountId, DateTime startDate, DateTime endDate);
+  <T extends Report> List<T> listMonthReports(
+      Class<T> classT, long accountId, DateTime startDate, DateTime endDate);
 
   /**
    * Lists the reports that were download in a monthly base group.
@@ -83,7 +83,7 @@ public interface EntityPersister {
    * @param amount the amount paginated
    * @return the list of reports found
    */
-  List<? extends Report> listMonthReports(Class<? extends Report> classT,
+  <T extends Report> List<T> listMonthReports(Class<T> classT,
       long accountId,
       DateTime startDate,
       DateTime endDate,
