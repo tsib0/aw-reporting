@@ -15,6 +15,7 @@
 package com.google.api.ads.adwords.jaxws.extensions.report.model.persistence.mongodb;
 
 import com.google.api.ads.adwords.jaxws.extensions.report.model.entities.Report;
+import com.google.api.ads.adwords.jaxws.extensions.report.model.entities.ReportBase;
 import com.google.api.ads.adwords.jaxws.extensions.report.model.persistence.EntityPersister;
 import com.google.api.ads.adwords.jaxws.extensions.report.model.util.DateUtil;
 import com.google.api.ads.adwords.jaxws.extensions.report.model.util.GsonUtil;
@@ -351,9 +352,14 @@ public class MongoEntityPersister implements EntityPersister {
    *      EntityPersister#listMonthReports(Class, long, DateTime, DateTime)
    */
   @Override
-  public List<? extends Report> listMonthReports(
-      Class<? extends Report> clazz, long accountId, DateTime startDate, DateTime endDate) {
-    return null;
+  public <T extends Report> List<T> listMonthReports(
+      Class<T> classT, long accountId, DateTime dateStart, DateTime dateEnd) {
+
+    Map<String, Object> keyValueList = new HashMap<String, Object>();
+    keyValueList.put(Report.ACCOUNT_ID, accountId);
+    keyValueList.put(
+        ReportBase.MONTH, BasicDBObjectBuilder.start("$gte", dateStart).add("$lte", dateEnd).get());
+    return get(classT, keyValueList);
   }
 
   /**
@@ -361,12 +367,17 @@ public class MongoEntityPersister implements EntityPersister {
    *      EntityPersister#listMonthReports(Class, long, DateTime, DateTime, int, int)
    */
   @Override
-  public List<? extends Report> listMonthReports(Class<? extends Report> clazz,
+  public <T extends Report> List<T> listMonthReports(Class<T> classT,
       long accountId,
-      DateTime startDate,
-      DateTime endDate,
+      DateTime dateStart,
+      DateTime dateEnd,
       int page,
       int amount) {
-    return null;
+    
+    Map<String, Object> keyValueList = new HashMap<String, Object>();
+    keyValueList.put(Report.ACCOUNT_ID, accountId);
+    keyValueList.put(
+        ReportBase.MONTH, BasicDBObjectBuilder.start("$gte", dateStart).add("$lte", dateEnd).get());
+    return get(classT, keyValueList, page, amount);
   }
 }
