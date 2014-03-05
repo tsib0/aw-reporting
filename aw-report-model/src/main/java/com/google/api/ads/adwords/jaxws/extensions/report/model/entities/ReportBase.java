@@ -50,6 +50,8 @@ import javax.persistence.MappedSuperclass;
 @MappedSuperclass
 public abstract class ReportBase extends Report {
 
+  public static final String MONTH = "month";
+  
   @Column(name = "DAY")
   @CsvField(value = "Day", reportField = "Date")
   protected Date day;
