@@ -63,7 +63,7 @@ public abstract class ReportProcessor {
   private static final int REPORT_BUFFER_DB = 1000;
   private static final int NUMBER_OF_REPORT_PROCESSORS = 20;
 
-  private static final String REPORT_PREFIX = "AwReporting-";
+  protected static final String REPORT_PREFIX = "AwReporting-";
 
   protected CsvReportEntitiesMapping csvReportEntitiesMapping;
 
