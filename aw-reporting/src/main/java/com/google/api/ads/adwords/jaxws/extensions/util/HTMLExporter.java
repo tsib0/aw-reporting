@@ -14,25 +14,29 @@
 
 package com.google.api.ads.adwords.jaxws.extensions.util;
 
-import com.lowagie.text.DocumentException;
-import com.samskivert.mustache.Mustache;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.Writer;
+import java.util.Map;
 
 import org.w3c.dom.Document;
 import org.xhtmlrenderer.pdf.ITextRenderer;
 import org.xhtmlrenderer.resource.XMLResource;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.util.Map;
+import com.google.api.ads.adwords.jaxws.extensions.reportwriter.ReportWriter;
+import com.lowagie.text.DocumentException;
+import com.samskivert.mustache.Mustache;
 
 /**
  * Class to export reports to HTML using JMoustache, and convert HTML to PDF using Flying Saucer
  *
  * @author markbowyer@google.com (Mark R. Bowyer)
+ * @author joeltoby@google.com (Joel Toby)
  */
 public class HTMLExporter {
 
@@ -43,20 +47,17 @@ public class HTMLExporter {
    *
    * @param map the data from the Report
    * @param templateFile where to read out the HTML template
-   * @param outputFile where to write out the HTML
+   * @param writer the {@link Writer} to which HTML should be written.  Usually an {@link ReportWriter}
    * @throws IOException error writing HTML file
    * @throws FileNotFoundException error reading template file
    */
   public static void exportHTML(final Map<String, Object> map,
-      File templateFile, final File outputFile) throws IOException {
-
+      File templateFile, Writer writer) throws IOException {
     FileReader templateReader = new FileReader(templateFile);
-    FileWriter fileWriter = new FileWriter(outputFile);
+    Mustache.compiler().compile(templateReader).execute(map, writer);
 
-    Mustache.compiler().compile(templateReader).execute(map, fileWriter);
-
-    fileWriter.flush();
-    fileWriter.close();
+    writer.flush();
+    writer.close();
     templateReader.close();
   }
 
@@ -64,15 +65,14 @@ public class HTMLExporter {
    * Convert a given HTML file to a PDF file
    *
    * @param inFile The HTML file
-   * @param outFile The resulting PDF file
+   * @param reportWriter the ReportWriter to which HTML should be written
    * @throws DocumentException error creating PDF file
    * @throws IOException error closing file
    */
-  public static void convertHTMLtoPDF(File inFile, File outFile)
+  public static void convertHTMLtoPDF(File inFile, ReportWriter reportWriter)
       throws DocumentException, IOException {
 
     FileReader htmlReader = new FileReader(inFile);
-
     Document document = XMLResource.load(htmlReader).getDocument();
     ITextRenderer renderer = new ITextRenderer();
     renderer.getSharedContext().setReplacedElementFactory(
@@ -80,12 +80,44 @@ public class HTMLExporter {
     renderer.setDocument(document, null);
 
     renderer.layout();
+    
+    ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+    renderer.createPDF(outputStream, true);
+    ByteArrayInputStream is = new ByteArrayInputStream(outputStream.toByteArray());
+    reportWriter.write(is);
 
-    FileOutputStream fos = new FileOutputStream(outFile);
+    outputStream.flush();
+    outputStream.close();
+  }
+  
+  /**
+   * Convert a given HTML report {@link InputStream} to a PDF file.<br>
+   * 
+   * This method does not close the report InputStream. It is the responsibility 
+   * of the caller to do so.
+   *
+   * @param inStream The HTML report InputStream
+   * @param reportWriter the ReportWriter to which HTML should be written
+   * @throws DocumentException error creating PDF file
+   * @throws IOException error closing file
+   */
+  public static void convertHTMLtoPDF(InputStream inStream, ReportWriter reportWriter)
+      throws DocumentException, IOException {
 
-    renderer.createPDF(fos, true);
+    Document document = XMLResource.load(inStream).getDocument();
+    ITextRenderer renderer = new ITextRenderer();
+    renderer.getSharedContext().setReplacedElementFactory(
+        new MediaReplacedElementFactory(renderer.getSharedContext().getReplacedElementFactory()));
+    renderer.setDocument(document, null);
 
-    fos.flush();
-    fos.close();
+    renderer.layout();
+    
+    ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+    renderer.createPDF(outputStream, true);
+    ByteArrayInputStream is = new ByteArrayInputStream(outputStream.toByteArray());
+    reportWriter.write(is);
+
+    outputStream.flush();
+    outputStream.close();
   }
 }
