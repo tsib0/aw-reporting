@@ -119,7 +119,6 @@ public class HTMLExporterTest {
     list.add(reportAccount);
 
     File htmlFile = new File("target/Report_0_20140101_20140131.html");
-    File pdfFile = new File("target/Report_0_20140101_20140131.html");
     File outputDirectory = new File("target");
     
     final File templateFile =
