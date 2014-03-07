@@ -14,78 +14,57 @@
 
 package com.google.api.ads.adwords.jaxws.extensions.util;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.util.Arrays;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
-import com.google.api.client.googleapis.auth.oauth2.GoogleAuthorizationCodeFlow;
-import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
-import com.google.api.client.googleapis.auth.oauth2.GoogleTokenResponse;
-import com.google.api.client.http.HttpTransport;
+import com.google.api.ads.adwords.jaxws.extensions.authentication.Authenticator;
+import com.google.api.ads.common.lib.exception.OAuthException;
 import com.google.api.client.http.javanet.NetHttpTransport;
-import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.drive.Drive;
-import com.google.api.services.drive.DriveScopes;
 
+@Component
 /**
  * Provides an authenticated Google {@link Drive} service instance configured for AW Reports to DB.
- * TODO: Cache refresh token.
  *   
  * @author joeltoby
  *
  */
-public class GoogleDriveService {
-  // TODO: Remove hard coded credentials and cache refresh tokens.
-  private static String CLIENT_ID = "";
-  private static String CLIENT_SECRET = "";
-  private static String REDIRECT_URI = "urn:ietf:wg:oauth:2.0:oob";
-  private GoogleAuthorizationCodeFlow flow;
+public class GoogleDriveService { //extends Drive {
+  private Authenticator authenticator;
   private Drive service;
-  
-  private static GoogleDriveService instance = null;
-  protected GoogleDriveService() throws IOException {
-    
-      HttpTransport httpTransport = new NetHttpTransport();
-      JsonFactory jsonFactory = new JacksonFactory();
-     
-      flow = new GoogleAuthorizationCodeFlow.Builder(
-          httpTransport, jsonFactory, CLIENT_ID, CLIENT_SECRET, Arrays.asList(DriveScopes.DRIVE))
-          .setAccessType("online")
-          .setApprovalPrompt("auto").build();
-      
-      String url = flow.newAuthorizationUrl().setRedirectUri(REDIRECT_URI).build();
-      System.out.println("Please open the following URL in your browser then type the authorization code:");
-      System.out.println("  " + url);
-      BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-      String code = br.readLine();
-      
-      GoogleTokenResponse response = flow.newTokenRequest(code).setRedirectUri(REDIRECT_URI).execute();
-      GoogleCredential credential = new GoogleCredential().setFromTokenResponse(response);
-      
-      //Create a new authorized API client
-      service = new Drive.Builder(httpTransport, jsonFactory, credential)
-        .setApplicationName("AW Reports to DB").build();
+
+  //  @Autowired
+  public GoogleDriveService() throws OAuthException {
+    // TODO (joeltoby) Fix this.
+    // Inject authenticator into constructor
+    //    super(
+    //        new NetHttpTransport(),
+    //        new JacksonFactory(),
+    //        authenticator.getOAuth2Credential());
+
+    service =  new Drive.Builder(
+        new NetHttpTransport(),
+        new JacksonFactory(),
+        authenticator.getOAuth2Credential())
+    .setApplicationName("AW Reports to DB").build();
   }
-  
+
   /**
-   * Creates and returns a configured instance GoogleDriveService
-   * @return an instance
+   * Temporary method to get an instance of {@link Drive} configured for AW Reports.
+   * TODO (joeltoby) to be removed once this class extends {@link Drive}
+   * @return
    */
-  public static GoogleDriveService getInstance() {
-    if(instance == null)
-      try {
-        instance = new GoogleDriveService();
-      } catch (IOException e) {
-        e.printStackTrace();
-        System.exit(1);
-      }
-    
-    return instance;
-  }
-  
   public Drive getDriveService() {
     return service;
+  }
+
+  /**
+   * @param authentication
+   *            the helper class for Auth
+   */
+  @Autowired
+  public void setAuthentication(Authenticator authenticator) {
+    this.authenticator = authenticator;
   }
 }

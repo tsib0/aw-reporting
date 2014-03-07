@@ -22,9 +22,13 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 
+import com.google.api.ads.adwords.jaxws.extensions.authentication.Authenticator;
 import com.google.api.ads.adwords.jaxws.extensions.util.GoogleDriveService;
+import com.google.api.ads.common.lib.exception.OAuthException;
 import com.google.api.client.http.AbstractInputStreamContent;
 import com.google.api.client.http.InputStreamContent;
+import com.google.api.client.http.javanet.NetHttpTransport;
+import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.drive.Drive;
 import com.google.api.services.drive.Drive.Files;
 import com.google.api.services.drive.model.File;
@@ -59,16 +63,20 @@ public class GoogleDriveReportWriter extends ReportWriter {
   private final boolean folderPerAccount;
   private final String topAccountCid;
   private Drive driveService;
+  private Authenticator authenticator;
   
   
-  private GoogleDriveReportWriter(GoogleDriveReportWriterBuilder builder) throws IOException {
+  private GoogleDriveReportWriter(GoogleDriveReportWriterBuilder builder) throws IOException, OAuthException {
     this.accountId = builder.accountId;
     this.dateStart = builder.dateStart;
     this.dateEnd = builder.dateEnd;
     this.folderPerAccount = builder.folderPerAccount;
     this.topAccountCid = builder.topAccountCid;
+    this.authenticator = builder.authenticator;
     
-    driveService = GoogleDriveService.getInstance().getDriveService();
+    // Replace this when GoogleDriveService propertly extends Drive.
+    LOGGER.debug("Getting GoogleDrive service.");
+    driveService = new GoogleDriveService().getDriveService();
   }
 
   /**
@@ -125,13 +133,16 @@ public class GoogleDriveReportWriter extends ReportWriter {
     private final String dateEnd;
     private final String topAccountCid;
     private boolean folderPerAccount = false;
+    private final Authenticator authenticator;
     
     public GoogleDriveReportWriterBuilder(long accountId, String dateStart, 
-        String dateEnd, String clientId, String clientSecret, String topAccountCid) {
+        String dateEnd, String clientId, String clientSecret, String topAccountCid,
+        Authenticator authenticator) {
       this.accountId = accountId;
       this.dateStart = dateStart;
       this.dateEnd = dateEnd;
       this.topAccountCid = topAccountCid;
+      this.authenticator = authenticator;
     }
     
     /**
@@ -144,7 +155,7 @@ public class GoogleDriveReportWriter extends ReportWriter {
       return this;
     }
     
-    public GoogleDriveReportWriter build() throws IOException {
+    public GoogleDriveReportWriter build() throws IOException, OAuthException {
       return new GoogleDriveReportWriter(this);
     }
   }
@@ -228,5 +239,4 @@ public class GoogleDriveReportWriter extends ReportWriter {
       
     }
   }
-
 }
