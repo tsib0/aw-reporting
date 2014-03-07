@@ -257,7 +257,7 @@ public abstract class ReportProcessor {
           InputStream htmlReportInput = new ByteArrayInputStream(htmlReportOutput.toByteArray());
 
           GoogleDriveReportWriter pdfReportWriter = new GoogleDriveReportWriter.GoogleDriveReportWriterBuilder(
-              accountId, dateStart, dateEnd, propertyClientId, propertyClientSecret, propertyTopAccountCid).build();
+              accountId, dateStart, dateEnd, propertyClientId, propertyClientSecret, propertyTopAccountCid, authenticator).build();
 
           LOGGER.debug("Converting HTML to PDF for account: " + accountId);
           HTMLExporter.convertHTMLtoPDF(htmlReportInput, pdfReportWriter);
