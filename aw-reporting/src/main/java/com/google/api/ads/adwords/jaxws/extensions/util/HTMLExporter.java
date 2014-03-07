@@ -53,6 +53,7 @@ public class HTMLExporter {
    */
   public static void exportHTML(final Map<String, Object> map,
       File templateFile, Writer writer) throws IOException {
+
     FileReader templateReader = new FileReader(templateFile);
     Mustache.compiler().compile(templateReader).execute(map, writer);
 

@@ -170,8 +170,18 @@ public class InstalledOAuth2Authenticator implements Authenticator {
   }
 
 
-  /* (non-Javadoc)
-   * @see com.google.api.ads.adwords.jaxws.extensions.authentication.Authenticator#getOAuth2Credential()
+  /**
+   * Obtains an OAuth {@link Credential} configured for AW Reports by doing the OAuth dance.
+   * This method should be invoked for any users for which a refresh token is not known or is
+   * invalid.
+   * 
+   * @return
+   *    The OAuth2 credentials. The scope of the token generated depends on the properties file
+   *    configuration.  For example<br>
+   *    If writing PDF reports to Google Drive, the scope of the token will include both AdWords and Drive.
+   *    
+   * @throws OAuthException
+   *    If an error is encountered when trying to obtain a token.
    */
   public Credential getOAuth2Credential()
       throws OAuthException {
