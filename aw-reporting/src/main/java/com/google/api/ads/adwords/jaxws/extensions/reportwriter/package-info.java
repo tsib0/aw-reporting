@@ -1,5 +1,5 @@
 /**
- * Package to hold all report file writers
+ * Package to hold all report file writers and related objects.
  */
 /**
  * @author joeltoby
