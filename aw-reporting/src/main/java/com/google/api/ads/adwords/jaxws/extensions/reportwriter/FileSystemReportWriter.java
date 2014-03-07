@@ -26,7 +26,10 @@ import java.io.OutputStream;
  *
  * @author joeltoby@google.com (Joel Toby)
  */
-
+/**
+ * @author joeltoby
+ *
+ */
 public class FileSystemReportWriter extends ReportWriter {
   private FileWriter fileWriter;
 
@@ -100,22 +103,43 @@ public class FileSystemReportWriter extends ReportWriter {
     return outputFile;
   }
 
-
-
+  
+  
+  
+  /**
+   * A builder to construct and configure a FileSystemReportWriter. 
+   * 
+   * @author joeltoby
+   *
+   */
   public static class FileSystemReportWriterBuilder {
     private final File outputDirectory;
     private final long accountId;
     private final String dateStart;
     private final String dateEnd;
     private final ReportFileType reportType;
-
+    
+    
+    /**
+     * Constructs a builder with the basic required values.
+     * @param outputDirectory
+     *      directory on file system to which reports should be written
+     * @param accountId
+     *      adwords account ID for the reports being written
+     * @param dateStart
+     *      report start date
+     * @param dateEnd
+     *      report end date
+     * @param reportFileType
+     *      format of the report (i.e. HTML, PDF etc)
+     */
     public FileSystemReportWriterBuilder(File outputDirectory, long accountId,
-        String dateStart, String dateEnd, ReportFileType reportType) {
+        String dateStart, String dateEnd, ReportFileType reportFileType) {
       this.outputDirectory = outputDirectory;
       this.accountId = accountId;
       this.dateStart = dateStart;
       this.dateEnd = dateEnd;
-      this.reportType = reportType;
+      this.reportType = reportFileType;
     }
 
     public FileSystemReportWriter build() throws IOException {
