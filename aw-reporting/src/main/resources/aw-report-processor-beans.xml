@@ -12,7 +12,7 @@
     base-package="com.google.api.ads.adwords.jaxws.extensions.processors.onfile" />
   
   <context:component-scan
-    base-package="com.google.api.ads.adwords.jaxws.extensions.processors.reportwriter" />
+    base-package="com.google.api.ads.adwords.jaxws.extensions.reportwriter" />
 
   <context:component-scan
     base-package="com.google.api.ads.adwords.jaxws.extensions.authentication" />
