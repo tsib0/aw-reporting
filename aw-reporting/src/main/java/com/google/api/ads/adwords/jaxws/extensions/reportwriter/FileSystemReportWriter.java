@@ -26,11 +26,8 @@ import java.io.OutputStream;
  *
  * @author joeltoby@google.com (Joel Toby)
  */
-/**
- * @author joeltoby
- *
- */
 public class FileSystemReportWriter extends ReportWriter {
+
   private FileWriter fileWriter;
 
   private final File outputDirectory;
@@ -103,9 +100,6 @@ public class FileSystemReportWriter extends ReportWriter {
     return outputFile;
   }
 
-  
-  
-  
   /**
    * A builder to construct and configure a FileSystemReportWriter. 
    * 
@@ -118,7 +112,6 @@ public class FileSystemReportWriter extends ReportWriter {
     private final String dateStart;
     private final String dateEnd;
     private final ReportFileType reportType;
-    
     
     /**
      * Constructs a builder with the basic required values.
@@ -179,5 +172,4 @@ public class FileSystemReportWriter extends ReportWriter {
     outputStream.close();
 
   }
-
 }

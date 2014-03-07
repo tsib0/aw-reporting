@@ -424,8 +424,7 @@ public abstract class ReportProcessor {
   }
 
   /**
-   * @param persister
-   *            the persister to set
+   * @param persister the persister to set
    */
   @Autowired
   public void setPersister(EntityPersister persister) {
@@ -433,8 +432,7 @@ public abstract class ReportProcessor {
   }
 
   /**
-   * @param authentication
-   *            the helper class for Auth
+   * @param authentication the helper class for Auth
    */
   @Autowired
   public void setAuthentication(Authenticator authenticator) {

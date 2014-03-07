@@ -14,57 +14,38 @@
 
 package com.google.api.ads.adwords.jaxws.extensions.util;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
-
 import com.google.api.ads.adwords.jaxws.extensions.authentication.Authenticator;
 import com.google.api.ads.common.lib.exception.OAuthException;
 import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.drive.Drive;
 
-@Component
 /**
  * Provides an authenticated Google {@link Drive} service instance configured for AW Reports to DB.
  *   
  * @author joeltoby
  *
  */
-public class GoogleDriveService { //extends Drive {
+public class GoogleDriveService {
+
   private Authenticator authenticator;
   private Drive service;
 
-  //  @Autowired
-  public GoogleDriveService() throws OAuthException {
-    // TODO (joeltoby) Fix this.
-    // Inject authenticator into constructor
-    //    super(
-    //        new NetHttpTransport(),
-    //        new JacksonFactory(),
-    //        authenticator.getOAuth2Credential());
-
-    service =  new Drive.Builder(
-        new NetHttpTransport(),
-        new JacksonFactory(),
-        authenticator.getOAuth2Credential())
-    .setApplicationName("AW Reports to DB").build();
+  public GoogleDriveService(Authenticator authenticator) {
+    this.authenticator = authenticator;
   }
 
   /**
    * Temporary method to get an instance of {@link Drive} configured for AW Reports.
    * TODO (joeltoby) to be removed once this class extends {@link Drive}
    * @return
+   * @throws OAuthException 
    */
-  public Drive getDriveService() {
+  public Drive getDriveService() throws OAuthException {
+    if (service == null ) {
+      service =  new Drive.Builder(new NetHttpTransport(), new JacksonFactory(),
+          authenticator.getOAuth2Credential()).setApplicationName("AW Reports to DB").build();
+    }
     return service;
-  }
-
-  /**
-   * @param authentication
-   *            the helper class for Auth
-   */
-  @Autowired
-  public void setAuthentication(Authenticator authenticator) {
-    this.authenticator = authenticator;
   }
 }
