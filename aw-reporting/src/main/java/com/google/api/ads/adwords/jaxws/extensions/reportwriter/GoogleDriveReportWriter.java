@@ -126,7 +126,7 @@ public class GoogleDriveReportWriter extends ReportWriter {
     private final Authenticator authenticator;
 
     public GoogleDriveReportWriterBuilder(long accountId, String dateStart, 
-        String dateEnd, String clientId, String clientSecret, String topAccountCid,
+        String dateEnd, String topAccountCid,
         Authenticator authenticator) {
       this.accountId = accountId;
       this.dateStart = dateStart;
