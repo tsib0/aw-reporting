@@ -12,7 +12,17 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package com.google.api.ads.adwords.jaxws.extensions.util;
+package com.google.api.ads.adwords.jaxws.extensions.exporter;
+
+import com.google.api.ads.adwords.jaxws.extensions.exporter.reportwriter.ReportWriter;
+import com.google.api.ads.adwords.jaxws.extensions.util.MediaReplacedElementFactory;
+
+import com.lowagie.text.DocumentException;
+import com.samskivert.mustache.Mustache;
+
+import org.w3c.dom.Document;
+import org.xhtmlrenderer.pdf.ITextRenderer;
+import org.xhtmlrenderer.resource.XMLResource;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -23,14 +33,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.Writer;
 import java.util.Map;
-
-import org.w3c.dom.Document;
-import org.xhtmlrenderer.pdf.ITextRenderer;
-import org.xhtmlrenderer.resource.XMLResource;
-
-import com.google.api.ads.adwords.jaxws.extensions.reportwriter.ReportWriter;
-import com.lowagie.text.DocumentException;
-import com.samskivert.mustache.Mustache;
 
 /**
  * Class to export reports to HTML using JMoustache, and convert HTML to PDF using Flying Saucer
