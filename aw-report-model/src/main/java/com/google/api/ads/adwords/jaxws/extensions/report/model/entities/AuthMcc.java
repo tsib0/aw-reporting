@@ -39,6 +39,9 @@ public class AuthMcc implements MongoEntity {
 
   @Column(name = "AUTH_TOKEN", length = 1024)
   private String authToken;
+  
+  @Column(name = "SCOPE", length = 1024)
+  private String scope;
 
   /**
    * Constructor to satisfy Hibernate.
@@ -49,15 +52,16 @@ public class AuthMcc implements MongoEntity {
    * @param topAccountId the top level MCC account ID.
    * @param authToken the authentication Token.
    */
-  public AuthMcc(String topAccountId, String authToken) {
+  public AuthMcc(String topAccountId, String authToken, String scope) {
     this.topAccountId = topAccountId;
     this.authToken = authToken;
+    this.scope = scope;
   }
 
   public String getId() {
     return topAccountId;
   }
-  
+
   public String getTopAccountId() {
     return topAccountId;
   }
@@ -72,5 +76,13 @@ public class AuthMcc implements MongoEntity {
 
   public void setAuthToken(String authToken) {
     this.authToken = authToken;
+  }
+
+  public String getScope() {
+    return scope;
+  }
+
+  public void setScope(String scope) {
+    this.scope = scope;
   }
 }
