@@ -23,10 +23,10 @@ import com.google.api.ads.adwords.jaxws.extensions.report.model.util.ModifiedCsv
 import com.google.api.ads.adwords.lib.jaxb.v201309.ReportDefinitionDateRangeType;
 import com.google.common.collect.Lists;
 
+import org.apache.log4j.Logger;
+
 import au.com.bytecode.opencsv.CSVReader;
 import au.com.bytecode.opencsv.bean.MappingStrategy;
-
-import org.apache.log4j.Logger;
 
 import java.io.File;
 import java.io.FileInputStream;

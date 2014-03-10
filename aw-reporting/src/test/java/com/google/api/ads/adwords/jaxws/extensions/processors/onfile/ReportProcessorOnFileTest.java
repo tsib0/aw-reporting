@@ -24,7 +24,6 @@ import com.google.api.ads.adwords.jaxws.extensions.authentication.Authenticator;
 import com.google.api.ads.adwords.jaxws.extensions.authentication.InstalledOAuth2Authenticator;
 import com.google.api.ads.adwords.jaxws.extensions.downloader.MultipleClientReportDownloader;
 import com.google.api.ads.adwords.jaxws.extensions.exporter.reportwriter.ReportWriterType;
-import com.google.api.ads.adwords.jaxws.extensions.processors.onfile.ReportProcessorOnFile;
 import com.google.api.ads.adwords.jaxws.extensions.report.model.csv.CsvReportEntitiesMapping;
 import com.google.api.ads.adwords.jaxws.extensions.report.model.entities.AuthMcc;
 import com.google.api.ads.adwords.jaxws.extensions.report.model.entities.Report;
@@ -111,7 +110,7 @@ public class ReportProcessorOnFileTest {
     MockitoAnnotations.initMocks(this);
 
     when(mockedAuthTokenPersister.getAuthToken(Mockito.anyString())).thenReturn(
-        new AuthMcc("1", "TOKEN"));
+        new AuthMcc("1", "TOKEN", "scope"));
 
     Mockito.doAnswer(new Answer<Void>() {
       @Override

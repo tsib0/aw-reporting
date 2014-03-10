@@ -6,6 +6,7 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -106,7 +107,7 @@ public class InstalledOAuth2Authenticator implements Authenticator {
         authToken = getOAuth2Credential().getRefreshToken();
         
         LOGGER.debug("Saving Refresh Token to DB...\n");
-        this.saveAuthTokenToStorage(mccAccountId, authToken);
+        this.saveAuthTokenToStorage(mccAccountId, authToken, StringUtils.join(scope, ','));
 
       } else {
         e.printStackTrace();
@@ -136,7 +137,7 @@ public class InstalledOAuth2Authenticator implements Authenticator {
         authToken = getOAuth2Credential().getRefreshToken();
 
         System.out.println("Saving Refresh Token to DB...\n");
-        this.saveAuthTokenToStorage(mccAccountId, authToken);
+        this.saveAuthTokenToStorage(mccAccountId, authToken, StringUtils.join(scope, ','));
 
       } else {
         e.printStackTrace();
@@ -247,10 +248,18 @@ public class InstalledOAuth2Authenticator implements Authenticator {
   private String retrieveAuthToken(String mccAccountId, boolean force) throws OAuthException {
 
     LOGGER.debug("Retrieving auth token from DB.");
-    String authToken = this.getAuthTokenFromStorage(mccAccountId);
+
+    AuthMcc authMcc = this.getAuthTokenFromStorage(mccAccountId);
+    String authToken = authMcc.getAuthToken();
+
+    // Check the Scope of the Auth on DB
+    if (authMcc == null || authMcc.getScope() == null
+        || !authMcc.getScope().equals(StringUtils.join(scope, ','))) {
+      force = true;
+    }
 
     // Generate a new Auth token if necessary
-    if ((authToken == null || force)) {
+    if ((authMcc == null || force)) {
       try {
         if (force) {
           LOGGER.debug("Token refresh FORCED. Getting a new one.");
@@ -272,7 +281,7 @@ public class InstalledOAuth2Authenticator implements Authenticator {
         }
       }
       LOGGER.info("Saving Refresh Token to DB...");
-      this.saveAuthTokenToStorage(mccAccountId, authToken);
+      this.saveAuthTokenToStorage(mccAccountId, authToken, StringUtils.join(scope, ','));
     }
     return authToken;
   }
@@ -285,9 +294,9 @@ public class InstalledOAuth2Authenticator implements Authenticator {
    * @param authToken
    *            the authentication token.
    */
-  private void saveAuthTokenToStorage(String mccAccountId, String authToken) {
+  private void saveAuthTokenToStorage(String mccAccountId, String authToken, String scope) {
     LOGGER.debug("Persisting refresh token...");
-    AuthMcc authMcc = new AuthMcc(mccAccountId, authToken);
+    AuthMcc authMcc = new AuthMcc(mccAccountId, authToken, scope);
     this.authTokenPersister.persistAuthToken(authMcc);
     LOGGER.debug("... success.");
   }
@@ -300,11 +309,11 @@ public class InstalledOAuth2Authenticator implements Authenticator {
    *            the MCC account ID.
    * @return the authentication token.
    */
-  private String getAuthTokenFromStorage(String mccAccountId) {
+  private AuthMcc getAuthTokenFromStorage(String mccAccountId) {
 
     AuthMcc authToken = this.authTokenPersister.getAuthToken(mccAccountId);
     if (authToken != null) {
-      return authToken.getAuthToken();
+      return authToken;
     }
     return null;
   }
