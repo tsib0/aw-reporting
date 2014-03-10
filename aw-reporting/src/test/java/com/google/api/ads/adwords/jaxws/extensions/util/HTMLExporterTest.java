@@ -14,14 +14,16 @@
 
 package com.google.api.ads.adwords.jaxws.extensions.util;
 
+import com.google.api.ads.adwords.jaxws.extensions.exporter.HTMLExporter;
+import com.google.api.ads.adwords.jaxws.extensions.exporter.reportwriter.FileSystemReportWriter;
+import com.google.api.ads.adwords.jaxws.extensions.exporter.reportwriter.ReportWriter;
+import com.google.api.ads.adwords.jaxws.extensions.exporter.reportwriter.ReportWriter.ReportFileType;
 import com.google.api.ads.adwords.jaxws.extensions.report.model.entities.Report;
 import com.google.api.ads.adwords.jaxws.extensions.report.model.entities.ReportAccount;
 import com.google.api.ads.adwords.jaxws.extensions.report.model.entities.ReportPlaceholderFeedItem;
-import com.google.api.ads.adwords.jaxws.extensions.reportwriter.FileSystemReportWriter;
-import com.google.api.ads.adwords.jaxws.extensions.reportwriter.ReportWriter;
-import com.google.api.ads.adwords.jaxws.extensions.reportwriter.ReportWriter.ReportFileType;
 import com.google.api.ads.adwords.lib.jaxb.v201309.ReportDefinitionReportType;
 import com.google.api.client.util.Maps;
+
 import com.lowagie.text.DocumentException;
 
 import org.joda.time.DateTime;
