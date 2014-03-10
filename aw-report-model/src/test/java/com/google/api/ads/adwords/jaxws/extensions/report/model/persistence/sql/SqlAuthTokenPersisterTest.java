@@ -17,13 +17,13 @@ package com.google.api.ads.adwords.jaxws.extensions.report.model.persistence.sql
 import com.google.api.ads.adwords.jaxws.extensions.report.model.entities.AuthMcc;
 import com.google.api.ads.adwords.jaxws.extensions.report.model.persistence.AuthTokenPersister;
 
-import junit.framework.Assert;
-
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+
+import junit.framework.Assert;
 
 /**
  * Test class for the authorization token persistence layer.
@@ -41,7 +41,7 @@ public class SqlAuthTokenPersisterTest {
   @Test
   public void testTokenPersistence() {
 
-    AuthMcc authMcc = new AuthMcc("1234", "4321");
+    AuthMcc authMcc = new AuthMcc("1234", "4321", "scope");
     this.authTokenPersister.persistAuthToken(authMcc);
 
     AuthMcc authToken = this.authTokenPersister.getAuthToken("1234");
@@ -51,7 +51,7 @@ public class SqlAuthTokenPersisterTest {
     authToken = this.authTokenPersister.getAuthToken("12345");
     Assert.assertNull(authToken);
 
-    authMcc = new AuthMcc("1234", "54321");
+    authMcc = new AuthMcc("1234", "54321", "scope");
     this.authTokenPersister.persistAuthToken(authMcc);
 
     authToken = this.authTokenPersister.getAuthToken("1234");

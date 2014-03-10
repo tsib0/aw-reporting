@@ -15,7 +15,6 @@
 package com.google.api.ads.adwords.jaxws.extensions.exporter.reportwriter;
 
 import com.google.api.ads.adwords.jaxws.extensions.authentication.Authenticator;
-import com.google.api.ads.adwords.jaxws.extensions.util.GoogleDriveService;
 import com.google.api.ads.common.lib.exception.OAuthException;
 import com.google.api.client.http.AbstractInputStreamContent;
 import com.google.api.client.http.InputStreamContent;
