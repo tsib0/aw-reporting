@@ -14,6 +14,7 @@
 
 package com.google.api.ads.adwords.jaxws.extensions;
 
+import com.google.api.ads.adwords.jaxws.extensions.exporter.ReportExporter;
 import com.google.api.ads.adwords.jaxws.extensions.processors.ReportProcessor;
 import com.google.api.ads.adwords.jaxws.extensions.proxy.JaxWsProxySelector;
 import com.google.api.ads.adwords.jaxws.extensions.util.DataBaseType;
@@ -127,7 +128,7 @@ public class AwReporting {
       LOGGER.debug("Creating ReportProcessor bean...");
       ReportProcessor processor = createReportProcessor();
       LOGGER.debug("... success.");
-      
+
       if (cmdLine.hasOption("generatePdf")) {
 
         LOGGER.debug("GeneratePDF option detected.");
@@ -137,7 +138,7 @@ public class AwReporting {
         File htmlTemplateFile = new File(pdfFiles[0]);
         File outputDirectory = new File(pdfFiles[1]);
         boolean sumAdExtensions = false;
-        
+
         if (cmdLine.hasOption("sumAdExtensions")) {
           LOGGER.debug("sumAdExtensions option detected.");
           sumAdExtensions = true;
@@ -146,9 +147,12 @@ public class AwReporting {
         LOGGER.debug("Html template file to be used: " + htmlTemplateFile);
         LOGGER.debug("Output directory for PDF: " + outputDirectory);
 
-        // Generate PDFs
-        processor.generatePdf(cmdLine.getOptionValue("startDate"),
-            cmdLine.getOptionValue("endDate"), properties, htmlTemplateFile,
+        // Export Reports
+        ReportExporter reportExporter = createReportExporter();
+        reportExporter.exportReports(cmdLine.getOptionValue("startDate"),
+            cmdLine.getOptionValue("endDate"),
+            processor.retrieveAccountIds(),
+            properties, htmlTemplateFile,
             outputDirectory, sumAdExtensions);
 
       } else if (cmdLine.hasOption("startDate") && cmdLine.hasOption("endDate")) {
@@ -176,9 +180,16 @@ public class AwReporting {
         errors = true;
         LOGGER.error("Configuration incomplete. Missing options for command line.");
       }
+
     } catch (IOException e) {
       errors = true;
-      LOGGER.error("File not found: " + e.getMessage());
+
+      if (e.getMessage().contains("Insufficient Permission")) {
+        LOGGER.error("Insufficient Permission error accessing the API" + e.getMessage());
+      } else {
+        LOGGER.error("File not found: " + e.getMessage());  
+      }
+
     } catch (ParseException e) {
       errors = true;
       System.err.println(
@@ -231,6 +242,17 @@ public class AwReporting {
     return appCtx.getBean(ReportProcessor.class);
   }
 
+  /**
+   * Creates the {@link ReportExporter} autowiring all the dependencies.
+   *
+   * @return the {@code ReportExporter} with all the dependencies properly injected.
+   */
+  private static ReportExporter createReportExporter() {
+
+    return appCtx.getBean(ReportExporter.class);
+  }
+
+  
   /**
    * Creates the command line options.
    *

@@ -5,4 +5,4 @@
  * @author joeltoby
  *
  */
-package com.google.api.ads.adwords.jaxws.extensions.reportwriter;
+package com.google.api.ads.adwords.jaxws.extensions.exporter.reportwriter;
