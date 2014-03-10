@@ -234,18 +234,7 @@ public abstract class ReportProcessor {
         if (propertyReportWriterType != null && 
             propertyReportWriterType.equals(ReportWriterType.GoogleDriveWriter.name())) {
 
-          /*
-           *  TODO (joeltoby): Remove the following section once authentication has been
-           *  implemented properly and credentials are no longer needed.
-           */
-          String propertyClientId = properties.getProperty("clientId");
-          String propertyClientSecret = properties.getProperty("clientSecret");
           String propertyTopAccountCid = properties.getProperty("mccAccountId");
-          if(propertyClientId == null || propertyClientSecret == null) {
-            throw new IllegalArgumentException(
-                "clientId, clientSecret & mccAccountId property values must be set within" +
-                " your aw-report.properties file.");
-          }
 
           LOGGER.debug("Constructing Google Drive Report Writers to write reports");
 
@@ -257,7 +246,7 @@ public abstract class ReportProcessor {
           InputStream htmlReportInput = new ByteArrayInputStream(htmlReportOutput.toByteArray());
 
           GoogleDriveReportWriter pdfReportWriter = new GoogleDriveReportWriter.GoogleDriveReportWriterBuilder(
-              accountId, dateStart, dateEnd, propertyClientId, propertyClientSecret, propertyTopAccountCid, authenticator).build();
+              accountId, dateStart, dateEnd, propertyTopAccountCid, authenticator).build();
 
           LOGGER.debug("Converting HTML to PDF for account: " + accountId);
           HTMLExporter.convertHTMLtoPDF(htmlReportInput, pdfReportWriter);
