@@ -11,9 +11,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+import com.google.api.ads.adwords.jaxws.extensions.exporter.reportwriter.ReportWriterType;
 import com.google.api.ads.adwords.jaxws.extensions.report.model.entities.AuthMcc;
 import com.google.api.ads.adwords.jaxws.extensions.report.model.persistence.AuthTokenPersister;
-import com.google.api.ads.adwords.jaxws.extensions.reportwriter.ReportWriterType;
 import com.google.api.ads.adwords.lib.client.AdWordsSession;
 import com.google.api.ads.common.lib.exception.OAuthException;
 import com.google.api.client.auth.oauth2.Credential;

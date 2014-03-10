@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package com.google.api.ads.adwords.jaxws.extensions.reportwriter;
+package com.google.api.ads.adwords.jaxws.extensions.exporter.reportwriter;
 
 import com.google.api.ads.adwords.jaxws.extensions.authentication.Authenticator;
 import com.google.api.ads.adwords.jaxws.extensions.util.GoogleDriveService;

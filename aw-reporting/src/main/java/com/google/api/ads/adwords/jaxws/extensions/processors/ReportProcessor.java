@@ -16,16 +16,7 @@ package com.google.api.ads.adwords.jaxws.extensions.processors;
 
 import com.google.api.ads.adwords.jaxws.extensions.authentication.Authenticator;
 import com.google.api.ads.adwords.jaxws.extensions.report.model.csv.CsvReportEntitiesMapping;
-import com.google.api.ads.adwords.jaxws.extensions.report.model.entities.NameImprClicks;
-import com.google.api.ads.adwords.jaxws.extensions.report.model.entities.Report;
-import com.google.api.ads.adwords.jaxws.extensions.report.model.entities.ReportPlaceholderFeedItem;
 import com.google.api.ads.adwords.jaxws.extensions.report.model.persistence.EntityPersister;
-import com.google.api.ads.adwords.jaxws.extensions.report.model.util.DateUtil;
-import com.google.api.ads.adwords.jaxws.extensions.reportwriter.FileSystemReportWriter;
-import com.google.api.ads.adwords.jaxws.extensions.reportwriter.GoogleDriveReportWriter;
-import com.google.api.ads.adwords.jaxws.extensions.reportwriter.ReportWriter.ReportFileType;
-import com.google.api.ads.adwords.jaxws.extensions.reportwriter.ReportWriterType;
-import com.google.api.ads.adwords.jaxws.extensions.util.HTMLExporter;
 import com.google.api.ads.adwords.jaxws.extensions.util.ManagedCustomerDelegate;
 import com.google.api.ads.adwords.jaxws.v201309.mcm.ApiException;
 import com.google.api.ads.adwords.jaxws.v201309.mcm.ManagedCustomer;
@@ -35,22 +26,13 @@ import com.google.api.ads.adwords.lib.jaxb.v201309.ReportDefinition;
 import com.google.api.ads.adwords.lib.jaxb.v201309.ReportDefinitionDateRangeType;
 import com.google.api.ads.adwords.lib.jaxb.v201309.ReportDefinitionReportType;
 import com.google.api.ads.adwords.lib.jaxb.v201309.Selector;
-import com.google.api.client.util.Maps;
 import com.google.api.client.util.Sets;
 import com.google.common.collect.Lists;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.InputStream;
-import java.io.OutputStreamWriter;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 
@@ -66,8 +48,7 @@ import java.util.Set;
 
 public abstract class ReportProcessor {
 
-  private static final Logger LOGGER = Logger
-      .getLogger(ReportProcessor.class);
+  private static final Logger LOGGER = Logger.getLogger(ReportProcessor.class);
 
   private static final int REPORT_BUFFER_DB = 1000;
   private static final int NUMBER_OF_REPORT_PROCESSORS = 20;
@@ -156,124 +137,6 @@ public abstract class ReportProcessor {
       }
     }
     return accounts;
-  }
-
-  /**
-   * Generates the PDF files from the report data
-   *
-   * @param dateStart the start date for the reports
-   * @param dateEnd the end date for the reports
-   * @param properties the properties file containing all the configuration
-   * @throws Exception error creating PDF
-   */
-  public void generatePdf(String dateStart, String dateEnd, Properties properties,
-      File htmlTemplateFile, File outputDirectory, boolean sumAdExtensions) throws Exception {
-
-    LOGGER.info("Starting PDF Generation");
-    Map<String, Object> reportMap = Maps.newHashMap();
-
-    for (Long accountId : retrieveAccountIds()) {
-      LOGGER.debug("Retrieving monthly reports for account: " + accountId);
-
-      Set<ReportDefinitionReportType> reports = this.csvReportEntitiesMapping.getDefinedReports();
-      for (ReportDefinitionReportType reportType : reports) {
-        if (properties.containsKey(reportType.name())) {
-          // Adding each report type rows from DB to the accounts montlyeports list.
-
-          List<Report> monthlyReports = Lists.newArrayList(persister.listMonthReports(
-              csvReportEntitiesMapping.getReportBeanClass(reportType), accountId,
-              DateUtil.parseDateTime(dateStart), DateUtil.parseDateTime(dateEnd)));
-
-          if (sumAdExtensions && reportType.name() == "PLACEHOLDER_FEED_ITEM_REPORT") {
-            Map<String, NameImprClicks> adExtensionsMap = new HashMap<String, NameImprClicks>();
-            int sitelinks = 0;
-            for (Report report : monthlyReports) {
-              String clickType = ((ReportPlaceholderFeedItem) report).getClickType();
-              Long impressions = ((ReportPlaceholderFeedItem) report).getImpressions();
-              Long clicks = ((ReportPlaceholderFeedItem) report).getClicks();
-              if (!clickType.equals("Headline")) {
-                if (clickType.equals("Sitelink")) {
-                  sitelinks++;
-                }
-                if (adExtensionsMap.containsKey(clickType)) {
-                  NameImprClicks oldValues = adExtensionsMap.get(clickType);
-                  oldValues.impressions += impressions;
-                  oldValues.clicks += clicks;
-                  adExtensionsMap.put(clickType, oldValues);
-                } else {
-                  NameImprClicks values = new NameImprClicks(); 
-                  values.impressions = impressions;
-                  values.clicks = clicks;
-                  adExtensionsMap.put(clickType, values);
-                }
-              }
-            }
-
-            List<NameImprClicks> adExtensions = new ArrayList<NameImprClicks>();
-            for (Map.Entry<String, NameImprClicks> entry : adExtensionsMap.entrySet()) { 
-              NameImprClicks nic = new NameImprClicks();
-              nic.clickType = entry.getKey();
-              if (nic.clickType.equals("Sitelink")) {
-                nic.clickType = "Sitelinks (x" + sitelinks + ")";
-              }
-              nic.clicks = entry.getValue().clicks;
-              nic.impressions = entry.getValue().impressions;
-              adExtensions.add(nic);
-            }
-            reportMap.put("ADEXTENSIONS", adExtensions);
-          }
-
-          reportMap.put(reportType.name(), monthlyReports);
-        }
-      }
-
-      if (reportMap != null && reportMap.size() > 0) {
-
-        String propertyReportWriterType = properties.getProperty("aw.report.processor.reportwritertype");
-
-        if (propertyReportWriterType != null && 
-            propertyReportWriterType.equals(ReportWriterType.GoogleDriveWriter.name())) {
-
-          String propertyTopAccountCid = properties.getProperty("mccAccountId");
-
-          LOGGER.debug("Constructing Google Drive Report Writers to write reports");
-
-          // Get HTML report as inputstream to avoid writing to Drive
-          LOGGER.debug("Exporting monthly reports to HTML for account: " + accountId);
-          ByteArrayOutputStream htmlReportOutput = new ByteArrayOutputStream();
-          OutputStreamWriter htmlOutputStreamWriter = new OutputStreamWriter(htmlReportOutput);
-          HTMLExporter.exportHTML(reportMap, htmlTemplateFile, htmlOutputStreamWriter);
-          InputStream htmlReportInput = new ByteArrayInputStream(htmlReportOutput.toByteArray());
-
-          GoogleDriveReportWriter pdfReportWriter = new GoogleDriveReportWriter.GoogleDriveReportWriterBuilder(
-              accountId, dateStart, dateEnd, propertyTopAccountCid, authenticator).build();
-
-          LOGGER.debug("Converting HTML to PDF for account: " + accountId);
-          HTMLExporter.convertHTMLtoPDF(htmlReportInput, pdfReportWriter);
-
-          htmlOutputStreamWriter.close();
-          htmlReportInput.close();
-          pdfReportWriter.close();
-
-        } else {
-
-          LOGGER.debug("Constructing File System Reporriters to write reports");
-          FileSystemReportWriter htmlReportWriter = new FileSystemReportWriter.FileSystemReportWriterBuilder(
-              outputDirectory, accountId, dateStart, dateEnd, ReportFileType.HTML).build();
-          FileSystemReportWriter pdfReportWriter = new FileSystemReportWriter.FileSystemReportWriterBuilder(
-              outputDirectory, accountId, dateStart, dateEnd, ReportFileType.PDF).build();
-
-          LOGGER.debug("Exporting monthly reports to HTML for account: " + accountId);
-          HTMLExporter.exportHTML(reportMap, htmlTemplateFile, htmlReportWriter);
-
-          LOGGER.debug("Converting HTML to PDF for account: " + accountId);
-          HTMLExporter.convertHTMLtoPDF(htmlReportWriter.getOutputFile(), pdfReportWriter);
-
-          htmlReportWriter.close();
-          pdfReportWriter.close();
-        }
-      }
-    }
   }
 
   /**

@@ -12,27 +12,27 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package com.google.api.ads.adwords.jaxws.extensions.processors;
+package com.google.api.ads.adwords.jaxws.extensions.exporter;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyBoolean;
 import static org.mockito.Matchers.anyLong;
 import static org.mockito.Matchers.anyObject;
+import static org.mockito.Matchers.anySetOf;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.doCallRealMethod;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import com.google.api.ads.adwords.jaxws.extensions.authentication.Authenticator;
+import com.google.api.ads.adwords.jaxws.extensions.processors.ReportProcessor;
 import com.google.api.ads.adwords.jaxws.extensions.report.model.csv.CsvReportEntitiesMapping;
 import com.google.api.ads.adwords.jaxws.extensions.report.model.entities.Report;
 import com.google.api.ads.adwords.jaxws.extensions.report.model.entities.ReportAccount;
 import com.google.api.ads.adwords.jaxws.extensions.report.model.persistence.EntityPersister;
 import com.google.api.ads.adwords.jaxws.extensions.util.DynamicPropertyPlaceholderConfigurer;
-import com.google.api.ads.adwords.lib.jaxb.v201309.DownloadFormat;
-import com.google.api.ads.adwords.lib.jaxb.v201309.ReportDefinition;
-import com.google.api.ads.adwords.lib.jaxb.v201309.ReportDefinitionDateRangeType;
-import com.google.api.ads.adwords.lib.jaxb.v201309.ReportDefinitionReportType;
-import com.google.api.ads.adwords.lib.jaxb.v201309.Selector;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 
@@ -47,6 +47,7 @@ import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.support.PropertiesLoaderUtils;
 
+import java.io.File;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Properties;
@@ -57,8 +58,11 @@ import java.util.Set;
  *
  * @author jtoledo@google.com (Julian Toledo)
  */
-public class ReportProcessorTest {
+public class ReportExporterTest {
 
+  @Mock
+  private ReportExporter reportExporter;
+  
   @Mock
   private ReportProcessor reportProcessor;
   
@@ -80,6 +84,9 @@ public class ReportProcessorTest {
   private static final String dateStart = "20140101";
   private static final String dateEnd = "20140131";
 
+  private static final File templateFile =
+      new File("src/main/resources/templates/ACCOUNT_PERFORMANCE_REPORT.tmpl");
+
   @SuppressWarnings("unchecked")
   @Before
   public <R extends Report> void setUp() throws Exception {
@@ -89,22 +96,19 @@ public class ReportProcessorTest {
     appCtx = new ClassPathXmlApplicationContext("classpath:aw-report-test-beans.xml");
 
     MockitoAnnotations.initMocks(this);
-    doCallRealMethod().when(reportProcessor).setCsvReportEntitiesMapping(
+    doCallRealMethod().when(reportExporter).setCsvReportEntitiesMapping(
         any(CsvReportEntitiesMapping.class));
 
-    doCallRealMethod().when(reportProcessor).setPersister(
+    doCallRealMethod().when(reportExporter).setPersister(
         any(EntityPersister.class));
 
-    doCallRealMethod().when(reportProcessor).getReportDefinition(
-        any(ReportDefinitionReportType.class), any(ReportDefinitionDateRangeType.class),
-        anyString(), anyString(), any(Properties.class));
-    
-    doCallRealMethod().when(reportProcessor).instantiateReportDefinition(
-        any(ReportDefinitionReportType.class), any(ReportDefinitionDateRangeType.class), any(Selector.class));
+    doCallRealMethod().when(reportExporter).exportReports(
+        anyString(), anyString(), anySetOf(Long.class), any(Properties.class),
+        any(File.class), any(File.class), anyBoolean());
 
-    reportProcessor.setCsvReportEntitiesMapping(appCtx.getBean(CsvReportEntitiesMapping.class));
-    reportProcessor.setPersister(mockedEntitiesPersister);
-    reportProcessor.setAuthentication(authenticator);
+    reportExporter.setCsvReportEntitiesMapping(appCtx.getBean(CsvReportEntitiesMapping.class));
+    reportExporter.setPersister(mockedEntitiesPersister);
+    reportExporter.setAuthentication(authenticator);
 
     reportAccount.setAccountDescriptiveName("TestAccount");
     reportAccount.setAccountId(123L);
@@ -122,16 +126,23 @@ public class ReportProcessorTest {
     when(reportProcessor.retrieveAccountIds()).thenReturn(accountIds);
   }
 
+  @SuppressWarnings("unchecked")
   @Test
-  public void testGetReportDefinition() throws Exception { 
-    ReportDefinition reportDefinition = reportProcessor.getReportDefinition(
-        ReportDefinitionReportType.ACCOUNT_PERFORMANCE_REPORT,
-        ReportDefinitionDateRangeType.CUSTOM_DATE, dateStart, dateEnd, properties);
+  public void testGeneratePdf() throws Exception {    
 
-    assertEquals(reportDefinition.getReportName().split(" ")[0],
-        ReportProcessor.REPORT_PREFIX + ReportDefinitionReportType.ACCOUNT_PERFORMANCE_REPORT);
-    assertEquals(reportDefinition.getDateRangeType(), ReportDefinitionDateRangeType.CUSTOM_DATE);
-    assertEquals(reportDefinition.getDownloadFormat(), DownloadFormat.GZIPPED_CSV);
-    assertEquals(reportDefinition.isIncludeZeroImpressions(), false);
+    reportExporter.exportReports(dateStart, dateEnd, accountIds, properties, templateFile, null, false);
+
+    // Deleting temp files created
+    for (Long accountId : accountIds) {
+      File htmlFile = new File("Report_" + accountId + "_" + dateStart + "_" + dateEnd + ".html");
+      assertNotNull(htmlFile);
+      htmlFile.delete();
+      File pdfFile = new File("Report_" + accountId + "_" + dateStart +  "_" + dateEnd + ".pdf");
+      assertNotNull(pdfFile);
+      pdfFile.delete();
+    }
+
+    verify(mockedEntitiesPersister, times(90)).listMonthReports((Class<ReportAccount>) anyObject(),
+        anyLong(), any(DateTime.class), any(DateTime.class));
   }
 }
