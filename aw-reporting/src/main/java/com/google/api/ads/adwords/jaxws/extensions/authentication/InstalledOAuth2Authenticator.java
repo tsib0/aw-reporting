@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
@@ -12,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+import com.google.api.ads.adwords.jaxws.extensions.authentication.OAuthScope.SCOPE_TYPE;
 import com.google.api.ads.adwords.jaxws.extensions.exporter.reportwriter.ReportWriterType;
 import com.google.api.ads.adwords.jaxws.extensions.report.model.entities.AuthMcc;
 import com.google.api.ads.adwords.jaxws.extensions.report.model.persistence.AuthTokenPersister;
@@ -45,7 +47,7 @@ public class InstalledOAuth2Authenticator implements Authenticator {
   private String clientId = null;
   private String clientSecret = null;
   private String developerToken = null;
-  private List<String> scope = new ArrayList<String>();
+  private String scope = null;
   private AuthTokenPersister authTokenPersister;
   Credential oAuth2Credential = null;
 
@@ -73,11 +75,11 @@ public class InstalledOAuth2Authenticator implements Authenticator {
      * Google Drive API will be included in the scope if it is used for 
      * writing PDF files.
      */
-    scope.add(OAuthScope.getAdWordsScope());
-
     if (reportWriterType != null 
         && reportWriterType == ReportWriterType.GoogleDriveWriter) {
-      this.scope.add(OAuthScope.getGoogleDriveScope());
+      scope = OAuthScope.getScope(SCOPE_TYPE.ADWORDS, SCOPE_TYPE.DRIVE);
+    } else {
+      scope = OAuthScope.getScope(SCOPE_TYPE.ADWORDS);
     }
   }
 
@@ -103,7 +105,7 @@ public class InstalledOAuth2Authenticator implements Authenticator {
         authToken = getOAuth2Credential().getRefreshToken();
         
         LOGGER.debug("Saving Refresh Token to DB...\n");
-        this.saveAuthTokenToStorage(mccAccountId, authToken, StringUtils.join(scope, ','));
+        this.saveAuthTokenToStorage(mccAccountId, authToken, scope);
 
       } else {
         e.printStackTrace();
@@ -133,7 +135,7 @@ public class InstalledOAuth2Authenticator implements Authenticator {
         authToken = getOAuth2Credential().getRefreshToken();
 
         System.out.println("Saving Refresh Token to DB...\n");
-        this.saveAuthTokenToStorage(mccAccountId, authToken, StringUtils.join(scope, ','));
+        this.saveAuthTokenToStorage(mccAccountId, authToken, scope);
 
       } else {
         e.printStackTrace();
@@ -220,9 +222,9 @@ public class InstalledOAuth2Authenticator implements Authenticator {
   }
 
   private GoogleAuthorizationCodeFlow getAuthorizationFlow() {
-
     GoogleAuthorizationCodeFlow authorizationFlow = new GoogleAuthorizationCodeFlow.Builder(
-        new NetHttpTransport(), new JacksonFactory(), clientId, clientSecret, scope)
+        new NetHttpTransport(), new JacksonFactory(), clientId, clientSecret,
+        Arrays.asList(scope.split("\\s*,\\s*")))
     .setAccessType("offline").setApprovalPrompt("force").build();
 
     return authorizationFlow;
@@ -250,7 +252,7 @@ public class InstalledOAuth2Authenticator implements Authenticator {
 
     // Check the Scope of the Auth on DB
     if (authMcc == null || authMcc.getScope() == null
-        || !authMcc.getScope().equals(StringUtils.join(scope, ','))) {
+        || !authMcc.getScope().equals(scope)) {
       force = true;
     }
 
@@ -277,7 +279,7 @@ public class InstalledOAuth2Authenticator implements Authenticator {
         }
       }
       LOGGER.info("Saving Refresh Token to DB...");
-      this.saveAuthTokenToStorage(mccAccountId, authToken, StringUtils.join(scope, ','));
+      this.saveAuthTokenToStorage(mccAccountId, authToken, scope);
     }
     return authToken;
   }
