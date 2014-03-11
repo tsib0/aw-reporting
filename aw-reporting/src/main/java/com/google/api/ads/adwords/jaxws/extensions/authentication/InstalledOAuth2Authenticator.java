@@ -39,10 +39,6 @@ public class InstalledOAuth2Authenticator implements Authenticator {
 
   private static final String USER_AGENT = "AwReporting";
 
-  private static String SCOPE_ADWORDS = "https://adwords.google.com/api/adwords";
-
-  private static String SCOPE_DRIVE = "https://www.googleapis.com/auth/drive.file";
-
   private static final String CALLBACK_URL = "urn:ietf:wg:oauth:2.0:oob";
 
   // AdWords Authentication Properties
@@ -77,11 +73,11 @@ public class InstalledOAuth2Authenticator implements Authenticator {
      * Google Drive API will be included in the scope if it is used for 
      * writing PDF files.
      */
-    scope.add(SCOPE_ADWORDS);
+    scope.add(OAuthScope.getAdWordsScope());
 
     if (reportWriterType != null 
         && reportWriterType == ReportWriterType.GoogleDriveWriter) {
-      this.scope.add(SCOPE_DRIVE);
+      this.scope.add(OAuthScope.getGoogleDriveScope());
     }
   }
 
