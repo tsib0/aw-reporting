@@ -49,7 +49,7 @@ public class ReportAd extends ReportBase {
   @CsvField(value = "Destination URL", reportField = "Url")
   private String destinationUrl;
 
-  @Column(name = "HEADLINE", length = 128)
+  @Column(name = "HEADLINE", length = 255)
   @CsvField(value = "Ad", reportField = "Headline")
   private String headline;
 
@@ -164,7 +164,7 @@ public class ReportAd extends ReportBase {
   }
 
   public void setHeadline(String headline) {
-    this.headline = headline;
+    this.headline = headline.length() > 255 ? headline.substring(0,255) : headline;
   }
 
   // line1
