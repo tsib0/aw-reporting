@@ -14,6 +14,11 @@
 
 package com.google.api.ads.adwords.jaxws.extensions.authentication;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import org.apache.commons.lang.StringUtils;
+
 /**
  * Provides the scope used by AwReports for all OAuth2 authenticated services.
  *  
@@ -26,17 +31,26 @@ public class OAuthScope {
 
   private static String SCOPE_DRIVE = "https://www.googleapis.com/auth/drive.file";
   
-  /**
-   * @return the scope used by AwReports for the AdWords API
-   */
-  public static String getAdWordsScope() {
-    return SCOPE_ADWORDS;
-  }
+  public enum SCOPE_TYPE { ADWORDS, DRIVE };
+  
   
   /**
-   * @return the scope used by AwReports for the Google Drive API
+   * Convenience method to provide a comma separated scope list 
+   * consisting of the services provided in the {@link SCOPE_TYPE}s.
+   * @param scopeTypes
+   * @return
    */
-  public static String getGoogleDriveScope() {
-    return SCOPE_DRIVE;
+  public static String getScope(SCOPE_TYPE... scopeTypes) {
+    List<String> scope = new ArrayList<String>();
+    
+    for(SCOPE_TYPE type : scopeTypes) {
+      if(type == SCOPE_TYPE.ADWORDS) {
+        scope.add(SCOPE_ADWORDS);
+      } else if(type == SCOPE_TYPE.DRIVE){
+        scope.add(SCOPE_DRIVE);
+      }
+    }
+    
+    return StringUtils.join(scope, ',');
   }
 }
