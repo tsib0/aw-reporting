@@ -40,7 +40,19 @@ public class OAuthScope {
    * @param scopeTypes
    * @return
    */
-  public static String getScope(SCOPE_TYPE... scopeTypes) {
+  public static String getScopeCsv(SCOPE_TYPE... scopeTypes) {
+    List<String> scope = getScopeList(scopeTypes);
+    return StringUtils.join(scope, ',');
+  }
+  
+  /**
+   * Provides a scope {@link List} consisting of the services provided 
+   * in the {@link SCOPE_TYPE}s.
+   * consisting of the services provided in the {@link SCOPE_TYPE}s.
+   * @param scopeTypes
+   * @return
+   */
+  public static List<String> getScopeList(SCOPE_TYPE... scopeTypes) {
     List<String> scope = new ArrayList<String>();
     
     for(SCOPE_TYPE type : scopeTypes) {
@@ -51,6 +63,6 @@ public class OAuthScope {
       }
     }
     
-    return StringUtils.join(scope, ',');
+    return scope;
   }
 }
