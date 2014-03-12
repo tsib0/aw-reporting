@@ -20,8 +20,10 @@ limitations under the License.
     <title>Kratu AdWords Health Analysis</title>
     <link rel="stylesheet" href="css/kratu.css">
     <link rel="stylesheet" href="css/examples.css">
-    <script src='js/kratu.js'></script>
-    <script src='js/dataproviders/json.js'></script>
+    <script src="js/kratu.js"></script>
+    <script src="js/kratuSignalAdjustments.js"></script>
+    <script src="js/dataproviders/json.js"></script>
+    <script src="https://www.google.com/jsapi"></script>
     <script type="text/javascript">
       /** Render a Kratu report showcasing the AdWords HealtCheck Example */
       window.onload = function() {
@@ -57,8 +59,9 @@ limitations under the License.
           	}
         }
         function renderData(data) {
-            console.log("renderData");
-
+for (var i = 0; i < 2; i++) {
+console.log(data[i]);
+}
           kratu.setEntities(data);
           kratu.renderCurrentPage(addExportLinks);
         }
