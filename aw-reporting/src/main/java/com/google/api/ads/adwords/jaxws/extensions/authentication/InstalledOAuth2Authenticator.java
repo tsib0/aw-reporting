@@ -74,9 +74,9 @@ public class InstalledOAuth2Authenticator implements Authenticator {
      */
     if (reportWriterType != null 
         && reportWriterType == ReportWriterType.GoogleDriveWriter) {
-      scope = OAuthScope.getScope(SCOPE_TYPE.ADWORDS, SCOPE_TYPE.DRIVE);
+      scope = OAuthScope.getScopeCsv(SCOPE_TYPE.ADWORDS, SCOPE_TYPE.DRIVE);
     } else {
-      scope = OAuthScope.getScope(SCOPE_TYPE.ADWORDS);
+      scope = OAuthScope.getScopeCsv(SCOPE_TYPE.ADWORDS);
     }
   }
 
