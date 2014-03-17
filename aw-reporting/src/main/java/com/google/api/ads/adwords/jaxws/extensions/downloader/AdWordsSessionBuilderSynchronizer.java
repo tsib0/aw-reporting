@@ -33,7 +33,8 @@ public class AdWordsSessionBuilderSynchronizer {
    */
   public synchronized AdWordsSession getAdWordsSession(Long cid) throws ValidationException {
 
-    return this.builder.withClientCustomerId(String.valueOf(cid)).build();
+    return this.builder.withClientCustomerId(String.valueOf(cid))
+      .disableReportMoneyInMicros().build();
   }
 
 }
