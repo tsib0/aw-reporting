@@ -19,9 +19,9 @@ import com.google.api.ads.adwords.jaxws.extensions.report.model.csv.AnnotationBa
 import com.google.api.ads.adwords.jaxws.extensions.report.model.entities.Report;
 import com.google.api.ads.adwords.jaxws.extensions.report.model.util.ModifiedCsvToBean;
 import com.google.api.ads.adwords.lib.client.AdWordsSession;
-import com.google.api.ads.adwords.lib.jaxb.v201309.ReportDefinition;
-import com.google.api.ads.adwords.lib.jaxb.v201309.ReportDefinitionDateRangeType;
-import com.google.api.ads.adwords.lib.jaxb.v201309.ReportDefinitionReportType;
+import com.google.api.ads.adwords.lib.jaxb.v201402.ReportDefinition;
+import com.google.api.ads.adwords.lib.jaxb.v201402.ReportDefinitionDateRangeType;
+import com.google.api.ads.adwords.lib.jaxb.v201402.ReportDefinitionReportType;
 import com.google.common.base.Stopwatch;
 
 import org.apache.log4j.Logger;
