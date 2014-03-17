@@ -20,7 +20,7 @@ import com.google.api.ads.adwords.jaxws.extensions.proxy.JaxWsProxySelector;
 import com.google.api.ads.adwords.jaxws.extensions.util.DataBaseType;
 import com.google.api.ads.adwords.jaxws.extensions.util.DynamicPropertyPlaceholderConfigurer;
 import com.google.api.ads.adwords.jaxws.extensions.util.FileUtil;
-import com.google.api.ads.adwords.lib.jaxb.v201309.ReportDefinitionDateRangeType;
+import com.google.api.ads.adwords.lib.jaxb.v201402.ReportDefinitionDateRangeType;
 import com.google.api.client.util.Sets;
 
 import org.apache.commons.cli.BasicParser;
