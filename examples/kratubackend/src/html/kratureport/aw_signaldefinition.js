@@ -177,7 +177,7 @@ function KratuSignalDefinitions(kratu) {
     },
     headerEventHandlers: headerEventHandlers
   };
-  signals.averageQualityScore = {
+  signals.weightedAverageQualityScore = {
     name: 'Avg Quality Score',
     weight: 75,
     lMax: 2,
@@ -437,7 +437,7 @@ function KratuSignalDefinitions(kratu) {
     },
     headerEventHandlers: headerEventHandlers
   };
-  signals.averageKeywordPosition = {
+  signals.weightedAverageKeywordPosition = {
     name: 'Avg KW Position',
     weight: 80,
     hMin: 4,
@@ -639,7 +639,7 @@ function KratuSignalDefinitions(kratu) {
       'moreLink':
         ''
     },
-    'averageQualityScore': {
+    'weightedAverageQualityScore': {
       'name':
         'Average QS',
       'description':
@@ -943,7 +943,7 @@ function KratuSignalDefinitions(kratu) {
         'http://support.google.com/adwords/bin/answer.py?' +
         'hl=en&answer=140351&topic=24937&path=15464-1710534&ctx=leftnav'
     },
-    'averageKeywordPosition': {
+    'weightedAverageKeywordPosition': {
       'name':
         'Avg KW Position',
       'description':

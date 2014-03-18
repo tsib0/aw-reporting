@@ -15,7 +15,7 @@
 package com.google.api.ads.adwords.jaxws.extensions.report.model.definitions;
 
 import com.google.api.ads.adwords.jaxws.extensions.report.model.entities.ReportAdExtension;
-import com.google.api.ads.adwords.lib.jaxb.v201309.ReportDefinitionReportType;
+import com.google.api.ads.adwords.lib.jaxb.v201402.ReportDefinitionReportType;
 
 import junit.framework.Assert;
 
@@ -122,8 +122,6 @@ public class ReportAdExtensionDefinitionTest
         "AverageCpm",
         "AverageCpc",
         "AveragePosition",
-        "Date",
-        "Month",
         "AdNetworkType1",
         "AdNetworkType2",
         "CampaignId",
@@ -132,6 +130,13 @@ public class ReportAdExtensionDefinitionTest
         "Status",
         "ApprovalStatus",
         "Device",
-        "ClickType"};
+        "ClickType",
+        "Date",
+        "Month",
+        "DayOfWeek",
+        "Week",
+        "MonthOfYear",
+        "Quarter",
+        "Year"};
   }
 }

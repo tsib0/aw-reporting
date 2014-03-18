@@ -15,7 +15,7 @@
 package com.google.api.ads.adwords.jaxws.extensions.report.model.definitions;
 
 import com.google.api.ads.adwords.jaxws.extensions.report.model.entities.ReportCampaign;
-import com.google.api.ads.adwords.lib.jaxb.v201309.ReportDefinitionReportType;
+import com.google.api.ads.adwords.lib.jaxb.v201402.ReportDefinitionReportType;
 
 import junit.framework.Assert;
 
@@ -124,11 +124,16 @@ public class ReportCampaignDefinitionTest extends AbstractReportDefinitionTest<R
         "CampaignName",
         "Status",
         "Amount",
-        "Date",
-        "Month",
         "AdNetworkType1",
         "AdNetworkType2",
         "Device",
-        "ClickType"};
+        "ClickType",
+        "Date",
+        "Month",
+        "DayOfWeek",
+        "Week",
+        "MonthOfYear",
+        "Quarter",
+        "Year"};
   }
 }

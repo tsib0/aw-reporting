@@ -15,7 +15,7 @@
 package com.google.api.ads.adwords.jaxws.extensions.report.model.definitions;
 
 import com.google.api.ads.adwords.jaxws.extensions.report.model.entities.ReportAccount;
-import com.google.api.ads.adwords.lib.jaxb.v201309.ReportDefinitionReportType;
+import com.google.api.ads.adwords.lib.jaxb.v201402.ReportDefinitionReportType;
 
 import junit.framework.Assert;
 
@@ -62,12 +62,17 @@ public class ReportAccountDefinitionTest extends AbstractReportDefinitionTest<Re
         "ContentImpressionShare",
         "ContentBudgetLostImpressionShare",
         "ContentRankLostImpressionShare",
-        "Date",
-        "Month",
         "Device",
         "ClickType",
         "AdNetworkType1",
-    "AdNetworkType2"};
+        "AdNetworkType2",
+        "Date",
+        "Month",
+        "DayOfWeek",
+        "Week",
+        "MonthOfYear",
+        "Quarter",
+        "Year"};
   }
 
   /**
