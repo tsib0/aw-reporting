@@ -75,8 +75,8 @@ public abstract class ReportExporter {
    * @throws Exception error creating PDF
    */
   public void exportReport(String dateStart, String dateEnd,
-      long accountId, Properties properties,
-      File htmlTemplateFile, File outputDirectory, boolean sumAdExtensions) throws IOException, OAuthException, DocumentException {
+      Long accountId, Properties properties,
+      File htmlTemplateFile, File outputDirectory, Boolean sumAdExtensions) throws IOException, OAuthException, DocumentException {
 
     LOGGER.info("Starting PDF Generation for account " + accountId);
     Map<String, Object> reportMap = Maps.newHashMap();
@@ -197,7 +197,7 @@ public abstract class ReportExporter {
    */
   public abstract void exportReports(String dateStart, String dateEnd,
       Set<Long> accountIds, Properties properties,File htmlTemplateFile, File outputDirectory, 
-      boolean sumAdExtensions) throws IOException, OAuthException, DocumentException;
+      Boolean sumAdExtensions) throws IOException, OAuthException, DocumentException;
 
   /**
    * @param csvReportEntitiesMapping
