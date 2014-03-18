@@ -15,7 +15,7 @@
 package com.google.api.ads.adwords.jaxws.extensions.kratu.data;
 
 import com.google.api.ads.adwords.jaxws.extensions.report.model.persistence.mongodb.MongoEntity;
-import com.google.api.ads.adwords.jaxws.v201309.mcm.ManagedCustomer;
+import com.google.api.ads.adwords.jaxws.v201402.mcm.ManagedCustomer;
 import com.google.common.collect.Lists;
 
 import java.util.List;
