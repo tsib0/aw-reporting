@@ -179,10 +179,6 @@ public class ReportCriteriaPerformance extends ReportBase {
   @CsvField(value = "Client name", reportField = "CustomerDescriptiveName")
   private String customerDescriptiveName;
 
-  @Column(name = "DAY_OF_WEEK")
-  @CsvField(value = "Day of week", reportField = "DayOfWeek")
-  private String dayOfWeek;
-
   @Column(name = "DISPLAY_NAME")
   @CsvField(value = "Criteria Display Name", reportField = "DisplayName")
   private String displayName;
@@ -211,10 +207,6 @@ public class ReportCriteriaPerformance extends ReportBase {
   @CsvField(value = "Max. CPM", reportField = "MaxCpm")
   private String maxCpm;
 
-  @Column(name = "MONTH_OF_YEAR")
-  @CsvField(value = "Month of Year", reportField = "MonthOfYear")
-  private String monthOfYear;
-
   @Column(name = "PARAMETER")
   @CsvField(value = "Dynamic ad target", reportField = "Parameter")
   private String parameter;
@@ -238,10 +230,6 @@ public class ReportCriteriaPerformance extends ReportBase {
   @Column(name = "QUALITY_SCORE")
   @CsvField(value = "Quality score", reportField = "QualityScore")
   private Long qualityScore;
-
-  @Column(name = "QUARTER")
-  @CsvField(value = "Quarter", reportField = "Quarter")
-  private String quarter;
 
   @Column(name = "SLOT")
   @CsvField(value = "Top vs. side", reportField = "Slot")
@@ -284,14 +272,6 @@ public class ReportCriteriaPerformance extends ReportBase {
   @CsvField(value = "View-through conv. ACE indicator",
   reportField = "ViewThroughConversionsSignificance")
   private String viewThroughConversionsSignificance;
-
-  @Column(name = "WEEK")
-  @CsvField(value = "Week", reportField = "Week")
-  private String week;
-
-  @Column(name = "YEAR")
-  @CsvField(value = "Year", reportField = "Year")
-  private Long year;
 
   /**
    * Hibernate needs an empty constructor
@@ -608,14 +588,6 @@ public class ReportCriteriaPerformance extends ReportBase {
     this.customerDescriptiveName = customerDescriptiveName;
   }
 
-  public String getDayOfWeek() {
-    return dayOfWeek;
-  }
-
-  public void setDayOfWeek(String dayOfWeek) {
-    this.dayOfWeek = dayOfWeek;
-  }
-
   public String getDisplayName() {
     return displayName;
   }
@@ -672,14 +644,6 @@ public class ReportCriteriaPerformance extends ReportBase {
     this.maxCpm = maxCpm;
   }
 
-  public String getMonthOfYear() {
-    return monthOfYear;
-  }
-
-  public void setMonthOfYear(String monthOfYear) {
-    this.monthOfYear = monthOfYear;
-  }
-
   public String getParameter() {
     return parameter;
   }
@@ -726,14 +690,6 @@ public class ReportCriteriaPerformance extends ReportBase {
 
   public void setQualityScore(Long qualityScore) {
     this.qualityScore = qualityScore;
-  }
-
-  public String getQuarter() {
-    return quarter;
-  }
-
-  public void setQuarter(String quarter) {
-    this.quarter = quarter;
   }
 
   public String getSlot() {
@@ -816,21 +772,5 @@ public class ReportCriteriaPerformance extends ReportBase {
   public void setViewThroughConversionsSignificance(
       String viewThroughConversionsSignificance) {
     this.viewThroughConversionsSignificance = viewThroughConversionsSignificance;
-  }
-
-  public String getWeek() {
-    return week;
-  }
-
-  public void setWeek(String week) {
-    this.week = week;
-  }
-
-  public Long getYear() {
-    return year;
-  }
-
-  public void setYear(Long year) {
-    this.year = year;
   }
 }

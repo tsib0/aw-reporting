@@ -19,7 +19,12 @@ import com.google.api.ads.adwords.jaxws.extensions.report.model.csv.annotation.C
 import com.google.api.ads.adwords.jaxws.extensions.report.model.util.BigDecimalUtil;
 import com.google.api.ads.adwords.lib.jaxb.v201402.ReportDefinitionReportType;
 
+import org.apache.commons.codec.binary.Hex;
+
+import java.io.UnsupportedEncodingException;
 import java.math.BigDecimal;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -108,21 +113,13 @@ public class ReportDestinationUrl extends ReportBase {
   @CsvField(value = "Client name", reportField = "CustomerDescriptiveName")
   private String customerDescriptiveName;
 
-  @Column(name = "DAYOFWEEK")
-  @CsvField(value = "Day of week", reportField = "DayOfWeek")
-  private String dayOfWeek;
-
-  @Column(name = "EFFECTIVEDESTINATIONURL")
+  @Column(name = "EFFECTIVEDESTINATIONURL", length = 2048)
   @CsvField(value = "Destination URL", reportField = "EffectiveDestinationUrl")
   private String effectiveDestinationUrl;
 
   @Column(name = "ISNEGATIVE")
   @CsvField(value = "Is negative", reportField = "IsNegative")
   private String isNegative;
-
-  @Column(name = "MONTHOFYEAR")
-  @CsvField(value = "Month of Year", reportField = "MonthOfYear")
-  private String monthOfYear;
 
   @Column(name = "PRIMARYCOMPANYNAME")
   @CsvField(value = "Company name", reportField = "PrimaryCompanyName")
@@ -131,10 +128,6 @@ public class ReportDestinationUrl extends ReportBase {
   @Column(name = "PRIMARYUSERLOGIN")
   @CsvField(value = "Login email", reportField = "PrimaryUserLogin")
   private String primaryUserLogin;
-
-  @Column(name = "QUARTER")
-  @CsvField(value = "Quarter", reportField = "Quarter")
-  private String quarter;
 
   @Column(name = "TOTALCONVVALUE")
   @CsvField(value = "Total conv. value", reportField = "TotalConvValue")
@@ -161,14 +154,6 @@ public class ReportDestinationUrl extends ReportBase {
   @CsvField(value = "View-through conv.", reportField = "ViewThroughConversions")
   private Long viewThroughConversions;
 
-  @Column(name = "WEEK")
-  @CsvField(value = "Week", reportField = "Week")
-  private String week;
-
-  @Column(name = "YEAR")
-  @CsvField(value = "Year", reportField = "Year")
-  private Long year;
-
   /**
    * Hibernate needs an empty constructor
    */
@@ -194,17 +179,25 @@ public class ReportDestinationUrl extends ReportBase {
     if (this.getAdGroupId() != null) {
       this.id += this.getAdGroupId() + "-";
     }
-    if (this.getAdNetwork() != null) {
-      this.id += this.getAdNetwork() + "-";
-    }
-    if (this.getAdNetworkPartners() != null) {
-      this.id += this.getAdNetworkPartners() + "-";
-    }
-    if (this.getClickType() != null) {
-      this.id += this.getClickType() + "-";
-    }
     if (this.getCriteriaParameters() != null) { 
       this.id += this.getCriteriaParameters() + "-";
+    }
+ 
+    // Generating a SHA-1 Hash of the URLs for ID generation
+    if (this.getEffectiveDestinationUrl() != null) { 
+      MessageDigest messageDigest;
+      try {
+        messageDigest = MessageDigest.getInstance("SHA-1");
+        messageDigest.reset();
+        messageDigest.update(this.getEffectiveDestinationUrl().getBytes("UTF-8"));
+        final byte[] resultByte = messageDigest.digest();
+        final String urlHash = new String(Hex.encodeHex(resultByte));
+        this.id += urlHash;
+      } catch (NoSuchAlgorithmException e) {
+        e.printStackTrace();
+      } catch (UnsupportedEncodingException e) {
+        e.printStackTrace();
+      }
     }
 
     this.id += setIdDates();
@@ -386,14 +379,6 @@ public class ReportDestinationUrl extends ReportBase {
     this.customerDescriptiveName = customerDescriptiveName;
   }
 
-  public String getDayOfWeek() {
-    return dayOfWeek;
-  }
-
-  public void setDayOfWeek(String dayOfWeek) {
-    this.dayOfWeek = dayOfWeek;
-  }
-
   public String getEffectiveDestinationUrl() {
     return effectiveDestinationUrl;
   }
@@ -410,14 +395,6 @@ public class ReportDestinationUrl extends ReportBase {
     this.isNegative = isNegative;
   }
 
-  public String getMonthOfYear() {
-    return monthOfYear;
-  }
-
-  public void setMonthOfYear(String monthOfYear) {
-    this.monthOfYear = monthOfYear;
-  }
-
   public String getPrimaryCompanyName() {
     return primaryCompanyName;
   }
@@ -432,14 +409,6 @@ public class ReportDestinationUrl extends ReportBase {
 
   public void setPrimaryUserLogin(String primaryUserLogin) {
     this.primaryUserLogin = primaryUserLogin;
-  }
-
-  public String getQuarter() {
-    return quarter;
-  }
-
-  public void setQuarter(String quarter) {
-    this.quarter = quarter;
   }
 
   public String getTotalConvValue() {
@@ -510,21 +479,5 @@ public class ReportDestinationUrl extends ReportBase {
 
   public void setViewThroughConversions(Long viewThroughConversions) {
     this.viewThroughConversions = viewThroughConversions;
-  }
-
-  public String getWeek() {
-    return week;
-  }
-
-  public void setWeek(String week) {
-    this.week = week;
-  }
-
-  public Long getYear() {
-    return year;
-  }
-
-  public void setYear(Long year) {
-    this.year = year;
   }
 }
