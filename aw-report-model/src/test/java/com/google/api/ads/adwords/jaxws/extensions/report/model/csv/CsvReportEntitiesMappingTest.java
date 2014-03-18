@@ -122,14 +122,21 @@ public class CsvReportEntitiesMappingTest {
     Assert.assertTrue(propertiesToSelect.contains("ContentImpressionShare"));
     Assert.assertTrue(propertiesToSelect.contains("ContentBudgetLostImpressionShare"));
     Assert.assertTrue(propertiesToSelect.contains("ContentRankLostImpressionShare"));
-    Assert.assertTrue(propertiesToSelect.contains("Date"));
-    Assert.assertTrue(propertiesToSelect.contains("Month"));
+
     Assert.assertTrue(propertiesToSelect.contains("Device"));
     Assert.assertTrue(propertiesToSelect.contains("ClickType"));
     Assert.assertTrue(propertiesToSelect.contains("AdNetworkType1"));
     Assert.assertTrue(propertiesToSelect.contains("AdNetworkType2"));
 
-    Assert.assertEquals(23, propertiesToSelect.size());
+    Assert.assertTrue(propertiesToSelect.contains("Date"));
+    Assert.assertTrue(propertiesToSelect.contains("Month"));
+    Assert.assertTrue(propertiesToSelect.contains("DayOfWeek"));
+    Assert.assertTrue(propertiesToSelect.contains("Week"));
+    Assert.assertTrue(propertiesToSelect.contains("MonthOfYear"));
+    Assert.assertTrue(propertiesToSelect.contains("Quarter"));
+    Assert.assertTrue(propertiesToSelect.contains("Year"));
+
+    Assert.assertEquals(28, propertiesToSelect.size());
   }
 
   /**

@@ -110,13 +110,19 @@ public class ReportUrlDefinitionTest extends AbstractReportDefinitionTest<Report
         "AdGroupName", "AdGroupStatus", "CampaignId", "CampaignName", "CampaignStatus",
         "Ctr", "ConversionRate", "ConversionRateManyPerClick", "ConversionsManyPerClick",
         "ConversionValue", "CostPerConversion", "CostPerConversionManyPerClick",
-        "CriteriaParameters", "CustomerDescriptiveName", "DayOfWeek", "DisplayName", "Domain",
-        "IsAutoOptimized", "IsBidOnPath", "IsPathExcluded", "MonthOfYear", "PrimaryCompanyName",
-        "PrimaryUserLogin", "Quarter", "TotalConvValue", "Url", "ValuePerConv",
+        "CriteriaParameters", "CustomerDescriptiveName", "DisplayName", "Domain",
+        "IsAutoOptimized", "IsBidOnPath", "IsPathExcluded", "PrimaryCompanyName",
+        "PrimaryUserLogin", "TotalConvValue", "Url", "ValuePerConv",
         "ValuePerConversion", "ValuePerConversionManyPerClick", "ValuePerConvManyPerClick",
-        "ViewThroughConversions", "ExternalCustomerId", "Date", "Month",
+        "ViewThroughConversions", "ExternalCustomerId",
         "AccountDescriptiveName", "Cost", "Clicks", "Impressions", "Conversions", 
-        "AverageCpm", "AverageCpc", "AccountCurrencyCode", "AdNetworkType1", "AdNetworkType2" };
+        "AverageCpm", "AverageCpc", "AccountCurrencyCode", "AdNetworkType1", "AdNetworkType2",
+        "Date",
+        "Month",
+        "DayOfWeek",
+        "Week",
+        "MonthOfYear",
+        "Quarter",
+        "Year"};
   }
-
 }

@@ -141,11 +141,16 @@ public class ReportKeywordDefinitionTest extends AbstractReportDefinitionTest<Re
         "KeywordText",
         "DestinationUrl",
         "IsNegative",
-        "Date",
-        "Month",
         "AdNetworkType1",
         "AdNetworkType2",
         "Device",
-    "ClickType"};
+        "ClickType",
+        "Date",
+        "Month",
+        "DayOfWeek",
+        "Week",
+        "MonthOfYear",
+        "Quarter",
+        "Year"};
   }
 }

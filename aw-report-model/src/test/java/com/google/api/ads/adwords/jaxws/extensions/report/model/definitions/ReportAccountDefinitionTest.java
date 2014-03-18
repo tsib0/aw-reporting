@@ -62,12 +62,17 @@ public class ReportAccountDefinitionTest extends AbstractReportDefinitionTest<Re
         "ContentImpressionShare",
         "ContentBudgetLostImpressionShare",
         "ContentRankLostImpressionShare",
-        "Date",
-        "Month",
         "Device",
         "ClickType",
         "AdNetworkType1",
-    "AdNetworkType2"};
+        "AdNetworkType2",
+        "Date",
+        "Month",
+        "DayOfWeek",
+        "Week",
+        "MonthOfYear",
+        "Quarter",
+        "Year"};
   }
 
   /**
