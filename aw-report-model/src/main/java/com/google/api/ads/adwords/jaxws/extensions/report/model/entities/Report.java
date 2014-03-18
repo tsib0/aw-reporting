@@ -49,9 +49,9 @@ public abstract class Report implements MongoEntity {
   public static final String KEYWORD_ID = "keywordId";
   public static final String AD_ID = "adId";
   public static final String ADEXTENSION_ID = "adExtensionId";
-  public static final String DAY = "day";
   public static final String DATE_START = "dateStart";
   public static final String DATE_END = "dateEnd";
+  public static final String DAY = "day";
 
   @Id
   @com.googlecode.objectify.annotation.Id

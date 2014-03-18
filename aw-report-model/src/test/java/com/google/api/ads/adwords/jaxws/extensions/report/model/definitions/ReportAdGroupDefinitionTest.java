@@ -120,11 +120,16 @@ public class ReportAdGroupDefinitionTest extends AbstractReportDefinitionTest<Re
         "AdGroupId",
         "AdGroupName",
         "Status",
-        "Date",
-        "Month",
         "AdNetworkType1",
         "AdNetworkType2",
         "Device",
-        "ClickType"};
+        "ClickType",
+        "Date",
+        "Month",
+        "DayOfWeek",
+        "Week",
+        "MonthOfYear",
+        "Quarter",
+        "Year"};
   }
 }
