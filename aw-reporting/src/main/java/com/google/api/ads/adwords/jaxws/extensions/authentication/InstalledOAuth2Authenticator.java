@@ -245,12 +245,14 @@ public class InstalledOAuth2Authenticator implements Authenticator {
     LOGGER.debug("Retrieving auth token from DB.");
 
     AuthMcc authMcc = this.getAuthTokenFromStorage(mccAccountId);
-    String authToken = authMcc.getAuthToken();
+    String authToken = null;
 
     // Check the Scope of the Auth on DB
     if (authMcc == null || authMcc.getScope() == null
         || !authMcc.getScope().equals(scope)) {
       force = true;
+    } else {
+      authToken = authMcc.getAuthToken();
     }
 
     // Generate a new Auth token if necessary
