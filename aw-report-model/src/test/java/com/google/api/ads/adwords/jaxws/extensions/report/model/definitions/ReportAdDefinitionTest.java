@@ -132,11 +132,16 @@ public class ReportAdDefinitionTest extends AbstractReportDefinitionTest<ReportA
         "Description1",
         "Description2",
         "CreativeApprovalStatus",
-        "Date",
-        "Month",
         "AdNetworkType1",
         "AdNetworkType2",
         "Device",
-    "ClickType"};
+        "ClickType",
+        "Date",
+        "Month",
+        "DayOfWeek",
+        "Week",
+        "MonthOfYear",
+        "Quarter",
+        "Year"};
   }
 }
