@@ -20,8 +20,10 @@ limitations under the License.
     <title>Kratu AdWords Health Analysis</title>
     <link rel="stylesheet" href="css/kratu.css">
     <link rel="stylesheet" href="css/examples.css">
-    <script src='js/kratu.js'></script>
-    <script src='js/dataproviders/json.js'></script>
+    <script src="js/kratu.js"></script>
+    <script src="js/kratuSignalAdjustments.js"></script>
+    <script src="js/dataproviders/json.js"></script>
+    <script src="https://www.google.com/jsapi"></script>
     <script type="text/javascript">
       /** Render a Kratu report showcasing the AdWords HealtCheck Example */
       window.onload = function() {
@@ -43,7 +45,7 @@ limitations under the License.
           });
           
         function setReport(report) {
-            console.log("Got report");
+          console.log("Got report");
           kratu.setReportDefinition(report, loadData);
         }
         function loadData() {
@@ -57,9 +59,19 @@ limitations under the License.
           	}
         }
         function renderData(data) {
-            console.log("renderData");
 
-          kratu.setEntities(data);
+          // NOTE: THIS IS SOME EXTRA CODE WE ADDED TO FILTER OUT ACCOUNTS WITH
+          // ZERO BUDGETED SPEND -- YOU SHOULD / CAN TOTALLY ADD YOUR OWN CODE
+          // HERE TO DO FURTHER FILTERING ON ACCOUNTS. PERHAPS ONLY SHOW THOSE
+          // ACCOUNTS THAT MATCH AN ACCOUNT MANAGER NAME IN A COOKIE, ETC
+          var d2 = [];
+          for (var i = 0; i < 2; i++) {
+            if (data[i].sumBudget != 0) d2.push(data[i]);
+          }
+          data = d2;
+          // END EXTRA CODE
+
+          kratu.setEntities();
           kratu.renderCurrentPage(addExportLinks);
         }
         function addExportLinks() {

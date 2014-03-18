@@ -26,7 +26,7 @@ import com.google.api.ads.adwords.jaxws.extensions.report.model.entities.dateran
 import com.google.api.ads.adwords.jaxws.extensions.report.model.entities.dateranges.YesterdayDateRangeHandler;
 import com.google.api.ads.adwords.jaxws.extensions.report.model.util.BigDecimalUtil;
 import com.google.api.ads.adwords.jaxws.extensions.report.model.util.DateUtil;
-import com.google.api.ads.adwords.lib.jaxb.v201309.ReportDefinitionDateRangeType;
+import com.google.api.ads.adwords.lib.jaxb.v201402.ReportDefinitionDateRangeType;
 import com.google.api.client.util.Maps;
 
 import org.joda.time.DateTime;
@@ -50,15 +50,39 @@ import javax.persistence.MappedSuperclass;
 @MappedSuperclass
 public abstract class ReportBase extends Report {
 
+  public static final String DAYOFWEEK = "dayOfWeek";
+  public static final String WEEK = "week";
   public static final String MONTH = "month";
+  public static final String QUARTER = "quarter";
+  public static final String YEAR = "year";
   
   @Column(name = "DAY")
   @CsvField(value = "Day", reportField = "Date")
   protected Date day;
 
+  @Column(name = "DAYOFWEEK")
+  @CsvField(value = "Day of week", reportField = "DayOfWeek")
+  private String dayOfWeek;
+
+  @Column(name = "WEEK")
+  @CsvField(value = "Week", reportField = "Week")
+  private String week;
+  
   @Column(name = "MONTH")
   @CsvField(value = "Month", reportField = "Month")
   protected Date month;
+
+  @Column(name = "MONTH_OF_YEAR")
+  @CsvField(value = "Month of Year", reportField = "MonthOfYear")
+  private String monthOfYear;
+
+  @Column(name = "QUARTER")
+  @CsvField(value = "Quarter", reportField = "Quarter")
+  private String quarter;
+
+  @Column(name = "YEAR")
+  @CsvField(value = "Year", reportField = "Year")
+  private Long year;
 
   @Column(name = "ACCOUNT_DESCRIPTIVE_NAME", length = 255)
   @CsvField(value = "Account", reportField = "AccountDescriptiveName")
@@ -158,15 +182,30 @@ public abstract class ReportBase extends Report {
 
   @Override
   public String setIdDates() {
-    // Day or Month
+    // Time Segments
     if (this.getDay() != null) {
       return "-" + this.getDay();
     }
     if (this.getMonth() != null) {
       return "-" + DateUtil.formatYearMonth(this.getMonthDateTime());
     }
-    if (this.getDateRangeType() != null) {
+    if (this.getDayOfWeek() != null) {
+      return "-" + this.getDayOfWeek();
+    }
+    if (this.getWeek() != null) {
+      return "-" + this.getWeek();
+    }
+    if (this.getQuarter() != null) {
+      return "-" + this.getQuarter();
+    }
+    if (this.getMonthOfYear() != null) {
+      return "-" + this.getMonthOfYear();
+    }
+    if (this.getYear() != null) {
+      return "-" + this.getYear();
+    }
 
+    if (this.getDateRangeType() != null) {
       DateRangeHandler handler = dateRangeHandlers.get(this
           .getDateRangeType());
       if (handler != null) {
@@ -181,41 +220,6 @@ public abstract class ReportBase extends Report {
       return "-" + this.getDateStart() + "-" + this.getDateEnd();
     }
     return "";
-  }
-
-  @Override
-  public String getId() {
-    return id;
-  }
-
-  @Override
-  public Long getPartnerId() {
-    return partnerId;
-  }
-
-  @Override
-  public void setPartnerId(Long partnerId) {
-    this.partnerId = partnerId;
-  }
-
-  @Override
-  public Long getTopAccountId() {
-    return topAccountId;
-  }
-
-  @Override
-  public void setTopAccountId(Long topAccountId) {
-    this.topAccountId = topAccountId;
-  }
-
-  @Override
-  public Long getAccountId() {
-    return accountId;
-  }
-
-  @Override
-  public void setAccountId(Long accountId) {
-    this.accountId = accountId;
   }
 
   public String getDay() {
@@ -262,14 +266,44 @@ public abstract class ReportBase extends Report {
     }
   }
 
-  @Override
-  public String getDateRangeType() {
-    return dateRangeType;
+  public String getMonthOfYear() {
+    return monthOfYear;
   }
 
-  @Override
-  public void setDateRangeType(String dateRangeType) {
-    this.dateRangeType = dateRangeType;
+  public void setMonthOfYear(String monthOfYear) {
+    this.monthOfYear = monthOfYear;
+  }
+
+  public String getDayOfWeek() {
+    return dayOfWeek;
+  }
+
+  public void setDayOfWeek(String dayOfWeek) {
+    this.dayOfWeek = dayOfWeek;
+  }
+  
+  public String getWeek() {
+    return week;
+  }
+
+  public void setWeek(String week) {
+    this.week = week;
+  }
+
+  public String getQuarter() {
+    return quarter;
+  }
+
+  public void setQuarter(String quarter) {
+    this.quarter = quarter;
+  }
+
+  public Long getYear() {
+    return year;
+  }
+
+  public void setYear(Long year) {
+    this.year = year;
   }
 
   public void setCost(BigDecimal cost) {
@@ -345,7 +379,6 @@ public abstract class ReportBase extends Report {
   }
 
   public void setCtr(String ctr) {
-
     // removing percentage symbol from the string
     if (ctr != null) {
       String replace = ctr.replace("%", "");
@@ -397,16 +430,6 @@ public abstract class ReportBase extends Report {
     this.currencyCode = currencyCode;
   }
 
-  @Override
-  public Date getTimestamp() {
-    return timestamp;
-  }
-
-  @Override
-  public void setTimestamp(Date timestamp) {
-    this.timestamp = timestamp;
-  }
-
   public String getDevice() {
     return device;
   }
@@ -437,26 +460,6 @@ public abstract class ReportBase extends Report {
 
   public void setAdNetworkPartners(String adNetworkPartners) {
     this.adNetworkPartners = adNetworkPartners;
-  }
-
-  @Override
-  public String getDateStart() {
-    return dateStart;
-  }
-
-  @Override
-  public void setDateStart(String dateStart) {
-    this.dateStart = dateStart;
-  }
-
-  @Override
-  public String getDateEnd() {
-    return dateEnd;
-  }
-
-  @Override
-  public void setDateEnd(String dateEnd) {
-    this.dateEnd = dateEnd;
   }
 
   @Override
