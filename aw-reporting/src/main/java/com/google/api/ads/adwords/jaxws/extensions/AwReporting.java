@@ -14,7 +14,7 @@
 
 package com.google.api.ads.adwords.jaxws.extensions;
 
-import com.google.api.ads.adwords.jaxws.extensions.exporter.ReportExporter;
+import com.google.api.ads.adwords.jaxws.extensions.exporter.ReportExporterLocal;
 import com.google.api.ads.adwords.jaxws.extensions.processors.ReportProcessor;
 import com.google.api.ads.adwords.jaxws.extensions.proxy.JaxWsProxySelector;
 import com.google.api.ads.adwords.jaxws.extensions.util.DataBaseType;
@@ -148,7 +148,7 @@ public class AwReporting {
         LOGGER.debug("Output directory for PDF: " + outputDirectory);
 
         // Export Reports
-        ReportExporter reportExporter = createReportExporter();
+        ReportExporterLocal reportExporter = createReportExporter();
         reportExporter.exportReports(cmdLine.getOptionValue("startDate"),
             cmdLine.getOptionValue("endDate"),
             processor.retrieveAccountIds(),
@@ -243,13 +243,13 @@ public class AwReporting {
   }
 
   /**
-   * Creates the {@link ReportExporter} autowiring all the dependencies.
+   * Creates the {@link ReportExporterLocal} autowiring all the dependencies.
    *
    * @return the {@code ReportExporter} with all the dependencies properly injected.
    */
-  private static ReportExporter createReportExporter() {
+  private static ReportExporterLocal createReportExporter() {
 
-    return appCtx.getBean(ReportExporter.class);
+    return appCtx.getBean(ReportExporterLocal.class);
   }
 
   
