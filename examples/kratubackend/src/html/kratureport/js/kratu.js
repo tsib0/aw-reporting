@@ -1069,15 +1069,15 @@ Kratu.prototype.toggleSignal = function(key) {
  */
 Kratu.prototype.displaySignalAdjustment = function(signal) {
   var kratu = this;
-  kratu.loadScript('../../js/kratuSignalAdjustments.js', function() {
+//  kratu.loadScript('../../js/kratuSignalAdjustments.js', function() {
     // Consider moving this to KratuSignalAdjustements.js
-    kratu.loadScript('https://www.google.com/jsapi', function() {
+//    kratu.loadScript('https://www.google.com/jsapi', function() {
       var adjustments = new KratuSignalAdjustments(kratu);
       adjustments.displayAdjustments(signal, function() {
         kratu.updateReport();
       });
-    });
-  });
+//    });
+//  });
 };
 
 
@@ -1450,7 +1450,7 @@ KratuSignal.prototype.calculateWeight = function(entity, opt_simulation) {
     return 0;
   }
   if (opt_simulation) {
-    value = simulation.value;
+    value = opt_simulation.value;
   }
   else {
     try {

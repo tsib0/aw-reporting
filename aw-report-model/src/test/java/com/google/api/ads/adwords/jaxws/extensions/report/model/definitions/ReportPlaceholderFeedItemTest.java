@@ -16,7 +16,7 @@ package com.google.api.ads.adwords.jaxws.extensions.report.model.definitions;
 
 import com.google.api.ads.adwords.jaxws.extensions.report.model.entities.ReportPlaceholderFeedItem;
 import com.google.api.ads.adwords.jaxws.extensions.report.model.util.BigDecimalUtil;
-import com.google.api.ads.adwords.lib.jaxb.v201309.ReportDefinitionReportType;
+import com.google.api.ads.adwords.lib.jaxb.v201402.ReportDefinitionReportType;
 
 import junit.framework.Assert;
 
@@ -129,8 +129,6 @@ AbstractReportDefinitionTest<ReportPlaceholderFeedItem> {
         "CampaignId",
         "CampaignName",
         "Status",
-        "Date",
-        "Month",
         "AdNetworkType1",
         "AdNetworkType2",
         "Device",
@@ -147,6 +145,13 @@ AbstractReportDefinitionTest<ReportPlaceholderFeedItem> {
         "PrimaryCompanyName",
         "TotalConvValue",
         "ValuePerConv",
-    "ValuePerConvManyPerClick"};
+        "ValuePerConvManyPerClick",
+        "Date",
+        "Month",
+        "DayOfWeek",
+        "Week",
+        "MonthOfYear",
+        "Quarter",
+        "Year"};
   }
 }

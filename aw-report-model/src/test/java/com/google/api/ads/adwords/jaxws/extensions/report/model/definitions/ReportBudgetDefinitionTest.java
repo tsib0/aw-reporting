@@ -15,7 +15,7 @@
 package com.google.api.ads.adwords.jaxws.extensions.report.model.definitions;
 
 import com.google.api.ads.adwords.jaxws.extensions.report.model.entities.ReportBudget;
-import com.google.api.ads.adwords.lib.jaxb.v201309.ReportDefinitionReportType;
+import com.google.api.ads.adwords.lib.jaxb.v201402.ReportDefinitionReportType;
 
 import junit.framework.Assert;
 
@@ -56,21 +56,24 @@ public class ReportBudgetDefinitionTest extends AbstractReportDefinitionTest<Rep
         "AverageCpc",
         "AveragePosition",
         "AccountCurrencyCode",
-        "Date",
-        "Month",
         "Device",
         "ClickType",
         "AdNetworkType1",
         "AdNetworkType2",
-        // Specific to ReportBudget
         "Amount",
         "BudgetId",
         "BudgetName",
         "BudgetStatus",
         "BudgetReferenceCount",
         "IsBudgetExplicitlyShared",
-        "Period"
-    };
+        "Period",
+        "Date",
+        "Month",
+        "DayOfWeek",
+        "Week",
+        "MonthOfYear",
+        "Quarter",
+        "Year"};
   }
 
   /**
