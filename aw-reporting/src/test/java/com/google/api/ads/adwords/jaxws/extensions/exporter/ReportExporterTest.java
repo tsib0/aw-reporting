@@ -22,19 +22,13 @@ import static org.mockito.Matchers.anyObject;
 import static org.mockito.Matchers.anySetOf;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.doCallRealMethod;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import com.google.api.ads.adwords.jaxws.extensions.authentication.Authenticator;
-import com.google.api.ads.adwords.jaxws.extensions.processors.ReportProcessor;
-import com.google.api.ads.adwords.jaxws.extensions.report.model.csv.CsvReportEntitiesMapping;
-import com.google.api.ads.adwords.jaxws.extensions.report.model.entities.Report;
-import com.google.api.ads.adwords.jaxws.extensions.report.model.entities.ReportAccount;
-import com.google.api.ads.adwords.jaxws.extensions.report.model.persistence.EntityPersister;
-import com.google.api.ads.adwords.jaxws.extensions.util.DynamicPropertyPlaceholderConfigurer;
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableSet;
+import java.io.File;
+import java.math.BigDecimal;
+import java.util.List;
+import java.util.Properties;
+import java.util.Set;
 
 import org.joda.time.DateTime;
 import org.junit.Before;
@@ -47,11 +41,15 @@ import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.support.PropertiesLoaderUtils;
 
-import java.io.File;
-import java.math.BigDecimal;
-import java.util.List;
-import java.util.Properties;
-import java.util.Set;
+import com.google.api.ads.adwords.jaxws.extensions.authentication.Authenticator;
+import com.google.api.ads.adwords.jaxws.extensions.processors.ReportProcessor;
+import com.google.api.ads.adwords.jaxws.extensions.report.model.csv.CsvReportEntitiesMapping;
+import com.google.api.ads.adwords.jaxws.extensions.report.model.entities.Report;
+import com.google.api.ads.adwords.jaxws.extensions.report.model.entities.ReportAccount;
+import com.google.api.ads.adwords.jaxws.extensions.report.model.persistence.EntityPersister;
+import com.google.api.ads.adwords.jaxws.extensions.util.DynamicPropertyPlaceholderConfigurer;
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableSet;
 
 /**
  * Test case for the {@link ReportProcessor} class.
@@ -126,7 +124,6 @@ public class ReportExporterTest {
     when(reportProcessor.retrieveAccountIds()).thenReturn(accountIds);
   }
 
-  @SuppressWarnings("unchecked")
   @Test
   public void testGeneratePdf() throws Exception {    
 
