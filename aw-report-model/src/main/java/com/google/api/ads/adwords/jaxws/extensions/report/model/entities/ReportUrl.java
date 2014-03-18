@@ -93,10 +93,6 @@ public class ReportUrl extends ReportBase {
   @CsvField(value = "Client name", reportField = "CustomerDescriptiveName")
   private String customerDescriptiveName;
 
-  @Column(name = "DAY_OF_WEEK")
-  @CsvField(value = "Day of week", reportField = "DayOfWeek")
-  private String dayOfWeek;
-
   @Column(name = "DISPLAY_NAME")
   @CsvField(value = "Criteria Display Name", reportField = "DisplayName")
   private String displayName;
@@ -117,10 +113,6 @@ public class ReportUrl extends ReportBase {
   @CsvField(value = "Excluded", reportField = "IsPathExcluded")
   private String isPathExcluded;
 
-  @Column(name = "MONTH_OF_YEAR")
-  @CsvField(value = "Month of Year", reportField = "MonthOfYear")
-  private String monthOfYear;
-
   @Column(name = "PRIMARY_COMPANY_NAME")
   @CsvField(value = "Company name", reportField = "PrimaryCompanyName")
   private String primaryCompanyName;
@@ -129,15 +121,11 @@ public class ReportUrl extends ReportBase {
   @CsvField(value = "Login email", reportField = "PrimaryUserLogin")
   private String primaryUserLogin;
 
-  @Column(name = "QUARTER")
-  @CsvField(value = "Quarter", reportField = "Quarter")
-  private String quarter;
-
   @Column(name = "TOTAL_CONV_VALUE")
   @CsvField(value = "Total conv. value", reportField = "TotalConvValue")
   private String totalConvValue;
 
-  @Column(name = "URL")
+  @Column(name = "URL", length = 2048)
   @CsvField(value = "URL", reportField = "Url")
   private String url;
 
@@ -353,14 +341,6 @@ public class ReportUrl extends ReportBase {
     this.customerDescriptiveName = customerDescriptiveName;
   }
 
-  public String getDayOfWeek() {
-    return dayOfWeek;
-  }
-
-  public void setDayOfWeek(String dayOfWeek) {
-    this.dayOfWeek = dayOfWeek;
-  }
-
   public String getDisplayName() {
     return displayName;
   }
@@ -401,14 +381,6 @@ public class ReportUrl extends ReportBase {
     this.isPathExcluded = isPathExcluded;
   }
 
-  public String getMonthOfYear() {
-    return monthOfYear;
-  }
-
-  public void setMonthOfYear(String monthOfYear) {
-    this.monthOfYear = monthOfYear;
-  }
-
   public String getPrimaryCompanyName() {
     return primaryCompanyName;
   }
@@ -423,14 +395,6 @@ public class ReportUrl extends ReportBase {
 
   public void setPrimaryUserLogin(String primaryUserLogin) {
     this.primaryUserLogin = primaryUserLogin;
-  }
-
-  public String getQuarter() {
-    return quarter;
-  }
-
-  public void setQuarter(String quarter) {
-    this.quarter = quarter;
   }
 
   public String getTotalConvValue() {
