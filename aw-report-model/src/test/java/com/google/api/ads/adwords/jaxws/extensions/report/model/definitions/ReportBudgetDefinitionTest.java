@@ -56,21 +56,24 @@ public class ReportBudgetDefinitionTest extends AbstractReportDefinitionTest<Rep
         "AverageCpc",
         "AveragePosition",
         "AccountCurrencyCode",
-        "Date",
-        "Month",
         "Device",
         "ClickType",
         "AdNetworkType1",
         "AdNetworkType2",
-        // Specific to ReportBudget
         "Amount",
         "BudgetId",
         "BudgetName",
         "BudgetStatus",
         "BudgetReferenceCount",
         "IsBudgetExplicitlyShared",
-        "Period"
-    };
+        "Period",
+        "Date",
+        "Month",
+        "DayOfWeek",
+        "Week",
+        "MonthOfYear",
+        "Quarter",
+        "Year"};
   }
 
   /**

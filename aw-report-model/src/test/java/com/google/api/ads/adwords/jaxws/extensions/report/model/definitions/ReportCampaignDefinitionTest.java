@@ -124,11 +124,16 @@ public class ReportCampaignDefinitionTest extends AbstractReportDefinitionTest<R
         "CampaignName",
         "Status",
         "Amount",
-        "Date",
-        "Month",
         "AdNetworkType1",
         "AdNetworkType2",
         "Device",
-        "ClickType"};
+        "ClickType",
+        "Date",
+        "Month",
+        "DayOfWeek",
+        "Week",
+        "MonthOfYear",
+        "Quarter",
+        "Year"};
   }
 }

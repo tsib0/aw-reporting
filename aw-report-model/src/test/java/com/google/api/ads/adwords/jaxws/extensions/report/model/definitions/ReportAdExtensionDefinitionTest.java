@@ -122,8 +122,6 @@ public class ReportAdExtensionDefinitionTest
         "AverageCpm",
         "AverageCpc",
         "AveragePosition",
-        "Date",
-        "Month",
         "AdNetworkType1",
         "AdNetworkType2",
         "CampaignId",
@@ -132,6 +130,13 @@ public class ReportAdExtensionDefinitionTest
         "Status",
         "ApprovalStatus",
         "Device",
-        "ClickType"};
+        "ClickType",
+        "Date",
+        "Month",
+        "DayOfWeek",
+        "Week",
+        "MonthOfYear",
+        "Quarter",
+        "Year"};
   }
 }
