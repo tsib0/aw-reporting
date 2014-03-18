@@ -18,20 +18,23 @@ import com.google.api.ads.adwords.jaxws.extensions.authentication.Authenticator;
 import com.google.api.ads.adwords.jaxws.extensions.report.model.csv.CsvReportEntitiesMapping;
 import com.google.api.ads.adwords.jaxws.extensions.report.model.persistence.EntityPersister;
 import com.google.api.ads.adwords.jaxws.extensions.util.ManagedCustomerDelegate;
-import com.google.api.ads.adwords.jaxws.v201309.mcm.ApiException;
-import com.google.api.ads.adwords.jaxws.v201309.mcm.ManagedCustomer;
-import com.google.api.ads.adwords.lib.jaxb.v201309.DateRange;
-import com.google.api.ads.adwords.lib.jaxb.v201309.DownloadFormat;
-import com.google.api.ads.adwords.lib.jaxb.v201309.ReportDefinition;
-import com.google.api.ads.adwords.lib.jaxb.v201309.ReportDefinitionDateRangeType;
-import com.google.api.ads.adwords.lib.jaxb.v201309.ReportDefinitionReportType;
-import com.google.api.ads.adwords.lib.jaxb.v201309.Selector;
+import com.google.api.ads.adwords.jaxws.v201402.mcm.ApiException;
+import com.google.api.ads.adwords.jaxws.v201402.mcm.ManagedCustomer;
+import com.google.api.ads.adwords.lib.jaxb.v201402.DateRange;
+import com.google.api.ads.adwords.lib.jaxb.v201402.DownloadFormat;
+import com.google.api.ads.adwords.lib.jaxb.v201402.ReportDefinition;
+import com.google.api.ads.adwords.lib.jaxb.v201402.ReportDefinitionDateRangeType;
+import com.google.api.ads.adwords.lib.jaxb.v201402.ReportDefinitionReportType;
+import com.google.api.ads.adwords.lib.jaxb.v201402.Selector;
+import com.google.api.ads.common.lib.exception.OAuthException;
+import com.google.api.ads.common.lib.exception.ValidationException;
 import com.google.api.client.util.Sets;
 import com.google.common.collect.Lists;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Properties;
 import java.util.Set;
@@ -78,10 +81,15 @@ public abstract class ReportProcessor {
    * Uses the API to retrieve the managed accounts, and extract their IDs.
    * 
    * @return the account IDs for all the managed accounts.
+   * @throws IOException 
+   * @throws ValidationException 
+   * @throws OAuthException 
+   * @throws ApiException 
    * @throws Exception
    *             error reading the API.
    */
-  public Set<Long> retrieveAccountIds() throws Exception {
+  public Set<Long> retrieveAccountIds() throws OAuthException, ValidationException,
+  IOException, ApiException {
 
     Set<Long> accountIdsSet = Sets.newHashSet();
     try {

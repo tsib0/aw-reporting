@@ -21,12 +21,12 @@ import com.google.api.ads.adwords.jaxws.extensions.report.model.persistence.Enti
 import com.google.api.ads.adwords.jaxws.extensions.report.model.util.CsvParserIterator;
 import com.google.api.ads.adwords.jaxws.extensions.report.model.util.ModifiedCsvToBean;
 import com.google.api.ads.adwords.lib.client.AdWordsSession;
-import com.google.api.ads.adwords.lib.jaxb.v201309.ReportDefinition;
-import com.google.api.ads.adwords.lib.jaxb.v201309.ReportDefinitionDateRangeType;
+import com.google.api.ads.adwords.lib.jaxb.v201402.ReportDefinition;
+import com.google.api.ads.adwords.lib.jaxb.v201402.ReportDefinitionDateRangeType;
 import com.google.api.ads.adwords.lib.utils.ReportDownloadResponse;
 import com.google.api.ads.adwords.lib.utils.ReportDownloadResponseException;
 import com.google.api.ads.adwords.lib.utils.ReportException;
-import com.google.api.ads.adwords.lib.utils.v201309.ReportDownloader;
+import com.google.api.ads.adwords.lib.utils.v201402.ReportDownloader;
 import com.google.api.ads.common.lib.exception.ValidationException;
 import com.google.common.collect.Lists;
 
