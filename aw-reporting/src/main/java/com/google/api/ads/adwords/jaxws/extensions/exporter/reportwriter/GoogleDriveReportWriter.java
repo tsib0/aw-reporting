@@ -66,7 +66,7 @@ public class GoogleDriveReportWriter extends ReportWriter {
     this.topAccountCid = builder.topAccountCid;
     this.authenticator = builder.authenticator;
 
-    // Replace this when GoogleDriveService propertly extends Drive.
+    // Replace this when GoogleDriveService properly extends Drive.
     LOGGER.debug("Getting GoogleDrive service.");
     driveService = new GoogleDriveService(authenticator).getDriveService();
   }
