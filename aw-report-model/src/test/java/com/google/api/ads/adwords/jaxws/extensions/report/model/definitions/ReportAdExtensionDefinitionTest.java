@@ -114,29 +114,45 @@ public class ReportAdExtensionDefinitionTest
   protected String[] retrievePropertiesToBeSelected() {
 
     return new String[] {
+        // ReportBase (with Exclusions)
+        "Date",
+        "DayOfWeek",
+        "Week",
+        "Month",
+        "MonthOfYear",
+        "Quarter",
+        "Year",
         "Cost",
         "Clicks",
         "Impressions",
-        "Conversions",
         "Ctr",
         "AverageCpm",
         "AverageCpc",
         "AveragePosition",
+        "Device",
+        "ClickType",
         "AdNetworkType1",
         "AdNetworkType2",
+        "ConversionsManyPerClick",
+        "ConversionRateManyPerClick",
+        "CostPerConversionManyPerClick",
+        "ValuePerConvManyPerClick",
+        "ValuePerConversionManyPerClick",
+        "Conversions",
+        "ConversionRate",
+        "CostPerConversion",
+        "ValuePerConv",
+        "ValuePerConversion",
+        "ConversionCategoryName",
+        "ConversionTypeName",
+        "ConversionValue",
+        "ViewThroughConversions",
+        // Specific to AdExtenion Performance
         "CampaignId",
         "AdExtensionId",
         "AdExtensionType",
         "Status",
-        "ApprovalStatus",
-        "Device",
-        "ClickType",
-        "Date",
-        "Month",
-        "DayOfWeek",
-        "Week",
-        "MonthOfYear",
-        "Quarter",
-        "Year"};
+        "ApprovalStatus"
+        };
   }
 }
