@@ -19,9 +19,14 @@ import com.google.api.ads.adwords.jaxws.extensions.report.model.entities.ReportA
 import com.google.api.ads.adwords.jaxws.extensions.report.model.entities.ReportAd;
 import com.google.api.ads.adwords.jaxws.extensions.report.model.entities.ReportAdExtension;
 import com.google.api.ads.adwords.jaxws.extensions.report.model.entities.ReportAdGroup;
+import com.google.api.ads.adwords.jaxws.extensions.report.model.entities.ReportBudget;
 import com.google.api.ads.adwords.jaxws.extensions.report.model.entities.ReportCampaign;
 import com.google.api.ads.adwords.jaxws.extensions.report.model.entities.ReportCampaignNegativeKeyword;
+import com.google.api.ads.adwords.jaxws.extensions.report.model.entities.ReportCriteriaPerformance;
+import com.google.api.ads.adwords.jaxws.extensions.report.model.entities.ReportDestinationUrl;
 import com.google.api.ads.adwords.jaxws.extensions.report.model.entities.ReportKeyword;
+import com.google.api.ads.adwords.jaxws.extensions.report.model.entities.ReportPlaceholderFeedItem;
+import com.google.api.ads.adwords.jaxws.extensions.report.model.entities.ReportUrl;
 import com.google.api.ads.adwords.lib.jaxb.v201402.ReportDefinitionReportType;
 
 import junit.framework.Assert;
@@ -51,26 +56,41 @@ public class CsvReportEntitiesMappingTest {
   @Test
   public void testProperReportBeanMapping() {
 
-    this.assertBeanClassisCorrectForType(
-        ReportAccount.class, ReportDefinitionReportType.ACCOUNT_PERFORMANCE_REPORT);
+    this.assertBeanClassIsCorrectForType(ReportAccount.class,
+        ReportDefinitionReportType.ACCOUNT_PERFORMANCE_REPORT);
 
-    this.assertBeanClassisCorrectForType(
-        ReportCampaign.class, ReportDefinitionReportType.CAMPAIGN_PERFORMANCE_REPORT);
+    this.assertBeanClassIsCorrectForType(ReportCampaign.class,
+        ReportDefinitionReportType.CAMPAIGN_PERFORMANCE_REPORT);
 
-    this.assertBeanClassisCorrectForType(
-        ReportAdGroup.class, ReportDefinitionReportType.ADGROUP_PERFORMANCE_REPORT);
+    this.assertBeanClassIsCorrectForType(ReportAdGroup.class,
+        ReportDefinitionReportType.ADGROUP_PERFORMANCE_REPORT);
 
-    this.assertBeanClassisCorrectForType(
-        ReportAd.class, ReportDefinitionReportType.AD_PERFORMANCE_REPORT);
+    this.assertBeanClassIsCorrectForType(ReportAd.class,
+        ReportDefinitionReportType.AD_PERFORMANCE_REPORT);
 
-    this.assertBeanClassisCorrectForType(
-        ReportKeyword.class, ReportDefinitionReportType.KEYWORDS_PERFORMANCE_REPORT);
+    this.assertBeanClassIsCorrectForType(ReportKeyword.class,
+        ReportDefinitionReportType.KEYWORDS_PERFORMANCE_REPORT);
 
-    this.assertBeanClassisCorrectForType(ReportCampaignNegativeKeyword.class,
+    this.assertBeanClassIsCorrectForType(ReportCampaignNegativeKeyword.class,
         ReportDefinitionReportType.CAMPAIGN_NEGATIVE_KEYWORDS_PERFORMANCE_REPORT);
 
-    this.assertBeanClassisCorrectForType(
-        ReportAdExtension.class, ReportDefinitionReportType.AD_EXTENSIONS_PERFORMANCE_REPORT);
+    this.assertBeanClassIsCorrectForType(ReportAdExtension.class,
+        ReportDefinitionReportType.AD_EXTENSIONS_PERFORMANCE_REPORT);
+
+    this.assertBeanClassIsCorrectForType(ReportBudget.class,
+        ReportDefinitionReportType.BUDGET_PERFORMANCE_REPORT);
+
+    this.assertBeanClassIsCorrectForType(ReportCriteriaPerformance.class,
+        ReportDefinitionReportType.CRITERIA_PERFORMANCE_REPORT);
+
+    this.assertBeanClassIsCorrectForType(ReportDestinationUrl.class,
+        ReportDefinitionReportType.DESTINATION_URL_REPORT);
+
+    this.assertBeanClassIsCorrectForType(ReportPlaceholderFeedItem.class,
+        ReportDefinitionReportType.PLACEHOLDER_FEED_ITEM_REPORT);
+
+    this.assertBeanClassIsCorrectForType(ReportUrl.class,
+        ReportDefinitionReportType.URL_PERFORMANCE_REPORT);
 
   }
 
@@ -91,7 +111,11 @@ public class CsvReportEntitiesMappingTest {
         reports.contains(ReportDefinitionReportType.CAMPAIGN_NEGATIVE_KEYWORDS_PERFORMANCE_REPORT));
     Assert.assertTrue(
         reports.contains(ReportDefinitionReportType.AD_EXTENSIONS_PERFORMANCE_REPORT));
-
+    Assert.assertTrue(reports.contains(ReportDefinitionReportType.BUDGET_PERFORMANCE_REPORT));
+    Assert.assertTrue(reports.contains(ReportDefinitionReportType.CRITERIA_PERFORMANCE_REPORT));
+    Assert.assertTrue(reports.contains(ReportDefinitionReportType.DESTINATION_URL_REPORT));
+    Assert.assertTrue(reports.contains(ReportDefinitionReportType.PLACEHOLDER_FEED_ITEM_REPORT));
+    Assert.assertTrue(reports.contains(ReportDefinitionReportType.URL_PERFORMANCE_REPORT));
   }
 
   /**
@@ -163,8 +187,8 @@ public class CsvReportEntitiesMappingTest {
    * @param reportBeanClass the correct bean class.
    * @param type the report type
    */
-  private void assertBeanClassisCorrectForType(
-      Class<? extends Report> reportBeanClass, ReportDefinitionReportType type) {
+  private void assertBeanClassIsCorrectForType(Class<? extends Report> reportBeanClass,
+      ReportDefinitionReportType type) {
 
     Class<? extends Report> mappedBeanClass =
         this.csvReportEntitiesMapping.getReportBeanClass(type);
