@@ -44,22 +44,7 @@ public class ReportBudgetDefinitionTest extends AbstractReportDefinitionTest<Rep
   @Override
   protected String[] retrievePropertiesToBeSelected() {
     return new String[] {
-        // Report
-        "ExternalCustomerId",
-        // ReportBase
-        "AccountDescriptiveName",
-        "AccountTimeZoneId",
-        "CustomerDescriptiveName",
-        "PrimaryCompanyName",
-        "PrimaryUserLogin",
-        "AccountCurrencyCode",
-        "Date",
-        "DayOfWeek",
-        "Week",
-        "Month",
-        "MonthOfYear",
-        "Quarter",
-        "Year",
+        // ReportBase (without exclusions)
         "Cost",
         "Clicks",
         "Impressions",
@@ -87,6 +72,9 @@ public class ReportBudgetDefinitionTest extends AbstractReportDefinitionTest<Rep
         "ViewThroughConversions",
         // Specific to Budget Performance Report
         "Amount",
+        "AssociatedCampaignId",
+        "AssociatedCampaignName",
+        "AssociatedCampaignStatus",
         "BudgetId",
         "BudgetName",
         "BudgetStatus",
