@@ -53,6 +53,30 @@ public class ReportCampaign extends ReportBase {
   @CsvField(value = "Budget", reportField = "Amount")
   private BigDecimal budget;
 
+  @Column(name = "CONVERSIONRATESIGNIFICANCE")
+  @CsvField(value = "Click conversion rate ACE indicator", reportField = "ConversionRateSignificance")
+  protected BigDecimal conversionRateSignificance;
+
+  @Column(name = "CONVERSIONRATEMANYPERCLICKSIGNIFICANCE")
+  @CsvField(value = "Conversion rate ACE indicator", reportField = "ConversionRateManyPerClickSignificance")
+  protected BigDecimal conversionRateManyPerClickSignificance;
+  
+  @Column(name = "CONVERSIONMANYPERCLICKSIGNIFICANCE")
+  @CsvField(value = "Conversion ACE indicator", reportField = "ConversionManyPerClickSignificance")
+  protected BigDecimal conversionManyPerClickSignificance;
+
+  @Column(name = "COSTPERCONVERSIONMANYPERCLICKSIGNIFICANCE")
+  @CsvField(value = "Cost/conversion ACE indicator", reportField = "CostPerConversionManyPerClickSignificance")
+  protected BigDecimal costPerConversionManyPerClickSignificance;
+  
+  @Column(name = "CONVERSIONSIGNIFICANCE")
+  @CsvField(value = "Converted clicks ACE indicator", reportField = "ConversionSignificance")
+  protected BigDecimal conversionSignificance;
+
+  @Column(name = "COSTPERCONVERSIONSIGNIFICANCE")
+  @CsvField(value = "Cost/converted click ACE indicator", reportField = "CostPerConversionSignificance")
+  protected BigDecimal costPerConversionSignificance;
+
   /**
    * Hibernate needs an empty constructor
    */
@@ -87,7 +111,6 @@ public class ReportCampaign extends ReportBase {
     }
   }
 
-  // campaignId
   public Long getCampaignId() {
     return campaignId;
   }
@@ -96,7 +119,6 @@ public class ReportCampaign extends ReportBase {
     this.campaignId = campaignId;
   }
 
-  // campaignName
   public String getCampaignName() {
     return campaignName;
   }
@@ -105,7 +127,6 @@ public class ReportCampaign extends ReportBase {
     this.campaignName = campaignName;
   }
 
-  // status
   public String getStatus() {
     return status;
   }
@@ -114,7 +135,6 @@ public class ReportCampaign extends ReportBase {
     this.status = status;
   }
 
-  // budget
   public String getBudget() {
     return BigDecimalUtil.formatAsReadable(budget);
   }
@@ -125,5 +145,79 @@ public class ReportCampaign extends ReportBase {
 
   public void setBudget(String budget) {
     this.budget = BigDecimalUtil.parseFromNumberString(budget);
+  }  
+
+  public String getConversionRateSignificance() {
+    return BigDecimalUtil.formatAsReadable(conversionRateSignificance);
+  }
+  
+  public BigDecimal getConversionRateSignificanceBigDecimal() {
+    return conversionRateSignificance;
+  }
+
+  public void setConversionRateSignificance(String conversionRateSignificance) {
+    this.conversionRateSignificance = BigDecimalUtil.parseFromNumberString(conversionRateSignificance);
+  }
+
+  public String getConversionRateManyPerClickSignificance() {
+    return BigDecimalUtil.formatAsReadable(conversionRateManyPerClickSignificance);
+  }
+  
+  public BigDecimal getConversionRateManyPerClickSignificanceBigDecimal() {
+    return conversionRateManyPerClickSignificance;
+  }
+
+  public void setConversionRateManyPerClickSignificance(
+      String conversionRateManyPerClickSignificance) {
+    this.conversionRateManyPerClickSignificance = BigDecimalUtil.parseFromNumberString(conversionRateManyPerClickSignificance);
+  }
+  
+  public String getConversionManyPerClickSignificance() {
+    return BigDecimalUtil.formatAsReadable(conversionManyPerClickSignificance);
+  }
+  
+  public BigDecimal getConversionManyPerClickSignificanceBigDecimal() {
+    return conversionManyPerClickSignificance;
+  }
+
+  public void setConversionManyPerClickSignificance(String conversionManyPerClickSignificance) {
+    this.conversionManyPerClickSignificance = BigDecimalUtil.parseFromNumberString(conversionManyPerClickSignificance);
+  }
+  
+  public String getCostPerConversionManyPerClickSignificance() {
+    return BigDecimalUtil.formatAsReadable(costPerConversionManyPerClickSignificance);
+  }
+  
+  public BigDecimal getCostPerConversionManyPerClickSignificanceBigDecimal() {
+    return costPerConversionManyPerClickSignificance;
+  }
+
+  public void setCostPerConversionManyPerClickSignificance(
+      BigDecimal costPerConversionManyPerClickSignificance) {
+    this.costPerConversionManyPerClickSignificance = costPerConversionManyPerClickSignificance;
+  }
+
+  public String getConversionSignificance() {
+    return BigDecimalUtil.formatAsReadable(conversionSignificance);
+  }
+  
+  public BigDecimal getConversionSignificanceBigDecimal() {
+    return conversionSignificance;
+  }
+
+  public void setConversionSignificance(String conversionSignificance) {
+    this.conversionSignificance = BigDecimalUtil.parseFromNumberString(conversionSignificance);
+  }
+  
+  public String getCostPerConversionSignificance() {
+    return BigDecimalUtil.formatAsReadable(costPerConversionSignificance);
+  }
+  
+  public BigDecimal getCostPerConversionSignificanceBigDecimal() {
+    return costPerConversionSignificance;
+  }
+
+  public void setCostPerConversionSignificance(String costPerConversionSignificance) {
+    this.costPerConversionSignificance = BigDecimalUtil.parseFromNumberString(costPerConversionSignificance);
   }
 }
