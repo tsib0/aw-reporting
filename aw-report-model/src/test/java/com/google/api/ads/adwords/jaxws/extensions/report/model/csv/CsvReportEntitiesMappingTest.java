@@ -105,17 +105,48 @@ public class CsvReportEntitiesMappingTest {
 
     Assert.assertNotNull(propertiesToSelect);
 
+
     Assert.assertTrue(propertiesToSelect.contains("ExternalCustomerId"));
+
     Assert.assertTrue(propertiesToSelect.contains("AccountDescriptiveName"));
+    Assert.assertTrue(propertiesToSelect.contains("AccountTimeZoneId"));
+    Assert.assertTrue(propertiesToSelect.contains("CustomerDescriptiveName"));
+    Assert.assertTrue(propertiesToSelect.contains("PrimaryCompanyName"));
+    Assert.assertTrue(propertiesToSelect.contains("PrimaryUserLogin"));
+    Assert.assertTrue(propertiesToSelect.contains("AccountCurrencyCode"));
+    Assert.assertTrue(propertiesToSelect.contains("Date"));
+    Assert.assertTrue(propertiesToSelect.contains("DayOfWeek"));
+    Assert.assertTrue(propertiesToSelect.contains("Week"));
+    Assert.assertTrue(propertiesToSelect.contains("Month"));
+    Assert.assertTrue(propertiesToSelect.contains("MonthOfYear"));
+    Assert.assertTrue(propertiesToSelect.contains("Quarter"));
+    Assert.assertTrue(propertiesToSelect.contains("Year"));
     Assert.assertTrue(propertiesToSelect.contains("Cost"));
     Assert.assertTrue(propertiesToSelect.contains("Clicks"));
     Assert.assertTrue(propertiesToSelect.contains("Impressions"));
-    Assert.assertTrue(propertiesToSelect.contains("Conversions"));
     Assert.assertTrue(propertiesToSelect.contains("Ctr"));
     Assert.assertTrue(propertiesToSelect.contains("AverageCpm"));
     Assert.assertTrue(propertiesToSelect.contains("AverageCpc"));
     Assert.assertTrue(propertiesToSelect.contains("AveragePosition"));
-    Assert.assertTrue(propertiesToSelect.contains("AccountCurrencyCode"));
+    Assert.assertTrue(propertiesToSelect.contains("Device"));
+    Assert.assertTrue(propertiesToSelect.contains("ClickType"));
+    Assert.assertTrue(propertiesToSelect.contains("AdNetworkType1"));
+    Assert.assertTrue(propertiesToSelect.contains("AdNetworkType2"));
+    Assert.assertTrue(propertiesToSelect.contains("ConversionsManyPerClick"));
+    Assert.assertTrue(propertiesToSelect.contains("ConversionRateManyPerClick"));
+    Assert.assertTrue(propertiesToSelect.contains("CostPerConversionManyPerClick"));
+    Assert.assertTrue(propertiesToSelect.contains("ValuePerConvManyPerClick"));
+    Assert.assertTrue(propertiesToSelect.contains("ValuePerConversionManyPerClick"));
+    Assert.assertTrue(propertiesToSelect.contains("Conversions"));
+    Assert.assertTrue(propertiesToSelect.contains("ConversionRate"));
+    Assert.assertTrue(propertiesToSelect.contains("CostPerConversion"));
+    Assert.assertTrue(propertiesToSelect.contains("ValuePerConv"));
+    Assert.assertTrue(propertiesToSelect.contains("ValuePerConversion"));
+    Assert.assertTrue(propertiesToSelect.contains("ConversionCategoryName"));
+    Assert.assertTrue(propertiesToSelect.contains("ConversionTypeName"));
+    Assert.assertTrue(propertiesToSelect.contains("ConversionValue"));
+    Assert.assertTrue(propertiesToSelect.contains("ViewThroughConversions"));
+
     Assert.assertTrue(propertiesToSelect.contains("SearchImpressionShare"));
     Assert.assertTrue(propertiesToSelect.contains("SearchBudgetLostImpressionShare"));
     Assert.assertTrue(propertiesToSelect.contains("SearchRankLostImpressionShare"));
@@ -123,20 +154,7 @@ public class CsvReportEntitiesMappingTest {
     Assert.assertTrue(propertiesToSelect.contains("ContentBudgetLostImpressionShare"));
     Assert.assertTrue(propertiesToSelect.contains("ContentRankLostImpressionShare"));
 
-    Assert.assertTrue(propertiesToSelect.contains("Device"));
-    Assert.assertTrue(propertiesToSelect.contains("ClickType"));
-    Assert.assertTrue(propertiesToSelect.contains("AdNetworkType1"));
-    Assert.assertTrue(propertiesToSelect.contains("AdNetworkType2"));
-
-    Assert.assertTrue(propertiesToSelect.contains("Date"));
-    Assert.assertTrue(propertiesToSelect.contains("Month"));
-    Assert.assertTrue(propertiesToSelect.contains("DayOfWeek"));
-    Assert.assertTrue(propertiesToSelect.contains("Week"));
-    Assert.assertTrue(propertiesToSelect.contains("MonthOfYear"));
-    Assert.assertTrue(propertiesToSelect.contains("Quarter"));
-    Assert.assertTrue(propertiesToSelect.contains("Year"));
-
-    Assert.assertEquals(28, propertiesToSelect.size());
+    Assert.assertEquals(45, propertiesToSelect.size());
   }
 
   /**
