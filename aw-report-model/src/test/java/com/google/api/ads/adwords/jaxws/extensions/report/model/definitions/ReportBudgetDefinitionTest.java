@@ -44,36 +44,56 @@ public class ReportBudgetDefinitionTest extends AbstractReportDefinitionTest<Rep
   @Override
   protected String[] retrievePropertiesToBeSelected() {
     return new String[] {
-        // Inherit from Report
+        // Report
         "ExternalCustomerId",
+        // ReportBase
         "AccountDescriptiveName",
+        "AccountTimeZoneId",
+        "CustomerDescriptiveName",
+        "PrimaryCompanyName",
+        "PrimaryUserLogin",
+        "AccountCurrencyCode",
+        "Date",
+        "DayOfWeek",
+        "Week",
+        "Month",
+        "MonthOfYear",
+        "Quarter",
+        "Year",
         "Cost",
         "Clicks",
         "Impressions",
-        "Conversions",
         "Ctr",
         "AverageCpm",
         "AverageCpc",
         "AveragePosition",
-        "AccountCurrencyCode",
         "Device",
         "ClickType",
         "AdNetworkType1",
         "AdNetworkType2",
+        "ConversionsManyPerClick",
+        "ConversionRateManyPerClick",
+        "CostPerConversionManyPerClick",
+        "ValuePerConvManyPerClick",
+        "ValuePerConversionManyPerClick",
+        "Conversions",
+        "ConversionRate",
+        "CostPerConversion",
+        "ValuePerConv",
+        "ValuePerConversion",
+        "ConversionCategoryName",
+        "ConversionTypeName",
+        "ConversionValue",
+        "ViewThroughConversions",
+        // Specific to Budget Performance Report
         "Amount",
         "BudgetId",
         "BudgetName",
         "BudgetStatus",
         "BudgetReferenceCount",
         "IsBudgetExplicitlyShared",
-        "Period",
-        "Date",
-        "Month",
-        "DayOfWeek",
-        "Week",
-        "MonthOfYear",
-        "Quarter",
-        "Year"};
+        "Period"
+        };
   }
 
   /**

@@ -52,10 +52,6 @@ AbstractReportDefinitionTest<ReportPlaceholderFeedItem> {
     Assert.assertEquals(421887, first.getFeedId().longValue());
     Assert.assertEquals(1785447, first.getFeedItemId().longValue());
     Assert.assertEquals(1, first.getFeedPlaceholderType());
-    Assert.assertEquals(BigDecimalUtil.parseFromNumberString("0.0"),
-        BigDecimalUtil.parseFromNumberString(first.getValuePerConversion1()));
-    Assert.assertEquals(BigDecimalUtil.parseFromNumberString("0.0"),
-        BigDecimalUtil.parseFromNumberString(first.getValuePerConversionMany()));
     Assert.assertEquals("Les Ecuries De Kerballan - Gommenech", first.getAccountDescriptiveName());
     Assert.assertEquals(BigDecimalUtil.parseFromNumberString("0.7"),
         BigDecimalUtil.parseFromNumberString(first.getCost()));
@@ -81,10 +77,6 @@ AbstractReportDefinitionTest<ReportPlaceholderFeedItem> {
     Assert.assertEquals(421887, last.getFeedId().longValue());
     Assert.assertEquals(1785567, last.getFeedItemId().longValue());
     Assert.assertEquals(1, last.getFeedPlaceholderType());
-    Assert.assertEquals(BigDecimalUtil.parseFromNumberString("0.0"),
-        BigDecimalUtil.parseFromNumberString(last.getValuePerConversion1()));
-    Assert.assertEquals(BigDecimalUtil.parseFromNumberString("0.0"),
-        BigDecimalUtil.parseFromNumberString(last.getValuePerConversionMany()));
     Assert.assertEquals("Les Ecuries De Kerballan - Gommenech", last.getAccountDescriptiveName());
     Assert.assertEquals(BigDecimalUtil.parseFromNumberString("0.0"),
         BigDecimalUtil.parseFromNumberString(last.getCost()));
@@ -111,47 +103,57 @@ AbstractReportDefinitionTest<ReportPlaceholderFeedItem> {
   @Override
   protected String[] retrievePropertiesToBeSelected() {
     return new String[] {
+     // Report
         "ExternalCustomerId",
+        // ReportBase
         "AccountDescriptiveName",
         "AccountTimeZoneId",
-        "AdGroupId",
-        "AdGroupName",
-        "AdId",
+        "CustomerDescriptiveName",
+        "PrimaryCompanyName",
+        "PrimaryUserLogin",
+        "AccountCurrencyCode",
+        "Date",
+        "DayOfWeek",
+        "Week",
+        "Month",
+        "MonthOfYear",
+        "Quarter",
+        "Year",
         "Cost",
         "Clicks",
         "Impressions",
-        "Conversions",
         "Ctr",
         "AverageCpm",
         "AverageCpc",
         "AveragePosition",
-        "AccountCurrencyCode",
+        "Device",
+        "ClickType",
+        "AdNetworkType1",
+        "AdNetworkType2",
+        "ConversionsManyPerClick",
+        "ConversionRateManyPerClick",
+        "CostPerConversionManyPerClick",
+        "ValuePerConvManyPerClick",
+        "ValuePerConversionManyPerClick",
+        "Conversions",
+        "ConversionRate",
+        "CostPerConversion",
+        "ValuePerConv",
+        "ValuePerConversion",
+        "ConversionCategoryName",
+        "ConversionTypeName",
+        "ConversionValue",
+        "ViewThroughConversions",
+        // Specific to PlaceHolderFeedItem Performance Report
         "CampaignId",
         "CampaignName",
         "Status",
-        "AdNetworkType1",
-        "AdNetworkType2",
-        "Device",
-        "ClickType",
-        "ConversionValue",
-        "ConversionRate",
-        "ConversionRateManyPerClick",
-        "CostPerConversion",
-        "CostPerConversionManyPerClick",
-        "CustomerDescriptiveName",
+        "AdGroupId",
+        "AdGroupName",
+        "AdId",
         "FeedId",
         "FeedItemId",
-        "PlaceholderType",
-        "PrimaryCompanyName",
-        "TotalConvValue",
-        "ValuePerConv",
-        "ValuePerConvManyPerClick",
-        "Date",
-        "Month",
-        "DayOfWeek",
-        "Week",
-        "MonthOfYear",
-        "Quarter",
-        "Year"};
+        "PlaceholderType"
+        };
   }
 }
