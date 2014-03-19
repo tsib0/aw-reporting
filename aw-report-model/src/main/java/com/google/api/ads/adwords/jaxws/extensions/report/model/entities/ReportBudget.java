@@ -33,12 +33,27 @@ import javax.persistence.Table;
 @Entity
 @com.googlecode.objectify.annotation.Entity
 @Table(name = "AW_ReportBudget")
-@CsvReport(value = ReportDefinitionReportType.BUDGET_PERFORMANCE_REPORT)
+@CsvReport(value = ReportDefinitionReportType.BUDGET_PERFORMANCE_REPORT,
+    reportExclusions = {"ExternalCustomerId", "AccountDescriptiveName", "AccountCurrencyCode",
+    "AccountTimeZoneId", "CustomerDescriptiveName", "PrimaryCompanyName", "PrimaryUserLogin",
+    "Date", "DayOfWeek", "Week", "Month", "MonthOfYear", "Quarter", "Year"})
 public class ReportBudget extends ReportBase {
 
   @Column(name = "AMOUNT")
   @CsvField(value = "Budget", reportField = "Amount")
   private BigDecimal amount;
+
+  @Column(name = "ASSOCIATED_CAMPAIGN_ID")
+  @CsvField(value = "Campaign ID", reportField = "AssociatedCampaignId")
+  private Long associatedCampaignId;
+
+  @Column(name = "ASSOCIATED_CAMPAIGN_NAME")
+  @CsvField(value = "Campaign", reportField = "AssociatedCampaignName")
+  private String associatedCampaignName;
+
+  @Column(name = "ASSOCIATED_CAMPAIGN_STATUS")
+  @CsvField(value = "Campaign state", reportField = "AssociatedCampaignStatus")
+  private String associatedCampaignStatus;
 
   @Column(name = "BUDGET_ID")
   @CsvField(value = "Budget ID", reportField = "BudgetId")
@@ -79,7 +94,10 @@ public class ReportBudget extends ReportBase {
     // Generating unique id after having date and accountId
     this.id = this.getBudgetId().toString();
 
-    // Adding extra fields for unique ID
+    if (this.getAssociatedCampaignId() != null && this.getAssociatedCampaignId() > 0) {
+      this.id += "-" + this.getAssociatedCampaignId();
+    }
+
     if (this.getPeriod() != null && this.getPeriod().length() > 0) {
       this.id += "-" + this.getPeriod();
     }
@@ -190,5 +208,29 @@ public class ReportBudget extends ReportBase {
    */
   public void setPeriod(String period) {
     this.period = period;
+  }
+
+  public Long getAssociatedCampaignId() {
+    return associatedCampaignId;
+  }
+
+  public void setAssociatedCampaignId(Long associatedCampaignId) {
+    this.associatedCampaignId = associatedCampaignId;
+  }
+
+  public String getAssociatedCampaignName() {
+    return associatedCampaignName;
+  }
+
+  public void setAssociatedCampaignName(String associatedCampaignName) {
+    this.associatedCampaignName = associatedCampaignName;
+  }
+
+  public String getAssociatedCampaignStatus() {
+    return associatedCampaignStatus;
+  }
+
+  public void setAssociatedCampaignStatus(String associatedCampaignStatus) {
+    this.associatedCampaignStatus = associatedCampaignStatus;
   }
 }
