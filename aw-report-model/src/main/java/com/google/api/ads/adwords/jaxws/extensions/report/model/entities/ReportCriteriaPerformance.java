@@ -37,10 +37,6 @@ import javax.persistence.Table;
 @CsvReport(value = ReportDefinitionReportType.CRITERIA_PERFORMANCE_REPORT)
 public class ReportCriteriaPerformance extends ReportBase {
 
-  @Column(name = "ACCOUNT_TIME_ZONE_ID")
-  @CsvField(value = "Time zone", reportField = "AccountTimeZoneId")
-  private String accountTimeZoneId;
-
   @Column(name = "AD_GROUP_ID")
   @CsvField(value = "Ad group ID", reportField = "AdGroupId")
   private Long adGroupId;
@@ -81,68 +77,6 @@ public class ReportCriteriaPerformance extends ReportBase {
   @CsvField(value = "Clicks ACE indicator", reportField = "ClickSignificance")
   private String clickSignificance;
 
-  @Column(name = "CONVERSION_CATEGORY_NAME")
-  @CsvField(value = "Conversion tracking purpose", reportField = "ConversionCategoryName")
-  private String conversionCategoryName;
-
-  @Column(name = "CONVERSION_MANY_PER_CLICK_SIGNIFICANCE")
-  @CsvField(value = "Conv. (many-per-click) ACE indicator",
-  reportField = "ConversionManyPerClickSignificance")
-  private String conversionManyPerClickSignificance;
-
-  @Column(name = "CONVERSION_RATE")
-  @CsvField(value = "Conv. rate (1-per-click)", reportField = "ConversionRate")
-  private BigDecimal conversionRate;
-
-  @Column(name = "CONVERSION_RATE_MANY_PER_CLICK")
-  @CsvField(value = "Conv. rate (many-per-click)", reportField = "ConversionRateManyPerClick")
-  private BigDecimal conversionRateManyPerClick;
-
-  @Column(name = "CONVERSION_RATE_MANY_PER_CLICK_SIGNIFICANCE")
-  @CsvField(value = "Conv. rate (many-per-click) ACE indicator",
-  reportField = "ConversionRateManyPerClickSignificance")
-  private String conversionRateManyPerClickSignificance;
-
-  @Column(name = "CONVERSION_RATE_SIGNIFICANCE")
-  @CsvField(value = "Conv. rate (1-per-click) ACE indicator",
-  reportField = "ConversionRateSignificance")
-  private String conversionRateSignificance;
-
-  @Column(name = "CONVERSION_SIGNIFICANCE")
-  @CsvField(value = "Conv. (1-per-click) ACE indicator", reportField = "ConversionSignificance")
-  private String conversionSignificance;
-
-  @Column(name = "CONVERSIONS_MANY_PER_CLICK")
-  @CsvField(value = "Conv. (many-per-click)", reportField = "ConversionsManyPerClick")
-  private Long conversionsManyPerClick;
-
-  @Column(name = "CONVERSION_TYPE_NAME")
-  @CsvField(value = "Conversion action name", reportField = "ConversionTypeName")
-  private String conversionTypeName;
-
-  @Column(name = "CONVERSION_VALUE")
-  @CsvField(value = "Total conv. value", reportField = "ConversionValue")
-  private Long conversionValue;
-
-  @Column(name = "COST_PER_CONVERSION")
-  @CsvField(value = "Cost / conv. (1-per-click)", reportField = "CostPerConversion")
-  private BigDecimal costPerConversion;
-
-  @Column(name = "COST_PER_CONVERSION_MANY_PER_CLICK")
-  @CsvField(value = "Cost / conv. (many-per-click)",
-  reportField = "CostPerConversionManyPerClick")
-  private BigDecimal costPerConversionManyPerClick;
-
-  @Column(name = "COST_PER_CONVERSION_MANY_PER_CLICK_SIGNIFICANCE")
-  @CsvField(value = "Cost/conv. (many-per-click) ACE indicator",
-  reportField = "CostPerConversionManyPerClickSignificance")
-  private String costPerConversionManyPerClickSignificance;
-
-  @Column(name = "COST_PER_CONVERSION_SIGNIFICANCE")
-  @CsvField(value = "Cost/conv. (1-per-click) ACE indicator",
-  reportField = "CostPerConversionSignificance")
-  private String costPerConversionSignificance;
-
   @Column(name = "COST_SIGNIFICANCE")
   @CsvField(value = "Cost ACE indicator", reportField = "CostSignificance")
   private String costSignificance;
@@ -174,10 +108,6 @@ public class ReportCriteriaPerformance extends ReportBase {
   @Column(name = "CTR_SIGNIFICANCE")
   @CsvField(value = "CTR ACE indicator", reportField = "CtrSignificance")
   private String ctrSignificance;
-
-  @Column(name = "CUSTOMER_DESCRIPTIVE_NAME")
-  @CsvField(value = "Client name", reportField = "CustomerDescriptiveName")
-  private String customerDescriptiveName;
 
   @Column(name = "DISPLAY_NAME")
   @CsvField(value = "Criteria Display Name", reportField = "DisplayName")
@@ -219,14 +149,6 @@ public class ReportCriteriaPerformance extends ReportBase {
   @CsvField(value = "Position ACE indicator", reportField = "PositionSignificance")
   private String positionSignificance;
 
-  @Column(name = "PRIMARY_COMPANY_NAME")
-  @CsvField(value = "Company name", reportField = "PrimaryCompanyName")
-  private String primaryCompanyName;
-
-  @Column(name = "PRIMARY_USER_LOGIN")
-  @CsvField(value = "Login email", reportField = "PrimaryUserLogin")
-  private String primaryUserLogin;
-
   @Column(name = "QUALITY_SCORE")
   @CsvField(value = "Quality score", reportField = "QualityScore")
   private Long qualityScore;
@@ -243,35 +165,34 @@ public class ReportCriteriaPerformance extends ReportBase {
   @CsvField(value = "Top of page CPC", reportField = "TopOfPageCpc")
   private String topOfPageCpc;
 
-  @Column(name = "TOTAL_CONV_VALUE")
-  @CsvField(value = "Total conv. value", reportField = "TotalConvValue")
-  private String totalConvValue;
-
-  @Column(name = "VALUE_PER_CONV")
-  @CsvField(value = "Value / conv. (1-per-click)", reportField = "ValuePerConv")
-  private BigDecimal valuePerConv;
-
-  @Column(name = "VALUE_PER_CONVERSION")
-  @CsvField(value = "Value / conv. (1-per-click)", reportField = "ValuePerConversion")
-  private BigDecimal valuePerConversion;
-
-  @Column(name = "VALUE_PER_CONVERSION_MANY_PER_CLICK")
-  @CsvField(value = "Value / conv. (many-per-click)",
-  reportField = "ValuePerConversionManyPerClick")
-  private BigDecimal valuePerConversionManyPerClick;
-
-  @Column(name = "VALUEPERCONVMANYPERCLICK")
-  @CsvField(value = "Value / conv. (many-per-click)", reportField = "ValuePerConvManyPerClick")
-  private BigDecimal valuePerConvManyPerClick;
-
-  @Column(name = "VIEW_THROUGH_CONVERSIONS")
-  @CsvField(value = "View-through conv.", reportField = "ViewThroughConversions")
-  private String viewThroughConversions;
-
   @Column(name = "VIEW_THROUGH_CONVERSIONS_SIGNIFICANCE")
   @CsvField(value = "View-through conv. ACE indicator",
   reportField = "ViewThroughConversionsSignificance")
   private String viewThroughConversionsSignificance;
+
+  @Column(name = "CONVERSIONRATESIGNIFICANCE")
+  @CsvField(value = "Click conversion rate ACE indicator", reportField = "ConversionRateSignificance")
+  protected BigDecimal conversionRateSignificance;
+
+  @Column(name = "CONVERSIONRATEMANYPERCLICKSIGNIFICANCE")
+  @CsvField(value = "Conversion rate ACE indicator", reportField = "ConversionRateManyPerClickSignificance")
+  protected BigDecimal conversionRateManyPerClickSignificance;
+  
+  @Column(name = "CONVERSIONMANYPERCLICKSIGNIFICANCE")
+  @CsvField(value = "Conversion ACE indicator", reportField = "ConversionManyPerClickSignificance")
+  protected BigDecimal conversionManyPerClickSignificance;
+
+  @Column(name = "COSTPERCONVERSIONMANYPERCLICKSIGNIFICANCE")
+  @CsvField(value = "Cost/conversion ACE indicator", reportField = "CostPerConversionManyPerClickSignificance")
+  protected BigDecimal costPerConversionManyPerClickSignificance;
+  
+  @Column(name = "CONVERSIONSIGNIFICANCE")
+  @CsvField(value = "Converted clicks ACE indicator", reportField = "ConversionSignificance")
+  protected BigDecimal conversionSignificance;
+
+  @Column(name = "COSTPERCONVERSIONSIGNIFICANCE")
+  @CsvField(value = "Cost/converted click ACE indicator", reportField = "CostPerConversionSignificance")
+  protected BigDecimal costPerConversionSignificance;
 
   /**
    * Hibernate needs an empty constructor
@@ -306,14 +227,6 @@ public class ReportCriteriaPerformance extends ReportBase {
     if (this.getClickType() != null && this.getClickType().length() > 0) {
       this.id += "-" + this.getClickType();
     }
-  }
-
-  public String getAccountTimeZoneId() {
-    return accountTimeZoneId;
-  }
-
-  public void setAccountTimeZoneId(String accountTimeZoneId) {
-    this.accountTimeZoneId = accountTimeZoneId;
   }
 
   public Long getAdGroupId() {
@@ -397,133 +310,6 @@ public class ReportCriteriaPerformance extends ReportBase {
     this.clickSignificance = clickSignificance;
   }
 
-  public String getConversionCategoryName() {
-    return conversionCategoryName;
-  }
-
-  public void setConversionCategoryName(String conversionCategoryName) {
-    this.conversionCategoryName = conversionCategoryName;
-  }
-
-  public String getConversionManyPerClickSignificance() {
-    return conversionManyPerClickSignificance;
-  }
-
-  public void setConversionManyPerClickSignificance(
-      String conversionManyPerClickSignificance) {
-    this.conversionManyPerClickSignificance = conversionManyPerClickSignificance;
-  }
-
-  public String getConversionRate() {
-    return BigDecimalUtil.formatAsReadable(conversionRate);
-  }
-
-  public void setConversionRate(BigDecimal conversionRate) {
-    this.conversionRate = conversionRate;
-  }
-
-  public String getConversionRateManyPerClick() {
-    return BigDecimalUtil.formatAsReadable(conversionRateManyPerClick);
-  }
-
-  public void setConversionRateManyPerClick(
-      BigDecimal conversionRateManyPerClick) {
-    this.conversionRateManyPerClick = conversionRateManyPerClick;
-  }
-
-  public String getConversionRateManyPerClickSignificance() {
-    return conversionRateManyPerClickSignificance;
-  }
-
-  public void setConversionRateManyPerClickSignificance(
-      String conversionRateManyPerClickSignificance) {
-    this.conversionRateManyPerClickSignificance = conversionRateManyPerClickSignificance;
-  }
-
-  public String getConversionRateSignificance() {
-    return conversionRateSignificance;
-  }
-
-  public void setConversionRateSignificance(String conversionRateSignificance) {
-    this.conversionRateSignificance = conversionRateSignificance;
-  }
-
-  public String getConversionSignificance() {
-    return conversionSignificance;
-  }
-
-  public void setConversionSignificance(String conversionSignificance) {
-    this.conversionSignificance = conversionSignificance;
-  }
-
-  public Long getConversionsManyPerClick() {
-    return conversionsManyPerClick;
-  }
-
-  public void setConversionsManyPerClick(Long conversionsManyPerClick) {
-    this.conversionsManyPerClick = conversionsManyPerClick;
-  }
-
-  public String getConversionTypeName() {
-    return conversionTypeName;
-  }
-
-  public void setConversionTypeName(String conversionTypeName) {
-    this.conversionTypeName = conversionTypeName;
-  }
-
-  public Long getConversionValue() {
-    return conversionValue;
-  }
-
-  public void setConversionValue(Long conversionValue) {
-    this.conversionValue = conversionValue;
-  }
-
-  public BigDecimal getCostPerConversion() {
-    return costPerConversion;
-  }
-
-  public void setCostPerConversion(String costPerConversion) {
-    this.costPerConversion = BigDecimalUtil.parseFromNumberString(costPerConversion);
-  }
-
-  public String getCostPerConversionManyPerClick() {
-    return BigDecimalUtil.formatAsReadable(costPerConversionManyPerClick);
-  }
-
-  public void setCostPerConversionManyPerClick(
-      String costPerConversionManyPerClick) {
-    this.costPerConversionManyPerClick = BigDecimalUtil
-        .parseFromNumberString(costPerConversionManyPerClick);
-  }
-
-  public String getCostPerConversionManyPerClickSignificance() {
-    return costPerConversionManyPerClickSignificance;
-  }
-
-  public void setCostPerConversionManyPerClickSignificance(
-      String costPerConversionManyPerClickSignificance) {
-    this.costPerConversionManyPerClickSignificance = costPerConversionManyPerClickSignificance;
-  }
-
-  public String getCostPerConversionSignificance() {
-    return costPerConversionSignificance;
-  }
-
-  public void setCostPerConversionSignificance(
-      String costPerConversionSignificance) {
-    this.costPerConversionSignificance = costPerConversionSignificance;
-  }
-
-  public String getCostSignificance() {
-    return costSignificance;
-  }
-
-  public void setCostSignificance(String costSignificance) {
-    this.costSignificance = costSignificance;
-  }
-
   public String getCpcBidSource() {
     return cpcBidSource;
   }
@@ -578,14 +364,6 @@ public class ReportCriteriaPerformance extends ReportBase {
 
   public void setCtrSignificance(String ctrSignificance) {
     this.ctrSignificance = ctrSignificance;
-  }
-
-  public String getCustomerDescriptiveName() {
-    return customerDescriptiveName;
-  }
-
-  public void setCustomerDescriptiveName(String customerDescriptiveName) {
-    this.customerDescriptiveName = customerDescriptiveName;
   }
 
   public String getDisplayName() {
@@ -668,22 +446,6 @@ public class ReportCriteriaPerformance extends ReportBase {
     this.positionSignificance = positionSignificance;
   }
 
-  public String getPrimaryCompanyName() {
-    return primaryCompanyName;
-  }
-
-  public void setPrimaryCompanyName(String primaryCompanyName) {
-    this.primaryCompanyName = primaryCompanyName;
-  }
-
-  public String getPrimaryUserLogin() {
-    return primaryUserLogin;
-  }
-
-  public void setPrimaryUserLogin(String primaryUserLogin) {
-    this.primaryUserLogin = primaryUserLogin;
-  }
-
   public Long getQualityScore() {
     return qualityScore;
   }
@@ -716,55 +478,6 @@ public class ReportCriteriaPerformance extends ReportBase {
     this.topOfPageCpc = topOfPageCpc;
   }
 
-  public String getTotalConvValue() {
-    return totalConvValue;
-  }
-
-  public void setTotalConvValue(String totalConvValue) {
-    this.totalConvValue = totalConvValue;
-  }
-
-  public String getValuePerConv() {
-    return BigDecimalUtil.formatAsReadable(valuePerConv);
-  }
-
-  public void setValuePerConv(BigDecimal valuePerConv) {
-    this.valuePerConv = valuePerConv;
-  }
-
-  public String getValuePerConversion() {
-    return BigDecimalUtil.formatAsReadable(valuePerConversion);
-  }
-
-  public void setValuePerConversion(BigDecimal valuePerConversion) {
-    this.valuePerConversion = valuePerConversion;
-  }
-
-  public String getValuePerConversionManyPerClick() {
-    return BigDecimalUtil.formatAsReadable(valuePerConversionManyPerClick);
-  }
-
-  public void setValuePerConversionManyPerClick(
-      BigDecimal valuePerConversionManyPerClick) {
-    this.valuePerConversionManyPerClick = valuePerConversionManyPerClick;
-  }
-
-  public String getValuePerConvManyPerClick() {
-    return BigDecimalUtil.formatAsReadable(valuePerConvManyPerClick);
-  }
-
-  public void setValuePerConvManyPerClick(BigDecimal valuePerConvManyPerClick) {
-    this.valuePerConvManyPerClick = valuePerConvManyPerClick;
-  }
-
-  public String getViewThroughConversions() {
-    return viewThroughConversions;
-  }
-
-  public void setViewThroughConversions(String viewThroughConversions) {
-    this.viewThroughConversions = viewThroughConversions;
-  }
-
   public String getViewThroughConversionsSignificance() {
     return viewThroughConversionsSignificance;
   }
@@ -772,5 +485,79 @@ public class ReportCriteriaPerformance extends ReportBase {
   public void setViewThroughConversionsSignificance(
       String viewThroughConversionsSignificance) {
     this.viewThroughConversionsSignificance = viewThroughConversionsSignificance;
+  }
+  
+  public String getConversionRateSignificance() {
+    return BigDecimalUtil.formatAsReadable(conversionRateSignificance);
+  }
+  
+  public BigDecimal getConversionRateSignificanceBigDecimal() {
+    return conversionRateSignificance;
+  }
+
+  public void setConversionRateSignificance(String conversionRateSignificance) {
+    this.conversionRateSignificance = BigDecimalUtil.parseFromNumberString(conversionRateSignificance);
+  }
+
+  public String getConversionRateManyPerClickSignificance() {
+    return BigDecimalUtil.formatAsReadable(conversionRateManyPerClickSignificance);
+  }
+  
+  public BigDecimal getConversionRateManyPerClickSignificanceBigDecimal() {
+    return conversionRateManyPerClickSignificance;
+  }
+
+  public void setConversionRateManyPerClickSignificance(
+      String conversionRateManyPerClickSignificance) {
+    this.conversionRateManyPerClickSignificance = BigDecimalUtil.parseFromNumberString(conversionRateManyPerClickSignificance);
+  }
+  
+  public String getConversionManyPerClickSignificance() {
+    return BigDecimalUtil.formatAsReadable(conversionManyPerClickSignificance);
+  }
+  
+  public BigDecimal getConversionManyPerClickSignificanceBigDecimal() {
+    return conversionManyPerClickSignificance;
+  }
+
+  public void setConversionManyPerClickSignificance(String conversionManyPerClickSignificance) {
+    this.conversionManyPerClickSignificance = BigDecimalUtil.parseFromNumberString(conversionManyPerClickSignificance);
+  }
+  
+  public String getCostPerConversionManyPerClickSignificance() {
+    return BigDecimalUtil.formatAsReadable(costPerConversionManyPerClickSignificance);
+  }
+  
+  public BigDecimal getCostPerConversionManyPerClickSignificanceBigDecimal() {
+    return costPerConversionManyPerClickSignificance;
+  }
+
+  public void setCostPerConversionManyPerClickSignificance(
+      BigDecimal costPerConversionManyPerClickSignificance) {
+    this.costPerConversionManyPerClickSignificance = costPerConversionManyPerClickSignificance;
+  }
+
+  public String getConversionSignificance() {
+    return BigDecimalUtil.formatAsReadable(conversionSignificance);
+  }
+  
+  public BigDecimal getConversionSignificanceBigDecimal() {
+    return conversionSignificance;
+  }
+
+  public void setConversionSignificance(String conversionSignificance) {
+    this.conversionSignificance = BigDecimalUtil.parseFromNumberString(conversionSignificance);
+  }
+  
+  public String getCostPerConversionSignificance() {
+    return BigDecimalUtil.formatAsReadable(costPerConversionSignificance);
+  }
+  
+  public BigDecimal getCostPerConversionSignificanceBigDecimal() {
+    return costPerConversionSignificance;
+  }
+
+  public void setCostPerConversionSignificance(String costPerConversionSignificance) {
+    this.costPerConversionSignificance = BigDecimalUtil.parseFromNumberString(costPerConversionSignificance);
   }
 }

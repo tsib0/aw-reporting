@@ -16,7 +16,10 @@ package com.google.api.ads.adwords.jaxws.extensions.report.model.entities;
 
 import com.google.api.ads.adwords.jaxws.extensions.report.model.csv.annotation.CsvField;
 import com.google.api.ads.adwords.jaxws.extensions.report.model.csv.annotation.CsvReport;
+import com.google.api.ads.adwords.jaxws.extensions.report.model.util.BigDecimalUtil;
 import com.google.api.ads.adwords.lib.jaxb.v201402.ReportDefinitionReportType;
+
+import java.math.BigDecimal;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -49,6 +52,34 @@ public class ReportAdGroup extends ReportBase {
   @Column(name = "STATUS", length = 32)
   @CsvField(value = "Ad group state", reportField = "Status")
   private String status;
+
+  @Column(name = "TARGETCPA")
+  @CsvField(value = "Max. CPA (converted clicks)", reportField = "TargetCpa")
+  private BigDecimal targetCpa;
+
+  @Column(name = "CONVERSIONRATESIGNIFICANCE")
+  @CsvField(value = "Click conversion rate ACE indicator", reportField = "ConversionRateSignificance")
+  protected BigDecimal conversionRateSignificance;
+
+  @Column(name = "CONVERSIONRATEMANYPERCLICKSIGNIFICANCE")
+  @CsvField(value = "Conversion rate ACE indicator", reportField = "ConversionRateManyPerClickSignificance")
+  protected BigDecimal conversionRateManyPerClickSignificance;
+  
+  @Column(name = "CONVERSIONMANYPERCLICKSIGNIFICANCE")
+  @CsvField(value = "Conversion ACE indicator", reportField = "ConversionManyPerClickSignificance")
+  protected BigDecimal conversionManyPerClickSignificance;
+
+  @Column(name = "COSTPERCONVERSIONMANYPERCLICKSIGNIFICANCE")
+  @CsvField(value = "Cost/conversion ACE indicator", reportField = "CostPerConversionManyPerClickSignificance")
+  protected BigDecimal costPerConversionManyPerClickSignificance;
+  
+  @Column(name = "CONVERSIONSIGNIFICANCE")
+  @CsvField(value = "Converted clicks ACE indicator", reportField = "ConversionSignificance")
+  protected BigDecimal conversionSignificance;
+
+  @Column(name = "COSTPERCONVERSIONSIGNIFICANCE")
+  @CsvField(value = "Cost/converted click ACE indicator", reportField = "CostPerConversionSignificance")
+  protected BigDecimal costPerConversionSignificance;
 
   /**
    * Hibernate needs an empty constructor
@@ -119,5 +150,79 @@ public class ReportAdGroup extends ReportBase {
 
   public void setStatus(String status) {
     this.status = status;
+  }
+  
+  public String getConversionRateSignificance() {
+    return BigDecimalUtil.formatAsReadable(conversionRateSignificance);
+  }
+  
+  public BigDecimal getConversionRateSignificanceBigDecimal() {
+    return conversionRateSignificance;
+  }
+
+  public void setConversionRateSignificance(String conversionRateSignificance) {
+    this.conversionRateSignificance = BigDecimalUtil.parseFromNumberString(conversionRateSignificance);
+  }
+
+  public String getConversionRateManyPerClickSignificance() {
+    return BigDecimalUtil.formatAsReadable(conversionRateManyPerClickSignificance);
+  }
+  
+  public BigDecimal getConversionRateManyPerClickSignificanceBigDecimal() {
+    return conversionRateManyPerClickSignificance;
+  }
+
+  public void setConversionRateManyPerClickSignificance(
+      String conversionRateManyPerClickSignificance) {
+    this.conversionRateManyPerClickSignificance = BigDecimalUtil.parseFromNumberString(conversionRateManyPerClickSignificance);
+  }
+  
+  public String getConversionManyPerClickSignificance() {
+    return BigDecimalUtil.formatAsReadable(conversionManyPerClickSignificance);
+  }
+  
+  public BigDecimal getConversionManyPerClickSignificanceBigDecimal() {
+    return conversionManyPerClickSignificance;
+  }
+
+  public void setConversionManyPerClickSignificance(String conversionManyPerClickSignificance) {
+    this.conversionManyPerClickSignificance = BigDecimalUtil.parseFromNumberString(conversionManyPerClickSignificance);
+  }
+  
+  public String getCostPerConversionManyPerClickSignificance() {
+    return BigDecimalUtil.formatAsReadable(costPerConversionManyPerClickSignificance);
+  }
+  
+  public BigDecimal getCostPerConversionManyPerClickSignificanceBigDecimal() {
+    return costPerConversionManyPerClickSignificance;
+  }
+
+  public void setCostPerConversionManyPerClickSignificance(
+      BigDecimal costPerConversionManyPerClickSignificance) {
+    this.costPerConversionManyPerClickSignificance = costPerConversionManyPerClickSignificance;
+  }
+
+  public String getConversionSignificance() {
+    return BigDecimalUtil.formatAsReadable(conversionSignificance);
+  }
+  
+  public BigDecimal getConversionSignificanceBigDecimal() {
+    return conversionSignificance;
+  }
+
+  public void setConversionSignificance(String conversionSignificance) {
+    this.conversionSignificance = BigDecimalUtil.parseFromNumberString(conversionSignificance);
+  }
+  
+  public String getCostPerConversionSignificance() {
+    return BigDecimalUtil.formatAsReadable(costPerConversionSignificance);
+  }
+  
+  public BigDecimal getCostPerConversionSignificanceBigDecimal() {
+    return costPerConversionSignificance;
+  }
+
+  public void setCostPerConversionSignificance(String costPerConversionSignificance) {
+    this.costPerConversionSignificance = BigDecimalUtil.parseFromNumberString(costPerConversionSignificance);
   }
 }

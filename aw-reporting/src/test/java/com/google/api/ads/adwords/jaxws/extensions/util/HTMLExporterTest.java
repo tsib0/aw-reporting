@@ -101,8 +101,8 @@ public class HTMLExporterTest {
     reportPHFI.setClicks((long) 33);
     reportPHFI.setImpressions((long) 333);
     reportPHFI.setStatus("ACTIVE");
-    reportPHFI.setConversionRate1(new BigDecimal(1.5));
-    reportPHFI.setConversionRateMany(new BigDecimal(3.3));
+    reportPHFI.setConversionRate("1.5");
+    reportPHFI.setConversionRateManyPerClick("3.3");
     return reportPHFI;
   }
 

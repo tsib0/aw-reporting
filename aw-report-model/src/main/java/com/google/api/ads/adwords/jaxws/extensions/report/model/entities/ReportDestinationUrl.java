@@ -16,15 +16,8 @@ package com.google.api.ads.adwords.jaxws.extensions.report.model.entities;
 
 import com.google.api.ads.adwords.jaxws.extensions.report.model.csv.annotation.CsvField;
 import com.google.api.ads.adwords.jaxws.extensions.report.model.csv.annotation.CsvReport;
-import com.google.api.ads.adwords.jaxws.extensions.report.model.util.BigDecimalUtil;
+import com.google.api.ads.adwords.jaxws.extensions.report.model.util.UrlHashUtil;
 import com.google.api.ads.adwords.lib.jaxb.v201402.ReportDefinitionReportType;
-
-import org.apache.commons.codec.binary.Hex;
-
-import java.io.UnsupportedEncodingException;
-import java.math.BigDecimal;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -40,10 +33,6 @@ import javax.persistence.Table;
 @Table(name = "AW_ReportDestinationUrl")
 @CsvReport(value = ReportDefinitionReportType.DESTINATION_URL_REPORT)
 public class ReportDestinationUrl extends ReportBase {
-
-  @Column(name = "ACCOUNTTIMEZONEID")
-  @CsvField(value = "Time zone", reportField = "AccountTimeZoneId")
-  private String accountTimeZoneId;
 
   @Column(name = "ADGROUPID")
   @CsvField(value = "Ad group ID", reportField = "AdGroupId")
@@ -69,30 +58,6 @@ public class ReportDestinationUrl extends ReportBase {
   @CsvField(value = "Campaign state", reportField = "CampaignStatus")
   private String campaignStatus;
 
-  @Column(name = "CONVERSIONRATE")
-  @CsvField(value = "Conv. rate (1-per-click)", reportField = "ConversionRate")
-  private BigDecimal conversionRate;
-
-  @Column(name = "CONVERSIONRATEMANYPERCLICK")
-  @CsvField(value = "Conv. rate (many-per-click)", reportField = "ConversionRateManyPerClick")
-  private BigDecimal conversionRateManyPerClick;
-
-  @Column(name = "CONVERSIONSMANYPERCLICK")
-  @CsvField(value = "Conv. (many-per-click)", reportField = "ConversionsManyPerClick")
-  private Long conversionsManyPerClick;
-
-  @Column(name = "CONVERSIONVALUE")
-  @CsvField(value = "Total conv. value", reportField = "ConversionValue")
-  private Long conversionValue;
-
-  @Column(name = "COSTPERCONVERSION")
-  @CsvField(value = "Cost / conv. (1-per-click)", reportField = "CostPerConversion")
-  private BigDecimal costPerConversion;
-
-  @Column(name = "COSTPERCONVERSIONMANYPERCLICK")
-  @CsvField(value = "Cost / conv. (many-per-click)", reportField = "CostPerConversionManyPerClick")
-  private BigDecimal costPerConversionManyPerClick;
-
   @Column(name = "CRITERIADESTINATIONURL")
   @CsvField(value = "Keyword/Placement destination URL", reportField = "CriteriaDestinationUrl")
   private String criteriaDestinationUrl;
@@ -109,10 +74,6 @@ public class ReportDestinationUrl extends ReportBase {
   @CsvField(value = "Match type", reportField = "CriteriaTypeName")
   private String criteriaTypeName;
 
-  @Column(name = "CUSTOMERDESCRIPTIVENAME")
-  @CsvField(value = "Client name", reportField = "CustomerDescriptiveName")
-  private String customerDescriptiveName;
-
   @Column(name = "EFFECTIVEDESTINATIONURL", length = 2048)
   @CsvField(value = "Destination URL", reportField = "EffectiveDestinationUrl")
   private String effectiveDestinationUrl;
@@ -120,39 +81,6 @@ public class ReportDestinationUrl extends ReportBase {
   @Column(name = "ISNEGATIVE")
   @CsvField(value = "Is negative", reportField = "IsNegative")
   private String isNegative;
-
-  @Column(name = "PRIMARYCOMPANYNAME")
-  @CsvField(value = "Company name", reportField = "PrimaryCompanyName")
-  private String primaryCompanyName;
-
-  @Column(name = "PRIMARYUSERLOGIN")
-  @CsvField(value = "Login email", reportField = "PrimaryUserLogin")
-  private String primaryUserLogin;
-
-  @Column(name = "TOTALCONVVALUE")
-  @CsvField(value = "Total conv. value", reportField = "TotalConvValue")
-  private BigDecimal totalConvValue;
-
-  @Column(name = "VALUEPERCONV")
-  @CsvField(value = "Value / conv. (1-per-click)", reportField = "ValuePerConv")
-  private BigDecimal valuePerConv;
-
-  @Column(name = "VALUEPERCONVERSION")
-  @CsvField(value = "Value / conv. (1-per-click)", reportField = "ValuePerConversion")
-  private BigDecimal valuePerConversion;
-
-  @Column(name = "VALUEPERCONVERSIONMANYPERCLICK")
-  @CsvField(value = "Value / conv. (many-per-click)",
-  reportField = "ValuePerConversionManyPerClick")
-  private BigDecimal valuePerConversionManyPerClick;
-
-  @Column(name = "VALUEPERCONVMANYPERCLICK")
-  @CsvField(value = "Value / conv. (many-per-click)", reportField = "ValuePerConvManyPerClick")
-  private BigDecimal valuePerConvManyPerClick;
-
-  @Column(name = "VIEWTHROUGHCONVERSIONS")
-  @CsvField(value = "View-through conv.", reportField = "ViewThroughConversions")
-  private Long viewThroughConversions;
 
   /**
    * Hibernate needs an empty constructor
@@ -167,7 +95,6 @@ public class ReportDestinationUrl extends ReportBase {
 
   @Override
   public void setId() {
-
     // Generating unique id after having accountId, campaignId, adGroupId and date
     this.id = "";
     if (this.getAccountId() != null) {
@@ -185,19 +112,7 @@ public class ReportDestinationUrl extends ReportBase {
  
     // Generating a SHA-1 Hash of the URLs for ID generation
     if (this.getEffectiveDestinationUrl() != null) { 
-      MessageDigest messageDigest;
-      try {
-        messageDigest = MessageDigest.getInstance("SHA-1");
-        messageDigest.reset();
-        messageDigest.update(this.getEffectiveDestinationUrl().getBytes("UTF-8"));
-        final byte[] resultByte = messageDigest.digest();
-        final String urlHash = new String(Hex.encodeHex(resultByte));
-        this.id += urlHash;
-      } catch (NoSuchAlgorithmException e) {
-        e.printStackTrace();
-      } catch (UnsupportedEncodingException e) {
-        e.printStackTrace();
-      }
+      this.id += UrlHashUtil.createUrlHash(this.getEffectiveDestinationUrl());
     }
 
     this.id += setIdDates();
@@ -215,14 +130,6 @@ public class ReportDestinationUrl extends ReportBase {
     if (this.getClickType() != null && this.getClickType().length() > 0) {
       this.id += "-" + this.getClickType();
     }
-  }
-
-  public String getAccountTimeZoneId() {
-    return accountTimeZoneId;
-  }
-
-  public void setAccountTimeZoneId(String accountTimeZoneId) {
-    this.accountTimeZoneId = accountTimeZoneId;
   }
 
   public Long getAdGroupId() {
@@ -273,72 +180,6 @@ public class ReportDestinationUrl extends ReportBase {
     this.campaignStatus = campaignStatus;
   }
 
-  public String getConversionRate() {
-    return BigDecimalUtil.formatAsReadable(conversionRate);
-  }
-
-  public void setConversionRate(String conversionRate) {
-    this.conversionRate = BigDecimalUtil.parseFromNumberString(conversionRate);
-  }
-
-  public void setConversionRate(BigDecimal conversionRate) {
-    this.conversionRate = conversionRate;
-  }
-
-  public String getConversionRateManyPerClick() {
-    return BigDecimalUtil.formatAsReadable(conversionRateManyPerClick);
-  }
-
-  public void setConversionRateManyPerClick(String conversionRateManyPerClick) {
-    this.conversionRateManyPerClick =
-        BigDecimalUtil.parseFromNumberString(conversionRateManyPerClick);
-  }
-
-  public void setConversionRateManyPerClick(BigDecimal conversionRateManyPerClick) {
-    this.conversionRateManyPerClick = conversionRateManyPerClick;
-  }
-
-  public Long getConversionsManyPerClick() {
-    return conversionsManyPerClick;
-  }
-
-  public void setConversionsManyPerClick(Long conversionsManyPerClick) {
-    this.conversionsManyPerClick = conversionsManyPerClick;
-  }
-
-  public Long getConversionValue() {
-    return conversionValue;
-  }
-
-  public void setConversionValue(Long conversionValue) {
-    this.conversionValue = conversionValue;
-  }
-
-  public String getCostPerConversion() {
-    return BigDecimalUtil.formatAsReadable(costPerConversion);
-  }
-
-  public void setCostPerConversion(String costPerConversion) {
-    this.costPerConversion = BigDecimalUtil.parseFromNumberString(costPerConversion);
-  }
-
-  public void setCostPerConversion(BigDecimal costPerConversion) {
-    this.costPerConversion = costPerConversion;
-  }
-
-  public String getCostPerConversionManyPerClick() {
-    return BigDecimalUtil.formatAsReadable(costPerConversionManyPerClick);
-  }
-
-  public void setCostPerConversionManyPerClick(String costPerConversionManyPerClick) {
-    this.costPerConversionManyPerClick =
-        BigDecimalUtil.parseFromNumberString(costPerConversionManyPerClick);
-  }
-
-  public void setCostPerConversionManyPerClick(BigDecimal costPerConversionManyPerClick) {
-    this.costPerConversionManyPerClick = costPerConversionManyPerClick;
-  }
-
   public String getCriteriaDestinationUrl() {
     return criteriaDestinationUrl;
   }
@@ -371,14 +212,6 @@ public class ReportDestinationUrl extends ReportBase {
     this.criteriaTypeName = criteriaTypeName;
   }
 
-  public String getCustomerDescriptiveName() {
-    return customerDescriptiveName;
-  }
-
-  public void setCustomerDescriptiveName(String customerDescriptiveName) {
-    this.customerDescriptiveName = customerDescriptiveName;
-  }
-
   public String getEffectiveDestinationUrl() {
     return effectiveDestinationUrl;
   }
@@ -393,91 +226,5 @@ public class ReportDestinationUrl extends ReportBase {
 
   public void setIsNegative(String isNegative) {
     this.isNegative = isNegative;
-  }
-
-  public String getPrimaryCompanyName() {
-    return primaryCompanyName;
-  }
-
-  public void setPrimaryCompanyName(String primaryCompanyName) {
-    this.primaryCompanyName = primaryCompanyName;
-  }
-
-  public String getPrimaryUserLogin() {
-    return primaryUserLogin;
-  }
-
-  public void setPrimaryUserLogin(String primaryUserLogin) {
-    this.primaryUserLogin = primaryUserLogin;
-  }
-
-  public String getTotalConvValue() {
-    return BigDecimalUtil.formatAsReadable(totalConvValue);
-  }
-
-  public void setTotalConvValue(String totalConvValue) {
-    this.totalConvValue = BigDecimalUtil.parseFromNumberString(totalConvValue);
-  }
-
-  public void setTotalConvValue(BigDecimal totalConvValue) {
-    this.totalConvValue = totalConvValue;
-  }
-
-  public String getValuePerConv() {
-    return BigDecimalUtil.formatAsReadable(valuePerConv);
-  }
-
-  public void setValuePerConv(String valuePerConv) {
-    this.valuePerConv = BigDecimalUtil.parseFromNumberString(valuePerConv);
-  }
-
-  public void setValuePerConv(BigDecimal valuePerConv) {
-    this.valuePerConv = valuePerConv;
-  }
-
-  public String getValuePerConversion() {
-    return BigDecimalUtil.formatAsReadable(valuePerConversion);
-  }
-
-  public void setValuePerConversion(String valuePerConversion) {
-    this.valuePerConversion = BigDecimalUtil.parseFromNumberString(valuePerConversion);
-  }
-
-  public void setValuePerConversion(BigDecimal valuePerConversion) {
-    this.valuePerConversion = valuePerConversion;
-  }
-
-  public String getValuePerConversionManyPerClick() {
-    return BigDecimalUtil.formatAsReadable(valuePerConversionManyPerClick);
-  }
-
-  public void setValuePerConversionManyPerClick(String valuePerConversionManyPerClick) {
-    this.valuePerConversionManyPerClick =
-        BigDecimalUtil.parseFromNumberString(valuePerConversionManyPerClick);
-  }
-
-  public void setValuePerConversionManyPerClick(BigDecimal valuePerConversionManyPerClick) {
-    this.valuePerConversionManyPerClick = valuePerConversionManyPerClick;
-  }
-
-  public String getValuePerConvManyPerClick() {
-    return BigDecimalUtil.formatAsReadable(valuePerConvManyPerClick);
-  }
-
-  public void setValuePerConvManyPerClick(String valuePerConvManyPerClick) {
-    this.valuePerConvManyPerClick = BigDecimalUtil.parseFromNumberString(valuePerConvManyPerClick);
-  }
-
-  public void setValuePerConvManyPerClick(BigDecimal valuePerConvManyPerClick) {
-    this.valuePerConvManyPerClick = valuePerConvManyPerClick;
-  }
-
-
-  public Long getViewThroughConversions() {
-    return viewThroughConversions;
-  }
-
-  public void setViewThroughConversions(Long viewThroughConversions) {
-    this.viewThroughConversions = viewThroughConversions;
   }
 }
