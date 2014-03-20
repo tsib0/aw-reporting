@@ -63,7 +63,7 @@ public class InstalledOAuth2Authenticator implements Authenticator {
       @Value("${developerToken}") String developerToken,
       @Value(value = "${clientId}") String clientId,
       @Value(value = "${clientSecret}") String clientSecret,
-      @Value(value = "${aw.report.processor.reportwritertype:}") ReportWriterType reportWriterType) {
+      @Value(value = "${aw.report.exporter.reportwritertype:}") ReportWriterType reportWriterType) {
     this.developerToken = developerToken;
     this.clientId = clientId;
     this.clientSecret = clientSecret;
