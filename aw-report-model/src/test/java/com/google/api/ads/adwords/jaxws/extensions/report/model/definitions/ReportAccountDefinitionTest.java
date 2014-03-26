@@ -39,64 +39,6 @@ public class ReportAccountDefinitionTest extends AbstractReportDefinitionTest<Re
   }
 
   /**
-   * @return the properties for the Account Performance report.
-   */
-  @Override
-  protected String[] retrievePropertiesToBeSelected() {
-
-    return new String[] {
-        // Report
-        "ExternalCustomerId",
-        // ReportBase
-        "AccountDescriptiveName",
-        "AccountTimeZoneId",
-        "CustomerDescriptiveName",
-        "PrimaryCompanyName",
-        "PrimaryUserLogin",
-        "AccountCurrencyCode",
-        "Date",
-        "DayOfWeek",
-        "Week",
-        "Month",
-        "MonthOfYear",
-        "Quarter",
-        "Year",
-        "Cost",
-        "Clicks",
-        "Impressions",
-        "Ctr",
-        "AverageCpm",
-        "AverageCpc",
-        "AveragePosition",
-        "Device",
-        "ClickType",
-        "AdNetworkType1",
-        "AdNetworkType2",
-        "ConversionsManyPerClick",
-        "ConversionRateManyPerClick",
-        "CostPerConversionManyPerClick",
-        "ValuePerConvManyPerClick",
-        "ValuePerConversionManyPerClick",
-        "Conversions",
-        "ConversionRate",
-        "CostPerConversion",
-        "ValuePerConv",
-        "ValuePerConversion",
-        "ConversionCategoryName",
-        "ConversionTypeName",
-        "ConversionValue",
-        "ViewThroughConversions",
-        // Specific to Account Performance
-        "SearchImpressionShare",
-        "SearchBudgetLostImpressionShare",
-        "SearchRankLostImpressionShare",
-        "ContentImpressionShare",
-        "ContentBudgetLostImpressionShare",
-        "ContentRankLostImpressionShare"
-    };
-  }
-
-  /**
    * @see com.google.api.ads.adwords.jaxws.extensions.report.model.definitions.
    * AbstractReportDefinitionTest#testFirstEntry(
    * com.google.api.ads.adwords.jaxws.extensions.report.model.entities.Report)
@@ -160,6 +102,64 @@ public class ReportAccountDefinitionTest extends AbstractReportDefinitionTest<Re
   @Override
   protected int retrieveCsvEntries() {
     return 7;
+  }
+
+  /**
+   * @return the properties for the Account Performance report.
+   */
+  @Override
+  protected String[] retrievePropertiesToBeSelected() {
+
+    return new String[] {
+        // Report
+        "ExternalCustomerId",
+        // ReportBase
+        "AccountDescriptiveName",
+        "AccountTimeZoneId",
+        "CustomerDescriptiveName",
+        "PrimaryCompanyName",
+        "PrimaryUserLogin",
+        "AccountCurrencyCode",
+        "Date",
+        "DayOfWeek",
+        "Week",
+        "Month",
+        "MonthOfYear",
+        "Quarter",
+        "Year",
+        "Cost",
+        "Clicks",
+        "Impressions",
+        "Ctr",
+        "AverageCpm",
+        "AverageCpc",
+        "AveragePosition",
+        "Device",
+        "ClickType",
+        "AdNetworkType1",
+        "AdNetworkType2",
+        "ConversionsManyPerClick",
+        "ConversionRateManyPerClick",
+        "CostPerConversionManyPerClick",
+        "ValuePerConvManyPerClick",
+        "ValuePerConversionManyPerClick",
+        "Conversions",
+        "ConversionRate",
+        "CostPerConversion",
+        "ValuePerConv",
+        "ValuePerConversion",
+        "ConversionCategoryName",
+        "ConversionTypeName",
+        "ConversionValue",
+        "ViewThroughConversions",
+        // Specific to Account Performance
+        "SearchImpressionShare",
+        "SearchBudgetLostImpressionShare",
+        "SearchRankLostImpressionShare",
+        "ContentImpressionShare",
+        "ContentBudgetLostImpressionShare",
+        "ContentRankLostImpressionShare"
+    };
   }
 
 }
