@@ -38,7 +38,7 @@ You will need Java, Maven and MySQL installed before configuring the project.
 
 Now we'll create a properties file to specify your MCC, developer token, OAuth, and database credentials.
 
-<code>$ vi ../aw-reporting/src/main/resources/aw-report-sample.properties</code>
+<code>$ vi aw-reporting/src/main/resources/aw-report-sample.properties</code>
 
 Fill in the following fields with your MCC acount ID, and developer token.
 
@@ -47,6 +47,8 @@ Fill in the following fields with your MCC acount ID, and developer token.
 >developerToken=
 
 Fill in your OAuth credentials. If you need to create them, visit: <a href>https://code.google.com/apis/console#access</a>
+
+Note that you don't have enter RefreshToken as AwReporting takes care of getting new one when it when run for the first time.
 
 >clientId=
 
@@ -69,19 +71,26 @@ Fill in the following with your database connection.
 
 >aw.report.model.db.sql.password=SOME_PASSWORD
 
-### Import the project into Eclipse (optional)
+### Run the project and verify it's working 
 
-To import the project into Eclipse, first import the model:
+Now, you are ready to run AwReporting with following command.
 
-> File -> Import -> General -> Existing projects into workspace.
+```
+$ java -Xmx1G -jar aw-reporting/target/aw-reporting.jar -startDate YYYYMMDD -endDate YYYYMMDD \
+-file aw-reporting/src/main/resources/aw-report-sample.properties -verbose
+```
 
-> aw-reporting/aw-report-model
+Be sure to specify the properties file you edited above on the command line. 
 
-Next import the database code:
+It's possible to run the project using either Eclipse or the command line. If using Eclipse, open and run:
 
-> File -> Import -> General -> Existing projects into workspace.
+> aw-reporting/src/main/java/com/google/api/ads/adwords/jaxws/extensions/AwReporting.java
 
-> aw-reporting/aw-reporting
+As it's running, the project will provide status messages about the reports it's downloading on the command line. 
+
+Check your database when the run finishes to be sure it's been populated with the reporting data, e.g.:
+
+> SELECT * FROM AWReports.AW_ReportAd limit 1;
 
 ### Command line options 
 
@@ -127,19 +136,19 @@ Note: aw-reporting.jar is in the aw-reporting/aw-reporting/target/ directory.
 </code>
 </pre>
 
-### Run the project and verify it's working 
+### Import the project into Eclipse (optional)
 
-It's possible to run the project using either Eclipse or the command line. If using Eclipse, open and run:
+To import the project into Eclipse, first import the model:
 
-> aw-reporting/src/main/java/com/google/api/ads/adwords/jaxws/extensions/AwReporting.java
+> File -> Import -> General -> Existing projects into workspace.
 
-Be sure to specify the properties file you edited above on the command line. 
+> aw-reporting/aw-report-model
 
-As it's running, the project will provide status messages about the reports it's downloading on the command line. 
+Next import the database code:
 
-Check your database when the run finishes to be sure it's been populated with the reporting data, e.g.:
+> File -> Import -> General -> Existing projects into workspace.
 
-> SELECT * FROM AWReports.AW_ReportAd limit 1;
+> aw-reporting/aw-reporting
 
 
 ## Details about the code

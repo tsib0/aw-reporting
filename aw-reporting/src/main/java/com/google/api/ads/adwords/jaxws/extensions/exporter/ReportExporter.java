@@ -29,6 +29,7 @@ import java.util.Set;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import com.google.api.ads.adwords.jaxws.extensions.authentication.Authenticator;
 import com.google.api.ads.adwords.jaxws.extensions.exporter.reportwriter.FileSystemReportWriter;
@@ -52,6 +53,7 @@ import com.lowagie.text.DocumentException;
  *
  * @author joeltoby@google.com (Joel Toby)
  */
+@Component
 public abstract class ReportExporter {
 
   private static final Logger LOGGER = Logger.getLogger(ReportExporter.class);
@@ -82,8 +84,9 @@ public abstract class ReportExporter {
     Map<String, Object> reportMap = Maps.newHashMap();
 
     LOGGER.debug("Retrieving monthly reports for account: " + accountId);
-
-    Set<ReportDefinitionReportType> reports = this.csvReportEntitiesMapping.getDefinedReports();
+    
+    Set<ReportDefinitionReportType> reports = csvReportEntitiesMapping.getDefinedReports();
+    System.out.println("** Number of reports: " + reports.size() + " ***");
     for (ReportDefinitionReportType reportType : reports) {
       if (properties.containsKey(reportType.name())) {
         // Adding each report type rows from DB to the accounts montlyeports list.
@@ -137,7 +140,7 @@ public abstract class ReportExporter {
 
     if (reportMap != null && reportMap.size() > 0) {
 
-      String propertyReportWriterType = properties.getProperty("aw.report.processor.reportwritertype");
+      String propertyReportWriterType = properties.getProperty("aw.report.exporter.reportwritertype");
 
       if (propertyReportWriterType != null && 
           propertyReportWriterType.equals(ReportWriterType.GoogleDriveWriter.name())) {
