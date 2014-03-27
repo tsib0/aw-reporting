@@ -10,7 +10,7 @@
 
   <bean
     class="com.google.api.ads.adwords.jaxws.extensions.report.model.csv.CsvReportEntitiesMapping"
-    id="csvReportEntitiesMapping" init-method="initializeReportMap">
+    id="csvReportEntitiesMapping" init-method="initializeReportMap" scope="prototype">
     <constructor-arg
       value="com.google.api.ads.adwords.jaxws.extensions.report.model.entities" />
   </bean>

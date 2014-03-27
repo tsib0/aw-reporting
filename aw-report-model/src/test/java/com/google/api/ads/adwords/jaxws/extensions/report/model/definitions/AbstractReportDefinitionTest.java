@@ -42,7 +42,7 @@ import java.util.Set;
 
 /**
  * Abstraction for the report definition tests.
- * 
+ *
  * @param <T> type of sub Report.
  */
 public abstract class AbstractReportDefinitionTest<T extends Report> {
@@ -67,8 +67,8 @@ public abstract class AbstractReportDefinitionTest<T extends Report> {
    * @param reportType the report type that should mapped.
    * @param csvFileLocation the csv file location to test the mapping
    */
-  public AbstractReportDefinitionTest(
-      Class<T> reportBeanClass, ReportDefinitionReportType reportType, String csvFileLocation) {
+  public AbstractReportDefinitionTest(Class<T> reportBeanClass,
+      ReportDefinitionReportType reportType, String csvFileLocation) {
     this.reportBeanClass = reportBeanClass;
     this.reportType = reportType;
     this.csvFileLocation = csvFileLocation;
@@ -105,8 +105,8 @@ public abstract class AbstractReportDefinitionTest<T extends Report> {
 
     Assert.assertEquals(
         "The number of properties mapped is different from the properties specified on the test.\n"
-            + "expected: " + Arrays.toString(reportProperties) + "\nfound: "
-            + propertiesToSelect.toString(), reportProperties.length, propertiesToSelect.size());
+        + "expected: " + Arrays.toString(reportProperties) + "\nfound: "
+        + propertiesToSelect.toString(), reportProperties.length, propertiesToSelect.size());
 
     for (int i = 0; i < reportProperties.length; i++) {
       Assert.assertTrue(propertiesToSelect.contains(reportProperties[i]));
@@ -161,7 +161,8 @@ public abstract class AbstractReportDefinitionTest<T extends Report> {
     ModifiedCsvToBean<T> csvToBean = new ModifiedCsvToBean<T>();
     List<T> parsedBeans = csvToBean.parse(mappingStrategy, csvReader);
 
-    Assert.assertEquals(this.retrieveCsvEntries(), parsedBeans.size());
+    Assert.assertEquals("Wrong number of parsed entities from CSV.", this.retrieveCsvEntries(),
+        parsedBeans.size());
 
     Assert.assertTrue(parsedBeans.size() > 1);
 
@@ -169,7 +170,8 @@ public abstract class AbstractReportDefinitionTest<T extends Report> {
 
     List<T> listedReports = this.persister.listReports(this.reportBeanClass);
     int entries = this.retrieveCsvEntries();
-    Assert.assertEquals(entries, listedReports.size());
+    Assert.assertEquals("Different number of entities in DB than expected.", entries,
+        listedReports.size());
 
     Collections.sort(listedReports, new ReportBeanDateComparator());
 
@@ -177,7 +179,7 @@ public abstract class AbstractReportDefinitionTest<T extends Report> {
 
     this.testLastEntry(listedReports.get(entries - 1));
 
-    this.persister.removeReportEntities(parsedBeans);
+    this.persister.removeReportEntities(listedReports);
   }
 
   /**
@@ -233,8 +235,8 @@ public abstract class AbstractReportDefinitionTest<T extends Report> {
 
       } else {
 
-        if (report1.getDateStart() == null || report2.getDateStart() == null ||
-            report1.getDateEnd() == null || report2.getDateEnd() == null) {
+        if (report1.getDateStart() == null || report2.getDateStart() == null
+            || report1.getDateEnd() == null || report2.getDateEnd() == null) {
           return 0;
         }
 
@@ -242,7 +244,7 @@ public abstract class AbstractReportDefinitionTest<T extends Report> {
         if (report1.getDateStart().compareTo(report2.getDateStart()) == 0) {
           return report1.getDateEnd().compareTo(report2.getDateEnd());
         } else {
-          return report1.getDateStart().compareTo(report2.getDateStart()); 
+          return report1.getDateStart().compareTo(report2.getDateStart());
         }
       }
     }
