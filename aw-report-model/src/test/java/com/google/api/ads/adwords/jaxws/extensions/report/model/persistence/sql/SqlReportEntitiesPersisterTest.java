@@ -24,6 +24,7 @@ import com.google.common.collect.Lists;
 import junit.framework.Assert;
 
 import org.joda.time.DateTime;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -37,7 +38,7 @@ import java.util.Map;
 
 /**
  * Test case for the {@code SqlReportEntitiesPersister} class.
- * 
+ *
  * @author jtoledo@google.com (Julian Toledo)
  */
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -48,7 +49,8 @@ public class SqlReportEntitiesPersisterTest {
   private EntityPersister reportEntitiesPersister;
 
   @Before
-  public void cleanDB(){
+  @After
+  public void cleanDB() {
 
     List<ReportAccount> reports = this.reportEntitiesPersister.listReports(ReportAccount.class);
     this.reportEntitiesPersister.remove(reports);
@@ -66,8 +68,8 @@ public class SqlReportEntitiesPersisterTest {
     reportList.add(report);
     reportEntitiesPersister.persistReportEntities(reportList);
 
-    List<ReportAccount> reportAccountList = reportEntitiesPersister
-        .listReports(ReportAccount.class);
+    List<ReportAccount> reportAccountList =
+        reportEntitiesPersister.listReports(ReportAccount.class);
     Assert.assertNotNull(reportAccountList);
     Assert.assertTrue(reportAccountList.size() == 1);
     Assert.assertTrue(reportAccountList.get(0).getTopAccountId().equals(123L));
@@ -85,8 +87,8 @@ public class SqlReportEntitiesPersisterTest {
     Assert.assertTrue(reportAccountList.size() == 1);
     Assert.assertTrue(reportAccountList.get(0).getTopAccountId().equals(789L));
     Assert.assertTrue(reportAccountList.get(0).getAccountId().equals(456L));
-    Assert.assertTrue(reportAccountList.get(0).getAccountDescriptiveName()
-        .equals("updatedTestAccount"));
+    Assert.assertTrue(
+        reportAccountList.get(0).getAccountDescriptiveName().equals("updatedTestAccount"));
 
     this.reportEntitiesPersister.remove(reportAccountList);
   }
@@ -142,8 +144,8 @@ public class SqlReportEntitiesPersisterTest {
     reportList.add(report2);
     reportEntitiesPersister.persistReportEntities(reportList);
 
-    List<ReportAccount> list = this.reportEntitiesPersister.get(ReportAccount.class, "adNetwork",
-        "test2", 0, 1);
+    List<ReportAccount> list =
+        this.reportEntitiesPersister.get(ReportAccount.class, "adNetwork", "test2", 0, 1);
     Assert.assertEquals(1, list.size());
     Assert.assertTrue(list.contains(report1) || list.contains(report2));
 
@@ -194,33 +196,65 @@ public class SqlReportEntitiesPersisterTest {
     reportList.add(report2);
     reportEntitiesPersister.persistReportEntities(reportList);
 
-    List<ReportAccount> list = this.reportEntitiesPersister.get(ReportAccount.class, "adNetwork",
-        "test2", "day", start.toDate(), end.toDate());
+    List<ReportAccount> list = this.reportEntitiesPersister.get(ReportAccount.class,
+        "adNetwork",
+        "test2",
+        "day",
+        start.toDate(),
+        end.toDate());
     Assert.assertEquals(2, list.size());
     Assert.assertTrue(list.contains(report1));
     Assert.assertTrue(list.contains(report2));
 
-    list = this.reportEntitiesPersister.get(ReportAccount.class, "adNetwork", "test2", "day", start
-        .plusDays(1).toDate(), end.minusDays(1).toDate(), 0, 1);
+    list = this.reportEntitiesPersister.get(ReportAccount.class,
+        "adNetwork",
+        "test2",
+        "day",
+        start.plusDays(1).toDate(),
+        end.minusDays(1).toDate(),
+        0,
+        1);
     Assert.assertEquals(1, list.size());
     Assert.assertTrue(list.contains(report1) || list.contains(report2));
 
-    list = this.reportEntitiesPersister.get(ReportAccount.class, "adNetwork", "test2", "day", start
-        .plusDays(1).toDate(), end.minusDays(2).toDate(), 0, 1);
+    list = this.reportEntitiesPersister.get(ReportAccount.class,
+        "adNetwork",
+        "test2",
+        "day",
+        start.plusDays(1).toDate(),
+        end.minusDays(2).toDate(),
+        0,
+        1);
     Assert.assertEquals(1, list.size());
     Assert.assertTrue(list.contains(report1));
 
-    list = this.reportEntitiesPersister.get(ReportAccount.class, "adNetwork", "test2", "day", start
-        .plusDays(2).toDate(), end.minusDays(1).toDate(), 0, 1);
+    list = this.reportEntitiesPersister.get(ReportAccount.class,
+        "adNetwork",
+        "test2",
+        "day",
+        start.plusDays(2).toDate(),
+        end.minusDays(1).toDate(),
+        0,
+        1);
     Assert.assertEquals(1, list.size());
     Assert.assertTrue(list.contains(report2));
 
-    list = this.reportEntitiesPersister.get(ReportAccount.class, "adNetwork", "test2", "day", start
-        .plusDays(2).toDate(), end.minusDays(2).toDate(), 0, 1);
+    list = this.reportEntitiesPersister.get(ReportAccount.class,
+        "adNetwork",
+        "test2",
+        "day",
+        start.plusDays(2).toDate(),
+        end.minusDays(2).toDate(),
+        0,
+        1);
     Assert.assertEquals(0, list.size());
 
-    list = this.reportEntitiesPersister.get(ReportAccount.class, "adNetwork", "test2", "day", start
-        .plusDays(1).toDate(), end.minusDays(1).toDate());
+    list = this.reportEntitiesPersister.get(ReportAccount.class,
+        "adNetwork",
+        "test2",
+        "day",
+        start.plusDays(1).toDate(),
+        end.minusDays(1).toDate());
     Assert.assertEquals(2, list.size());
     Assert.assertTrue(list.contains(report1));
     Assert.assertTrue(list.contains(report2));
@@ -250,8 +284,8 @@ public class SqlReportEntitiesPersisterTest {
     Map<String, String> valueMap = new HashMap<String, String>();
     valueMap.put("adNetwork", "test2");
 
-    List<ReportAccount> list = this.reportEntitiesPersister
-        .get(ReportAccount.class, valueMap, 0, 1);
+    List<ReportAccount> list =
+        this.reportEntitiesPersister.get(ReportAccount.class, valueMap, 0, 1);
     Assert.assertEquals(1, list.size());
     Assert.assertTrue(list.contains(report1) || list.contains(report2));
 
@@ -325,8 +359,8 @@ public class SqlReportEntitiesPersisterTest {
 
     reportEntitiesPersister.persistReportEntities(reportList);
 
-    List<? extends Report> reports = this.reportEntitiesPersister.listMonthReports(
-        ReportAccount.class, 456L, start, end, 0, 20);
+    List<? extends Report> reports =
+        this.reportEntitiesPersister.listMonthReports(ReportAccount.class, 456L, start, end, 0, 20);
 
     Assert.assertEquals(2, reports.size());
     Assert.assertEquals(report1, reports.get(0));
