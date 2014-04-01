@@ -17,7 +17,6 @@ package com.google.api.ads.adwords.jaxws.extensions.exporter.reportwriter;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.Writer;
 
 /**
  * Writes HTML or PDF reports. Should be extended by any classes that
@@ -25,19 +24,19 @@ import java.io.Writer;
  *
  * @author joeltoby@google.com (Joel Toby)
  */
-public abstract class ReportWriter extends Writer {
-  
+public interface ReportWriter {
+
   /**
    * Represents the type of report file to be written for a given report
    */
   public enum ReportFileType { HTML, PDF };
-  
+
   /**
    * Writes the InputStream to to the file
    * @param is
    * @throws FileNotFoundException 
    * @throws IOException 
    */
-  public abstract void write(InputStream is) throws FileNotFoundException, IOException;
+  public abstract void write(InputStream inputStream) throws FileNotFoundException, IOException;
 
 }

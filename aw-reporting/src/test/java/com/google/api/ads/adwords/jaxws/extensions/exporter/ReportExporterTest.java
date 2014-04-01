@@ -131,15 +131,12 @@ public class ReportExporterTest {
 
     // Deleting temp files created
     for (Long accountId : accountIds) {
-      File htmlFile = new File("Report_" + accountId + "_" + dateStart + "_" + dateEnd + ".html");
+      File htmlFile = new File("ACCOUNT_PERFORMANCE_REPORT_" + accountId + "_" + dateStart + "_" + dateEnd + ".html");
       assertNotNull(htmlFile);
       htmlFile.delete();
-      File pdfFile = new File("Report_" + accountId + "_" + dateStart +  "_" + dateEnd + ".pdf");
+      File pdfFile = new File("ACCOUNT_PERFORMANCE_REPORT_" + accountId + "_" + dateStart +  "_" + dateEnd + ".pdf");
       assertNotNull(pdfFile);
       pdfFile.delete();
     }
-
-//    verify(mockedEntitiesPersister, times(90)).listMonthReports((Class<ReportAccount>) anyObject(),
-//        anyLong(), any(DateTime.class), any(DateTime.class));
   }
 }
