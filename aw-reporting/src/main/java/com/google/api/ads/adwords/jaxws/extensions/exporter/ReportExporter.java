@@ -14,28 +14,12 @@
 
 package com.google.api.ads.adwords.jaxws.extensions.exporter;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStreamWriter;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Properties;
-import java.util.Set;
-
-import org.apache.log4j.Logger;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
-
 import com.google.api.ads.adwords.jaxws.extensions.authentication.Authenticator;
 import com.google.api.ads.adwords.jaxws.extensions.exporter.reportwriter.FileSystemReportWriter;
 import com.google.api.ads.adwords.jaxws.extensions.exporter.reportwriter.GoogleDriveReportWriter;
-import com.google.api.ads.adwords.jaxws.extensions.exporter.reportwriter.ReportWriterType;
+import com.google.api.ads.adwords.jaxws.extensions.exporter.reportwriter.MemoryReportWriter;
 import com.google.api.ads.adwords.jaxws.extensions.exporter.reportwriter.ReportWriter.ReportFileType;
+import com.google.api.ads.adwords.jaxws.extensions.exporter.reportwriter.ReportWriterType;
 import com.google.api.ads.adwords.jaxws.extensions.report.model.csv.CsvReportEntitiesMapping;
 import com.google.api.ads.adwords.jaxws.extensions.report.model.entities.NameImprClicks;
 import com.google.api.ads.adwords.jaxws.extensions.report.model.entities.Report;
@@ -46,12 +30,27 @@ import com.google.api.ads.adwords.lib.jaxb.v201402.ReportDefinitionReportType;
 import com.google.api.ads.common.lib.exception.OAuthException;
 import com.google.api.client.util.Maps;
 import com.google.common.collect.Lists;
+
 import com.lowagie.text.DocumentException;
 
+import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Properties;
+import java.util.Set;
+
 /**
- * Exports reports PDF/HTML reports to either the FileSystem or Google Drive
+ * Exports reports PDF/HTML reports to either the FileSystem or Google Drive.
  *
  * @author joeltoby@google.com (Joel Toby)
+ * @author jtoledo@google.com (Julian Toledo)
  */
 @Component
 public abstract class ReportExporter {
@@ -65,26 +64,121 @@ public abstract class ReportExporter {
   protected Authenticator authenticator;
 
   /**
-   * Generates a PDF file from the report data for an account
+   * Export reports to PDF/HTML.
+   *
+   * @param dateStart the start date for the reports
+   * @param dateEnd the end date for the reports
+   * @param accountIds the list of accounts to generate PDFs for
+   * @param properties the properties file containing all the configuration
+   * @param htmlTemplateFile
+   * @param outputDirectory
+   * @throws IOException 
+   * @throws OAuthException 
+   * @throws DocumentException
+   */
+  public abstract void exportReports(String dateStart, String dateEnd,
+      Set<Long> accountIds, Properties properties,File htmlTemplateFile, File outputDirectory,
+      Boolean sumAdExtensions) throws IOException, OAuthException, DocumentException;
+
+  /**
+   * Export reports to PDF/HTML for one account.
    *
    * @param dateStart the start date for the reports
    * @param dateEnd the end date for the reports
    * @param accountId the account CID to generate PDF for
    * @param properties the properties file containing all the configuration
+   * @param htmlTemplateFile the template file to generete the report
+   * @param outputDirectory where to output the files
+   * @param sumAdExtensions to add up all the extensions
    * @throws IOException 
    * @throws OAuthException 
    * @throws DocumentException 
    * @throws Exception error creating PDF
    */
-  public void exportReport(String dateStart, String dateEnd,
-      Long accountId, Properties properties,
-      File htmlTemplateFile, File outputDirectory, Boolean sumAdExtensions) throws IOException, OAuthException, DocumentException {
+  public void exportReport(String dateStart, String dateEnd, Long accountId, Properties properties,
+      File htmlTemplateFile, File outputDirectory, Boolean sumAdExtensions)
+          throws IOException, OAuthException, DocumentException {
 
-    LOGGER.info("Starting PDF Generation for account " + accountId);
-    Map<String, Object> reportMap = Maps.newHashMap();
+    LOGGER.info("Starting Report Export for account " + accountId);
 
-    LOGGER.debug("Retrieving monthly reports for account: " + accountId);
-    
+    Map<String, Object> reportDataMap = createReportDataMap(dateStart, dateEnd, accountId, properties, sumAdExtensions);
+
+    if (reportDataMap.size() > 0) {
+
+      String propertyReportWriterType = properties.getProperty("aw.report.exporter.reportwritertype");
+
+      Boolean writeHtml = true;
+      if (properties.getProperty("aw.report.exporter.writeHtml") != null) {
+        writeHtml = Boolean.valueOf(properties.getProperty("aw.report.exporter.writeHtml"));
+      }
+
+      Boolean writePdf = true;
+      if (properties.getProperty("aw.report.exporter.writePdf") != null) {
+        writePdf = Boolean.valueOf(properties.getProperty("aw.report.exporter.writePdf"));
+      }
+
+      LOGGER.debug("Generating in Memory HTML for account: " + accountId);
+      // Writing HTML to Memory
+      MemoryReportWriter mrwHtml = MemoryReportWriter.newMemoryReportWriter();
+      HTMLExporter.exportHtml(reportDataMap, htmlTemplateFile, mrwHtml);
+
+      if (propertyReportWriterType != null && 
+          propertyReportWriterType.equals(ReportWriterType.GoogleDriveWriter.name())) {
+
+        String propertyTopAccountCid = properties.getProperty("mccAccountId");
+
+        // Writing HTML to GoogleDrive
+        if (writeHtml) {
+          LOGGER.debug("Writing (to GoogleDrive) HTML for account: " + accountId);
+          GoogleDriveReportWriter gdrwHtml = new GoogleDriveReportWriter.GoogleDriveReportWriterBuilder(
+              accountId, dateStart, dateEnd, propertyTopAccountCid, authenticator, ReportFileType.HTML,
+              htmlTemplateFile).build();
+          gdrwHtml.write(mrwHtml.getAsSource());
+        }
+
+        // Writing PDF to GoogleDrive
+        if (writePdf) {
+          LOGGER.debug("Writing (to GoogleDrive) PDF for account: " + accountId);
+          GoogleDriveReportWriter gdrwPdf = new GoogleDriveReportWriter.GoogleDriveReportWriterBuilder(
+              accountId, dateStart, dateEnd, propertyTopAccountCid, authenticator, ReportFileType.PDF,
+              htmlTemplateFile).build();
+          HTMLExporter.exportHtmlToPdf(mrwHtml.getAsSource(), gdrwPdf);
+        }
+
+      } else {
+
+        // Writing HTML to Disk
+        if (writeHtml) {
+          LOGGER.debug("Writing (to FileSystem) HTML for account: " + accountId);
+          FileSystemReportWriter fsrwHtml = FileSystemReportWriter.newFileSystemReportWriter(
+              htmlTemplateFile, dateStart, dateEnd, accountId, outputDirectory, ReportFileType.HTML);
+          fsrwHtml.write(mrwHtml.getAsSource());
+        }
+
+        // Writing PDF to Disk
+        if (writePdf) {
+          LOGGER.debug("Writing (to FileSystem) PDF for account: " + accountId);
+          FileSystemReportWriter fsrwPdf = FileSystemReportWriter.newFileSystemReportWriter(
+              htmlTemplateFile, dateStart, dateEnd, accountId, outputDirectory, ReportFileType.PDF);
+          HTMLExporter.exportHtmlToPdf(mrwHtml.getAsSource(), fsrwPdf);
+        }
+      }
+    }
+  }
+
+  /**
+   * Generates the HashMap with all the data from reports
+   *
+   * @param dateStart the start date for the reports
+   * @param dateEnd the end date for the reports
+   * @param accountId the account CID to generate PDF for
+   * @param properties the properties file containing all the configuration
+   * @param sumAdExtensions to add up all the extensions
+   */
+  private Map<String, Object> createReportDataMap(String dateStart, String dateEnd,
+      Long accountId, Properties properties, Boolean sumAdExtensions) {
+
+    Map<String, Object> reportDataMap = Maps.newHashMap();
     Set<ReportDefinitionReportType> reports = csvReportEntitiesMapping.getDefinedReports();
     System.out.println("** Number of reports: " + reports.size() + " ***");
     for (ReportDefinitionReportType reportType : reports) {
@@ -131,76 +225,13 @@ public abstract class ReportExporter {
             nic.impressions = entry.getValue().impressions;
             adExtensions.add(nic);
           }
-          reportMap.put("ADEXTENSIONS", adExtensions);
+          reportDataMap.put("ADEXTENSIONS", adExtensions);
         }
-
-        reportMap.put(reportType.name(), monthlyReports);
+        reportDataMap.put(reportType.name(), monthlyReports);
       }
     }
-
-    if (reportMap != null && reportMap.size() > 0) {
-
-      String propertyReportWriterType = properties.getProperty("aw.report.exporter.reportwritertype");
-
-      if (propertyReportWriterType != null && 
-          propertyReportWriterType.equals(ReportWriterType.GoogleDriveWriter.name())) {
-
-        String propertyTopAccountCid = properties.getProperty("mccAccountId");
-
-        LOGGER.debug("Constructing Google Drive Report Writers to write reports");
-
-        // Get HTML report as inputstream to avoid writing to Drive
-        LOGGER.debug("Exporting monthly reports to HTML for account: " + accountId);
-        ByteArrayOutputStream htmlReportOutput = new ByteArrayOutputStream();
-        OutputStreamWriter htmlOutputStreamWriter = new OutputStreamWriter(htmlReportOutput);
-        HTMLExporter.exportHTML(reportMap, htmlTemplateFile, htmlOutputStreamWriter);
-        InputStream htmlReportInput = new ByteArrayInputStream(htmlReportOutput.toByteArray());
-
-        GoogleDriveReportWriter pdfReportWriter = new GoogleDriveReportWriter.GoogleDriveReportWriterBuilder(
-            accountId, dateStart, dateEnd, propertyTopAccountCid, authenticator).build();
-
-        LOGGER.debug("Converting HTML to PDF for account: " + accountId);
-        HTMLExporter.convertHTMLtoPDF(htmlReportInput, pdfReportWriter);
-
-        htmlOutputStreamWriter.close();
-        htmlReportInput.close();
-        pdfReportWriter.close();
-
-      } else {
-
-        LOGGER.debug("Constructing File System Reporriters to write reports");
-        FileSystemReportWriter htmlReportWriter = new FileSystemReportWriter.FileSystemReportWriterBuilder(
-            outputDirectory, accountId, dateStart, dateEnd, ReportFileType.HTML).build();
-        FileSystemReportWriter pdfReportWriter = new FileSystemReportWriter.FileSystemReportWriterBuilder(
-            outputDirectory, accountId, dateStart, dateEnd, ReportFileType.PDF).build();
-
-        LOGGER.debug("Exporting monthly reports to HTML for account: " + accountId);
-        HTMLExporter.exportHTML(reportMap, htmlTemplateFile, htmlReportWriter);
-
-        LOGGER.debug("Converting HTML to PDF for account: " + accountId);
-        HTMLExporter.convertHTMLtoPDF(htmlReportWriter.getOutputFile(), pdfReportWriter);
-
-        htmlReportWriter.close();
-        pdfReportWriter.close();
-      }
-    }
+    return reportDataMap;
   }
-  
-  /**
-   * Generates the PDF files from the report data
-   *
-   * @param dateStart the start date for the reports
-   * @param dateEnd the end date for the reports
-   * @param accountIds the list of accounts to generate PDFs for
-   * @param properties the properties file containing all the configuration
-   * @throws IOException 
-   * @throws OAuthException 
-   * @throws DocumentException 
-   * @throws Exception error creating PDF
-   */
-  public abstract void exportReports(String dateStart, String dateEnd,
-      Set<Long> accountIds, Properties properties,File htmlTemplateFile, File outputDirectory, 
-      Boolean sumAdExtensions) throws IOException, OAuthException, DocumentException;
 
   /**
    * @param csvReportEntitiesMapping
