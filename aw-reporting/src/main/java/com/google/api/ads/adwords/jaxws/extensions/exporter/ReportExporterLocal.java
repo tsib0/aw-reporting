@@ -14,16 +14,17 @@
 
 package com.google.api.ads.adwords.jaxws.extensions.exporter;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.Properties;
-import java.util.Set;
+import com.google.api.ads.common.lib.exception.OAuthException;
+
+import com.lowagie.text.DocumentException;
 
 import org.apache.log4j.Logger;
 import org.springframework.stereotype.Component;
 
-import com.google.api.ads.common.lib.exception.OAuthException;
-import com.lowagie.text.DocumentException;
+import java.io.File;
+import java.io.IOException;
+import java.util.Properties;
+import java.util.Set;
 
 /**
  * Class to Export Reports to PDF/HTML to FileSystem or Google Drive
@@ -34,20 +35,19 @@ import com.lowagie.text.DocumentException;
 public class ReportExporterLocal extends ReportExporter {
 
   private static final Logger LOGGER = Logger.getLogger(ReportExporterLocal.class);
-  
+
   public ReportExporterLocal() {
   }
-  
-  
+
   /* (non-Javadoc)
    * @see com.google.api.ads.adwords.jaxws.extensions.exporter.ReportExporter#exportReports(java.lang.String, java.lang.String, java.util.Set, java.util.Properties, java.io.File, java.io.File, boolean)
    */
   @Override
-  public void exportReports(String dateStart, String dateEnd,
-      Set<Long> accountIds, Properties properties,
-      File htmlTemplateFile, File outputDirectory, Boolean sumAdExtensions) throws IOException, OAuthException, DocumentException {
+  public void exportReports(String dateStart, String dateEnd, Set<Long> accountIds,
+      Properties properties, File htmlTemplateFile, File outputDirectory, Boolean sumAdExtensions)
+          throws IOException, OAuthException, DocumentException {
 
-    LOGGER.info("Starting PDF Generation");
+    LOGGER.info("Starting PDF Generation for all Accounts");
     for (Long accountId : accountIds) {
       exportReport(dateStart, dateEnd, accountId, properties, 
           htmlTemplateFile, outputDirectory, sumAdExtensions);
