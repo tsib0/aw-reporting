@@ -24,6 +24,7 @@ import com.google.api.services.drive.model.File;
 import com.google.api.services.drive.model.FileList;
 import com.google.api.services.drive.model.ParentReference;
 
+import org.apache.commons.io.FilenameUtils;
 import org.apache.log4j.Logger;
 
 import java.io.IOException;
@@ -37,17 +38,16 @@ import java.util.List;
  *
  * @author joeltoby@google.com (Joel Toby)
  */
-public class GoogleDriveReportWriter extends ReportWriter {
+public class GoogleDriveReportWriter implements ReportWriter {
 
   private static final Logger LOGGER = Logger.getLogger(GoogleDriveReportWriter.class);
-
-  private static final ReportFileType REPORT_FILE_TYPE = ReportFileType.PDF;
 
   private final String REPORT_FOLDER_NAME_PRE = "AW Reports - AdWords generated PDF Reports";
 
   private final String FOLDER_MIME_TYPE = "application/vnd.google-apps.folder";
 
   private final String PDF_MIME_TYPE = "application/pdf";
+  private final String HTML_MIME_TYPE = "application/html";
 
   private final long accountId;
   private final String dateStart;
@@ -56,15 +56,18 @@ public class GoogleDriveReportWriter extends ReportWriter {
   private final String topAccountCid;
   private Drive driveService;
   private Authenticator authenticator;
+  private ReportFileType reportFileType;
+  private final java.io.File htmlTemplateFile;
 
-  private GoogleDriveReportWriter(GoogleDriveReportWriterBuilder builder)
-      throws IOException, OAuthException {
+  private GoogleDriveReportWriter(GoogleDriveReportWriterBuilder builder) throws IOException, OAuthException {
     this.accountId = builder.accountId;
     this.dateStart = builder.dateStart;
     this.dateEnd = builder.dateEnd;
     this.folderPerAccount = builder.folderPerAccount;
     this.topAccountCid = builder.topAccountCid;
     this.authenticator = builder.authenticator;
+    this.reportFileType = builder.reportFileType;
+    this.htmlTemplateFile = builder.htmlTemplateFile;
 
     // Replace this when GoogleDriveService properly extends Drive.
     LOGGER.debug("Getting GoogleDrive service.");
@@ -96,7 +99,7 @@ public class GoogleDriveReportWriter extends ReportWriter {
    * @return the reportFileType
    */
   public ReportFileType getReportFileType() {
-    return REPORT_FILE_TYPE;
+    return reportFileType;
   }
 
   /**
@@ -123,15 +126,19 @@ public class GoogleDriveReportWriter extends ReportWriter {
     private final String topAccountCid;
     private boolean folderPerAccount = false;
     private final Authenticator authenticator;
+    private final ReportFileType reportFileType;
+    private final java.io.File htmlTemplateFile;
 
     public GoogleDriveReportWriterBuilder(long accountId, String dateStart, 
         String dateEnd, String topAccountCid,
-        Authenticator authenticator) {
+        Authenticator authenticator, ReportFileType reportFileType, java.io.File htmlTemplateFile) {
       this.accountId = accountId;
       this.dateStart = dateStart;
       this.dateEnd = dateEnd;
       this.topAccountCid = topAccountCid;
       this.authenticator = authenticator;
+      this.reportFileType = reportFileType;
+      this.htmlTemplateFile = htmlTemplateFile;
     }
 
     /**
@@ -150,42 +157,40 @@ public class GoogleDriveReportWriter extends ReportWriter {
   }
 
   @Override
-  public void close() throws IOException {
-    // TODO 
-  }
-
-  @Override
-  public void flush() throws IOException {
-    // TODO
-  }
-
-  @Override
-  public void write(char[] cbuf, int off, int len) throws IOException {
-    // TODO
-  }
-
-  @Override
   public void write(InputStream inputStream) throws IOException {
     LOGGER.info("Getting AW Reports Drive output folder");
     // Get or create an AW Reports folder
     File reportsFolder = getReportsFolder();
-    
+
     // Create a Google Drive PDF file
     File reportPdfFile = new File();
-    reportPdfFile.setFileExtension(REPORT_FILE_TYPE.name());
-    reportPdfFile.setDescription("AdWords Report for account " + accountId + "for dates between" 
-        + dateStart + " and " + dateEnd);
-    reportPdfFile.setTitle("Report_" + accountId + "_" + dateStart + "_" + dateEnd + "."
-        + REPORT_FILE_TYPE.name().toLowerCase());
-    reportPdfFile.setMimeType(PDF_MIME_TYPE);
+    reportPdfFile.setFileExtension(reportFileType.name());
+
+    String fileNameWithOutExt = FilenameUtils.removeExtension((htmlTemplateFile.getName()));
+    String reportFileName = fileNameWithOutExt + "_" + accountId + "_" + dateStart + "_" 
+        + dateEnd + "." + reportFileType.toString().toLowerCase();
     
+    reportPdfFile.setDescription("AdWords Report " + fileNameWithOutExt + " for account "
+        + accountId + "for dates between" + dateStart + " and " + dateEnd);
+
+    reportPdfFile.setTitle(reportFileName);
+
     // Place the file in the correct Drive folder
     reportPdfFile.setParents(Arrays.asList(new ParentReference().setId(reportsFolder.getId())));
-    
-    // Write the file to Drive.
-    AbstractInputStreamContent aisc = new InputStreamContent("application/pdf", inputStream);
-    driveService.files().insert(reportPdfFile, aisc).execute();
-    
+
+    // Write the PDF file to Drive.
+    if (reportFileType.equals(ReportFileType.PDF)) {
+      reportPdfFile.setMimeType(PDF_MIME_TYPE);
+      AbstractInputStreamContent aisc = new InputStreamContent(PDF_MIME_TYPE, inputStream);
+      driveService.files().insert(reportPdfFile, aisc).execute();
+    }
+
+    // Write the HTML file to Drive.
+    if (reportFileType.equals(ReportFileType.HTML)) {
+      reportPdfFile.setMimeType(HTML_MIME_TYPE);
+      AbstractInputStreamContent aisc = new InputStreamContent(HTML_MIME_TYPE, inputStream);
+      driveService.files().insert(reportPdfFile, aisc).execute();
+    }
     inputStream.close(); 
   }
 
@@ -217,7 +222,7 @@ public class GoogleDriveReportWriter extends ReportWriter {
       File reportsFolder = new File();
       reportsFolder.setTitle(reportFolderName);
       reportsFolder.setMimeType(FOLDER_MIME_TYPE);
-      reportsFolder.setDescription("Contains AdWords PDF reports generated by AW Reports to DB");
+      reportsFolder.setDescription("Contains AdWords Reports generated by AW Reports to DB");
 
       LOGGER.info("Executing create folder");
       return driveService.files().insert(reportsFolder).execute();

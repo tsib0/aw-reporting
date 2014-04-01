@@ -39,6 +39,7 @@ import java.util.Map;
  *
  * @author markbowyer@google.com (Mark R. Bowyer)
  * @author joeltoby@google.com (Joel Toby)
+ * @author jtoledo@google.com (Julian Toledo)
  */
 public class HTMLExporter {
 
@@ -53,7 +54,7 @@ public class HTMLExporter {
    * @throws IOException error writing HTML file
    * @throws FileNotFoundException error reading template file
    */
-  public static void exportHTML(final Map<String, Object> map,
+  public static void exportHtml(final Map<String, Object> map,
       File templateFile, Writer writer) throws IOException {
 
     FileReader templateReader = new FileReader(templateFile);
@@ -67,54 +68,56 @@ public class HTMLExporter {
   /**
    * Convert a given HTML file to a PDF file
    *
-   * @param inFile The HTML file
+   * @param file The HTML file
    * @param reportWriter the ReportWriter to which HTML should be written
    * @throws DocumentException error creating PDF file
    * @throws IOException error closing file
    */
-  public static void convertHTMLtoPDF(File inFile, ReportWriter reportWriter)
+  public static void exportHtmlToPdf(File file, ReportWriter reportWriter)
       throws DocumentException, IOException {
 
-    FileReader htmlReader = new FileReader(inFile);
-    Document document = XMLResource.load(htmlReader).getDocument();
-    ITextRenderer renderer = new ITextRenderer();
-    renderer.getSharedContext().setReplacedElementFactory(
-        new MediaReplacedElementFactory(renderer.getSharedContext().getReplacedElementFactory()));
-    renderer.setDocument(document, null);
-
-    renderer.layout();
-    
-    ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-    renderer.createPDF(outputStream, true);
-    ByteArrayInputStream is = new ByteArrayInputStream(outputStream.toByteArray());
-    reportWriter.write(is);
-
-    outputStream.flush();
-    outputStream.close();
+    FileReader fileReader = new FileReader(file);
+    Document document = XMLResource.load(fileReader).getDocument();
+    exportHtmlToPdf(document, reportWriter);
+    fileReader.close();
   }
-  
+
+  /**
+   * Convert a given HTML source to a PDF file
+   *
+   * @param inputStream The HTML source
+   * @param reportWriter the ReportWriter to which HTML should be written
+   * @throws DocumentException error creating PDF file
+   * @throws IOException error closing file
+   */
+  public static void exportHtmlToPdf(InputStream inputStream, ReportWriter reportWriter)
+      throws DocumentException, IOException {
+
+    Document document = XMLResource.load(inputStream).getDocument();
+    exportHtmlToPdf(document, reportWriter);
+    inputStream.close();
+  }
+
   /**
    * Convert a given HTML report {@link InputStream} to a PDF file.<br>
    * 
    * This method does not close the report InputStream. It is the responsibility 
    * of the caller to do so.
    *
-   * @param inStream The HTML report InputStream
+   * @param document The HTML Document
    * @param reportWriter the ReportWriter to which HTML should be written
    * @throws DocumentException error creating PDF file
    * @throws IOException error closing file
    */
-  public static void convertHTMLtoPDF(InputStream inStream, ReportWriter reportWriter)
+  public static void exportHtmlToPdf(Document document, ReportWriter reportWriter)
       throws DocumentException, IOException {
 
-    Document document = XMLResource.load(inStream).getDocument();
     ITextRenderer renderer = new ITextRenderer();
     renderer.getSharedContext().setReplacedElementFactory(
         new MediaReplacedElementFactory(renderer.getSharedContext().getReplacedElementFactory()));
     renderer.setDocument(document, null);
-
     renderer.layout();
-    
+
     ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
     renderer.createPDF(outputStream, true);
     ByteArrayInputStream is = new ByteArrayInputStream(outputStream.toByteArray());

@@ -14,7 +14,10 @@
 
 package com.google.api.ads.adwords.jaxws.extensions.exporter.reportwriter;
 
+import org.apache.commons.io.FilenameUtils;
+
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -22,144 +25,38 @@ import java.io.InputStream;
 import java.io.OutputStream;
 
 /**
- * A {@link ReportWriter} that writes reports to the file system.
+ * A {@link ReportWriter} that writes reports to the File System.
  *
  * @author joeltoby@google.com (Joel Toby)
+ * @author jtoledo@google.com (Julian Toledo)
  */
-public class FileSystemReportWriter extends ReportWriter {
+public class FileSystemReportWriter extends FileWriter implements ReportWriter {
 
-  private FileWriter fileWriter;
+  private final File file;
 
-  private final File outputDirectory;
-  private final long accountId;
-  private final String dateStart;
-  private final String dateEnd;
-  private final ReportFileType reportFileType;
-  private final File outputFile;
-
-  private FileSystemReportWriter(FileSystemReportWriterBuilder builder) throws IOException {
-    this.outputDirectory = builder.outputDirectory;
-    this.accountId = builder.accountId;
-    this.dateStart = builder.dateStart;
-    this.dateEnd = builder.dateEnd;
-    this.reportFileType = builder.reportType;
-
-    String reportFileName = "Report_" + accountId + "_" + dateStart + "_" 
-        + dateEnd + "." + reportFileType.toString().toLowerCase();
-
-    outputFile = new File(outputDirectory, reportFileName);
-    fileWriter = new FileWriter(outputFile);
+  public FileSystemReportWriter(File file) throws IOException {
+    super(file);
+    this.file = file;
   }
 
   /**
-   * @return the fileWriter
-   */
-  public FileWriter getFileWriter() {
-    return fileWriter;
-  }
-
-  /**
-   * @return the outputDirectory
-   */
-  public File getOutputDirectory() {
-    return outputDirectory;
-  }
-
-  /**
-   * @return the accountId
-   */
-  public long getAccountId() {
-    return accountId;
-  }
-
-  /**
-   * @return the dateStart
-   */
-  public String getDateStart() {
-    return dateStart;
-  }
-
-  /**
-   * @return the dateEnd
-   */
-  public String getDateEnd() {
-    return dateEnd;
-  }
-
-  /**
-   * @return the reportFileType
-   */
-  public ReportFileType getReportFileType() {
-    return reportFileType;
-  }
-
-  /**
-   * @return the outputFile
-   */
-  public File getOutputFile() {
-    return outputFile;
-  }
-
-  /**
-   * A builder to construct and configure a FileSystemReportWriter. 
-   * 
-   * @author joeltoby
+   * Returns the file as source to be used on other writers
    *
+   * @return  
    */
-  public static class FileSystemReportWriterBuilder {
-    private final File outputDirectory;
-    private final long accountId;
-    private final String dateStart;
-    private final String dateEnd;
-    private final ReportFileType reportType;
-    
-    /**
-     * Constructs a builder with the basic required values.
-     * @param outputDirectory
-     *      directory on file system to which reports should be written
-     * @param accountId
-     *      adwords account ID for the reports being written
-     * @param dateStart
-     *      report start date
-     * @param dateEnd
-     *      report end date
-     * @param reportFileType
-     *      format of the report (i.e. HTML, PDF etc)
-     */
-    public FileSystemReportWriterBuilder(File outputDirectory, long accountId,
-        String dateStart, String dateEnd, ReportFileType reportFileType) {
-      this.outputDirectory = outputDirectory;
-      this.accountId = accountId;
-      this.dateStart = dateStart;
-      this.dateEnd = dateEnd;
-      this.reportType = reportFileType;
-    }
-
-    public FileSystemReportWriter build() throws IOException {
-      return new FileSystemReportWriter(this);
-    }
+  public File getAsSource() {
+    return file;
   }
 
-  @Override
-  public void close() throws IOException {
-    fileWriter.close();
-
-  }
-
-  @Override
-  public void flush() throws IOException {
-    fileWriter.flush();
-
-  }
-
-  @Override
-  public void write(char[] cbuf, int off, int len) throws IOException {
-    fileWriter.write(cbuf, off, len);    
-  }
-
-  @Override
-  public void write(InputStream inputStream) throws IOException {
-    OutputStream outputStream = new FileOutputStream(outputFile);
+  /**
+   * Writes the inputStream to the File System.
+   *
+   * @param inputStream the file content to be written 
+   * @throws FileNotFoundException
+   * @throws IOException 
+   */
+  public void write(InputStream inputStream) throws FileNotFoundException, IOException {
+    OutputStream outputStream = new FileOutputStream(file);
     int read = 0;
     byte[] bytes = new byte[1024];
 
@@ -170,6 +67,29 @@ public class FileSystemReportWriter extends ReportWriter {
     inputStream.close();
     outputStream.flush();
     outputStream.close();
+  }
 
+  /**
+   * Generates the report filename, based on template file names
+   * dates and accountId
+   *
+   * @param htmlTemplateFile the template file to generete the report
+   * @param dateStart the start date for the reports
+   * @param dateEnd the end date for the reports
+   * @param accountId the account CID to generate the Report for
+   * @param outputDirectory where to output the files
+   * @param reportFileType either PDF or HTML
+   * @throws IOException 
+   */
+  public static FileSystemReportWriter newFileSystemReportWriter(File htmlTemplateFile, String dateStart,
+      String dateEnd, Long accountId, File outputDirectory, ReportFileType reportFileType)
+          throws IOException {
+
+    String fileNameWithOutExt = FilenameUtils.removeExtension((htmlTemplateFile.getName()));
+    
+    String reportFileName = fileNameWithOutExt + "_" + accountId + "_" + dateStart + "_" 
+        + dateEnd + "." + reportFileType.toString().toLowerCase();
+    
+    return new FileSystemReportWriter(new File(outputDirectory, reportFileName));
   }
 }
