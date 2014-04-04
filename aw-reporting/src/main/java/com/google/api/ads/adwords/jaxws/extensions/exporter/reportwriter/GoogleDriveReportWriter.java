@@ -198,7 +198,7 @@ public class GoogleDriveReportWriter implements ReportWriter {
    * Gets the AW Reports Google Drive folder. If one does not exist, it will be created.
    * @throws IOException
    */
-  private File getReportsFolder() throws IOException {
+  private synchronized File getReportsFolder() throws IOException {
     String reportFolderName = REPORT_FOLDER_NAME_PRE + ": " + topAccountCid;
 
     // Check if the folder exists
