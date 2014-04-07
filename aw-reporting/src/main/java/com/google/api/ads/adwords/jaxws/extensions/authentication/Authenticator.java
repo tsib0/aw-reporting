@@ -44,7 +44,7 @@ public interface Authenticator {
       throws OAuthException, IOException;
 
   /**
-   * Obtains an OAuth {@link Credential} configured for AW Reports by doing the OAuth dance.
+   * Obtains an OAuth {@link Credential} configured for AwReporting by doing the OAuth dance.
    * This method should be invoked for any users for which a refresh token is not known or is
    * invalid.
    * 
@@ -57,6 +57,6 @@ public interface Authenticator {
    * @throws OAuthException
    *    If an error is encountered when trying to obtain a token.
    */
-  public Credential getOAuth2Credential() throws OAuthException;
+  public Credential getOAuth2Credential(String mccAccountId, boolean force) throws OAuthException;
 
 }
