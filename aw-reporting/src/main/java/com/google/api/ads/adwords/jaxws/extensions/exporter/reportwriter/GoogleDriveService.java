@@ -14,8 +14,8 @@
 
 package com.google.api.ads.adwords.jaxws.extensions.exporter.reportwriter;
 
-import com.google.api.ads.adwords.jaxws.extensions.authentication.Authenticator;
 import com.google.api.ads.common.lib.exception.OAuthException;
+import com.google.api.client.auth.oauth2.Credential;
 import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.client.util.Maps;
@@ -42,7 +42,9 @@ public class GoogleDriveService {
 
   private static final Logger LOGGER = Logger.getLogger(GoogleDriveService.class);
 
-  private static HashMap<Authenticator, GoogleDriveService> googleDriveServiceHash = Maps.newHashMap();
+  private static HashMap<Credential, GoogleDriveService> googleDriveServiceHash = Maps.newHashMap();
+  
+  private final String DRIVE_APP_NAME = "AwReporting-AppEngine";
 
   private final String REPORT_FOLDER_NAME_PRE = "AW Reports - AdWords generated PDF Reports";
 
@@ -54,20 +56,19 @@ public class GoogleDriveService {
    * Contruscts the GoogleDriveService for the Authenticator
    * It stores GoogleDriveService in a hash for reusability.
    */
-  private GoogleDriveService(Authenticator authenticator) throws OAuthException {
+  private GoogleDriveService(Credential credential) throws OAuthException {
     this.service =  new Drive.Builder(new NetHttpTransport(), new JacksonFactory(),
-        authenticator.getOAuth2Credential()).setApplicationName("AW Reports to DB").build();    
-
-    googleDriveServiceHash.put(authenticator, this);
+        credential).setApplicationName(DRIVE_APP_NAME).build();    
+    googleDriveServiceHash.put(credential, this);
   }
 
   /**
    * Gets a single GoogleDriveService instance per Authenticator
    */
-  public static synchronized GoogleDriveService getGoogleDriveService(Authenticator authenticator) throws OAuthException {
-    GoogleDriveService googleDriveService = googleDriveServiceHash.get(authenticator);
+  public static synchronized GoogleDriveService getGoogleDriveService(Credential credential) throws OAuthException {
+    GoogleDriveService googleDriveService = googleDriveServiceHash.get(credential);
     if (googleDriveService == null) {
-      googleDriveService = new GoogleDriveService(authenticator);
+      googleDriveService = new GoogleDriveService(credential);
     }
     return googleDriveService;
   }
