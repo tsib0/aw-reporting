@@ -18,10 +18,7 @@ import com.google.api.ads.adwords.jaxws.extensions.authentication.Authenticator;
 import com.google.api.ads.common.lib.exception.OAuthException;
 import com.google.api.client.http.AbstractInputStreamContent;
 import com.google.api.client.http.InputStreamContent;
-import com.google.api.services.drive.Drive;
-import com.google.api.services.drive.Drive.Files;
 import com.google.api.services.drive.model.File;
-import com.google.api.services.drive.model.FileList;
 import com.google.api.services.drive.model.ParentReference;
 
 import org.apache.commons.io.FilenameUtils;
@@ -29,22 +26,17 @@ import org.apache.log4j.Logger;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 
 /**
  * A {@link ReportWriter} that writes reports to Google Drive.
  *
  * @author joeltoby@google.com (Joel Toby)
+ * @author jtoledo@google.com (Julian Toledo)
  */
 public class GoogleDriveReportWriter implements ReportWriter {
 
   private static final Logger LOGGER = Logger.getLogger(GoogleDriveReportWriter.class);
-
-  private final String REPORT_FOLDER_NAME_PRE = "AW Reports - AdWords generated PDF Reports";
-
-  private final String FOLDER_MIME_TYPE = "application/vnd.google-apps.folder";
 
   private final String PDF_MIME_TYPE = "application/pdf";
   private final String HTML_MIME_TYPE = "application/html";
@@ -53,8 +45,8 @@ public class GoogleDriveReportWriter implements ReportWriter {
   private final String dateStart;
   private final String dateEnd;
   private final boolean folderPerAccount;
-  private final String topAccountCid;
-  private Drive driveService;
+  private final String mccAccountId;
+  private GoogleDriveService googleDriveService;
   private Authenticator authenticator;
   private ReportFileType reportFileType;
   private final java.io.File htmlTemplateFile;
@@ -64,14 +56,14 @@ public class GoogleDriveReportWriter implements ReportWriter {
     this.dateStart = builder.dateStart;
     this.dateEnd = builder.dateEnd;
     this.folderPerAccount = builder.folderPerAccount;
-    this.topAccountCid = builder.topAccountCid;
+    this.mccAccountId = builder.mccAccountId;
     this.authenticator = builder.authenticator;
     this.reportFileType = builder.reportFileType;
     this.htmlTemplateFile = builder.htmlTemplateFile;
 
     // Replace this when GoogleDriveService properly extends Drive.
     LOGGER.debug("Getting GoogleDrive service.");
-    driveService = new GoogleDriveService(authenticator).getDriveService();
+    googleDriveService =  GoogleDriveService.getGoogleDriveService(authenticator);
   }
 
   /**
@@ -112,8 +104,8 @@ public class GoogleDriveReportWriter implements ReportWriter {
   /**
    * @return the topAccountCid
    */
-  public String getTopAccountCid() {
-    return topAccountCid;
+  public String getMccAccountId() {
+    return mccAccountId;
   }
 
   /**
@@ -123,19 +115,19 @@ public class GoogleDriveReportWriter implements ReportWriter {
     private final long accountId;
     private final String dateStart;
     private final String dateEnd;
-    private final String topAccountCid;
+    private final String mccAccountId;
     private boolean folderPerAccount = false;
     private final Authenticator authenticator;
     private final ReportFileType reportFileType;
     private final java.io.File htmlTemplateFile;
 
     public GoogleDriveReportWriterBuilder(long accountId, String dateStart, 
-        String dateEnd, String topAccountCid,
+        String dateEnd, String mccAccountId,
         Authenticator authenticator, ReportFileType reportFileType, java.io.File htmlTemplateFile) {
       this.accountId = accountId;
       this.dateStart = dateStart;
       this.dateEnd = dateEnd;
-      this.topAccountCid = topAccountCid;
+      this.mccAccountId = mccAccountId;
       this.authenticator = authenticator;
       this.reportFileType = reportFileType;
       this.htmlTemplateFile = htmlTemplateFile;
@@ -160,7 +152,7 @@ public class GoogleDriveReportWriter implements ReportWriter {
   public void write(InputStream inputStream) throws IOException {
     LOGGER.info("Getting AW Reports Drive output folder");
     // Get or create an AW Reports folder
-    File reportsFolder = getReportsFolder();
+    File reportsFolder = googleDriveService.getReportsFolder(mccAccountId);
 
     // Create a Google Drive PDF file
     File reportFile = new File();
@@ -182,50 +174,15 @@ public class GoogleDriveReportWriter implements ReportWriter {
     if (reportFileType.equals(ReportFileType.PDF)) {
       reportFile.setMimeType(PDF_MIME_TYPE);
       AbstractInputStreamContent aisc = new InputStreamContent(PDF_MIME_TYPE, inputStream);
-      driveService.files().insert(reportFile, aisc).execute();
+      googleDriveService.getDriveService().files().insert(reportFile, aisc).execute();
     }
 
     // Write the HTML file to Drive.
     if (reportFileType.equals(ReportFileType.HTML)) {
       reportFile.setMimeType(HTML_MIME_TYPE);
       AbstractInputStreamContent aisc = new InputStreamContent(HTML_MIME_TYPE, inputStream);
-      driveService.files().insert(reportFile, aisc).execute();
+      googleDriveService.getDriveService().files().insert(reportFile, aisc).execute();
     }
     inputStream.close(); 
-  }
-
-  /**
-   * Gets the AW Reports Google Drive folder. If one does not exist, it will be created.
-   * @throws IOException
-   */
-  private synchronized File getReportsFolder() throws IOException {
-    String reportFolderName = REPORT_FOLDER_NAME_PRE + ": " + topAccountCid;
-
-    // Check if the folder exists
-    List<File> results = new ArrayList<File>();
-    LOGGER.info("Building find folder query");
-    Files.List request = driveService.files().list()
-        .setQ("title= '" + reportFolderName + "' and mimeType='" 
-         + FOLDER_MIME_TYPE +"' and trashed = false");
-    LOGGER.info("Executing find folder query");
-    FileList files = request.execute();
-    LOGGER.info("Number of results from query: " + files.size());
-    results.addAll(files.getItems());
-
-    if(!results.isEmpty()) {
-      // Found the existing folder
-      return results.get(0);
-
-    } else {
-      // Folder does not exist. Create it.
-      LOGGER.info("Creating folder");
-      File reportsFolder = new File();
-      reportsFolder.setTitle(reportFolderName);
-      reportsFolder.setMimeType(FOLDER_MIME_TYPE);
-      reportsFolder.setDescription("Contains AdWords Reports generated by AwReporting");
-
-      LOGGER.info("Executing create folder");
-      return driveService.files().insert(reportsFolder).execute();
-    }
   }
 }
