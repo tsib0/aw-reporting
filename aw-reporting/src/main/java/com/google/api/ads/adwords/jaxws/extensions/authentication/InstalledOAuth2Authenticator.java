@@ -40,23 +40,19 @@ public class InstalledOAuth2Authenticator implements Authenticator {
 
   private static final String CALLBACK_URL = "urn:ietf:wg:oauth:2.0:oob";
 
-  // AdWords Authentication Properties
   private String clientId = null;
   private String clientSecret = null;
   private String developerToken = null;
   private String scope = null;
+
   private AuthTokenPersister authTokenPersister;
-  Credential oAuth2Credential = null;
 
   /**
-   * Constructor.
+   * Constructor with the OAuth2 parameters autowired by Spring.
    * 
-   * @param developerToken
-   *            the developer token
-   * @param clientId
-   *            the OAuth2 authentication clientId
-   * @param clientSecret
-   *            the OAuth2 authentication clientSecret
+   * @param developerToken the developer token
+   * @param clientId the OAuth2 authentication clientId
+   * @param clientSecret the OAuth2 authentication clientSecret
    */
   @Autowired
   public InstalledOAuth2Authenticator(
@@ -80,71 +76,17 @@ public class InstalledOAuth2Authenticator implements Authenticator {
     }
   }
 
-
   /* (non-Javadoc)
    * @see com.google.api.ads.adwords.jaxws.extensions.authentication.Authenticator#authenticate(java.lang.String, boolean)
    */
   public AdWordsSession.Builder authenticate(String mccAccountId, boolean force)
       throws OAuthException {
 
-    LOGGER.debug("Retrieving auth token from DB.");
-    String authToken;
-    try {
-      authToken = this.retrieveAuthToken(mccAccountId, force);
-    } catch(OAuthException e) {
-      System.out.println(e.getMessage());
-
-      if (e.getMessage().contains("Credential could not be refreshed")) {
-        System.out.println("**ERROR** Credential could not be refreshed,"
-            + " we need a new OAuth2 Token");
-
-        oAuth2Credential = this.getOAuth2Credential();
-        authToken = getOAuth2Credential().getRefreshToken();
-        
-        LOGGER.debug("Saving Refresh Token to DB...\n");
-        this.saveAuthTokenToStorage(mccAccountId, authToken, scope);
-
-      } else {
-        e.printStackTrace();
-        throw e;
-      }
-    }
-
-    oAuth2Credential = null;
-
-    if(authToken == null) {
-      oAuth2Credential = getOAuth2Credential();
-    } else {
-      oAuth2Credential = this.buildOAuth2Credentials(authToken);
-    }
-
-    try {
-      oAuth2Credential = this.getOAuth2Credential();
-
-    } catch (OAuthException e) {
-      System.out.println(e.getMessage());
-
-      if (e.getMessage().contains("Credential could not be refreshed")) {
-        System.out.println("**ERROR** Credential could not be refreshed,"
-            + " we need a new OAuth2 Token");
-
-        oAuth2Credential = this.getOAuth2Credential();
-        authToken = getOAuth2Credential().getRefreshToken();
-
-        System.out.println("Saving Refresh Token to DB...\n");
-        this.saveAuthTokenToStorage(mccAccountId, authToken, scope);
-
-      } else {
-        e.printStackTrace();
-        throw e;
-      }
-    }
-
     return new AdWordsSession.Builder()
-    .withOAuth2Credential(oAuth2Credential)
-    .withUserAgent(USER_AGENT)
-    .withClientCustomerId(mccAccountId)
-    .withDeveloperToken(this.developerToken);
+      .withOAuth2Credential(getOAuth2Credential(mccAccountId, force))
+      .withUserAgent(USER_AGENT)
+      .withClientCustomerId(mccAccountId)
+      .withDeveloperToken(this.developerToken);
   }
 
   /**
@@ -165,56 +107,94 @@ public class InstalledOAuth2Authenticator implements Authenticator {
     return credential;
   }
 
-
   /**
-   * Obtains an OAuth {@link Credential} configured for AW Reports by doing the OAuth dance.
+   * Obtains an OAuth {@link Credential} configured for AwReporting doing the OAuth dance.
    * This method should be invoked for any users for which a refresh token is not known or is
    * invalid.
    * 
-   * @return
-   *    The OAuth2 credentials. The scope of the token generated depends on the properties file
-   *    configuration.  For example<br>
-   *    If writing PDF reports to Google Drive, the scope of the token will include both AdWords and Drive.
-   *    
-   * @throws OAuthException
-   *    If an error is encountered when trying to obtain a token.
+   * @param mccAccountId the MCC account ID.
+   * @param force if the actual token should be refreshed
+   * @return The OAuth2 credentials. The scope of the token generated depends on the properties file
+   *         configuration.
+   * @throws OAuthException If an error is encountered when trying to obtain a token.
    */
-  public Credential getOAuth2Credential()
+  public Credential getOAuth2Credential(String mccAccountId, boolean force)
       throws OAuthException {
-    if(oAuth2Credential != null) {
-      return oAuth2Credential;
-    } else {
-      GoogleAuthorizationCodeFlow authorizationFlow = getAuthorizationFlow();
 
-      String authorizeUrl =
-          authorizationFlow.newAuthorizationUrl().setRedirectUri(CALLBACK_URL).build();
+    Credential credential = null;
 
-      System.out.println("\n**ACTION REQUIRED** Paste this url in your browser"
-          + " and authenticate using your **AdWords Admin Email**: \n\n" + authorizeUrl + '\n');
+    LOGGER.debug("Retrieving Auth Token from DB.");
+    AuthMcc authMcc = this.getAuthTokenFromStorage(mccAccountId);
+    String authToken = null;
 
-      // Wait for the authorization code.
-      System.out.println("Type the code you received on the web page here: ");
+    // Generate a new Auth Token if necessary
+    if (authMcc == null || authMcc.getScope() == null
+        || !authMcc.getScope().equals(scope) || force) {
       try {
-        String authorizationCode = new BufferedReader(new InputStreamReader(System.in)).readLine();
 
-        // Authorize the OAuth2 token.
-        GoogleAuthorizationCodeTokenRequest tokenRequest =
-            authorizationFlow.newTokenRequest(authorizationCode);
-        tokenRequest.setRedirectUri(CALLBACK_URL);
-        GoogleTokenResponse tokenResponse = tokenRequest.execute();
+        LOGGER.debug("Auth Token FORCED. Getting a new one.");
+        credential = getNewOAuth2Credential();
 
-        //  Create the credential.
-        Credential credential = new GoogleCredential.Builder().setClientSecrets(clientId, clientSecret)
-            .setJsonFactory(new JacksonFactory()).setTransport(new NetHttpTransport()).build().setFromTokenResponse(tokenResponse); 
+      } catch (OAuthException e) {
+        if (e.getMessage().contains("Connection reset")) {
 
-        // Set authorized credentials.
-        credential.setFromTokenResponse(tokenResponse);
+          LOGGER.info("Connection reset when getting Auth Token, retrying...");
+          credential = getNewOAuth2Credential();
 
-        return credential;
-      } catch(IOException e) {
-        throw new OAuthException("An error occured during the Google token request.",
-            e.getCause());
+        } else {
+          LOGGER.error("Error Authenticating: " + e.getMessage());
+          e.printStackTrace();
+          throw e;
+        }
+      } finally {
+        if (credential != null) {
+          LOGGER.info("Saving Refresh Token to DB...");
+          this.saveAuthTokenToStorage(mccAccountId, credential.getRefreshToken(), scope);
+        }
       }
+    } else {
+      authToken = authMcc.getAuthToken();
+      credential = buildOAuth2Credentials(authToken);
+    }
+
+    return credential;
+  }
+
+  /*
+   * Get New Credentials from the user from the command line OAuth2 dance.
+   */
+  public Credential getNewOAuth2Credential()
+      throws OAuthException {
+    
+    GoogleAuthorizationCodeFlow authorizationFlow = getAuthorizationFlow();
+
+    String authorizeUrl =
+        authorizationFlow.newAuthorizationUrl().setRedirectUri(CALLBACK_URL).build();
+
+    System.out.println("\n**ACTION REQUIRED** Paste this url in your browser"
+        + " and authenticate using your **AdWords Admin Email**: \n\n" + authorizeUrl + '\n');
+
+    // Wait for the authorization code.
+    System.out.println("Type the code you received on the web page here: ");
+    try {
+      String authorizationCode = new BufferedReader(new InputStreamReader(System.in)).readLine();
+
+      // Authorize the OAuth2 token.
+      GoogleAuthorizationCodeTokenRequest tokenRequest =
+          authorizationFlow.newTokenRequest(authorizationCode);
+      tokenRequest.setRedirectUri(CALLBACK_URL);
+      GoogleTokenResponse tokenResponse = tokenRequest.execute();
+
+      //  Create the credential.
+      Credential credential = new GoogleCredential.Builder().setClientSecrets(clientId, clientSecret)
+          .setJsonFactory(new JacksonFactory()).setTransport(new NetHttpTransport()).build().setFromTokenResponse(tokenResponse); 
+
+      // Set authorized credentials.
+      credential.setFromTokenResponse(tokenResponse);
+
+      return credential;
+    } catch(IOException e) {
+      throw new OAuthException("An error occured obtaining the OAuth2Credential",  e.getCause());
     }
   }
 
@@ -227,69 +207,12 @@ public class InstalledOAuth2Authenticator implements Authenticator {
     return authorizationFlow;
   }
 
-
-  /**
-   * Retrieves the authentication token by refreshing it if necessary, and
-   * persisting the updated token into the DB.
-   * 
-   * @param force
-   *            if the actual token should be refreshed
-   * @return the valid token for the moment
-   * @throws IOException
-   *             error connecting to authentication server
-   * @throws OAuthException
-   *             error on the OAuth process
-   */
-  private String retrieveAuthToken(String mccAccountId, boolean force) throws OAuthException {
-
-    LOGGER.debug("Retrieving auth token from DB.");
-
-    AuthMcc authMcc = this.getAuthTokenFromStorage(mccAccountId);
-    String authToken = null;
-
-    // Check the Scope of the Auth on DB
-    if (authMcc == null || authMcc.getScope() == null
-        || !authMcc.getScope().equals(scope)) {
-      force = true;
-    } else {
-      authToken = authMcc.getAuthToken();
-    }
-
-    // Generate a new Auth token if necessary
-    if ((authMcc == null || force)) {
-      try {
-        if (force) {
-          LOGGER.debug("Token refresh FORCED. Getting a new one.");
-          
-        } else {
-          LOGGER.debug("Token not found. Getting one.");
-        }
-        authToken = getOAuth2Credential().getRefreshToken();
-
-      } catch (OAuthException e) {
-        if (e.getMessage().contains("Connection reset")) {
-          LOGGER.info("Connection reset when getting authToken, retrying...");
-          this.authenticate(mccAccountId, true);
-          
-        } else {
-          LOGGER.error("Error authenticating: " + e.getMessage());
-          e.printStackTrace();
-          throw e;
-        }
-      }
-      LOGGER.info("Saving Refresh Token to DB...");
-      this.saveAuthTokenToStorage(mccAccountId, authToken, scope);
-    }
-    return authToken;
-  }
-
   /**
    * The implementation must persist the token to be retrieved later.
    * 
-   * @param mccAccountId
-   *            the MCC account ID.
-   * @param authToken
-   *            the authentication token.
+   * @param mccAccountId the MCC account ID.
+   * @param authToken the authentication token.
+   * @param scope the OAuth2 scope.
    */
   private void saveAuthTokenToStorage(String mccAccountId, String authToken, String scope) {
     LOGGER.debug("Persisting refresh token...");
@@ -297,6 +220,7 @@ public class InstalledOAuth2Authenticator implements Authenticator {
     this.authTokenPersister.persistAuthToken(authMcc);
     LOGGER.debug("... success.");
   }
+
 
   /**
    * The implementation should retrieve the authentication token previously
@@ -314,6 +238,7 @@ public class InstalledOAuth2Authenticator implements Authenticator {
     }
     return null;
   }
+
 
   /**
    * @param authTokenPersister

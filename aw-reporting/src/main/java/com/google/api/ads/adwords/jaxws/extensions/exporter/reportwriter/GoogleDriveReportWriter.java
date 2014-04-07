@@ -63,7 +63,8 @@ public class GoogleDriveReportWriter implements ReportWriter {
 
     // Replace this when GoogleDriveService properly extends Drive.
     LOGGER.debug("Getting GoogleDrive service.");
-    googleDriveService =  GoogleDriveService.getGoogleDriveService(authenticator);
+    googleDriveService =  GoogleDriveService.getGoogleDriveService(
+        authenticator.getOAuth2Credential(mccAccountId, false));
   }
 
   /**
