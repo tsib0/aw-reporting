@@ -29,6 +29,8 @@ import com.google.api.ads.adwords.jaxws.extensions.report.model.util.DateUtil;
 import com.google.api.ads.adwords.lib.jaxb.v201402.ReportDefinitionDateRangeType;
 import com.google.api.client.util.Maps;
 
+import com.googlecode.objectify.annotation.Index;
+
 import org.joda.time.DateTime;
 
 import java.math.BigDecimal;
@@ -82,6 +84,7 @@ public abstract class ReportBase extends Report {
   protected String currencyCode;
 
   // Date Segments
+  @Index
   @Column(name = "DAY")
   @CsvField(value = "Day", reportField = "Date")
   protected Date day;
@@ -94,6 +97,7 @@ public abstract class ReportBase extends Report {
   @CsvField(value = "Week", reportField = "Week")
   protected String week;
   
+  @Index
   @Column(name = "MONTH")
   @CsvField(value = "Month", reportField = "Month")
   protected Date month;
