@@ -87,12 +87,12 @@
     <dependency>
 	  <groupId>com.google.api-ads</groupId>
 	  <artifactId>ads-lib</artifactId>
-	  <version>RELEASE</version>
+	  <version>1.26.0</version>
 	</dependency>
     <dependency>
       <groupId>com.google.api-ads</groupId>
       <artifactId>adwords-appengine</artifactId>
-      <version>RELEASE</version>
+      <version>1.26.0</version>
     </dependency>
     <dependency>
       <groupId>com.google.api-client</groupId>
