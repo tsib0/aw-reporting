@@ -15,7 +15,6 @@
 package com.google.api.ads.adwords.jaxws.extensions.exporter;
 
 import com.google.api.ads.common.lib.exception.OAuthException;
-
 import com.lowagie.text.DocumentException;
 
 import org.apache.log4j.Logger;
@@ -43,13 +42,13 @@ public class ReportExporterLocal extends ReportExporter {
    * @see com.google.api.ads.adwords.jaxws.extensions.exporter.ReportExporter#exportReports(java.lang.String, java.lang.String, java.util.Set, java.util.Properties, java.io.File, java.io.File, boolean)
    */
   @Override
-  public void exportReports(String dateStart, String dateEnd, Set<Long> accountIds,
+  public void exportReports(String mccAccountId, String dateStart, String dateEnd, Set<Long> accountIds,
       Properties properties, File htmlTemplateFile, File outputDirectory, Boolean sumAdExtensions)
           throws IOException, OAuthException, DocumentException {
 
     LOGGER.info("Starting PDF Generation for all Accounts");
     for (Long accountId : accountIds) {
-      exportReport(dateStart, dateEnd, accountId, properties, 
+      exportReport(mccAccountId, dateStart, dateEnd, accountId, properties, 
           htmlTemplateFile, outputDirectory, sumAdExtensions);
     }
   }
