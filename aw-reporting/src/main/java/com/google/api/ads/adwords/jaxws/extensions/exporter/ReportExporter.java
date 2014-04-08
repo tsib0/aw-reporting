@@ -30,7 +30,6 @@ import com.google.api.ads.adwords.lib.jaxb.v201402.ReportDefinitionReportType;
 import com.google.api.ads.common.lib.exception.OAuthException;
 import com.google.api.client.util.Maps;
 import com.google.common.collect.Lists;
-
 import com.lowagie.text.DocumentException;
 
 import org.apache.log4j.Logger;
@@ -76,7 +75,7 @@ public abstract class ReportExporter {
    * @throws OAuthException 
    * @throws DocumentException
    */
-  public abstract void exportReports(String dateStart, String dateEnd,
+  public abstract void exportReports(String mccAccountId, String dateStart, String dateEnd,
       Set<Long> accountIds, Properties properties,File htmlTemplateFile, File outputDirectory,
       Boolean sumAdExtensions) throws IOException, OAuthException, DocumentException;
 
@@ -95,7 +94,7 @@ public abstract class ReportExporter {
    * @throws DocumentException 
    * @throws Exception error creating PDF
    */
-  public void exportReport(String dateStart, String dateEnd, Long accountId, Properties properties,
+  public void exportReport(String mccAccountId, String dateStart, String dateEnd, Long accountId, Properties properties,
       File htmlTemplateFile, File outputDirectory, Boolean sumAdExtensions)
           throws IOException, OAuthException, DocumentException {
 
@@ -125,13 +124,11 @@ public abstract class ReportExporter {
       if (propertyReportWriterType != null && 
           propertyReportWriterType.equals(ReportWriterType.GoogleDriveWriter.name())) {
 
-        String propertyTopAccountCid = properties.getProperty("mccAccountId");
-
         // Writing HTML to GoogleDrive
         if (writeHtml) {
           LOGGER.debug("Writing (to GoogleDrive) HTML for account: " + accountId);
           GoogleDriveReportWriter gdrwHtml = new GoogleDriveReportWriter.GoogleDriveReportWriterBuilder(
-              accountId, dateStart, dateEnd, propertyTopAccountCid, authenticator, ReportFileType.HTML,
+              accountId, dateStart, dateEnd, mccAccountId, authenticator, ReportFileType.HTML,
               htmlTemplateFile).build();
           gdrwHtml.write(mrwHtml.getAsSource());
         }
@@ -140,7 +137,7 @@ public abstract class ReportExporter {
         if (writePdf) {
           LOGGER.debug("Writing (to GoogleDrive) PDF for account: " + accountId);
           GoogleDriveReportWriter gdrwPdf = new GoogleDriveReportWriter.GoogleDriveReportWriterBuilder(
-              accountId, dateStart, dateEnd, propertyTopAccountCid, authenticator, ReportFileType.PDF,
+              accountId, dateStart, dateEnd, mccAccountId, authenticator, ReportFileType.PDF,
               htmlTemplateFile).build();
           HTMLExporter.exportHtmlToPdf(mrwHtml.getAsSource(), gdrwPdf);
         }

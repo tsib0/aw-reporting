@@ -74,6 +74,8 @@ public class ReportExporterTest {
   
   private ApplicationContext appCtx;
   
+  private static final String mccAccountId = "123456789";
+  
   private static final Set<Long> accountIds = ImmutableSet.of(1L, 2L, 3L, 4L, 5L, 6L, 7L, 8L, 9L, 10L);
   
   private final ReportAccount reportAccount = new ReportAccount();
@@ -100,7 +102,7 @@ public class ReportExporterTest {
     doCallRealMethod().when(reportExporter).setPersister(
         any(EntityPersister.class));
 
-    doCallRealMethod().when(reportExporter).exportReports(
+    doCallRealMethod().when(reportExporter).exportReports(anyString(),
         anyString(), anyString(), anySetOf(Long.class), any(Properties.class),
         any(File.class), any(File.class), anyBoolean());
 
@@ -127,7 +129,7 @@ public class ReportExporterTest {
   @Test
   public void testGeneratePdf() throws Exception {    
 
-    reportExporter.exportReports(dateStart, dateEnd, accountIds, properties, templateFile, null, false);
+    reportExporter.exportReports(mccAccountId, dateStart, dateEnd, accountIds, properties, templateFile, null, false);
 
     // Deleting temp files created
     for (Long accountId : accountIds) {

@@ -147,9 +147,11 @@ public class AwReporting {
         LOGGER.debug("Html template file to be used: " + htmlTemplateFile);
         LOGGER.debug("Output directory for PDF: " + outputDirectory);
 
+        String mccAccountId = properties.getProperty("mccAccountId");
+        
         // Export Reports
         ReportExporterLocal reportExporter = createReportExporter();
-        reportExporter.exportReports(cmdLine.getOptionValue("startDate"),
+        reportExporter.exportReports(mccAccountId, cmdLine.getOptionValue("startDate"),
             cmdLine.getOptionValue("endDate"),
             processor.retrieveAccountIds(),
             properties, htmlTemplateFile,
