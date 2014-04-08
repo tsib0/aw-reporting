@@ -26,7 +26,6 @@ import com.google.api.ads.adwords.jaxws.extensions.kratu.restserver.reports.Repo
 import com.google.api.ads.adwords.jaxws.extensions.kratu.restserver.reports.ReportKeywordRest;
 
 import org.restlet.Application;
-import org.restlet.Client;
 import org.restlet.Component;
 import org.restlet.Context;
 import org.restlet.Restlet;
@@ -35,6 +34,8 @@ import org.restlet.resource.Directory;
 import org.restlet.routing.Redirector;
 import org.restlet.routing.Router;
 import org.springframework.context.ApplicationContext;
+
+import java.io.File;
 
 /**
  * RestServer
@@ -49,7 +50,7 @@ public class RestServer extends Application {
     Component component = new Component();
     component.getServers().add(Protocol.HTTP, 8081);
     component.getClients().add(Protocol.FILE);
-    component.getClients().add(Protocol.CLAP);
+    //component.getClients().add(Protocol.CLAP);
 
     Context context = component.getContext().createChildContext();
     RestServer application = new RestServer(context);
@@ -137,13 +138,23 @@ public class RestServer extends Application {
     router.attach("/generatekratus/", GenerateKratusRest.class);
 
     // *** Static files *** 
+    // USING FILE
+    String target = "index.html";
+    Redirector redirector = new Redirector(getContext(), target, Redirector.MODE_CLIENT_FOUND);
+    router.attach("/", redirector);
+    File currentPath = new File(RestServer.class.getProtectionDomain().getCodeSource().getLocation().getPath());
+    String htmlPath = "file:///" + currentPath.getParent() + "/html/";
+    router.attach("/", redirector);
+    router.attach("", new Directory(getContext(), htmlPath));
+
+    /* USING CLAP
     String target = "index.html";
     Redirector redirector = new Redirector(getContext(), target, Redirector.MODE_CLIENT_FOUND);
     router.attach("/", redirector);
     router.attach("", new Directory(getContext(), "clap://classloader/"));
     Client client = new Client(getContext(), Protocol.CLAP);
     getContext().setClientDispatcher(client);
-
+    */
     return router;
   }
 }
