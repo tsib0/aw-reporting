@@ -14,6 +14,13 @@
 
 package com.google.api.ads.adwords.jaxws.extensions.exporter.reportwriter;
 
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+
+import org.apache.log4j.Logger;
+
 import com.google.api.ads.common.lib.exception.OAuthException;
 import com.google.api.client.auth.oauth2.Credential;
 import com.google.api.client.http.javanet.NetHttpTransport;
@@ -23,13 +30,6 @@ import com.google.api.services.drive.Drive;
 import com.google.api.services.drive.Drive.Files;
 import com.google.api.services.drive.model.File;
 import com.google.api.services.drive.model.FileList;
-
-import org.apache.log4j.Logger;
-
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
 
 /**
  * Provides an authenticated Google {@link Drive} service instance configured for AW Reports to DB.
@@ -42,19 +42,19 @@ public class GoogleDriveService {
 
   private static final Logger LOGGER = Logger.getLogger(GoogleDriveService.class);
 
-  private static HashMap<Credential, GoogleDriveService> googleDriveServiceHash = Maps.newHashMap();
+  private static final HashMap<Credential, GoogleDriveService> googleDriveServiceHash = Maps.newHashMap();
   
-  private final String DRIVE_APP_NAME = "AwReporting-AppEngine";
+  private static final String DRIVE_APP_NAME = "AwReporting-AppEngine";
 
-  private final String REPORT_FOLDER_NAME_PRE = "AW Reports - AdWords generated PDF Reports";
+  private static final String REPORT_FOLDER_NAME_PRE = "AW Reports - AdWords generated PDF Reports";
 
-  private final String FOLDER_MIME_TYPE = "application/vnd.google-apps.folder";
+  private static final String FOLDER_MIME_TYPE = "application/vnd.google-apps.folder";
 
   private Drive service;
 
   /**
-   * Contruscts the GoogleDriveService for the Authenticator
-   * It stores GoogleDriveService in a hash for reusability.
+   * Constructs the GoogleDriveService for the Authenticator
+   * It stores GoogleDriveService in a hash for re-usability.
    */
   private GoogleDriveService(Credential credential) throws OAuthException {
     this.service =  new Drive.Builder(new NetHttpTransport(), new JacksonFactory(),
@@ -65,10 +65,14 @@ public class GoogleDriveService {
   /**
    * Gets a single GoogleDriveService instance per Authenticator
    */
-  public static synchronized GoogleDriveService getGoogleDriveService(Credential credential) throws OAuthException {
+  public static GoogleDriveService getGoogleDriveService(Credential credential) throws OAuthException {
     GoogleDriveService googleDriveService = googleDriveServiceHash.get(credential);
     if (googleDriveService == null) {
-      googleDriveService = new GoogleDriveService(credential);
+      synchronized (GoogleDriveService.class) {
+        if (googleDriveService == null) {
+          googleDriveService = new GoogleDriveService(credential);
+        }
+      }
     }
     return googleDriveService;
   }
