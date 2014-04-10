@@ -172,7 +172,7 @@ public abstract class ReportExporter {
    * @param properties the properties file containing all the configuration
    * @param sumAdExtensions to add up all the extensions
    */
-  private Map<String, Object> createReportDataMap(String dateStart, String dateEnd,
+  public Map<String, Object> createReportDataMap(String dateStart, String dateEnd,
       Long accountId, Properties properties, Boolean sumAdExtensions) {
 
     Map<String, Object> reportDataMap = Maps.newHashMap();
