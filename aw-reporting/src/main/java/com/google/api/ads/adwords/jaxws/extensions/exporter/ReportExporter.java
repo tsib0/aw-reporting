@@ -177,7 +177,7 @@ public abstract class ReportExporter {
 
     Map<String, Object> reportDataMap = Maps.newHashMap();
     Set<ReportDefinitionReportType> reports = csvReportEntitiesMapping.getDefinedReports();
-    System.out.println("** Number of reports: " + reports.size() + " ***");
+
     for (ReportDefinitionReportType reportType : reports) {
       if (properties.containsKey(reportType.name())) {
         // Adding each report type rows from DB to the accounts montlyeports list.
