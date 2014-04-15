@@ -78,7 +78,7 @@ public class RunnableProcessorOnFile<R extends Report> implements Runnable {
    * @param csvToBean the {@code CsvToBean}
    * @param mappingStrategy
    */
-  public RunnableProcessorOnFile(File file,  ModifiedCsvToBean<R> csvToBean,
+  public RunnableProcessorOnFile(File file, ModifiedCsvToBean<R> csvToBean,
       MappingStrategy<R> mappingStrategy, ReportDefinitionDateRangeType dateRangeType,
       String dateStart, String dateEnd, String mccAccountId, EntityPersister entityPersister,
       Integer reportRowsSetSize) {

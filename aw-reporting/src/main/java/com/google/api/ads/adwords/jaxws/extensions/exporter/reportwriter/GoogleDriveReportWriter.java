@@ -14,8 +14,8 @@
 
 package com.google.api.ads.adwords.jaxws.extensions.exporter.reportwriter;
 
-import com.google.api.ads.adwords.jaxws.extensions.authentication.Authenticator;
 import com.google.api.ads.common.lib.exception.OAuthException;
+import com.google.api.client.auth.oauth2.Credential;
 import com.google.api.client.http.AbstractInputStreamContent;
 import com.google.api.client.http.InputStreamContent;
 import com.google.api.services.drive.model.File;
@@ -47,7 +47,7 @@ public class GoogleDriveReportWriter implements ReportWriter {
   private final boolean folderPerAccount;
   private final String mccAccountId;
   private GoogleDriveService googleDriveService;
-  private Authenticator authenticator;
+  private Credential credential;
   private ReportFileType reportFileType;
   private final java.io.File htmlTemplateFile;
 
@@ -57,14 +57,13 @@ public class GoogleDriveReportWriter implements ReportWriter {
     this.dateEnd = builder.dateEnd;
     this.folderPerAccount = builder.folderPerAccount;
     this.mccAccountId = builder.mccAccountId;
-    this.authenticator = builder.authenticator;
+    this.credential = builder.credential;
     this.reportFileType = builder.reportFileType;
     this.htmlTemplateFile = builder.htmlTemplateFile;
 
     // Replace this when GoogleDriveService properly extends Drive.
     LOGGER.debug("Getting GoogleDrive service.");
-    googleDriveService =  GoogleDriveService.getGoogleDriveService(
-        authenticator.getOAuth2Credential(mccAccountId, false));
+    googleDriveService =  GoogleDriveService.getGoogleDriveService(credential);
   }
 
   /**
@@ -118,18 +117,18 @@ public class GoogleDriveReportWriter implements ReportWriter {
     private final String dateEnd;
     private final String mccAccountId;
     private boolean folderPerAccount = false;
-    private final Authenticator authenticator;
+    private final Credential credential;
     private final ReportFileType reportFileType;
     private final java.io.File htmlTemplateFile;
 
     public GoogleDriveReportWriterBuilder(long accountId, String dateStart, 
         String dateEnd, String mccAccountId,
-        Authenticator authenticator, ReportFileType reportFileType, java.io.File htmlTemplateFile) {
+        Credential credential, ReportFileType reportFileType, java.io.File htmlTemplateFile) {
       this.accountId = accountId;
       this.dateStart = dateStart;
       this.dateEnd = dateEnd;
       this.mccAccountId = mccAccountId;
-      this.authenticator = authenticator;
+      this.credential = credential;
       this.reportFileType = reportFileType;
       this.htmlTemplateFile = htmlTemplateFile;
     }
