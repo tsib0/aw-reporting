@@ -119,7 +119,7 @@ public class ReportProcessorTest {
         (Class<ReportAccount>) anyObject(),
         anyLong(), any(DateTime.class), any(DateTime.class))).thenReturn(listAccounts);
 
-    when(reportProcessor.retrieveAccountIds()).thenReturn(accountIds);
+    when(reportProcessor.retrieveAccountIds(anyString(), anyString())).thenReturn(accountIds);
   }
 
   @Test

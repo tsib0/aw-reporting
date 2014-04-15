@@ -100,12 +100,15 @@ public class KratuMain {
         propertiesPath = cmdLine.getOptionValue("file");
       }
       System.out.println("Using properties from: " + propertiesPath);
+      
+      Properties properties = initApplicationContextAndProperties(propertiesPath);
+      String mccAccountId = properties.getProperty("mccAccountId");
 
       if (cmdLine.hasOption("startServer")) {
         // Start the Rest Server
         System.out.println("Starting Rest Server...");
-        initApplicationContextAndProperties(propertiesPath);
-        updateAccounts();
+        
+        updateAccounts(null, mccAccountId);
 
         RestServer.createRestServer(appCtx, propertiesPath);
 
@@ -115,8 +118,7 @@ public class KratuMain {
             // Process Kratus, this process runs for the whole MCC
             // within the given dates and creates a daily Kratu per account.
             System.out.println("Starting Process Kratus...");
-            initApplicationContextAndProperties(propertiesPath);
-            updateAccounts();
+            updateAccounts(null, mccAccountId);
 
             KratuProcessor kratuProcessor = appCtx.getBean(KratuProcessor.class);
             kratuProcessor.processKratus(
@@ -158,13 +160,13 @@ public class KratuMain {
    * Refreshes the Accounts by downloading the whole list using the API
    * and refreshes the report indexes before heavily reading reports.
    */
-  private static void updateAccounts() throws Exception {
+  private static void updateAccounts(String userId, String mccAccountId) throws Exception {
     StorageHelper storageHelper = appCtx.getBean(StorageHelper.class);
     ReportProcessor reportProcessor = appCtx.getBean(ReportProcessor.class);
 
     // Refresh Account List and refresh indexes
     System.out.println("Updating Accounts from server... (may take few seconds)");
-    storageHelper.getEntityPersister().save(Account.fromList(reportProcessor.getAccounts()));
+    storageHelper.getEntityPersister().save(Account.fromList(reportProcessor.getAccounts(userId, mccAccountId)));
     System.out.println("Updating DB indexes... (may take few seconds)");
     storageHelper.createReportIndexes();
   }
