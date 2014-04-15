@@ -14,6 +14,7 @@
 
 package com.google.api.ads.adwords.jaxws.extensions;
 
+import com.google.api.ads.adwords.jaxws.extensions.authentication.Authenticator;
 import com.google.api.ads.adwords.jaxws.extensions.exporter.ReportExporterLocal;
 import com.google.api.ads.adwords.jaxws.extensions.processors.ReportProcessor;
 import com.google.api.ads.adwords.jaxws.extensions.proxy.JaxWsProxySelector;
@@ -128,6 +129,8 @@ public class AwReporting {
       LOGGER.debug("Creating ReportProcessor bean...");
       ReportProcessor processor = createReportProcessor();
       LOGGER.debug("... success.");
+      
+      String mccAccountId = properties.getProperty("mccAccountId");
 
       if (cmdLine.hasOption("generatePdf")) {
 
@@ -146,14 +149,14 @@ public class AwReporting {
 
         LOGGER.debug("Html template file to be used: " + htmlTemplateFile);
         LOGGER.debug("Output directory for PDF: " + outputDirectory);
-
-        String mccAccountId = properties.getProperty("mccAccountId");
         
         // Export Reports
         ReportExporterLocal reportExporter = createReportExporter();
-        reportExporter.exportReports(mccAccountId, cmdLine.getOptionValue("startDate"),
+        reportExporter.exportReports(
+            createAuthenticator().getOAuth2Credential(null, mccAccountId, false),
+            mccAccountId, cmdLine.getOptionValue("startDate"),
             cmdLine.getOptionValue("endDate"),
-            processor.retrieveAccountIds(),
+            processor.retrieveAccountIds(null, mccAccountId),
             properties, htmlTemplateFile,
             outputDirectory, sumAdExtensions);
 
@@ -166,7 +169,7 @@ public class AwReporting {
         LOGGER.info(
             "Starting report download for dateStart: " + dateStart + " and dateEnd: " + dateEnd);
 
-        processor.generateReportsForMCC(ReportDefinitionDateRangeType.CUSTOM_DATE, dateStart,
+        processor.generateReportsForMCC(null, mccAccountId, ReportDefinitionDateRangeType.CUSTOM_DATE, dateStart,
             dateEnd, accountIdsSet, properties);
 
       } else if (cmdLine.hasOption("dateRange")) {
@@ -176,7 +179,7 @@ public class AwReporting {
 
         LOGGER.info("Starting report download for dateRange: " + dateRangeType.name());
 
-        processor.generateReportsForMCC(dateRangeType, null, null, accountIdsSet, properties);
+        processor.generateReportsForMCC(null, mccAccountId, dateRangeType, null, null, accountIdsSet, properties);
 
       } else {
         errors = true;
@@ -253,8 +256,17 @@ public class AwReporting {
 
     return appCtx.getBean(ReportExporterLocal.class);
   }
-
   
+  /**
+   * Creates the {@link Authenticator} autowiring all the dependencies.
+   *
+   * @return the {@code Authenticator} with all the dependencies properly injected.
+   */
+  private static Authenticator createAuthenticator() {
+
+    return appCtx.getBean(Authenticator.class);
+  }
+
   /**
    * Creates the command line options.
    *

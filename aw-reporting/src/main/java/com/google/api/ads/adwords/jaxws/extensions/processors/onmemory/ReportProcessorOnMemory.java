@@ -71,11 +71,8 @@ public class ReportProcessorOnMemory extends ReportProcessor {
    */
   @Autowired
   public ReportProcessorOnMemory(
-      @Value("${mccAccountId}") String mccAccountId,
       @Value(value = "${aw.report.processor.rows.size:}") Integer reportRowsSetSize,
       @Value(value = "${aw.report.processor.threads:}") Integer numberOfReportProcessors) {
-
-    this.mccAccountId = mccAccountId;
 
     if (reportRowsSetSize != null && reportRowsSetSize > 0) {
       this.reportRowsSetSize = reportRowsSetSize;
@@ -112,6 +109,7 @@ public class ReportProcessorOnMemory extends ReportProcessor {
    *             error reaching the API.
    */
   public void generateReportsForMCC(
+      String userId, String mccAccountId,
       ReportDefinitionDateRangeType dateRangeType, String dateStart,
       String dateEnd, Set<Long> accountIdsSet, Properties properties)
           throws Exception {
@@ -119,12 +117,12 @@ public class ReportProcessorOnMemory extends ReportProcessor {
     LOGGER.info("*** Retrieving account IDs ***");
 
     if (accountIdsSet == null || accountIdsSet.size() == 0) {
-      accountIdsSet = this.retrieveAccountIds();
+      accountIdsSet = this.retrieveAccountIds(userId, mccAccountId);
     } else {
       LOGGER.info("Accounts loaded from file.");
     }
 
-    AdWordsSession.Builder builder = authenticator.authenticate(mccAccountId, false);
+    AdWordsSession.Builder builder = authenticator.authenticate(userId, mccAccountId, false);
 
     LOGGER.info("*** Generating Reports for " + accountIdsSet.size()
         + " accounts ***");
@@ -138,7 +136,7 @@ public class ReportProcessorOnMemory extends ReportProcessor {
     for (ReportDefinitionReportType reportType : reports) {
 
       if (properties.containsKey(reportType.name())) {
-        this.downloadAndProcess(builder, reportType, dateRangeType,
+        this.downloadAndProcess(userId, mccAccountId, builder, reportType, dateRangeType,
             dateStart, dateEnd, accountIdsSet, properties);
       }
     }
@@ -169,6 +167,7 @@ public class ReportProcessorOnMemory extends ReportProcessor {
    *            the properties resource.
    */
   private <R extends Report> void downloadAndProcess(
+      String userId, String mccAccountId,
       AdWordsSession.Builder builder,
       ReportDefinitionReportType reportType,
       ReportDefinitionDateRangeType dateRangeType, String dateStart,

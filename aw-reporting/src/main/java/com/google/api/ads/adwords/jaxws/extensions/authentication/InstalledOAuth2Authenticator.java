@@ -79,11 +79,11 @@ public class InstalledOAuth2Authenticator implements Authenticator {
   /* (non-Javadoc)
    * @see com.google.api.ads.adwords.jaxws.extensions.authentication.Authenticator#authenticate(java.lang.String, boolean)
    */
-  public AdWordsSession.Builder authenticate(String mccAccountId, boolean force)
+  public AdWordsSession.Builder authenticate(String userId, String mccAccountId, boolean force)
       throws OAuthException {
 
     return new AdWordsSession.Builder()
-      .withOAuth2Credential(getOAuth2Credential(mccAccountId, force))
+      .withOAuth2Credential(getOAuth2Credential(null, mccAccountId, force))
       .withUserAgent(USER_AGENT)
       .withClientCustomerId(mccAccountId)
       .withDeveloperToken(this.developerToken);
@@ -118,7 +118,7 @@ public class InstalledOAuth2Authenticator implements Authenticator {
    *         configuration.
    * @throws OAuthException If an error is encountered when trying to obtain a token.
    */
-  public Credential getOAuth2Credential(String mccAccountId, boolean force)
+  public Credential getOAuth2Credential(String userId, String mccAccountId, boolean force)
       throws OAuthException {
 
     Credential credential = null;
@@ -221,7 +221,6 @@ public class InstalledOAuth2Authenticator implements Authenticator {
     LOGGER.debug("... success.");
   }
 
-
   /**
    * The implementation should retrieve the authentication token previously
    * persisted.
@@ -238,7 +237,6 @@ public class InstalledOAuth2Authenticator implements Authenticator {
     }
     return null;
   }
-
 
   /**
    * @param authTokenPersister
