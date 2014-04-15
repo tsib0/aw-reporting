@@ -64,8 +64,6 @@ public abstract class ReportProcessor {
 
   protected Authenticator authenticator;
 
-  protected String mccAccountId = null;
-
   protected int reportRowsSetSize = REPORT_BUFFER_DB;
 
   protected int numberOfReportProcessors = NUMBER_OF_REPORT_PROCESSORS;
@@ -73,6 +71,7 @@ public abstract class ReportProcessor {
   abstract protected void cacheAccounts(Set<Long> accountIdsSet);
 
   abstract public void generateReportsForMCC(
+      String userId, String mccAccountId,
       ReportDefinitionDateRangeType dateRangeType, String dateStart,
       String dateEnd, Set<Long> accountIdsSet, Properties properties)
           throws Exception;
@@ -88,15 +87,15 @@ public abstract class ReportProcessor {
    * @throws Exception
    *             error reading the API.
    */
-  public Set<Long> retrieveAccountIds() throws OAuthException, ValidationException,
-  IOException, ApiException {
+  public Set<Long> retrieveAccountIds(String userId, String mccAccountId)
+      throws OAuthException, ValidationException, IOException, ApiException {
 
     Set<Long> accountIdsSet = Sets.newHashSet();
     try {
 
       LOGGER.info("Account IDs being recovered from the API. This may take a while...");
       accountIdsSet = new ManagedCustomerDelegate(
-          authenticator.authenticate(mccAccountId, false).build()).getAccountIds();
+          authenticator.authenticate(userId, mccAccountId, false).build()).getAccountIds();
 
     } catch (ApiException e) {
       if (e.getMessage().contains("AuthenticationError")) {
@@ -105,7 +104,7 @@ public abstract class ReportProcessor {
         LOGGER.info("AuthenticationError, Getting a new Token...");
         LOGGER.info("Account IDs being recovered from the API. This may take a while...");
         accountIdsSet = new ManagedCustomerDelegate(
-            authenticator.authenticate(mccAccountId, true).build()).getAccountIds();
+            authenticator.authenticate(userId, mccAccountId, true).build()).getAccountIds();
 
       } else {
         LOGGER.error("API error: " + e.getMessage());
@@ -126,18 +125,18 @@ public abstract class ReportProcessor {
    * @throws Exception
    *             error reading the API.
    */
-  public List<ManagedCustomer> getAccounts() throws Exception {
+  public List<ManagedCustomer> getAccounts(String userId, String mccAccountId) throws Exception {
 
     List<ManagedCustomer> accounts = Lists.newArrayList();
     try {
       accounts = new ManagedCustomerDelegate(
-          authenticator.authenticate(mccAccountId, false).build()).getAccounts();
+          authenticator.authenticate(userId, mccAccountId, false).build()).getAccounts();
     } catch (ApiException e) {
       if (e.getMessage().contains("AuthenticationError")) {
         // retries Auth once for expired Tokens
         LOGGER.info("AuthenticationError, Getting a new Token...");
         accounts = new ManagedCustomerDelegate(
-            authenticator.authenticate(mccAccountId, true).build()).getAccounts();
+            authenticator.authenticate(userId, mccAccountId, true).build()).getAccounts();
       } else {
         LOGGER.error("API error: " + e.getMessage());
         e.printStackTrace();

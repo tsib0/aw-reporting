@@ -14,7 +14,6 @@
 
 package com.google.api.ads.adwords.jaxws.extensions.exporter;
 
-import com.google.api.ads.adwords.jaxws.extensions.authentication.Authenticator;
 import com.google.api.ads.adwords.jaxws.extensions.exporter.reportwriter.FileSystemReportWriter;
 import com.google.api.ads.adwords.jaxws.extensions.exporter.reportwriter.GoogleDriveReportWriter;
 import com.google.api.ads.adwords.jaxws.extensions.exporter.reportwriter.MemoryReportWriter;
@@ -28,8 +27,10 @@ import com.google.api.ads.adwords.jaxws.extensions.report.model.persistence.Enti
 import com.google.api.ads.adwords.jaxws.extensions.report.model.util.DateUtil;
 import com.google.api.ads.adwords.lib.jaxb.v201402.ReportDefinitionReportType;
 import com.google.api.ads.common.lib.exception.OAuthException;
+import com.google.api.client.auth.oauth2.Credential;
 import com.google.api.client.util.Maps;
 import com.google.common.collect.Lists;
+
 import com.lowagie.text.DocumentException;
 
 import org.apache.log4j.Logger;
@@ -60,25 +61,6 @@ public abstract class ReportExporter {
 
   protected EntityPersister persister;
 
-  protected Authenticator authenticator;
-
-  /**
-   * Export reports to PDF/HTML.
-   *
-   * @param dateStart the start date for the reports
-   * @param dateEnd the end date for the reports
-   * @param accountIds the list of accounts to generate PDFs for
-   * @param properties the properties file containing all the configuration
-   * @param htmlTemplateFile
-   * @param outputDirectory
-   * @throws IOException 
-   * @throws OAuthException 
-   * @throws DocumentException
-   */
-  public abstract void exportReports(String mccAccountId, String dateStart, String dateEnd,
-      Set<Long> accountIds, Properties properties,File htmlTemplateFile, File outputDirectory,
-      Boolean sumAdExtensions) throws IOException, OAuthException, DocumentException;
-
   /**
    * Export reports to PDF/HTML for one account.
    *
@@ -94,7 +76,7 @@ public abstract class ReportExporter {
    * @throws DocumentException 
    * @throws Exception error creating PDF
    */
-  public void exportReport(String mccAccountId, String dateStart, String dateEnd, Long accountId, Properties properties,
+  public void exportReport(Credential credential, String mccAccountId, String dateStart, String dateEnd, Long accountId, Properties properties,
       File htmlTemplateFile, File outputDirectory, Boolean sumAdExtensions)
           throws IOException, OAuthException, DocumentException {
 
@@ -128,7 +110,7 @@ public abstract class ReportExporter {
         if (writeHtml) {
           LOGGER.debug("Writing (to GoogleDrive) HTML for account: " + accountId);
           GoogleDriveReportWriter gdrwHtml = new GoogleDriveReportWriter.GoogleDriveReportWriterBuilder(
-              accountId, dateStart, dateEnd, mccAccountId, authenticator, ReportFileType.HTML,
+              accountId, dateStart, dateEnd, mccAccountId, credential, ReportFileType.HTML,
               htmlTemplateFile).build();
           gdrwHtml.write(mrwHtml.getAsSource());
         }
@@ -137,7 +119,7 @@ public abstract class ReportExporter {
         if (writePdf) {
           LOGGER.debug("Writing (to GoogleDrive) PDF for account: " + accountId);
           GoogleDriveReportWriter gdrwPdf = new GoogleDriveReportWriter.GoogleDriveReportWriterBuilder(
-              accountId, dateStart, dateEnd, mccAccountId, authenticator, ReportFileType.PDF,
+              accountId, dateStart, dateEnd, mccAccountId, credential, ReportFileType.PDF,
               htmlTemplateFile).build();
           HTMLExporter.exportHtmlToPdf(mrwHtml.getAsSource(), gdrwPdf);
         }
@@ -246,13 +228,5 @@ public abstract class ReportExporter {
   @Autowired
   public void setPersister(EntityPersister persister) {
     this.persister = persister;
-  }
-
-  /**
-   * @param authentication the helper class for Auth
-   */
-  @Autowired
-  public void setAuthentication(Authenticator authenticator) {
-    this.authenticator = authenticator;
   }
 }

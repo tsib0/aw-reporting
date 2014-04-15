@@ -79,7 +79,7 @@ public class ReportProcessorOnMemoryTest {
     DynamicPropertyPlaceholderConfigurer.setDynamicResource(resource);
     properties = PropertiesLoaderUtils.loadProperties(resource);
 
-    reportProcessorOnMemory = new ReportProcessorOnMemory("1", 10, 2);
+    reportProcessorOnMemory = new ReportProcessorOnMemory(10, 2);
 
     MockitoAnnotations.initMocks(this);
 
@@ -95,7 +95,7 @@ public class ReportProcessorOnMemoryTest {
   @Test
   public void testGenerateReportsForMCC() throws Exception {
 
-    reportProcessorOnMemory.generateReportsForMCC(
+    reportProcessorOnMemory.generateReportsForMCC(null, "123",
         ReportDefinitionDateRangeType.CUSTOM_DATE, "20130101", "20130131", CIDS, properties);
   }
 }

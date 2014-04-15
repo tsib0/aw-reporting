@@ -104,7 +104,7 @@ public class ReportProcessorOnFileTest {
     properties = PropertiesLoaderUtils.loadProperties(resource);
     appCtx = new ClassPathXmlApplicationContext("classpath:aw-report-test-beans.xml");
 
-    reportProcessorOnFile = new ReportProcessorOnFile("1", 10, 2);
+    reportProcessorOnFile = new ReportProcessorOnFile(10, 2);
     authenticator = new InstalledOAuth2Authenticator("DevToken","ClientId", "ClientSecret", ReportWriterType.FileSystemWriter);
 
     MockitoAnnotations.initMocks(this);
@@ -129,14 +129,14 @@ public class ReportProcessorOnFileTest {
 
     // Mocking the Authentication because in OAuth2 we are force to call buildOAuth2Credentials
     AdWordsSession.Builder builder = new AdWordsSession.Builder().withClientCustomerId("1");
-    Mockito.doReturn(builder).when(authenticator).authenticate(
+    Mockito.doReturn(builder).when(authenticator).authenticate(Mockito.anyString(),
         Mockito.anyString(), Mockito.anyBoolean());
   }
 
   @Test
   public void testGenerateReportsForMCC() throws Exception {
 
-    reportProcessorOnFile.generateReportsForMCC(
+    reportProcessorOnFile.generateReportsForMCC(null, "123", 
         ReportDefinitionDateRangeType.CUSTOM_DATE, "20130101", "20130131", CIDS, properties);
 
     verify(mockedMultipleClientReportDownloader, times(REPORT_TYPES_SIZE)).downloadReports(
