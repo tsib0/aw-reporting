@@ -24,11 +24,17 @@ import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.doCallRealMethod;
 import static org.mockito.Mockito.when;
 
-import java.io.File;
-import java.math.BigDecimal;
-import java.util.List;
-import java.util.Properties;
-import java.util.Set;
+import com.google.api.ads.adwords.jaxws.extensions.authentication.Authenticator;
+import com.google.api.ads.adwords.jaxws.extensions.processors.ReportProcessor;
+import com.google.api.ads.adwords.jaxws.extensions.report.model.csv.CsvReportEntitiesMapping;
+import com.google.api.ads.adwords.jaxws.extensions.report.model.entities.Report;
+import com.google.api.ads.adwords.jaxws.extensions.report.model.entities.ReportAccount;
+import com.google.api.ads.adwords.jaxws.extensions.report.model.persistence.EntityPersister;
+import com.google.api.ads.adwords.jaxws.extensions.util.DynamicPropertyPlaceholderConfigurer;
+import com.google.api.client.auth.oauth2.Credential;
+import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableSet;
 
 import org.joda.time.DateTime;
 import org.junit.Before;
@@ -41,15 +47,11 @@ import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.support.PropertiesLoaderUtils;
 
-import com.google.api.ads.adwords.jaxws.extensions.authentication.Authenticator;
-import com.google.api.ads.adwords.jaxws.extensions.processors.ReportProcessor;
-import com.google.api.ads.adwords.jaxws.extensions.report.model.csv.CsvReportEntitiesMapping;
-import com.google.api.ads.adwords.jaxws.extensions.report.model.entities.Report;
-import com.google.api.ads.adwords.jaxws.extensions.report.model.entities.ReportAccount;
-import com.google.api.ads.adwords.jaxws.extensions.report.model.persistence.EntityPersister;
-import com.google.api.ads.adwords.jaxws.extensions.util.DynamicPropertyPlaceholderConfigurer;
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableSet;
+import java.io.File;
+import java.math.BigDecimal;
+import java.util.List;
+import java.util.Properties;
+import java.util.Set;
 
 /**
  * Test case for the {@link ReportProcessor} class.
@@ -73,6 +75,8 @@ public class ReportExporterTest {
   private Properties properties;
   
   private ApplicationContext appCtx;
+  
+  private static final Credential credential = new GoogleCredential.Builder().build();
   
   private static final String mccAccountId = "123456789";
   
@@ -102,13 +106,12 @@ public class ReportExporterTest {
     doCallRealMethod().when(reportExporter).setPersister(
         any(EntityPersister.class));
 
-    doCallRealMethod().when(reportExporter).exportReports(anyString(),
+    doCallRealMethod().when(reportExporter).exportReports(any(Credential.class), anyString(),
         anyString(), anyString(), anySetOf(Long.class), any(Properties.class),
         any(File.class), any(File.class), anyBoolean());
 
     reportExporter.setCsvReportEntitiesMapping(appCtx.getBean(CsvReportEntitiesMapping.class));
     reportExporter.setPersister(mockedEntitiesPersister);
-    reportExporter.setAuthentication(authenticator);
 
     reportAccount.setAccountDescriptiveName("TestAccount");
     reportAccount.setAccountId(123L);
@@ -123,13 +126,14 @@ public class ReportExporterTest {
         (Class<ReportAccount>) anyObject(),
         anyLong(), any(DateTime.class), any(DateTime.class))).thenReturn(listAccounts);
 
-    when(reportProcessor.retrieveAccountIds()).thenReturn(accountIds);
+    when(reportProcessor.retrieveAccountIds(anyString(), anyString())).thenReturn(accountIds);
   }
 
   @Test
   public void testGeneratePdf() throws Exception {    
 
-    reportExporter.exportReports(mccAccountId, dateStart, dateEnd, accountIds, properties, templateFile, null, false);
+    reportExporter.exportReports(credential, mccAccountId,
+        dateStart, dateEnd, accountIds, properties, templateFile, null, false);
 
     // Deleting temp files created
     for (Long accountId : accountIds) {
