@@ -129,8 +129,8 @@ public class AwReporting {
       LOGGER.debug("Creating ReportProcessor bean...");
       ReportProcessor processor = createReportProcessor();
       LOGGER.debug("... success.");
-      
-      String mccAccountId = properties.getProperty("mccAccountId");
+
+      String mccAccountId = properties.getProperty("mccAccountId").replaceAll("-", "");;
 
       if (cmdLine.hasOption("generatePdf")) {
 

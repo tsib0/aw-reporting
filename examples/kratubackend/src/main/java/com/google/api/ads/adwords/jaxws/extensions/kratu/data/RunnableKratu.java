@@ -48,7 +48,7 @@ public class RunnableKratu implements Runnable {
     try {
 
       List<Account> listAccounts =
-          storageHelper.getEntityPersister().get(Account.class);
+          storageHelper.getEntityPersister().get(Account.class, "topAccountId", topAccountId);
 
       System.out.println("\n ** Generating Kratus (for: " + listAccounts.size() + ") **");
       long start = System.currentTimeMillis();
