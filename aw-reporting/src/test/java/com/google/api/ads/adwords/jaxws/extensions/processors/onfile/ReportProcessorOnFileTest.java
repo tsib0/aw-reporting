@@ -110,7 +110,7 @@ public class ReportProcessorOnFileTest {
     MockitoAnnotations.initMocks(this);
 
     when(mockedAuthTokenPersister.getAuthToken(Mockito.anyString())).thenReturn(
-        new AuthMcc("1", "TOKEN", "scope"));
+        new AuthMcc("1", "AccountName", "TOKEN", "scope"));
 
     Mockito.doAnswer(new Answer<Void>() {
       @Override
