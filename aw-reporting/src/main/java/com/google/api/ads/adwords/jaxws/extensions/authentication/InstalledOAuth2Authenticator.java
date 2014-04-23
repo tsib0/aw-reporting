@@ -14,8 +14,12 @@ import com.google.api.ads.adwords.jaxws.extensions.authentication.OAuthScope.SCO
 import com.google.api.ads.adwords.jaxws.extensions.exporter.reportwriter.ReportWriterType;
 import com.google.api.ads.adwords.jaxws.extensions.report.model.entities.AuthMcc;
 import com.google.api.ads.adwords.jaxws.extensions.report.model.persistence.AuthTokenPersister;
+import com.google.api.ads.adwords.jaxws.extensions.util.CustomerDelegate;
+import com.google.api.ads.adwords.jaxws.v201402.mcm.ApiException;
+import com.google.api.ads.adwords.jaxws.v201402.mcm.Customer;
 import com.google.api.ads.adwords.lib.client.AdWordsSession;
 import com.google.api.ads.common.lib.exception.OAuthException;
+import com.google.api.ads.common.lib.exception.ValidationException;
 import com.google.api.client.auth.oauth2.Credential;
 import com.google.api.client.googleapis.auth.oauth2.GoogleAuthorizationCodeFlow;
 import com.google.api.client.googleapis.auth.oauth2.GoogleAuthorizationCodeTokenRequest;
@@ -89,6 +93,16 @@ public class InstalledOAuth2Authenticator implements Authenticator {
       .withDeveloperToken(this.developerToken);
   }
 
+  public AdWordsSession.Builder authenticate(String userId, String mccAccountId, Credential credential)
+      throws OAuthException {
+
+    return new AdWordsSession.Builder()
+      .withOAuth2Credential(credential)
+      .withUserAgent(USER_AGENT)
+      .withClientCustomerId(mccAccountId)
+      .withDeveloperToken(this.developerToken);
+  }
+
   /**
    * Builds the OAuth 2.0 credential for the user with a known authToken
    * 
@@ -148,8 +162,22 @@ public class InstalledOAuth2Authenticator implements Authenticator {
         }
       } finally {
         if (credential != null) {
+          
+          // Try to get the MCC Company Name and DescriptiveName
+          String name = "";
+          try {
+            AdWordsSession adWordsSession = authenticate(null, mccAccountId, credential).build();
+            CustomerDelegate customerDelegate = new CustomerDelegate(adWordsSession);          
+            Customer customer = customerDelegate.getCustomer();
+            name = customer.getCompanyName() + " (" + customer.getDescriptiveName() + ")";
+          } catch (ValidationException e) {
+            LOGGER.error("Error trying to get MCC Name " + e.getMessage());
+          } catch (ApiException e) {
+            LOGGER.error("Error trying to get MCC Name " + e.getMessage());
+          }
+
           LOGGER.info("Saving Refresh Token to DB...");
-          this.saveAuthTokenToStorage(mccAccountId, credential.getRefreshToken(), scope);
+          this.saveAuthTokenToStorage(mccAccountId, name, credential.getRefreshToken(), scope);
         }
       }
     } else {
@@ -214,9 +242,9 @@ public class InstalledOAuth2Authenticator implements Authenticator {
    * @param authToken the authentication token.
    * @param scope the OAuth2 scope.
    */
-  private void saveAuthTokenToStorage(String mccAccountId, String authToken, String scope) {
+  private void saveAuthTokenToStorage(String mccAccountId, String topAccountName, String authToken, String scope) {
     LOGGER.debug("Persisting refresh token...");
-    AuthMcc authMcc = new AuthMcc(mccAccountId, authToken, scope);
+    AuthMcc authMcc = new AuthMcc(mccAccountId, topAccountName, authToken, scope);
     this.authTokenPersister.persistAuthToken(authMcc);
     LOGGER.debug("... success.");
   }

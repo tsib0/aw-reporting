@@ -183,21 +183,13 @@ public class StorageHelper {
     return entityPersister.save(kratu);
   }
 
-  public List<Kratu> getKratus() {
-    return entityPersister.get(Kratu.class);
-  }
-
   public List<Kratu> getKratus(Long accountId) {
     return entityPersister.get(Kratu.class, Kratu._externalCustomerId, accountId);
   }
 
-  public List<Kratu> getKratus(Date day) {
-    return entityPersister.get(Kratu.class, Kratu._day, DateUtil.formatYearMonthDayNoDash(day));
-  }
-
-  public List<Kratu> getKratus(Date startDate, Date endDate) {
+  public List<Kratu> getKratus(Long topAccountId, Date startDate, Date endDate) {
     List<Kratu> kratusSummary = Lists.newArrayList();
-    List<Account> listAccounts = entityPersister.get(Account.class);
+    List<Account> listAccounts = entityPersister.get(Account.class, "topAccountId", topAccountId);
 
     System.out.println("\n ** Summary Kratus (for: " + listAccounts.size() + ") **");
     long start = System.currentTimeMillis();
