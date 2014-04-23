@@ -102,7 +102,7 @@ public class KratuMain {
       System.out.println("Using properties from: " + propertiesPath);
       
       Properties properties = initApplicationContextAndProperties(propertiesPath);
-      String mccAccountId = properties.getProperty("mccAccountId");
+      String mccAccountId = properties.getProperty("mccAccountId").replaceAll("-", "");
 
       if (cmdLine.hasOption("startServer")) {
         // Start the Rest Server
@@ -166,7 +166,8 @@ public class KratuMain {
 
     // Refresh Account List and refresh indexes
     System.out.println("Updating Accounts from server... (may take few seconds)");
-    storageHelper.getEntityPersister().save(Account.fromList(reportProcessor.getAccounts(userId, mccAccountId)));
+    storageHelper.getEntityPersister().save(
+        Account.fromList(reportProcessor.getAccounts(userId, mccAccountId), Long.valueOf(mccAccountId)));
     System.out.println("Updating DB indexes... (may take few seconds)");
     storageHelper.createReportIndexes();
   }
