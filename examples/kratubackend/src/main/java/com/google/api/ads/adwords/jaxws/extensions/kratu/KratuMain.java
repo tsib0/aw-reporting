@@ -121,7 +121,7 @@ public class KratuMain {
             updateAccounts(null, mccAccountId);
 
             KratuProcessor kratuProcessor = appCtx.getBean(KratuProcessor.class);
-            kratuProcessor.processKratus(
+            kratuProcessor.processKratus(Long.valueOf(mccAccountId),
                 cmdLine.getOptionValue("startDate"), cmdLine.getOptionValue("endDate"));
             System.exit(0);
 
