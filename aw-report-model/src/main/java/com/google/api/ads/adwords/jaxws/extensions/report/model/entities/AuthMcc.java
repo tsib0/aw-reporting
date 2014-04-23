@@ -37,6 +37,9 @@ public class AuthMcc implements MongoEntity {
   @Column(name = "TOP_ACCOUNT_ID")
   private String topAccountId;
 
+  @Column(name = "TOP_ACCOUNT_NAME")
+  private String topAccountName;
+  
   @Column(name = "AUTH_TOKEN", length = 1024)
   private String authToken;
   
@@ -52,8 +55,9 @@ public class AuthMcc implements MongoEntity {
    * @param topAccountId the top level MCC account ID.
    * @param authToken the authentication Token.
    */
-  public AuthMcc(String topAccountId, String authToken, String scope) {
+  public AuthMcc(String topAccountId, String topAccountName, String authToken, String scope) {
     this.topAccountId = topAccountId;
+    this.topAccountName = topAccountName;
     this.authToken = authToken;
     this.scope = scope;
   }
@@ -68,6 +72,14 @@ public class AuthMcc implements MongoEntity {
 
   public void setTopAccountId(String topAccountId) {
     this.topAccountId = topAccountId;
+  }
+
+  public String getTopAccountName() {
+    return topAccountName;
+  }
+
+  public void setTopAccountName(String topAccountName) {
+    this.topAccountName = topAccountName;
   }
 
   public String getAuthToken() {
@@ -86,3 +98,4 @@ public class AuthMcc implements MongoEntity {
     this.scope = scope;
   }
 }
+
