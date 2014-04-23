@@ -16,10 +16,18 @@ package com.google.api.ads.adwords.jaxws.extensions.kratu.restserver.reports;
 
 import com.google.api.ads.adwords.jaxws.extensions.kratu.data.RunnableReport;
 import com.google.api.ads.adwords.jaxws.extensions.kratu.restserver.AbstractServerResource;
+import com.google.api.ads.adwords.jaxws.extensions.processors.ReportProcessor;
+import com.google.api.ads.adwords.jaxws.extensions.util.DynamicPropertyPlaceholderConfigurer;
 
 import org.restlet.data.Status;
 import org.restlet.representation.Representation;
 import org.restlet.service.TaskService;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.FileSystemResource;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.support.PropertiesLoaderUtils;
+
+import java.util.Properties;
 
 /**
  * 
@@ -34,13 +42,25 @@ public class GenerateReportsRest extends AbstractServerResource {
     String result = null;
     try {
       getParameters();
-      
-      if (dateStart != null && dateEnd != null ) { //Generate Reports at MCC level for dates
+
+      // Generate Reports at MCC level for dates
+      if (topAccountId != null && dateStart != null && dateEnd != null ) { 
 
         getContext().getParameters().add("maxThreads", "512");
 
+        
+        Resource resource = new ClassPathResource(file);
+        if (!resource.exists()) {
+          resource = new FileSystemResource(file);
+        }
+        DynamicPropertyPlaceholderConfigurer.setDynamicResource(resource);
+        Properties properties = PropertiesLoaderUtils.loadProperties(resource);
+        
+        ReportProcessor processor = getApplicationContext().getBean(ReportProcessor.class);
+
         // Launching a new Service(Thread) to make the request async.
-        RunnableReport runnableReport = new RunnableReport(file, dateStart, dateEnd);
+        RunnableReport runnableReport = new RunnableReport(topAccountId, processor, properties, dateStart, dateEnd);
+        
         taskService.submit(runnableReport);
 
         result = "OK - Task created, this usually takes 10-15mins for 1000 accounts/month";
