@@ -65,7 +65,7 @@ limitations under the License.
           // HERE TO DO FURTHER FILTERING ON ACCOUNTS. PERHAPS ONLY SHOW THOSE
           // ACCOUNTS THAT MATCH AN ACCOUNT MANAGER NAME IN A COOKIE, ETC
           var d2 = [];
-          for (var i = 0; i < 2; i++) {
+          for (var i = 0; i < data.length; i++) {
             if (data[i].sumBudget != 0) d2.push(data[i]);
           }
           data = d2;
