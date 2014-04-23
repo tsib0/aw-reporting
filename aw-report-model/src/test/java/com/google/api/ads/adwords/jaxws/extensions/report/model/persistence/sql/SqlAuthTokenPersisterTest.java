@@ -41,7 +41,7 @@ public class SqlAuthTokenPersisterTest {
   @Test
   public void testTokenPersistence() {
 
-    AuthMcc authMcc = new AuthMcc("1234", "4321", "scope");
+    AuthMcc authMcc = new AuthMcc("1234", "Name", "4321", "scope");
     this.authTokenPersister.persistAuthToken(authMcc);
 
     AuthMcc authToken = this.authTokenPersister.getAuthToken("1234");
@@ -51,7 +51,7 @@ public class SqlAuthTokenPersisterTest {
     authToken = this.authTokenPersister.getAuthToken("12345");
     Assert.assertNull(authToken);
 
-    authMcc = new AuthMcc("1234", "54321", "scope");
+    authMcc = new AuthMcc("1234", "Name", "54321", "scope");
     this.authTokenPersister.persistAuthToken(authMcc);
 
     authToken = this.authTokenPersister.getAuthToken("1234");
