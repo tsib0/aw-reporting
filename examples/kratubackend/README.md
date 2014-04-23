@@ -78,6 +78,7 @@ ALTER TABLE  `AW_ReportAdExtension` ADD INDEX (  `ACCOUNT_ID` ,  `DAY` ) ;
 ALTER TABLE  `AW_ReportAdGroup` ADD INDEX (  `ACCOUNT_ID` ,  `DAY` ) ;
 ALTER TABLE  `AW_ReportCampaign` ADD INDEX (  `ACCOUNT_ID` ,  `DAY` ) ;
 ALTER TABLE  `AW_ReportKeyword` ADD INDEX (  `ACCOUNT_ID` ,  `DAY` ) ;
+ALTER TABLE  `AW_ReportCampaignNegativeKeyword` ADD INDEX ( `ACCOUNT_ID` ) ;
 
 ALTER TABLE  `AW_Kratu` ADD INDEX (  `EXTERNAL_CUSTOMER_ID` ,  `DAY` ) ;
 </code>
