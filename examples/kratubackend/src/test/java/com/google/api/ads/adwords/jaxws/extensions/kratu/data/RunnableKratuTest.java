@@ -61,17 +61,18 @@ public class RunnableKratuTest {
   public void setUp() {
     // creating one list wuth 3 nonMCC accounts
     Account account1 = new Account();
+    account1.setTopAccountId(456L);
     account1.setIsCanManageClients(false);
     account1.setExternalCustomerId(123L);
     accountList = ImmutableList.of(account1, account1, account1);
 
     storageHelper = new StorageHelper();
 
-    mockedRunnableKratu = new RunnableKratu(123L, storageHelper, dateStart, dateEnd);
+    mockedRunnableKratu = new RunnableKratu(456L, storageHelper, dateStart, dateEnd);
 
     MockitoAnnotations.initMocks(this);
 
-    when(mockedEntitiesPersister.get(Account.class)).thenReturn(accountList);
+    when(mockedEntitiesPersister.get(Account.class, "topAccountId", 456L)).thenReturn(accountList);
     storageHelper.setPersister(mockedEntitiesPersister);
   }
 
