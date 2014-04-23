@@ -30,10 +30,15 @@ public class KratuRest extends AbstractServerResource {
     String result = null;
     try {
       getParameters();
-      if (accountId != null) { // Retrieve All Kratus for a single account.
+
+      // Retrieve All Kratus for the MCC between the two dates.
+      if (topAccountId != null && dateStart != null && dateEnd != null) {
+        result = gson.toJson(getStorageHelper().getKratus(topAccountId, dateStart, dateEnd));
+      }
+
+      // Retrieve All Kratus for a single account.
+      if (accountId != null) {
         result = gson.toJson(getStorageHelper().getKratus(accountId));
-      } else { // Retrieve All Kratus for every account between the two dates.
-        result = gson.toJson(getStorageHelper().getKratus(dateStart, dateEnd));
       }
 
     } catch (Exception exception) {
