@@ -139,11 +139,19 @@ public abstract class AbstractServerResource extends ServerResource {
   protected void addHeaders() {
     getMessageHeaders(getResponse()).add("Access-Control-Allow-Origin", "*");
     getMessageHeaders(getResponse()).add("Access-Control-Allow-Methods", "GET,POST,PUT,DELETE,OPTIONS");
+
+    getMessageHeaders(getResponse()).add("Cache-Control", "no-cache, no-store, must-revalidate");
+    getMessageHeaders(getResponse()).add("Pragma", "no-cache"); 
+    getMessageHeaders(getResponse()).add("Expires", "0");
   }
 
   protected void addReadOnlyHeaders() {
     getMessageHeaders(getResponse()).add("Access-Control-Allow-Origin", "*");
     getMessageHeaders(getResponse()).add("Access-Control-Allow-Methods", "GET");
+    
+    getMessageHeaders(getResponse()).add("Cache-Control", "no-cache, no-store, must-revalidate");
+    getMessageHeaders(getResponse()).add("Pragma", "no-cache"); 
+    getMessageHeaders(getResponse()).add("Expires", "0");
   }
 
   protected BufferingRepresentation createJsonResult(String result) {
@@ -157,10 +165,6 @@ public abstract class AbstractServerResource extends ServerResource {
     EncodeRepresentation encodeRep = new EncodeRepresentation(Encoding.GZIP, jsonRepresentation);
     // Buffering avoids a Chunked response, Chunked caused last chunk timeouts.
     BufferingRepresentation bufferingRep = new BufferingRepresentation(encodeRep);
-    // Setting expiration to one day
-    Calendar cal = Calendar.getInstance();
-    //cal.add(Calendar.DAY_OF_MONTH, 1);
-    bufferingRep.setExpirationDate(cal.getTime());
     return bufferingRep;
   }
 
