@@ -58,6 +58,7 @@ KratuJsonProvider.prototype.load = function(url, onSuccess, opt_onError) {
     }
   };
   xhr.onerror = opt_onError || function(err) {
+      console.log(arguments);
     throw 'Could not call ' + url + ':\n' + err;
   };
   xhr.open('GET', url);
