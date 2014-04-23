@@ -43,6 +43,9 @@ public class Account implements MongoEntity {
   @Column(name = "EXTERNAL_CUSTOMER_ID")
   private Long externalCustomerId;
 
+  @Column(name = "TOP_ACCOUNT_ID")
+  protected Long topAccountId;
+
   @Column(name = "NAME")
   private String name;
 
@@ -61,19 +64,20 @@ public class Account implements MongoEntity {
   public Account() {
   }
 
-  Account(ManagedCustomer managedCustomer) {
+  Account(ManagedCustomer managedCustomer, Long topAccountId) {
     id = String.valueOf(managedCustomer.getCustomerId());
     externalCustomerId = managedCustomer.getCustomerId();
     name = managedCustomer.getName();
     currencyCode = managedCustomer.getCurrencyCode();
     dateTimeZone = managedCustomer.getDateTimeZone();
     isCanManageClients = managedCustomer.isCanManageClients();
+    this.topAccountId = topAccountId;
   }
 
-  public static List<Account> fromList(List<ManagedCustomer> list) {
+  public static List<Account> fromList(List<ManagedCustomer> list, Long topAccountId) {
     List<Account> returnList = Lists.newArrayList();
     for (ManagedCustomer managedCustomer : list) {
-      returnList.add(new Account(managedCustomer));
+      returnList.add(new Account(managedCustomer, topAccountId));
     }
     return returnList;
   }
@@ -86,6 +90,14 @@ public class Account implements MongoEntity {
     this.id = id;
   }
 
+  public Long getTopAccountId() {
+    return topAccountId;
+  }
+
+  public void setTopAccountId(Long topAccountId) {
+    this.topAccountId = topAccountId;
+  }
+  
   public Long getExternalCustomerId() {
     return externalCustomerId;
   }
