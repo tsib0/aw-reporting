@@ -1,21 +1,289 @@
-table {
-	font: 12px/24px Verdana, Arial, Helvetica, sans-serif;
-	border-collapse: collapse;
-	width: 900px;
-	}
-
-td {
-	font: 12px/24px Verdana, Arial, Helvetica, sans-serif;
-	border: 0px solid #CCC;
-	padding: 0 0.5em;
-	}
-
-td+td {
-	border-left: 0px solid #CCC;
-	text-align: left;
-	}
-	
-	
-.blank_row {
- 	height: 20px;
+body {
+  font-family: Helvetica, Arial; Sans-Serif;
+margin: 0;
 }
+
+h2 {
+  font-weight: normal;
+}
+
+div#top_bar
+{
+  text-align: left;
+  background-color: #f2f2f2;
+  border-bottom: 1px solid #ddd;
+  height: 80px;
+}
+
+div#top_bar img#google
+{
+  float: left;
+  padding-left: 50px;
+  padding-bottom: 10px;
+  padding-top: 13px;
+  padding-right: 20px;
+  border-right: 1px solid #ccc;
+}
+
+div#top_bar a
+{
+  text-decoration: none;
+}
+
+div#top_bar div#title
+{
+  border-left: 1px solid #ccc;
+  font-family: Helvetica;
+  font-size: 28px;
+  height: 57px;
+  padding-left: 10px;
+  margin-left: 95px;
+  padding-top: 23px;
+  font-weight: 100;
+  color: #666;
+}
+
+input[type=text] {
+  color: #666;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  padding: 4px;
+}
+
+label {
+  color: #888;
+}
+
+div.content
+{
+  padding: 20px;
+  width: 900px;
+  margin: 0 auto;
+}
+
+div.content a {
+  color: #55a;
+}
+
+div.content h3 {
+  color: #666;
+  font-size: 125%;
+  margin-top: 0;
+}
+
+div.content.circle {
+  border: 1px solid #eee;
+  border-radius: 10px;
+}
+div .small {
+padding-left: 5px;
+  font-weight: normal;
+  color: #aaa;
+  font-size: 60%;
+}
+
+div#kratu a {
+  text-decoration: none;
+}
+div#kratu:hover a div {
+  text-decoration: underline;
+}
+
+div#json_calls .json .desc {
+  float: left;
+  font-size: 120%;
+  width: 325px;
+}
+
+div#json_calls .json .api {
+  margin-top: 5px;
+  float: left;
+  font-family: Courier New, Courier, monospace;
+  font-size: 70%;
+}
+
+div#json_calls div.json_call {
+   padding: 8px 4px;
+}
+div#json_calls div.json_call:hover {
+  background-color: #eee;
+}
+div#json_calls div.json_call a{
+  text-decoration: none;
+}
+div#json_calls div.json_call a div.desc{
+  color: #666;
+}
+div#json_calls div.json_call a:hover {
+  text-decoration: underline;
+}
+
+.extra_top {
+  margin-top: 40px;
+}
+
+
+
+.kratuLogo {
+  text-align: center;
+  font-family: verdana;
+  font-weight: bold;
+  font-size: 30px;
+  border-radius: 30px;
+  background: #aaf;
+  border:10px solid;
+  border-color:#66f #33e #33e #66f;
+  height:40px;
+  width:40px;
+  box-shadow: 1px 1px 5px #339;
+  cursor: pointer;
+  font-style: italic;
+  margin:10px;
+}
+.kratuLogo a {
+  text-decoration: none;
+  color:#fff;
+  font-style: italic;
+  font-family: verdana;
+  text-align: center;
+}
+.kratuLogo span {
+  display: block;
+  font-size: 3px;
+  margin-top: -6px;
+  color:#fff;
+}
+.kratuLogo .tiny {
+  font-size: 12px;
+  border-radius: 10px;
+  border-width: 3px;
+  height: 15px;
+  width: 15px;
+  box-shadow: 1px 1px 1px #339;
+}
+.kratuLogo .tiny span {
+  font-size: 1px;
+  margin-top: -2px;
+}
+.kratuLogo .small {
+  font-size: 15px;
+  border-radius: 15px;
+  border-width: 5px;
+  height: 20px;
+  width: 20px;
+  box-shadow: 1px 1px 1px #339;
+}
+.kratuLogo .small span {
+  font-size: 1px;
+  margin-top: -2px;
+}
+.kratuLogo .large {
+  font-size: 120px;
+  border-radius: 120px;
+  border-width: 40px;
+  height: 160px;
+  width: 160px;
+  box-shadow: 3px 3px 10px #339;
+}
+.kratuLogo .large span {
+  font-size: 12px;
+  margin-top: -24px;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+.button, .button span {
+	display: inline-block;
+	-webkit-border-radius: 4px;
+	-moz-border-radius: 4px;
+	border-radius: 4px;
+}
+.button {
+	white-space: nowrap;
+	line-height:1em;
+	position:relative;
+	outline: none;
+	cursor: pointer;
+	border: 1px solid #999;/* IE */
+	border: rgba(0, 0, 0, .2) 1px solid;/* Saf4+, Chrome, FF3.6 */
+	border-bottom:rgba(0, 0, 0, .4) 1px solid;
+	-webkit-box-shadow: 0 1px 2px rgba(0,0,0,.2);
+	-moz-box-shadow: 0 1px 2px rgba(0,0,0,.2);
+	box-shadow: 0 1px 2px rgba(0,0,0,.2);
+	background: -moz-linear-gradient(
+		center top,
+		rgba(255, 255, 255, .1) 0%,
+		rgba(0, 0, 0, .1) 100%
+	);/* FF3.6 */
+	background: -webkit-gradient(
+		linear,
+		center bottom,
+		center top,
+		from(rgba(0, 0, 0, .1)),
+		to(rgba(255, 255, 255, .1))
+	);/* Saf4+, Chrome */
+	-moz-user-select: none;
+	-webkit-user-select:none;
+	-khtml-user-select: none;
+	user-select: none;
+	margin-bottom:10px;
+}
+.button.full, .button.full span {
+	display: block;
+}
+.button:hover, .button.hover {
+	background: -moz-linear-gradient(
+		center top,
+		rgba(255, 255, 255, .2) 0%,
+		rgba(255, 255, 255, .1) 100%
+	);/* FF3.6 */
+	background: -webkit-gradient(
+		linear,
+		center bottom,
+		center top,
+		from(rgba(255, 255, 255, .1)),
+		to(rgba(255, 255, 255, .2))
+	);/* Saf4+, Chrome */
+}
+.button:active, .button.active {
+	top:1px;
+}
+.button span {
+	position: relative;
+	color:#fff;
+	text-shadow:0 1px 1px rgba(0, 0, 0, 0.25);
+	border-top: rgba(255, 255, 255, .2) 1px solid;
+	padding:0.6em 1.3em;
+	line-height:1em;
+	text-decoration:none;
+	text-align:center;
+	white-space: nowrap;
+}
+
+
+
+.button.small span {
+	font-size:12px;
+}
+.button.medium span {
+	font-size:14px;
+}
+.button.large span {
+	font-size:18px;
+}
+
+.button.blue {
+	background-color: #007dEE;
+}
+
