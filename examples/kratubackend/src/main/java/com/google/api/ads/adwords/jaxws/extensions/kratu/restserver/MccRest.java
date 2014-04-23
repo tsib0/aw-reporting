@@ -1,4 +1,4 @@
-// Copyright 2013 Google Inc. All Rights Reserved.
+// Copyright 2014 Google Inc. All Rights Reserved.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -14,7 +14,7 @@
 
 package com.google.api.ads.adwords.jaxws.extensions.kratu.restserver;
 
-import com.google.api.ads.adwords.jaxws.extensions.kratu.data.Account;
+import com.google.api.ads.adwords.jaxws.extensions.report.model.entities.AuthMcc;
 
 import org.restlet.data.Status;
 import org.restlet.representation.Representation;
@@ -22,22 +22,23 @@ import org.restlet.representation.Representation;
 import java.util.List;
 
 /**
- * AccountRest
+ * MccRest
  * 
  * @author jtoledo@google.com (Julian Toledo)
  */
-public class AccountRest extends AbstractServerResource {
+public class MccRest extends AbstractServerResource {
 
   public Representation getHandler() {
     String result = null;
     try {
       getParameters();
 
-      if (topAccountId != null ) {
-        List<Account> listAccounts = getStorageHelper().getEntityPersister().get(
-            Account.class, "topAccountId", topAccountId);
-        result =  gson.toJson(listAccounts);
+      List<AuthMcc> listAuthMcc = getStorageHelper().getEntityPersister().get(AuthMcc.class);
+      for (AuthMcc authMcc : listAuthMcc) {
+        authMcc.setScope(null);
+        authMcc.setAuthToken(null);
       }
+      result =  gson.toJson(listAuthMcc);
 
     } catch (Exception exception) {
       return handleException(exception);
