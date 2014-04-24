@@ -31,6 +31,7 @@ limitations under the License.
       /** Render a Kratu report showcasing the AdWords HealthCheck Example */
       window.onload = function() {
         'use strict';
+        var mccid = getQuery("mccid");
         var kratu = new Kratu();
         var reportElm = document.getElementById('kratuReport');
 
@@ -56,7 +57,7 @@ limitations under the License.
 
           	if (get('dateStart') != null && get('dateEnd') != null){
         		var dateParameters = "?dateStart="+get('dateStart')+"&dateEnd="+get('dateEnd');
-          		jsonProvider.load('../kratu/'+dateParameters, renderData, failedToLoad);
+          		jsonProvider.load('/mcc/' + mccid + '/kratu'+dateParameters, renderData, failedToLoad);
           	} else {
         		alert('Please provide a DateRange in the URL with format ?dateStart=YYMMDD&dateEnd=YYMMDD')
           	}
@@ -103,7 +104,11 @@ limitations under the License.
 
       };
 
-
+function getQuery(key){
+        var temp = location.search.match(new RegExp(key + "=(.*?)($|\&)", "i"));
+        if(!temp) return;
+        return temp[1];
+}
       $(function () {
           $("#kratu_loading_progress").progressbar({
               value: false
