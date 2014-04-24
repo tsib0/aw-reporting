@@ -28,6 +28,8 @@
     $(function() {
         $("#from").datepicker({ dateFormat: "yy-mm-dd" }).val();
         $("#to").datepicker({ dateFormat: "yy-mm-dd" }).val();  
+
+        $("#canned_date_ranges").val("choose");
         
 /*
         var date = new Date();
@@ -69,6 +71,12 @@
                 var idx = nth_indexOf(3, $(this).text(), "/");
                 var part = "/mcc/" + $("#mccids").val();
                 $(this).text( part + $(this).text().substr(idx));
+            });
+
+            $("a.xdate_restricted").each(function () {
+                var idx = nth_indexOf(3, $(this).text(), "/");
+                var part = "/mcc/" + $("#mccids").val();
+                $(this).attr("href",  part + $(this).text().substr(idx));
             });
 
             var parts = $("#kratu_link").attr('href').split("=");
@@ -123,7 +131,6 @@
                 }
             }
         }
-//        set_mccs([ { topAccountId: "232-696-7224", topAccountName: "Colewood Internet (Colewood Publishing)" } ]);
 
         $.getJSON("/mcc")
             .done(set_mccs)
@@ -141,7 +148,7 @@
             } else {
                 $("#date_range").css("display", "none");
                 $("#rest_of_page").css("display", "none");
-            }                
+            }
         });
 
 
@@ -246,65 +253,65 @@
     <div> <span class="small">(All of these return JSON, operate on <em>all</em> accounts)</span></div>
     <div id="json_calls" style="display: none">
       <div class="json_call">
-        <a class="json xdate_restricted" href="/accounts/">
+        <a class="json xdate_restricted" href="/mcc/mccid/accounts">
           <div class="desc"> List of all accounts </div>
-          <div class="api"> /mcc/mccid/accounts/?startDate=YYYYMMDD&endDate=YYYYMMDD</div>
+          <div class="api"> /mcc/mccid/accounts?dateStart=YYYYMMDD&dateEnd=YYYYMMDD</div>
           <div style="clear: left"></div>
         </a>
       </div>
       <div class="json_call">
-        <a class="json xdate_restricted" href="/kratu/">
+        <a class="json xdate_restricted" href="/mcc/mccid/kratu">
           <div class="desc"> Kratu signal data </div>
-          <div class="api"> /mcc/mccid/kratu/?startDate=YYYYMMDD&endDate=YYYYMMDD</div>
+          <div class="api"> /mcc/mccid/kratu?dateStart=YYYYMMDD&dateEnd=YYYYMMDD</div>
           <div style="clear: left"></div>
         </a>
       </div>
       <div class="json_call">
-        <a class="json xdate_restricted" href="/reportaccount/">
+        <a class="json xdate_restricted" href="/mcc/mccid/reportaccount">
           <div class="desc"> Account reports </div>
-          <div class="api"> /mcc/mccid/reportaccount/?startDate=YYYYMMDD&endDate=YYYYMMDD</div>
+          <div class="api"> /mcc/mccid/reportaccount?dateStart=YYYYMMDD&dateEnd=YYYYMMDD</div>
           <div style="clear: left"></div>
         </a>
       </div>
       <div class="json_call">
-        <a class="json xdate_restricted" href="/reportcampaign/">
+        <a class="json xdate_restricted" href="/mcc/mccid/reportcampaign">
           <div class="desc"> Campaign reports </div>
-          <div class="api"> /mcc/mccid/reportcampaign/?startDate=YYYYMMDD&endDate=YYYYMMDD</div>
+          <div class="api"> /mcc/mccid/reportcampaign?dateStart=YYYYMMDD&dateEnd=YYYYMMDD</div>
           <div style="clear: left"></div>
         </a>
       </div>
       <div class="json_call">
-        <a class="json xdate_restricted" href="/reportadgroup/">
+        <a class="json xdate_restricted" href="/mcc/mccid/reportadgroup">
           <div class="desc"> Adgroup reports </div>
-          <div class="api"> /mcc/mccid/reportadgroup/?startDate=YYYYMMDD&endDate=YYYYMMDD</div>
+          <div class="api"> /mcc/mccid/reportadgroup?dateStart=YYYYMMDD&dateEnd=YYYYMMDD</div>
           <div style="clear: left"></div>
         </a>
       </div>
       <div class="json_call">
-        <a class="json xdate_restricted" href="/reportad/">
+        <a class="json xdate_restricted" href="/mcc/mccid/reportad">
           <div class="desc"> Ad reports </div>
-          <div class="api"> /mcc/mccid/reportad/?startDate=YYYYMMDD&endDate=YYYYMMDD</div>
+          <div class="api"> /mcc/mccid/reportad?dateStart=YYYYMMDD&dateEnd=YYYYMMDD</div>
           <div style="clear: left"></div>
         </a>
       </div>
       <div class="json_call">
-        <a class="json xdate_restricted" href="/reportkeyword/">
+        <a class="json xdate_restricted" href="/mcc/mccid/reportkeyword">
           <div class="desc"> Keyword reports </div>
-          <div class="api"> /mcc/mccid/reportkeyword/?startDate=YYYYMMDD&endDate=YYYYMMDD</div>
+          <div class="api"> /mcc/mccid/reportkeyword?dateStart=YYYYMMDD&dateEnd=YYYYMMDD</div>
           <div style="clear: left"></div>
         </a>
       </div>
       <div class="json_call">
-        <a class="json xdate_restricted" href="/reportadextension/">
+        <a class="json xdate_restricted" href="/mcc/mccid/reportadextension">
           <div class="desc"> Ad extension reports </div>
-          <div class="api"> /mcc/mccid/reportadextension/?startDate=YYYYMMDD&endDate=YYYYMMDD</div>
+          <div class="api"> /mcc/mccid/reportadextension?dateStart=YYYYMMDD&dateEnd=YYYYMMDD</div>
           <div style="clear: left"></div>
         </a>
       </div>
       <div class="json_call">
-        <a class="json xdate_restricted" href="/reportcampaignnegativekeyword/">
+        <a class="json xdate_restricted" href="/mcc/mccid/reportcampaignnegativekeyword">
           <div class="desc" style="font-size: 110%"> Campaign negative keyword reports </div>
-          <div class="api"> /mcc/mccid/reportcampaignnegativekeyword/?startDate=YYYYMMDD&endDate=YYYYMMDD</div>
+          <div class="api"> /mcc/mccid/reportcampaignnegativekeyword?dateStart=YYYYMMDD&dateEnd=YYYYMMDD</div>
           <div style="clear: left"></div>
         </a>
       </div>
@@ -314,10 +321,10 @@
 
 <!--
 <div class="content" style="margin-top: 40px; text-align: center">
-  <a class="button med blue xdate_restricted" href="/generatereports/?startDate=YYYYMMDD&endDate=YYYYMMDD">
+  <a class="button med blue xdate_restricted" href="/generatereports?dateStart=YYYYMMDD&dateEnd=YYYYMMDD">
     <span>Re-download all reports </span>
   </a>
-  <a class="button med blue xdate_restricted" href="/generatekratus/?startDate=YYYYMMDD&endDate=YYYYMMDD">
+  <a class="button med blue xdate_restricted" href="/generatekratus?dateStart=YYYYMMDD&dateEnd=YYYYMMDD">
     <span>Re-process all Kratu signals </span>
   </a>
 </div>
