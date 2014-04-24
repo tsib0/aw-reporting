@@ -18,6 +18,7 @@ import com.google.api.ads.adwords.jaxws.extensions.report.model.entities.Report;
 import com.google.api.ads.adwords.jaxws.extensions.report.model.persistence.EntityPersister;
 
 import org.hibernate.Criteria;
+import org.hibernate.SQLQuery;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.criterion.Order;
@@ -28,11 +29,15 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.lang.reflect.Field;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+
+import javax.persistence.Column;
+import javax.persistence.Table;
 
 /**
  * This is the basic implementation of the persistence layer to communicate with a SQL data base.
@@ -47,7 +52,7 @@ import java.util.Map.Entry;
 @Component
 @Qualifier("sqlEntitiesPersister")
 public class SqlReportEntitiesPersister implements EntityPersister {
-
+  
   private static final int BATCH_SIZE = 50;
 
   private SessionFactory sessionFactory;
@@ -322,20 +327,101 @@ public class SqlReportEntitiesPersister implements EntityPersister {
     }
   }
 
-  /**
-   * No effect on SQL.
-   */
-  @Override
-  public <T> void createIndex(Class<T> t, String key) {
-    // does nothing
+  private <T> Field getField(Class<T> classT, String fieldName)
+      throws NoSuchFieldException {
+    try {
+      return classT.getDeclaredField(fieldName);
+    } catch (NoSuchFieldException e) {
+      Class<? super T> superClass = classT.getSuperclass();
+      if (superClass == null) {
+        throw e;
+      } else {
+        return getField(superClass, fieldName);
+      }
+    }
   }
 
   /**
-   * No effect on SQL.
+   * Create a new Index on the "key" column
    */
   @Override
+  @Transactional
+  public <T> void createIndex(Class<T> t, String key) {
+    
+    try {
+      Table table = t.getAnnotation(Table.class);
+      String tableName = table.name();
+
+      Field property = getField(t, key);
+      Column column = property.getAnnotation(Column.class);
+      String columnName = column.name();
+
+      String checkIndex = "SELECT COUNT(1) IndexIsThere FROM INFORMATION_SCHEMA.STATISTICS WHERE " +
+          "Table_name='" + tableName + "' AND index_name='AW_INDEX_" + columnName + "'";
+
+      String newIndex = "ALTER TABLE  " + tableName + " ADD INDEX " + "AW_INDEX_" + columnName + " ( " + columnName + " )" ;
+
+      Session session = this.sessionFactory.getCurrentSession();
+      
+      List<?> list = session.createSQLQuery(checkIndex).list();
+      if (String.valueOf(list.get(0)).equals("0")) {
+        System.out.println( "Creating Index AW_INDEX_" + columnName +" ON " + tableName );
+        SQLQuery sqlQuery = session.createSQLQuery(newIndex);
+        sqlQuery.executeUpdate();  
+      }
+
+    } catch (NoSuchFieldException e) {
+      e.printStackTrace();
+    } catch (SecurityException e) {
+      e.printStackTrace();
+    }
+  }
+
+  /**
+   * Create a new composed Index with the the "keys" columns
+   */
+  @Override
+  @Transactional
   public <T> void createIndex(Class<T> t, List<String> keys) {
-    // does nothing
+    try {
+      Table table = t.getAnnotation(Table.class);
+      String tableName = table.name();
+
+      String columnNames = "";
+      String columnIndexName = "";
+      int position = 0;
+      for (String key : keys) {
+        Field property = getField(t, key);
+        Column column = property.getAnnotation(Column.class);
+        
+        if (position++ == 0) {
+          columnNames += column.name();
+          columnIndexName += column.name();
+        } else {
+          columnNames += "," + column.name();
+          columnIndexName += "_" + column.name();
+        }
+      }
+
+      String checkIndex = "SELECT COUNT(1) IndexIsThere FROM INFORMATION_SCHEMA.STATISTICS WHERE " +
+          "Table_name='" + tableName + "' AND index_name='AW_INDEX_" + columnIndexName + "'";
+
+      String newIndex = "ALTER TABLE  " + tableName + " ADD INDEX " + "AW_INDEX_" + columnIndexName + " ( " + columnNames + " )" ;
+
+      Session session = this.sessionFactory.getCurrentSession();
+      
+      List<?> list = session.createSQLQuery(checkIndex).list();
+      if (String.valueOf(list.get(0)).equals("0")) {
+        System.out.println( "Creating Index AW_INDEX_" + columnIndexName +" ON " + tableName );
+        SQLQuery sqlQuery = session.createSQLQuery(newIndex);
+        sqlQuery.executeUpdate();  
+      }
+
+    } catch (NoSuchFieldException e) {
+      e.printStackTrace();
+    } catch (SecurityException e) {
+      e.printStackTrace();
+    }
   }
 
   /**
