@@ -70,6 +70,12 @@
                 var part = "/mcc/" + $("#mccids").val();
                 $(this).text( part + $(this).text().substr(idx));
             });
+
+            var parts = $("#kratu_link").attr('href').split("=");
+            var qparts = $("#kratu_link").attr('href').split("&");
+            qparts.shift();
+            var extra = qparts.length ? ("&" + qparts.join("&")) : "";
+            $("#kratu_link").attr('href', parts[0] + "=" + $("#mccids").val() + extra);
         }
 
         function nth_indexOf(n, str, what) {
@@ -86,16 +92,19 @@
             }
 
             var dateParameters = "?dateStart="+date1+"&dateEnd="+date2;
+            var dp2 = dateParameters.substring(1);
+            $("#kratu_link").attr("href", "/kratureport/index.html?mccid=" + $("#mccids").val() + "&" + dp2);
+
             $("a.xdate_restricted div.api").each(function () {
                 if ($(this).text().indexOf("?") > 0) {
-                    $(this).text($(this).text().replace(/\?.*/, dateParameters));
+		    $(this).text($(this).text().replace(/\?.*/, dateParameters));
                 } else {
                     $(this).text($(this).text() + dateParameters);
                 }
             });            
             $("a.xdate_restricted").each(function () {
                 if ($(this).attr('href').indexOf("?") > 0) {
-                    $(this).attr('href', $(this).attr('href').replace(/\?.*/, dateParameters));
+                    $(this).attr('href',$(this).attr('href').replace(/\?.*/, dateParameters));
                 } else {
                     $(this).attr('href', $(this).attr('href') + dateParameters);
                 }
@@ -107,21 +116,21 @@
                 console.error("Unexpected data returned from /mccs!!");
             } else {
                 for (var i = 0; i < data.length; i++) {
-                    $("#mccids").append($("<option", {
+                    $("#mccids").append($("<option>", {
                         value: data[i].topAccountId,
-                        text: data[i].topAccountId + " - " + data[i].topAccoutName
+                        text: data[i].topAccountId + " - " + data[i].topAccountName
                     }));
                 }
             }
         }
-        set_mccs([ { topAccountId: "232-696-7224", topAccountName: "Colewood Internet (Colewood Publishing)" } ]);
+//        set_mccs([ { topAccountId: "232-696-7224", topAccountName: "Colewood Internet (Colewood Publishing)" } ]);
 
-/*        $.getJSON("/mccs")
+        $.getJSON("/mcc")
             .done(set_mccs)
             .fail(function () {
                 $("#page_load_error").css("display", "block");
                 $("#mcc_picker").css("display", "none");
-            });*/
+            });
 
         $("#mccids").change(function () {
             var what = $("#mccids").val() == "choose" ? "none" : "block";
@@ -184,7 +193,6 @@
     <div id="mccid_holder">
       <select id="mccids" style="min-width: 400px">
         <option value="choose">(Choose)</option>
-        <option value="232-696-7224">232-696-7224 - Colewood Internet </option>
       </select>
     </div>
 
@@ -218,7 +226,7 @@
 <div id="rest_of_page" style="display: none">
   <div style="margin-top: 40px" class="content circle">
     <div  id="kratu">
-      <a class="xdate_restricted" href="kratureport/index.html">
+      <a id="kratu_link" href="kratureport/index.html?mccid=XYZ&dateStart=YYYYMMDD&dateEnd=YYYYMMDD">
         <div style="float: left"><img style="height: 60px" src="kratureport/img/kratu_screen.png" border="0"/></div>
         <div style="float: left;font-size: 20px; margin-top: 8px;margin-left: 10px"> Kratu Opportunity Analysis Tool
           <br/><span style="font-size: 60%">(You probably want this)</span>
