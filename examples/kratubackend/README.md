@@ -69,20 +69,7 @@ Genereate Kratus:
   http://localhost:8081/generatekratus/?dateStart=20130101&dateEnd=20130331
 
 ## DB Indexes for better performance
-
-<pre>
-<code>
-ALTER TABLE  `AW_ReportAccount` ADD INDEX (  `ACCOUNT_ID` ,  `DAY` ) ;
-ALTER TABLE  `AW_ReportAd` ADD INDEX (  `ACCOUNT_ID` ,  `DAY` ) ;
-ALTER TABLE  `AW_ReportAdExtension` ADD INDEX (  `ACCOUNT_ID` ,  `DAY` ) ;
-ALTER TABLE  `AW_ReportAdGroup` ADD INDEX (  `ACCOUNT_ID` ,  `DAY` ) ;
-ALTER TABLE  `AW_ReportCampaign` ADD INDEX (  `ACCOUNT_ID` ,  `DAY` ) ;
-ALTER TABLE  `AW_ReportKeyword` ADD INDEX (  `ACCOUNT_ID` ,  `DAY` ) ;
-ALTER TABLE  `AW_ReportCampaignNegativeKeyword` ADD INDEX ( `ACCOUNT_ID` ) ;
-
-ALTER TABLE  `AW_Kratu` ADD INDEX (  `EXTERNAL_CUSTOMER_ID` ,  `DAY` ) ;
-</code>
-</pre>
+Now the project creates the indexes if they do not exists when the server starts, you may want to drop the old indexes if you created them by hand.
 
 ### Fine print
 Pull requests are very much appreciated. Please sign the [Google Code contributor license agreement](http://code.google.com/legal/individual-cla-v1.0.html) (There is a convenient online form) before submitting.
