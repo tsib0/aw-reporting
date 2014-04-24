@@ -17,6 +17,7 @@ package com.google.api.ads.adwords.jaxws.extensions.kratu.restserver;
 import com.google.api.ads.adwords.jaxws.extensions.kratu.data.StorageHelper;
 import com.google.api.ads.adwords.jaxws.extensions.report.model.util.DateUtil;
 import com.google.api.ads.adwords.jaxws.extensions.report.model.util.GsonUtil;
+import com.google.api.client.util.Maps;
 import com.google.gson.Gson;
 
 import org.apache.log4j.Logger;
@@ -39,9 +40,9 @@ import org.restlet.resource.ServerResource;
 import org.restlet.util.Series;
 import org.springframework.context.ApplicationContext;
 
-import java.text.ParseException;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.concurrent.ConcurrentMap;
 
 /**
@@ -51,7 +52,7 @@ import java.util.concurrent.ConcurrentMap;
  */
 public abstract class AbstractServerResource extends ServerResource {
 
-  protected static final Logger log = Logger.getLogger(AbstractServerResource.class.getName());
+  private static final Logger LOGGER = Logger.getLogger(AbstractServerResource.class.getName());
 
   private static final String HEADERS_KEY = "org.restlet.http.headers";
 
@@ -93,47 +94,51 @@ public abstract class AbstractServerResource extends ServerResource {
     addHeaders();
   }
 
-  protected void getParameters() throws ParseException {
-
-    file = (String)getContext().getAttributes().get("file");
-
-    String liveString = this.getReference().getQueryAsForm().getFirstValue("live");
-    String partnerIdString = (String)getRequestAttributes().get("partnerId");
-    String topAccountIdString = (String)getRequestAttributes().get("topAccountId");
-    String accountIdString = (String)getRequestAttributes().get("accountId");
-    String campaignIdString = (String)getRequestAttributes().get("campaignId");
-    String adGroupIdString = (String)getRequestAttributes().get("adGroupId");
-    String adIdString = (String)getRequestAttributes().get("adId");
-    String criterionIdString = (String)getRequestAttributes().get("criterionId");
-    String adExtensionIdString = (String)getRequestAttributes().get("adExtensionId");
-    campaignIdcriterionIdString = (String)getRequestAttributes().get("campaignId-criterionId");
-
-    String dateStartString = this.getReference().getQueryAsForm().getFirstValue("dateStart");
-    String dateEndString = this.getReference().getQueryAsForm().getFirstValue("dateEnd");
-
-    dateRangeType = this.getReference().getQueryAsForm().getFirstValue("dateRangeType");
-    String includeZeroImpressionsString = this.getReference().getQueryAsForm().getFirstValue("includeZeroImpressions");
-
-    live = (liveString != null && liveString.equals("true"));
-    partnerId = partnerIdString == null ? null : Long.parseLong(partnerIdString);
-    topAccountId = topAccountIdString == null ? null : Long.parseLong(topAccountIdString);
-    accountId = accountIdString == null ? null : Long.parseLong(accountIdString);
-    campaignId = campaignIdString == null ? null : Long.parseLong(campaignIdString);
-    adGroupId = adGroupIdString == null ? null : Long.parseLong(adGroupIdString);
-    adId = adIdString == null ? null : Long.parseLong(adIdString);
-    criterionId = criterionIdString == null ? null : Long.parseLong(criterionIdString);
-    adExtensionId = adExtensionIdString == null ? null : Long.parseLong(adExtensionIdString);
-    includeZeroImpressions = (includeZeroImpressionsString != null && includeZeroImpressionsString.equals("true"));
+  protected void getParameters() {
     
-    // Setting Dates to Last 30 days for null Dates:
-    Calendar calendar = Calendar.getInstance();
-    Date today = calendar.getTime();
-    calendar.add(Calendar.DAY_OF_MONTH, -30);
-    Date thirtyDaysAgo = calendar.getTime();
-    dateStart = dateStartString == null ? thirtyDaysAgo : DateUtil.parseDateTime(dateStartString).toDate();
-    dateEnd = dateEndString == null ? today : DateUtil.parseDateTime(dateEndString).toDate();
-
-    criterionId = criterionIdString == null ? null : Long.parseLong(criterionIdString);
+    try {
+      file = (String)getContext().getAttributes().get("file");
+  
+      String liveString = this.getReference().getQueryAsForm().getFirstValue("live");
+      String partnerIdString = (String)getRequestAttributes().get("partnerId");
+      String topAccountIdString = (String)getRequestAttributes().get("topAccountId");
+      String accountIdString = (String)getRequestAttributes().get("accountId");
+      String campaignIdString = (String)getRequestAttributes().get("campaignId");
+      String adGroupIdString = (String)getRequestAttributes().get("adGroupId");
+      String adIdString = (String)getRequestAttributes().get("adId");
+      String criterionIdString = (String)getRequestAttributes().get("criterionId");
+      String adExtensionIdString = (String)getRequestAttributes().get("adExtensionId");
+      campaignIdcriterionIdString = (String)getRequestAttributes().get("campaignId-criterionId");
+  
+      String dateStartString = this.getReference().getQueryAsForm().getFirstValue("dateStart");
+      String dateEndString = this.getReference().getQueryAsForm().getFirstValue("dateEnd");
+  
+      dateRangeType = this.getReference().getQueryAsForm().getFirstValue("dateRangeType");
+      String includeZeroImpressionsString = this.getReference().getQueryAsForm().getFirstValue("includeZeroImpressions");
+  
+      live = (liveString != null && liveString.equals("true"));
+      partnerId = partnerIdString == null ? null : Long.parseLong(partnerIdString);
+      topAccountId = topAccountIdString == null ? null : Long.parseLong(topAccountIdString);
+      accountId = accountIdString == null ? null : Long.parseLong(accountIdString);
+      campaignId = campaignIdString == null ? null : Long.parseLong(campaignIdString);
+      adGroupId = adGroupIdString == null ? null : Long.parseLong(adGroupIdString);
+      adId = adIdString == null ? null : Long.parseLong(adIdString);
+      criterionId = criterionIdString == null ? null : Long.parseLong(criterionIdString);
+      adExtensionId = adExtensionIdString == null ? null : Long.parseLong(adExtensionIdString);
+      includeZeroImpressions = (includeZeroImpressionsString != null && includeZeroImpressionsString.equals("true"));
+      
+      // Setting Dates to Last 30 days for null Dates:
+      Calendar calendar = Calendar.getInstance();
+      Date today = calendar.getTime();
+      calendar.add(Calendar.DAY_OF_MONTH, -30);
+      Date thirtyDaysAgo = calendar.getTime();
+      dateStart = dateStartString == null ? thirtyDaysAgo : DateUtil.parseDateTime(dateStartString).toDate();
+      dateEnd = dateEndString == null ? today : DateUtil.parseDateTime(dateEndString).toDate();
+  
+      criterionId = criterionIdString == null ? null : Long.parseLong(criterionIdString);
+    } catch(Exception exception) {
+      throw new IllegalArgumentException(exception);
+    }
   }
 
   protected void addHeaders() {
@@ -191,19 +196,29 @@ public abstract class AbstractServerResource extends ServerResource {
   }
 
   protected Representation handleException(Exception exception) {
-    String result;
-    log.fatal(stackTraceToString(exception));
-    if (exception.getMessage() != null && exception.getMessage().length() > 0)
-      result = exception.getMessage() + "\n\nStackTrace: " + stackTraceToString(exception);
-    else
-      result = stackTraceToString(exception);
-    exception.printStackTrace();
-    this.setStatus(Status.SERVER_ERROR_INTERNAL);
-    
-    if (exception instanceof com.mongodb.MongoException) {
-      result = "Error DB is down!!";
+    HashMap<String,String> result = Maps.newHashMap();
+    LOGGER.fatal(stackTraceToString(exception));
+
+    if (exception instanceof IllegalArgumentException) {
+      this.setStatus(Status.CLIENT_ERROR_BAD_REQUEST);
+      result.put("error", "invalid_params");
+      result.put("message", "Check your REST Parameters");
+    } else {
+      result.put("error", "internal_error");
+      result.put("message", "There was an error processing the request, see the server logs for more info");
+      this.setStatus(Status.SERVER_ERROR_INTERNAL);
     }
-    return createHtmlResult(result);
+
+    if (exception instanceof com.mongodb.MongoException) {
+      result.put("error", "mongo_db_is_down");
+      result.put("message", "Check your MongoDB sercer and configuration");
+    }
+
+    if (exception.getMessage() != null && exception.getMessage().length() > 0) {      
+      result.put("exception_message", exception.getMessage());
+    }
+
+    return createJsonResult(gson.toJson(result));
   }
 
   @SuppressWarnings("unchecked")
