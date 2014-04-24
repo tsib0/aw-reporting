@@ -133,12 +133,15 @@
             });
 
         $("#mccids").change(function () {
-            var what = $("#mccids").val() == "choose" ? "none" : "block";
+            var chosen = $("#mccids").val() != "choose";
 
-            $("#date_range").css("display", what);
-            $("#rest_of_page").css("display", what);
-            if (what != "none") updateLinkMccids();
-                
+            if (chosen) {
+                $("#date_range").css("display", "block");
+                updateLinkMccids();
+            } else {
+                $("#date_range").css("display", "none");
+                $("#rest_of_page").css("display", "none");
+            }                
         });
 
 
