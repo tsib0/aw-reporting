@@ -46,8 +46,6 @@ import javax.persistence.Table;
  */
 @Entity
 @Table(name = "AW_Kratu")
-@org.hibernate.annotations.Table(appliesTo = "AW_Kratu", indexes = {
-    @org.hibernate.annotations.Index(name = "ID-DAY", columnNames = {"EXTERNAL_CUSTOMER_ID", "DAY"})})
 public class Kratu implements MongoEntity {
   
   private static final BigDecimal BIGDECIMAL_100 = new BigDecimal(100);
