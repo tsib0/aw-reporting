@@ -22,12 +22,9 @@ import com.google.gson.Gson;
 
 import org.apache.log4j.Logger;
 import org.restlet.Message;
-import org.restlet.data.Encoding;
 import org.restlet.data.MediaType;
 import org.restlet.data.Status;
-import org.restlet.engine.application.EncodeRepresentation;
 import org.restlet.engine.header.Header;
-import org.restlet.engine.io.BufferingRepresentation;
 import org.restlet.ext.json.JsonRepresentation;
 import org.restlet.representation.Representation;
 import org.restlet.representation.StringRepresentation;
@@ -40,7 +37,6 @@ import org.restlet.resource.ServerResource;
 import org.restlet.util.Series;
 import org.springframework.context.ApplicationContext;
 
-import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.concurrent.ConcurrentMap;
@@ -127,13 +123,10 @@ public abstract class AbstractServerResource extends ServerResource {
       adExtensionId = adExtensionIdString == null ? null : Long.parseLong(adExtensionIdString);
       includeZeroImpressions = (includeZeroImpressionsString != null && includeZeroImpressionsString.equals("true"));
       
-      // Setting Dates to Last 30 days for null Dates:
-      Calendar calendar = Calendar.getInstance();
-      Date today = calendar.getTime();
-      calendar.add(Calendar.DAY_OF_MONTH, -30);
-      Date thirtyDaysAgo = calendar.getTime();
-      dateStart = dateStartString == null ? thirtyDaysAgo : DateUtil.parseDateTime(dateStartString).toDate();
-      dateEnd = dateEndString == null ? today : DateUtil.parseDateTime(dateEndString).toDate();
+      if (dateStartString != null && dateEndString != null) {
+        dateStart = DateUtil.parseDateTime(dateStartString).toDate();
+        dateEnd = DateUtil.parseDateTime(dateEndString).toDate();
+      }
   
       criterionId = criterionIdString == null ? null : Long.parseLong(criterionIdString);
     } catch(Exception exception) {
@@ -159,7 +152,7 @@ public abstract class AbstractServerResource extends ServerResource {
     getMessageHeaders(getResponse()).add("Expires", "0");
   }
 
-  protected BufferingRepresentation createJsonResult(String result) {
+  protected JsonRepresentation createJsonResult(String result) {
     this.setAutoCommitting(true);
 
     if (result == null) {
@@ -167,23 +160,17 @@ public abstract class AbstractServerResource extends ServerResource {
       result = Status.CLIENT_ERROR_NOT_FOUND.getDescription();
     }
     JsonRepresentation jsonRepresentation = new JsonRepresentation(result);
-    EncodeRepresentation encodeRep = new EncodeRepresentation(Encoding.GZIP, jsonRepresentation);
-    // Buffering avoids a Chunked response, Chunked caused last chunk timeouts.
-    BufferingRepresentation bufferingRep = new BufferingRepresentation(encodeRep);
-    return bufferingRep;
+    return jsonRepresentation;
   }
 
-  protected BufferingRepresentation createHtmlResult(String result) {
+  protected StringRepresentation createHtmlResult(String result) {
     if (result == null) {
       this.setStatus(Status.CLIENT_ERROR_NOT_FOUND);
       result = Status.CLIENT_ERROR_NOT_FOUND.getDescription();
     }
     StringRepresentation stringRepresentation = new StringRepresentation(result);
     stringRepresentation.setMediaType(MediaType.TEXT_HTML);
-    
-    BufferingRepresentation bufferingRep = new BufferingRepresentation(stringRepresentation);
-    bufferingRep.setTransient(false);
-    return bufferingRep;
+    return stringRepresentation;
   }
 
   protected String stackTraceToString(Throwable e) {
