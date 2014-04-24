@@ -76,11 +76,22 @@ limitations under the License.
           data = d2;
           // END EXTRA CODE
 
-          kratu.setEntities(d2);
-          kratu.renderCurrentPage(addExportLinks);
-          $("#load_progress").css("display", "none");
+          try {
+              kratu.setEntities(d2);
+              kratu.renderCurrentPage(addExportLinks);
+              $("#load_progress").css("display", "none");
+          } catch (e) {
+              $("#load_progress").css("display", "none");
+              $("#load_error").css("display", "block");
+console.log(e);
+              if (e == "Need atleast one entity in order to calculated number of pages") {
+                  $("#generic_error").text("");
+                  $("#actual_error_was").text("Sorry, no accounts have any data for this date range.");
+              }
+          }
         }
         function failedToLoad(err) {
+console.log(err);
             $("#load_progress").css("display", "none");
             $("#load_error").css("display", "block");
         }
@@ -136,7 +147,7 @@ function getQuery(key){
         <p style='color: #888'> Loading Account Data </p>
       </div>
       <div id='load_error' style="display: none; color: #b00">
-        <p>Oops, we were unable to load this page. Please refresh and try again.</p>
+        <p id="generic_error">Oops, there was a network error when loading this page. Please refresh and try again. If the problem persists, consult your network administrator as the server may be down or malfunctioning.</p>
         <p id="actual_error_was">(To see the exact error message, open the Javascript Console)</p>
       </div>
     </div>
