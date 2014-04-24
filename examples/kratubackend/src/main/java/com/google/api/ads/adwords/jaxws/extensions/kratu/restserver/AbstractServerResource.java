@@ -25,6 +25,7 @@ import org.restlet.Message;
 import org.restlet.data.MediaType;
 import org.restlet.data.Status;
 import org.restlet.engine.header.Header;
+import org.restlet.engine.io.BufferingRepresentation;
 import org.restlet.ext.json.JsonRepresentation;
 import org.restlet.representation.Representation;
 import org.restlet.representation.StringRepresentation;
@@ -152,7 +153,7 @@ public abstract class AbstractServerResource extends ServerResource {
     getMessageHeaders(getResponse()).add("Expires", "0");
   }
 
-  protected JsonRepresentation createJsonResult(String result) {
+  protected Representation createJsonResult(String result) {
     this.setAutoCommitting(true);
 
     if (result == null) {
@@ -160,7 +161,11 @@ public abstract class AbstractServerResource extends ServerResource {
       result = Status.CLIENT_ERROR_NOT_FOUND.getDescription();
     }
     JsonRepresentation jsonRepresentation = new JsonRepresentation(result);
-    return jsonRepresentation;
+    
+    // Buffering avoids a Chunked response, Chunked caused last chunk timeouts.
+    BufferingRepresentation bufferingRep = new BufferingRepresentation(jsonRepresentation);
+    
+    return bufferingRep;
   }
 
   protected StringRepresentation createHtmlResult(String result) {
