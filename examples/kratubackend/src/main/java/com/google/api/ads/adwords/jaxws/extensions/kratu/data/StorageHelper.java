@@ -223,5 +223,11 @@ public class StorageHelper {
     entityPersister.createIndex(ReportAd.class, indexes);
     entityPersister.createIndex(ReportKeyword.class, indexes);
     entityPersister.createIndex(ReportAdExtension.class, indexes);
+    entityPersister.createIndex(ReportCampaignNegativeKeyword.class, Report.ACCOUNT_ID);
+    
+    List<String> kratuIndexes = Lists.newArrayList();
+    kratuIndexes.add("externalCustomerId");
+    kratuIndexes.add("day");
+    entityPersister.createIndex(Kratu.class, kratuIndexes);
   }
 }
