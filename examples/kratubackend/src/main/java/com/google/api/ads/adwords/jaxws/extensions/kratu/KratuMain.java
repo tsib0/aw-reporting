@@ -60,6 +60,8 @@ import java.util.Scanner;
  */
 public class KratuMain {
 
+  private static final int DEFAULT_SERVER_PORT = 8081; 
+  
   /**
    * The DB type key specified in the properties file.
    */
@@ -110,7 +112,14 @@ public class KratuMain {
         
         updateAccounts(null, mccAccountId);
 
-        RestServer.createRestServer(appCtx, propertiesPath);
+        // Set the server port from the properties file or use 8081 as default. 
+        int serverPort = DEFAULT_SERVER_PORT;
+        String strServerPort = properties.getProperty("serverport");
+        if (strServerPort != null && strServerPort.length() > 0) {
+          serverPort = Integer.valueOf(strServerPort);
+        }        
+
+        RestServer.createRestServer(appCtx, propertiesPath, serverPort);
 
       } else {
         if (cmdLine.hasOption("startDate") && cmdLine.hasOption("endDate")) {
