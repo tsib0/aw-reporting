@@ -44,11 +44,11 @@ import java.io.File;
  */
 public class RestServer extends Application {
 
-  public static void createRestServer(ApplicationContext appCtx, String propertiesPath) throws Exception {
+  public static void createRestServer(ApplicationContext appCtx, String propertiesPath, int port) throws Exception {
 
     // Create a component
     Component component = new Component();
-    component.getServers().add(Protocol.HTTP, 8081);
+    component.getServers().add(Protocol.HTTP, port);
     component.getClients().add(Protocol.FILE);
 
     Context context = component.getContext().createChildContext();
