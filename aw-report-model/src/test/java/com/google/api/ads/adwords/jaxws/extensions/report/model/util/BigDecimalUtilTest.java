@@ -25,7 +25,6 @@ import java.math.BigDecimal;
  */
 public class BigDecimalUtilTest {
 
-
   /**
    * Tests the American number format parsing. (##,###,###.00)
    */
@@ -66,4 +65,37 @@ public class BigDecimalUtilTest {
 
   }
 
+  /**
+   * Tests Comma rounding
+   */
+  @Test
+  public void testRoundingComma() {
+    
+    String sparseString = "0,39";
+    BigDecimal parsed = BigDecimalUtil.parseFromNumberString(sparseString);
+    Assert.assertEquals(
+        "The parsed value is not the expected.", 0.39, parsed.doubleValue());
+
+    sparseString = "33,33";
+    parsed = BigDecimalUtil.parseFromNumberString(sparseString);
+    Assert.assertEquals(
+        "The parsed value is not the expected.", 33.33, parsed.doubleValue());
+  }
+
+  /**
+   * Tests Dot rounding
+   */
+  @Test
+  public void testRoundingDot() {
+
+    String sparseString = "0.39";
+    BigDecimal parsed = BigDecimalUtil.parseFromNumberString(sparseString);
+    Assert.assertEquals(
+        "The parsed value is not the expected.", 0.39, parsed.doubleValue());
+
+    sparseString = "33.33";
+    parsed = BigDecimalUtil.parseFromNumberString(sparseString);
+    Assert.assertEquals(
+        "The parsed value is not the expected.", 33.33, parsed.doubleValue());
+  }
 }
