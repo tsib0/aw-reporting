@@ -177,7 +177,8 @@ public class ReportKeywordDefinitionTest extends AbstractReportDefinitionTest<Re
         "KeywordMatchType",
         "KeywordText",
         "DestinationUrl",
-        "IsNegative"
+        "IsNegative",
+        "CampaignName"
         };
   }
 }
