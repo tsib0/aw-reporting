@@ -67,6 +67,10 @@ public class ReportKeyword extends ReportBase {
   @CsvField(value = "Campaign ID", reportField = "CampaignId")
   private Long campaignId;
 
+  @Column(name = "CAMPAIGN_NAME", length = 255)
+  @CsvField(value = "Campaign", reportField = "CampaignName")
+  private String campaignName;
+
   @Column(name = "STATUS", length = 32)
   @CsvField(value = "Keyword state", reportField = "Status")
   private String status;
@@ -207,6 +211,15 @@ public class ReportKeyword extends ReportBase {
     this.campaignId = campaignId;
   }
 
+  // campaignName
+  public String getCampaignName() {
+    return campaignName;
+  }
+
+  public void setCampaignName(String campaignName) {
+    this.campaignName = campaignName;
+  }
+  
   // status
   public String getStatus() {
     return status;
