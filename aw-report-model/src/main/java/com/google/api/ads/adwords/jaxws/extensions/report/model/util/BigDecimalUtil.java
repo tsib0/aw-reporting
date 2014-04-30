@@ -60,7 +60,11 @@ public class BigDecimalUtil {
 
       if (indexOfComma < indexOfDot) {
         nonSpacedString = nonSpacedString.replaceAll("[,]", "");
-        format = new DecimalFormat("##.#");
+        
+        
+        DecimalFormatSymbols otherSymbols = new DecimalFormatSymbols();
+        otherSymbols.setDecimalSeparator('.');
+        format = new DecimalFormat("##.#", otherSymbols);
 
       } else if (indexOfComma > indexOfDot) {
         nonSpacedString = nonSpacedString.replaceAll("[.]", "");

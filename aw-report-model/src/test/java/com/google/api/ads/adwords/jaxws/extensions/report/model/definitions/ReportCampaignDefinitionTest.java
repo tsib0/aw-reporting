@@ -49,19 +49,19 @@ public class ReportCampaignDefinitionTest extends AbstractReportDefinitionTest<R
 
     Assert.assertEquals(1252422563L, first.getAccountId().longValue());
     Assert.assertEquals("2013-05-01", first.getDay());
-    Assert.assertEquals("1.11", first.getCost());
+    Assert.assertEquals(1.11, first.getCostBigDecimal().doubleValue());
     Assert.assertEquals(5L, first.getClicks().longValue());
     Assert.assertEquals(927L, first.getImpressions().longValue());
     Assert.assertEquals(0L, first.getConversions().longValue());
-    Assert.assertEquals("0.54", first.getCtr());
-    Assert.assertEquals("1.20", first.getAvgCpm());
-    Assert.assertEquals("0.22", first.getAvgCpc());
-    Assert.assertEquals("3.59", first.getAvgPosition());
+    Assert.assertEquals(0.54, first.getCtrBigDecimal().doubleValue());
+    Assert.assertEquals(1.20, first.getAvgCpmBigDecimal().doubleValue());
+    Assert.assertEquals(0.22, first.getAvgCpcBigDecimal().doubleValue());
+    Assert.assertEquals(3.59, first.getAvgPositionBigDecimal().doubleValue());
     Assert.assertEquals("EUR", first.getCurrencyCode());
 
     Assert.assertEquals(132449648L, first.getCampaignId().longValue());
     Assert.assertEquals("active", first.getStatus());
-    Assert.assertEquals("1.00", first.getBudget());
+    Assert.assertEquals(1.00, first.getBudgetBigDecimal().doubleValue());
 
   }
 
@@ -75,19 +75,19 @@ public class ReportCampaignDefinitionTest extends AbstractReportDefinitionTest<R
 
     Assert.assertEquals(1252422563L, last.getAccountId().longValue());
     Assert.assertEquals("2013-05-10", last.getDay());
-    Assert.assertEquals("0.88", last.getCost());
+    Assert.assertEquals(0.88, last.getCostBigDecimal().doubleValue());
     Assert.assertEquals(6L, last.getClicks().longValue());
     Assert.assertEquals(757L, last.getImpressions().longValue());
     Assert.assertEquals(0L, last.getConversions().longValue());
-    Assert.assertEquals("0.79", last.getCtr());
-    Assert.assertEquals("1.16", last.getAvgCpm());
-    Assert.assertEquals("0.15", last.getAvgCpc());
-    Assert.assertEquals("3.21", last.getAvgPosition());
+    Assert.assertEquals(0.79, last.getCtrBigDecimal().doubleValue());
+    Assert.assertEquals(1.16, last.getAvgCpmBigDecimal().doubleValue());
+    Assert.assertEquals(0.15, last.getAvgCpcBigDecimal().doubleValue());
+    Assert.assertEquals(3.21, last.getAvgPositionBigDecimal().doubleValue());
     Assert.assertEquals("EUR", last.getCurrencyCode());
 
     Assert.assertEquals(132449648L, last.getCampaignId().longValue());
     Assert.assertEquals("active", last.getStatus());
-    Assert.assertEquals("1.00", last.getBudget());
+    Assert.assertEquals(1.00, last.getBudgetBigDecimal().doubleValue());
 
   }
 
