@@ -49,21 +49,21 @@ public class ReportKeywordDefinitionTest extends AbstractReportDefinitionTest<Re
 
     Assert.assertEquals(8661954824L, first.getAccountId().longValue());
     Assert.assertEquals("2013-05-01", first.getDay());
-    Assert.assertEquals("0.00", first.getCost());
+    Assert.assertEquals(0.00, first.getCostBigDecimal().doubleValue());
     Assert.assertEquals(0L, first.getClicks().longValue());
     Assert.assertEquals(20L, first.getImpressions().longValue());
     Assert.assertEquals(0L, first.getConversions().longValue());
-    Assert.assertEquals("0.00", first.getCtr());
-    Assert.assertEquals("0.00", first.getAvgCpm());
-    Assert.assertEquals("0.00", first.getAvgCpc());
-    Assert.assertEquals("4.50", first.getAvgPosition());
+    Assert.assertEquals(0.00, first.getCtrBigDecimal().doubleValue());
+    Assert.assertEquals(0.00, first.getAvgCpmBigDecimal().doubleValue());
+    Assert.assertEquals(0.00, first.getAvgCpcBigDecimal().doubleValue());
+    Assert.assertEquals(4.50, first.getAvgPositionBigDecimal().doubleValue());
     Assert.assertEquals("EUR", first.getCurrencyCode());
 
     Assert.assertEquals(86352677L, first.getCampaignId().longValue());
     Assert.assertEquals(3398915357L, first.getAdGroupId().longValue());
     Assert.assertEquals(41933620L, first.getKeywordId().longValue());
     Assert.assertEquals("enabled", first.getStatus());
-    Assert.assertEquals("10.00", first.getQualityScore());
+    Assert.assertEquals(10.00, first.getQualityScoreAsBigDecimal().doubleValue());
     Assert.assertEquals("Broad", first.getKeywordMatchType());
     Assert.assertEquals("achat forêt", first.getKeywordText());
     Assert.assertEquals("", first.getDestinationUrl());
@@ -81,21 +81,21 @@ public class ReportKeywordDefinitionTest extends AbstractReportDefinitionTest<Re
 
     Assert.assertEquals(8661954824L, last.getAccountId().longValue());
     Assert.assertEquals("2013-05-10", last.getDay());
-    Assert.assertEquals("0.00", last.getCost());
+    Assert.assertEquals(0.00, last.getCostBigDecimal().doubleValue());
     Assert.assertEquals(0L, last.getClicks().longValue());
     Assert.assertEquals(1L, last.getImpressions().longValue());
     Assert.assertEquals(0L, last.getConversions().longValue());
-    Assert.assertEquals("0.00", last.getCtr());
-    Assert.assertEquals("0.00", last.getAvgCpm());
-    Assert.assertEquals("0.00", last.getAvgCpc());
-    Assert.assertEquals("6.00", last.getAvgPosition());
+    Assert.assertEquals(0.00, last.getCtrBigDecimal().doubleValue());
+    Assert.assertEquals(0.00, last.getAvgCpmBigDecimal().doubleValue());
+    Assert.assertEquals(0.00, last.getAvgCpcBigDecimal().doubleValue());
+    Assert.assertEquals(6.00, last.getAvgPositionBigDecimal().doubleValue());
     Assert.assertEquals("EUR", last.getCurrencyCode());
 
     Assert.assertEquals(86352677L, last.getCampaignId().longValue());
     Assert.assertEquals(3398915357L, last.getAdGroupId().longValue());
     Assert.assertEquals(44877775648L, last.getKeywordId().longValue());
     Assert.assertEquals("enabled", last.getStatus());
-    Assert.assertEquals("10.00", last.getQualityScore());
+    Assert.assertEquals(10.00, last.getQualityScoreAsBigDecimal().doubleValue());
     Assert.assertEquals("Broad", last.getKeywordMatchType());
     Assert.assertEquals("propriete sologne a vendre", last.getKeywordText());
     Assert.assertEquals("", last.getDestinationUrl());

@@ -48,14 +48,14 @@ public class ReportAdDefinitionTest extends AbstractReportDefinitionTest<ReportA
 
     Assert.assertEquals(1001270004L, first.getAccountId().longValue());
     Assert.assertEquals("2013-05-01", first.getDay());
-    Assert.assertEquals("9.39", first.getCost());
+    Assert.assertEquals(9.39, first.getCostBigDecimal().doubleValue());
     Assert.assertEquals(32L, first.getClicks().longValue());
     Assert.assertEquals(1258L, first.getImpressions().longValue());
     Assert.assertEquals(0L, first.getConversions().longValue());
-    Assert.assertEquals("2.54", first.getCtr());
-    Assert.assertEquals("7.46", first.getAvgCpm());
-    Assert.assertEquals("0.29", first.getAvgCpc());
-    Assert.assertEquals("2.12", first.getAvgPosition());
+    Assert.assertEquals(2.54, first.getCtrBigDecimal().doubleValue());
+    Assert.assertEquals(7.46, first.getAvgCpmBigDecimal().doubleValue());
+    Assert.assertEquals(0.29, first.getAvgCpcBigDecimal().doubleValue());
+    Assert.assertEquals(2.12, first.getAvgPositionBigDecimal().doubleValue());
     Assert.assertEquals("EUR", first.getCurrencyCode());
 
     Assert.assertEquals(132958027L, first.getCampaignId().longValue());
@@ -76,14 +76,14 @@ public class ReportAdDefinitionTest extends AbstractReportDefinitionTest<ReportA
 
     Assert.assertEquals(1001270004L, last.getAccountId().longValue());
     Assert.assertEquals("2013-05-10", last.getDay());
-    Assert.assertEquals("1.46", last.getCost());
+    Assert.assertEquals(1.46, last.getCostBigDecimal().doubleValue());
     Assert.assertEquals(2L, last.getClicks().longValue());
     Assert.assertEquals(58L, last.getImpressions().longValue());
     Assert.assertEquals(0L, last.getConversions().longValue());
-    Assert.assertEquals("3.45", last.getCtr());
-    Assert.assertEquals("25.17", last.getAvgCpm());
-    Assert.assertEquals("0.73", last.getAvgCpc());
-    Assert.assertEquals("3.29", last.getAvgPosition());
+    Assert.assertEquals(3.45, last.getCtrBigDecimal().doubleValue());
+    Assert.assertEquals(25.17, last.getAvgCpmBigDecimal().doubleValue());
+    Assert.assertEquals(0.73, last.getAvgCpcBigDecimal().doubleValue());
+    Assert.assertEquals(3.29, last.getAvgPositionBigDecimal().doubleValue());
     Assert.assertEquals("EUR", last.getCurrencyCode());
 
     Assert.assertEquals(132958027L, last.getCampaignId().longValue());
