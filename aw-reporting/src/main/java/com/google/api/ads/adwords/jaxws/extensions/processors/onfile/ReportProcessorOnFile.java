@@ -148,6 +148,7 @@ public class ReportProcessorOnFile extends ReportProcessor {
    * @param accountIdsSet
    *            the set with all the accounts
    */
+  @Override
   protected void cacheAccounts(Set<Long> accountIdsSet) {
 
     DateTime now = new DateTime();
@@ -188,6 +189,7 @@ public class ReportProcessorOnFile extends ReportProcessor {
    * @throws Exception
    *             error reaching the API.
    */
+  @Override
   public void generateReportsForMCC(
       String userId, String mccAccountId,
       ReportDefinitionDateRangeType dateRangeType, String dateStart,
