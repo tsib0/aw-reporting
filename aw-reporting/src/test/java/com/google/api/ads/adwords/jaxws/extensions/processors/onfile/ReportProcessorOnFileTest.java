@@ -90,9 +90,9 @@ public class ReportProcessorOnFileTest {
 
   private static final Set<Long> CIDS = ImmutableSet.of(1L, 2L, 3L, 4L, 5L, 6L, 7L, 8L, 9L, 10L);
 
-  private static final int REPORT_TYPES_SIZE = 10;
+  private static final int REPORT_TYPES_SIZE = 11;
 
-  private static final int ROW_COUNT_CSV_TOTAL = 270;
+  private static final int ROW_COUNT_CSV_TOTAL = 280;
 
   @Captor
   ArgumentCaptor<List<? extends Report>> reportEntitiesCaptor;
@@ -217,6 +217,11 @@ public class ReportProcessorOnFileTest {
         if (reportType.equals(ReportDefinitionReportType.SEARCH_QUERY_PERFORMANCE_REPORT)) {
           return getReportFiles(
               "reportDownload-SEARCH_QUERY_PERFORMANCE_REPORT-2084918008-570857839140990020.report",
+              numberOfFiles);
+        }
+        if (reportType.equals(ReportDefinitionReportType.CAMPAIGN_LOCATION_TARGET_REPORT)) {
+          return getReportFiles(
+              "reportDownload-CAMPAIGN_LOCATION_TARGET_REPORT-9250931436-3311462434933679712.report",
               numberOfFiles);
         }
         // Undefined report type on this test

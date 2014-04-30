@@ -49,10 +49,9 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
 /**
- * Main reporting processor responsible for downloading and saving the files to
- * the file system. The persistence of the parsed beans is delegated to the
- * configured persister.
- * 
+ * Main reporting processor responsible for downloading and saving the files to the file system. The
+ * persistence of the parsed beans is delegated to the configured persister.
+ *
  * @author jtoledo@google.com (Julian Toledo)
  * @author gustavomoreira@google.com (Gustavo Moreira)
  */
@@ -62,20 +61,15 @@ public class ReportProcessorOnFile extends ReportProcessor {
 
   private static final Logger LOGGER = Logger.getLogger(ReportProcessorOnFile.class);
 
-  private static final DateFormat TIMESTAMPFORMAT = new SimpleDateFormat(
-      "yyyy-MM-dd-HH_mm");
+  private static final DateFormat TIMESTAMPFORMAT = new SimpleDateFormat("yyyy-MM-dd-HH_mm");
 
   private MultipleClientReportDownloader multipleClientReportDownloader;
 
   /**
    * Constructor.
-   * 
-   * @param mccAccountId
-   *            the MCC account ID
-   * @param reportRowsSetSize
-   *            the size of the set parsed before send to the DB
-   * @param numberOfReportProcessors
-   *            the number of numberOfReportProcessors threads to be run
+   *
+   * @param reportRowsSetSize the size of the set parsed before send to the DB
+   * @param numberOfReportProcessors the number of numberOfReportProcessors threads to be run
    */
   @Autowired
   public ReportProcessorOnFile(
@@ -90,16 +84,16 @@ public class ReportProcessorOnFile extends ReportProcessor {
     }
   }
 
-  private <R extends Report> void processFiles(
-      String userId, String mccAccountId,
+  private <R extends Report> void processFiles(String userId,
+      String mccAccountId,
       Class<R> reportBeanClass,
       Collection<File> localFiles,
-      ReportDefinitionDateRangeType dateRangeType, String dateStart,
+      ReportDefinitionDateRangeType dateRangeType,
+      String dateStart,
       String dateEnd) {
 
     final CountDownLatch latch = new CountDownLatch(localFiles.size());
-    ExecutorService executorService = Executors
-        .newFixedThreadPool(numberOfReportProcessors);
+    ExecutorService executorService = Executors.newFixedThreadPool(numberOfReportProcessors);
 
     // Processing Report Local Files
     LOGGER.info(" Procesing reports...");
@@ -111,20 +105,23 @@ public class ReportProcessorOnFile extends ReportProcessor {
       try {
 
         ModifiedCsvToBean<R> csvToBean = new ModifiedCsvToBean<R>();
-        MappingStrategy<R> mappingStrategy = new AnnotationBasedMappingStrategy<R>(
-            reportBeanClass);
+        MappingStrategy<R> mappingStrategy = new AnnotationBasedMappingStrategy<R>(reportBeanClass);
 
         LOGGER.debug("Parsing file: " + file.getAbsolutePath());
-        RunnableProcessorOnFile<R> runnableProcesor = new RunnableProcessorOnFile<R>(
-            file, csvToBean, mappingStrategy, dateRangeType,
-            dateStart, dateEnd, mccAccountId, persister,
+        RunnableProcessorOnFile<R> runnableProcesor = new RunnableProcessorOnFile<R>(file,
+            csvToBean,
+            mappingStrategy,
+            dateRangeType,
+            dateStart,
+            dateEnd,
+            mccAccountId,
+            persister,
             reportRowsSetSize);
         runnableProcesor.setLatch(latch);
         executorService.execute(runnableProcesor);
 
       } catch (Exception e) {
-        LOGGER.error("Ignoring file (Error when processing): "
-            + file.getAbsolutePath());
+        LOGGER.error("Ignoring file (Error when processing): " + file.getAbsolutePath());
         e.printStackTrace();
       }
     }
@@ -138,15 +135,13 @@ public class ReportProcessorOnFile extends ReportProcessor {
     executorService.shutdown();
     stopwatch.stop();
     LOGGER.info("*** Finished processing all reports in "
-        + (stopwatch.elapsed(TimeUnit.MILLISECONDS) / 1000)
-        + " seconds ***\n");
+        + (stopwatch.elapsed(TimeUnit.MILLISECONDS) / 1000) + " seconds ***\n");
   }
 
   /**
    * Caches the accounts into a temporary file.
-   * 
-   * @param accountIdsSet
-   *            the set with all the accounts
+   *
+   * @param accountIdsSet the set with all the accounts
    */
   @Override
   protected void cacheAccounts(Set<Long> accountIdsSet) {
@@ -155,10 +150,8 @@ public class ReportProcessorOnFile extends ReportProcessor {
     String nowFormat = TIMESTAMPFORMAT.format(now.toDate());
 
     try {
-      File tempFile = File.createTempFile(nowFormat + "-accounts-ids",
-          ".txt");
-      LOGGER.info("Cache file created for accounts: "
-          + tempFile.getAbsolutePath());
+      File tempFile = File.createTempFile(nowFormat + "-accounts-ids", ".txt");
+      LOGGER.info("Cache file created for accounts: " + tempFile.getAbsolutePath());
 
       FileWriter writer = new FileWriter(tempFile);
       for (Long accountId : accountIdsSet) {
@@ -175,26 +168,22 @@ public class ReportProcessorOnFile extends ReportProcessor {
 
   /**
    * Generate all the mapped reports to the given account IDs.
-   * 
-   * @param dateRangeType
-   *            the date range type.
-   * @param dateStart
-   *            the starting date.
-   * @param dateEnd
-   *            the ending date.
-   * @param accountIdsSet
-   *            the account IDs.
-   * @param properties
-   *            the properties file
-   * @throws Exception
-   *             error reaching the API.
+   *
+   * @param dateRangeType the date range type.
+   * @param dateStart the starting date.
+   * @param dateEnd the ending date.
+   * @param accountIdsSet the account IDs.
+   * @param properties the properties file
+   * @throws Exception error reaching the API.
    */
   @Override
-  public void generateReportsForMCC(
-      String userId, String mccAccountId,
-      ReportDefinitionDateRangeType dateRangeType, String dateStart,
-      String dateEnd, Set<Long> accountIdsSet, Properties properties)
-          throws Exception {
+  public void generateReportsForMCC(String userId,
+      String mccAccountId,
+      ReportDefinitionDateRangeType dateRangeType,
+      String dateStart,
+      String dateEnd,
+      Set<Long> accountIdsSet,
+      Properties properties) throws Exception {
 
     LOGGER.info("*** Retrieving account IDs ***");
 
@@ -206,19 +195,24 @@ public class ReportProcessorOnFile extends ReportProcessor {
 
     AdWordsSession.Builder builder = authenticator.authenticate(userId, mccAccountId, false);
 
-    LOGGER.info("*** Generating Reports for " + accountIdsSet.size()
-        + " accounts ***");
+    LOGGER.info("*** Generating Reports for " + accountIdsSet.size() + " accounts ***");
 
     Stopwatch stopwatch = Stopwatch.createStarted();
 
-    Set<ReportDefinitionReportType> reports = this.csvReportEntitiesMapping
-        .getDefinedReports();
+    Set<ReportDefinitionReportType> reports = this.csvReportEntitiesMapping.getDefinedReports();
 
     // reports
     for (ReportDefinitionReportType reportType : reports) {
       if (properties.containsKey(reportType.name())) {
-        this.downloadAndProcess(userId, mccAccountId, builder, reportType, dateRangeType,
-            dateStart, dateEnd, accountIdsSet, properties);
+        this.downloadAndProcess(userId,
+            mccAccountId,
+            builder,
+            reportType,
+            dateRangeType,
+            dateStart,
+            dateEnd,
+            accountIdsSet,
+            properties);
       }
     }
 
@@ -226,35 +220,30 @@ public class ReportProcessorOnFile extends ReportProcessor {
 
     stopwatch.stop();
     LOGGER.info("*** Finished processing all reports in "
-        + (stopwatch.elapsed(TimeUnit.MILLISECONDS) / 1000)
-        + " seconds ***\n");
+        + (stopwatch.elapsed(TimeUnit.MILLISECONDS) / 1000) + " seconds ***\n");
   }
 
   /**
-   * Downloads all the files from the API and process all the rows, saving the
-   * data to the configured data base.
-   * 
-   * @param builder
-   *            the session builder.
-   * @param reportType
-   *            the report type.
-   * @param dateRangeType
-   *            the date range type.
-   * @param dateStart
-   *            the start date.
-   * @param dateEnd
-   *            the ending date.
-   * @param acountIdList
-   *            the account IDs.
-   * @param properties
-   *            the properties resource.
+   * Downloads all the files from the API and process all the rows, saving the data to the
+   * configured data base.
+   *
+   * @param builder the session builder.
+   * @param reportType the report type.
+   * @param dateRangeType the date range type.
+   * @param dateStart the start date.
+   * @param dateEnd the ending date.
+   * @param acountIdList the account IDs.
+   * @param properties the properties resource.
    */
-  private <R extends Report> void downloadAndProcess(
-      String userId, String mccAccountId,
+  private <R extends Report> void downloadAndProcess(String userId,
+      String mccAccountId,
       AdWordsSession.Builder builder,
       ReportDefinitionReportType reportType,
-      ReportDefinitionDateRangeType dateRangeType, String dateStart,
-      String dateEnd, Set<Long> acountIdList, Properties properties) {
+      ReportDefinitionDateRangeType dateRangeType,
+      String dateStart,
+      String dateEnd,
+      Set<Long> acountIdList,
+      Properties properties) {
 
     // Download Reports to local files and Generate Report objects
     LOGGER.info("\n\n ** Generating: " + reportType.name() + " **");
@@ -262,11 +251,11 @@ public class ReportProcessorOnFile extends ReportProcessor {
     Collection<File> localFiles = Lists.newArrayList();
     try {
 
-      ReportDefinition reportDefinition = getReportDefinition(reportType,
-          dateRangeType, dateStart, dateEnd, properties);
+      ReportDefinition reportDefinition =
+          getReportDefinition(reportType, dateRangeType, dateStart, dateEnd, properties);
 
-      localFiles = this.multipleClientReportDownloader.downloadReports(
-          builder, reportDefinition, acountIdList);
+      localFiles = this.multipleClientReportDownloader.downloadReports(builder, reportDefinition,
+          acountIdList);
 
     } catch (InterruptedException e) {
       LOGGER.error(e.getMessage());
@@ -274,54 +263,57 @@ public class ReportProcessorOnFile extends ReportProcessor {
       return;
     }
 
-    this.processLocalFiles(userId, mccAccountId, reportType, localFiles, dateStart, dateEnd,
+    this.processLocalFiles(userId,
+        mccAccountId,
+        reportType,
+        localFiles,
+        dateStart,
+        dateEnd,
         dateRangeType);
 
     this.deleteTemporaryFiles(localFiles, reportType);
   }
 
   /**
-   * Process the local files delegating the call to the concrete
-   * implementation.
-   * 
-   * @param reportType
-   *            the report type.
-   * @param localFiles
-   *            the local files.
-   * @param dateStart
-   *            the start date.
-   * @param dateEnd
-   *            the end date.
-   * @param dateRangeType
-   *            the date range type.
+   * Process the local files delegating the call to the concrete implementation.
+   *
+   * @param reportType the report type.
+   * @param localFiles the local files.
+   * @param dateStart the start date.
+   * @param dateEnd the end date.
+   * @param dateRangeType the date range type.
    */
-  private <R extends Report> void processLocalFiles(
-      String userId, String mccAccountId,
-      ReportDefinitionReportType reportType, Collection<File> localFiles,
-      String dateStart, String dateEnd,
+  private <R extends Report> void processLocalFiles(String userId,
+      String mccAccountId,
+      ReportDefinitionReportType reportType,
+      Collection<File> localFiles,
+      String dateStart,
+      String dateEnd,
       ReportDefinitionDateRangeType dateRangeType) {
 
     Stopwatch stopwatch = Stopwatch.createStarted();
 
     @SuppressWarnings("unchecked")
-    Class<R> reportBeanClass = (Class<R>) this.csvReportEntitiesMapping
-    .getReportBeanClass(reportType);
-    this.processFiles(userId, mccAccountId, reportBeanClass, localFiles, dateRangeType,
-        dateStart, dateEnd);
+    Class<R> reportBeanClass =
+        (Class<R>) this.csvReportEntitiesMapping.getReportBeanClass(reportType);
+    this.processFiles(userId,
+        mccAccountId,
+        reportBeanClass,
+        localFiles,
+        dateRangeType,
+        dateStart,
+        dateEnd);
 
     stopwatch.stop();
-    LOGGER.info("\n* DB Process finished in "
-        + (stopwatch.elapsed(TimeUnit.MILLISECONDS) / 1000)
+    LOGGER.info("\n* DB Process finished in " + (stopwatch.elapsed(TimeUnit.MILLISECONDS) / 1000)
         + " seconds ***");
   }
 
   /**
    * Deletes the local files used as temporary containers.
-   * 
-   * @param localFiles
-   *            the list of local files.
-   * @param reportType
-   *            the report type.
+   *
+   * @param localFiles the list of local files.
+   * @param reportType the report type.
    */
   private void deleteTemporaryFiles(Collection<File> localFiles,
       ReportDefinitionReportType reportType) {
@@ -338,8 +330,7 @@ public class ReportProcessorOnFile extends ReportProcessor {
   }
 
   /**
-   * @param multipleClientReportDownloader
-   *            the multipleClientReportDownloader to set
+   * @param multipleClientReportDownloader the multipleClientReportDownloader to set
    */
   @Autowired
   public void setMultipleClientReportDownloader(
