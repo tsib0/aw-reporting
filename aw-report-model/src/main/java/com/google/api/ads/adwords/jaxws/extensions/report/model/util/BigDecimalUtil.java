@@ -60,15 +60,15 @@ public class BigDecimalUtil {
 
       if (indexOfComma < indexOfDot) {
         nonSpacedString = nonSpacedString.replaceAll("[,]", "");
-        
-        
+
+
         DecimalFormatSymbols otherSymbols = new DecimalFormatSymbols();
         otherSymbols.setDecimalSeparator('.');
         format = new DecimalFormat("##.#", otherSymbols);
 
       } else if (indexOfComma > indexOfDot) {
         nonSpacedString = nonSpacedString.replaceAll("[.]", "");
-        
+
         DecimalFormatSymbols otherSymbols = new DecimalFormatSymbols();
         otherSymbols.setDecimalSeparator(',');
         format = new DecimalFormat("##,#", otherSymbols);
@@ -78,8 +78,7 @@ public class BigDecimalUtil {
       }
 
       try {
-        return new BigDecimal(format.parse(nonSpacedString).doubleValue(),
-            new MathContext(12));
+        return new BigDecimal(format.parse(nonSpacedString).doubleValue(), new MathContext(12));
 
       } catch (ParseException e) {
         // unrecognized number format
@@ -94,9 +93,12 @@ public class BigDecimalUtil {
    * Formats the given {@code BigDecimal} to a readable String.
    *
    * @param number the {@code BigDecimal} to be formatted
-   * @return the formatted number with precision two
+   * @return the formatted number with precision two. Null in case of null object
    */
   public static String formatAsReadable(BigDecimal number) {
+    if (number == null) {
+      return null;
+    }
     return humanReadableFormat.format(number);
   }
 

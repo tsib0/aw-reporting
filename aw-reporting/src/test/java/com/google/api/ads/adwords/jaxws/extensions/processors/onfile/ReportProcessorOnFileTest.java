@@ -80,7 +80,7 @@ public class ReportProcessorOnFileTest {
 
   @Spy
   private ReportProcessorOnFile reportProcessorOnFile;
-  
+
   @Mock
   private Authenticator authenticator;
 
@@ -90,9 +90,9 @@ public class ReportProcessorOnFileTest {
 
   private static final Set<Long> CIDS = ImmutableSet.of(1L, 2L, 3L, 4L, 5L, 6L, 7L, 8L, 9L, 10L);
 
-  private static final int REPORT_TYPES_SIZE = 9;
+  private static final int REPORT_TYPES_SIZE = 10;
 
-  private static final int ROW_COUNT_CSV_TOTAL = 260;
+  private static final int ROW_COUNT_CSV_TOTAL = 270;
 
   @Captor
   ArgumentCaptor<List<? extends Report>> reportEntitiesCaptor;
@@ -105,7 +105,8 @@ public class ReportProcessorOnFileTest {
     appCtx = new ClassPathXmlApplicationContext("classpath:aw-report-test-beans.xml");
 
     reportProcessorOnFile = new ReportProcessorOnFile(10, 2);
-    authenticator = new InstalledOAuth2Authenticator("DevToken","ClientId", "ClientSecret", ReportWriterType.FileSystemWriter);
+    authenticator = new InstalledOAuth2Authenticator("DevToken", "ClientId", "ClientSecret",
+        ReportWriterType.FileSystemWriter);
 
     MockitoAnnotations.initMocks(this);
 
@@ -118,33 +119,39 @@ public class ReportProcessorOnFileTest {
         return null;
       }
     }).when(mockedReportEntitiesPersister)
-    .persistReportEntities(Mockito.<List<? extends Report>>anyObject());
+        .persistReportEntities(Mockito.<List<? extends Report>>anyObject());
 
     mockDownloadReports(CIDS.size());
 
     reportProcessorOnFile.setMultipleClientReportDownloader(mockedMultipleClientReportDownloader);
     reportProcessorOnFile.setPersister(mockedReportEntitiesPersister);
-    reportProcessorOnFile.setCsvReportEntitiesMapping(appCtx.getBean(CsvReportEntitiesMapping.class));    
+    reportProcessorOnFile.setCsvReportEntitiesMapping(
+        appCtx.getBean(CsvReportEntitiesMapping.class));
     reportProcessorOnFile.setAuthentication(authenticator);
 
     // Mocking the Authentication because in OAuth2 we are force to call buildOAuth2Credentials
     AdWordsSession.Builder builder = new AdWordsSession.Builder().withClientCustomerId("1");
-    Mockito.doReturn(builder).when(authenticator).authenticate(Mockito.anyString(),
-        Mockito.anyString(), Mockito.anyBoolean());
+    Mockito.doReturn(builder).when(authenticator)
+        .authenticate(Mockito.anyString(), Mockito.anyString(), Mockito.anyBoolean());
   }
 
   @Test
   public void testGenerateReportsForMCC() throws Exception {
 
-    reportProcessorOnFile.generateReportsForMCC(null, "123", 
-        ReportDefinitionDateRangeType.CUSTOM_DATE, "20130101", "20130131", CIDS, properties);
+    reportProcessorOnFile.generateReportsForMCC(null,
+        "123",
+        ReportDefinitionDateRangeType.CUSTOM_DATE,
+        "20130101",
+        "20130131",
+        CIDS,
+        properties);
 
     verify(mockedMultipleClientReportDownloader, times(REPORT_TYPES_SIZE)).downloadReports(
         Mockito.<AdWordsSession.Builder>anyObject(), Mockito.<ReportDefinition>anyObject(),
         Mockito.<Set<Long>>anyObject());
 
-    verify(mockedReportEntitiesPersister, times(ROW_COUNT_CSV_TOTAL))
-    .persistReportEntities(reportEntitiesCaptor.capture());
+    verify(mockedReportEntitiesPersister, times(ROW_COUNT_CSV_TOTAL)).persistReportEntities(
+        reportEntitiesCaptor.capture());
 
     assertEquals(ROW_COUNT_CSV_TOTAL, reportEntitiesCaptor.getAllValues().size());
     for (List<? extends Report> reportEntities : reportEntitiesCaptor.getAllValues()) {
@@ -184,10 +191,8 @@ public class ReportProcessorOnFileTest {
         }
         if (reportType.equals(
             ReportDefinitionReportType.CAMPAIGN_NEGATIVE_KEYWORDS_PERFORMANCE_REPORT)) {
-          return getReportFiles(
-              "reportDownload-CAMPAIGN_NEGATIVE_KEYWORDS_PERFORMANCE_REPORT" + 
-                  "-2602198216-1370029913872.report",
-                  numberOfFiles);
+          return getReportFiles("reportDownload-CAMPAIGN_NEGATIVE_KEYWORDS_PERFORMANCE_REPORT"
+              + "-2602198216-1370029913872.report", numberOfFiles);
         }
         if (reportType.equals(ReportDefinitionReportType.CAMPAIGN_PERFORMANCE_REPORT)) {
           return getReportFiles(
@@ -207,6 +212,11 @@ public class ReportProcessorOnFileTest {
         if (reportType.equals(ReportDefinitionReportType.CRITERIA_PERFORMANCE_REPORT)) {
           return getReportFiles(
               "reportDownload-CRITERIA_PERFORMANCE_REPORT-2752283680-1378903912127.report",
+              numberOfFiles);
+        }
+        if (reportType.equals(ReportDefinitionReportType.SEARCH_QUERY_PERFORMANCE_REPORT)) {
+          return getReportFiles(
+              "reportDownload-SEARCH_QUERY_PERFORMANCE_REPORT-2084918008-570857839140990020.report",
               numberOfFiles);
         }
         // Undefined report type on this test
