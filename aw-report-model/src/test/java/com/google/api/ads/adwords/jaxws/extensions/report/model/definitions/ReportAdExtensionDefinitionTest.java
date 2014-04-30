@@ -60,11 +60,11 @@ public class ReportAdExtensionDefinitionTest
     Assert.assertEquals(0L, first.getClicks().longValue());
     Assert.assertEquals(47L, first.getImpressions().longValue());
     Assert.assertEquals(0L, first.getConversions().longValue());
-    Assert.assertEquals("0.00", first.getCost());
-    Assert.assertEquals("0.00", first.getCtr());
-    Assert.assertEquals("0.00", first.getAvgCpc());
-    Assert.assertEquals("0.00", first.getAvgCpm());
-    Assert.assertEquals("4.51", first.getAvgPosition());
+    Assert.assertEquals(0.00, first.getCostBigDecimal().doubleValue());
+    Assert.assertEquals(0.00, first.getCtrBigDecimal().doubleValue());
+    Assert.assertEquals(0.00, first.getAvgCpcBigDecimal().doubleValue());
+    Assert.assertEquals(0.00, first.getAvgCpmBigDecimal().doubleValue());
+    Assert.assertEquals(4.51, first.getAvgPositionBigDecimal().doubleValue());
 
   }
 
@@ -89,11 +89,11 @@ public class ReportAdExtensionDefinitionTest
     Assert.assertEquals(0L, last.getClicks().longValue());
     Assert.assertEquals(1L, last.getImpressions().longValue());
     Assert.assertEquals(0L, last.getConversions().longValue());
-    Assert.assertEquals("0.00", last.getCost());
-    Assert.assertEquals("0.00", last.getCtr());
-    Assert.assertEquals("0.00", last.getAvgCpc());
-    Assert.assertEquals("0.00", last.getAvgCpm());
-    Assert.assertEquals("3.00", last.getAvgPosition());
+    Assert.assertEquals(0.00, last.getCostBigDecimal().doubleValue());
+    Assert.assertEquals(0.00, last.getCtrBigDecimal().doubleValue());
+    Assert.assertEquals(0.00, last.getAvgCpcBigDecimal().doubleValue());
+    Assert.assertEquals(0.00, last.getAvgCpmBigDecimal().doubleValue());
+    Assert.assertEquals(3.00, last.getAvgPositionBigDecimal().doubleValue());
 
   }
 
