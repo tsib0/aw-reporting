@@ -42,10 +42,10 @@ import javax.persistence.MappedSuperclass;
 
 /**
  * The base abstract class with base report fields
- * 
- * Fields from http://code.google.com/apis/adwords/docs/appendix/reports.html
- * Fields from http://code.google.com/apis/adwords/docs/reportguide.html
- * 
+ *
+ *  Fields from http://code.google.com/apis/adwords/docs/appendix/reports.html Fields from
+ * http://code.google.com/apis/adwords/docs/reportguide.html
+ *
  * @author jtoledo@google.com (Julian Toledo)
  * @author gustavomoreira@google.com (Gustavo Moreira)
  */
@@ -62,11 +62,11 @@ public abstract class ReportBase extends Report {
   @Column(name = "ACCOUNT_DESCRIPTIVE_NAME", length = 255)
   @CsvField(value = "Account", reportField = "AccountDescriptiveName")
   protected String accountDescriptiveName;
-  
+
   @Column(name = "ACCOUNTTIMEZONEID")
   @CsvField(value = "Time zone", reportField = "AccountTimeZoneId")
   protected String accountTimeZoneId;
-  
+
   @Column(name = "CUSTOMER_DESCRIPTIVE_NAME")
   @CsvField(value = "Client name", reportField = "CustomerDescriptiveName")
   protected String customerDescriptiveName;
@@ -96,7 +96,7 @@ public abstract class ReportBase extends Report {
   @Column(name = "WEEK")
   @CsvField(value = "Week", reportField = "Week")
   protected String week;
-  
+
   @Index
   @Column(name = "MONTH")
   @CsvField(value = "Month", reportField = "Month")
@@ -161,7 +161,7 @@ public abstract class ReportBase extends Report {
   protected String adNetworkPartners;
 
   // Conversion Columns
-  // Many Per Click 
+  // Many Per Click
   @Column(name = "CONVERSIONSMANYPERCLICK")
   @CsvField(value = "Conversions", reportField = "ConversionsManyPerClick")
   protected Long conversionsManyPerClick = 0L;
@@ -169,15 +169,15 @@ public abstract class ReportBase extends Report {
   @Column(name = "CONVERSIONRATEMANYPERCLICK")
   @CsvField(value = "Conv. rate", reportField = "ConversionRateManyPerClick")
   protected BigDecimal conversionRateManyPerClick;
-  
+
   @Column(name = "COSTPERCONVERSIONMANYPERCLICK")
-  @CsvField(value = "Cost / conv", reportField = "CostPerConversionManyPerClick")
+  @CsvField(value = "Cost / conv.", reportField = "CostPerConversionManyPerClick")
   protected BigDecimal costPerConversionManyPerClick;
-  
+
   @Column(name = "VALUEPERCONVMANYPERCLICK")
-  @CsvField(value = "Value / conv", reportField = "ValuePerConvManyPerClick")
+  @CsvField(value = "Value / conv.", reportField = "ValuePerConvManyPerClick")
   protected BigDecimal valuePerConvManyPerClick;
-  
+
   @Column(name = "VALUEPERCONVERSIONMANYPERCLICK")
   @CsvField(value = "Value / conv", reportField = "ValuePerConversionManyPerClick")
   protected BigDecimal valuePerConversionManyPerClick;
@@ -186,19 +186,19 @@ public abstract class ReportBase extends Report {
   @Column(name = "CONVERSIONS")
   @CsvField(value = "Converted clicks", reportField = "Conversions")
   protected Long conversions = 0L;
-  
+
   @Column(name = "CONVERSIONRATE")
   @CsvField(value = "Click conversion rate", reportField = "ConversionRate")
   protected BigDecimal conversionRate;
-  
+
   @Column(name = "COSTPERCONVERSION")
   @CsvField(value = "Cost / converted click", reportField = "CostPerConversion")
   protected BigDecimal costPerConversion;
-  
+
   @Column(name = "VALUEPERCONV")
   @CsvField(value = "Value / converted click", reportField = "ValuePerConv")
   protected BigDecimal valuePerConv;
-  
+
   @Column(name = "VALUEPERCONVERSION")
   @CsvField(value = "Value / converted click", reportField = "ValuePerConversion")
   protected BigDecimal valuePerConversion;
@@ -207,11 +207,11 @@ public abstract class ReportBase extends Report {
   @Column(name = "CONVERSIONCATEGORYNAME")
   @CsvField(value = "Conversion category", reportField = "ConversionCategoryName")
   protected String conversionCategoryName;
-  
+
   @Column(name = "CONVERSIONTYPENAME")
   @CsvField(value = "Conversion name", reportField = "ConversionTypeName")
   protected String conversionTypeName;
-  
+
   @Column(name = "CONVERSIONVALUE")
   @CsvField(value = "Total conv. value", reportField = "ConversionValue")
   protected BigDecimal conversionValue;
@@ -223,11 +223,9 @@ public abstract class ReportBase extends Report {
   private static final Map<String, DateRangeHandler> dateRangeHandlers = Maps.newHashMap();
 
   static {
-    dateRangeHandlers.put(
-        ReportDefinitionDateRangeType.LAST_14_DAYS.name(),
+    dateRangeHandlers.put(ReportDefinitionDateRangeType.LAST_14_DAYS.name(),
         new Last14DaysDateRangeHandler());
-    dateRangeHandlers.put(
-        ReportDefinitionDateRangeType.LAST_30_DAYS.name(),
+    dateRangeHandlers.put(ReportDefinitionDateRangeType.LAST_30_DAYS.name(),
         new Last30DaysDateRangeHandler());
     dateRangeHandlers.put(ReportDefinitionDateRangeType.LAST_7_DAYS.name(),
         new Last7DaysDateRangeHandler());
@@ -237,8 +235,7 @@ public abstract class ReportBase extends Report {
         new LastWeekDateRangeHandler());
     dateRangeHandlers.put(ReportDefinitionDateRangeType.THIS_MONTH.name(),
         new ThisMonthDateRangeHandler());
-    dateRangeHandlers.put(ReportDefinitionDateRangeType.TODAY.name(),
-        new TodayDateRangeHandler());
+    dateRangeHandlers.put(ReportDefinitionDateRangeType.TODAY.name(), new TodayDateRangeHandler());
     dateRangeHandlers.put(ReportDefinitionDateRangeType.YESTERDAY.name(),
         new YesterdayDateRangeHandler());
   }
@@ -285,14 +282,11 @@ public abstract class ReportBase extends Report {
     }
 
     if (this.getDateRangeType() != null) {
-      DateRangeHandler handler = dateRangeHandlers.get(this
-          .getDateRangeType());
+      DateRangeHandler handler = dateRangeHandlers.get(this.getDateRangeType());
       if (handler != null) {
         this.setMonth(handler.retrieveMonth(DateTime.now()));
-        this.setDateStart(DateUtil.formatYearMonthDay(handler
-            .retrieveDateStart(DateTime.now())));
-        this.setDateEnd(DateUtil.formatYearMonthDay(handler
-            .retrieveDateEnd(DateTime.now())));
+        this.setDateStart(DateUtil.formatYearMonthDay(handler.retrieveDateStart(DateTime.now())));
+        this.setDateEnd(DateUtil.formatYearMonthDay(handler.retrieveDateEnd(DateTime.now())));
       }
     }
     if (this.getDateStart() != null && this.getDateEnd() != null) {
@@ -360,7 +354,7 @@ public abstract class ReportBase extends Report {
   public void setDayOfWeek(String dayOfWeek) {
     this.dayOfWeek = dayOfWeek;
   }
-  
+
   public String getWeek() {
     return week;
   }
@@ -564,7 +558,7 @@ public abstract class ReportBase extends Report {
   public void setAdNetworkPartners(String adNetworkPartners) {
     this.adNetworkPartners = adNetworkPartners;
   }
-  
+
   // Conversion Columns
   public Long getConversions() {
     return conversions;
@@ -573,7 +567,7 @@ public abstract class ReportBase extends Report {
   public void setConversions(Long conversions) {
     this.conversions = conversions;
   }
-  
+
   public Long getConversionsManyPerClick() {
     return conversionsManyPerClick;
   }
@@ -581,7 +575,7 @@ public abstract class ReportBase extends Report {
   public void setConversionsManyPerClick(Long conversionsManyPerClick) {
     this.conversionsManyPerClick = conversionsManyPerClick;
   }
-  
+
   public String getConversionRateManyPerClick() {
     return BigDecimalUtil.formatAsReadable(conversionRateManyPerClick);
   }
@@ -591,7 +585,8 @@ public abstract class ReportBase extends Report {
   }
 
   public void setConversionRateManyPerClick(String conversionRateManyPerClick) {
-    this.conversionRateManyPerClick = BigDecimalUtil.parseFromNumberString(conversionRateManyPerClick);
+    this.conversionRateManyPerClick =
+        BigDecimalUtil.parseFromNumberString(conversionRateManyPerClick);
   }
 
   public String getCostPerConversionManyPerClick() {
@@ -603,45 +598,55 @@ public abstract class ReportBase extends Report {
   }
 
   public void setCostPerConversionManyPerClick(String costPerConversionManyPerClick) {
-    this.costPerConversionManyPerClick =  BigDecimalUtil.parseFromNumberString(costPerConversionManyPerClick);
+    this.costPerConversionManyPerClick =
+        BigDecimalUtil.parseFromNumberString(costPerConversionManyPerClick);
   }
 
-  public BigDecimal getValuePerConvManyPerClick() {
+  public BigDecimal getValuePerConvManyPerClickBigDecimal() {
     return valuePerConvManyPerClick;
   }
 
-  public void setValuePerConvManyPerClick(BigDecimal valuePerConvManyPerClick) {
-    this.valuePerConvManyPerClick = valuePerConvManyPerClick;
+  public String getValuePerConvManyPerClick() {
+    return BigDecimalUtil.formatAsReadable(valuePerConvManyPerClick);
   }
 
-  public BigDecimal getValuePerConversionManyPerClick() {
+  public void setValuePerConvManyPerClick(String valuePerConvManyPerClick) {
+    this.valuePerConvManyPerClick = BigDecimalUtil.parseFromNumberString(valuePerConvManyPerClick);
+  }
+
+  public String getValuePerConversionManyPerClick() {
+    return BigDecimalUtil.formatAsReadable(valuePerConversionManyPerClick);
+  }
+
+  public BigDecimal getValuePerConversionManyPerClickBigDecimal() {
     return valuePerConversionManyPerClick;
   }
 
-  public void setValuePerConversionManyPerClick(BigDecimal valuePerConversionManyPerClick) {
-    this.valuePerConversionManyPerClick = valuePerConversionManyPerClick;
+  public void setValuePerConversionManyPerClick(String valuePerConversionManyPerClick) {
+    this.valuePerConversionManyPerClick =
+        BigDecimalUtil.parseFromNumberString(valuePerConversionManyPerClick);
   }
 
   public String getConversionRate() {
-    return BigDecimalUtil.formatAsReadable(conversionRate); 
+    return BigDecimalUtil.formatAsReadable(conversionRate);
   }
-  
+
   public BigDecimal getConversionRateBigDecimal() {
     return conversionRate;
   }
 
   public void setConversionRate(String conversionRate) {
-    this.conversionRate =  BigDecimalUtil.parseFromNumberString(conversionRate);
+    this.conversionRate = BigDecimalUtil.parseFromNumberString(conversionRate);
   }
 
   public String getCostPerConversion() {
-    return  BigDecimalUtil.formatAsReadable(costPerConversion);
+    return BigDecimalUtil.formatAsReadable(costPerConversion);
   }
 
   public BigDecimal getCostPerConversionBigDecimal() {
     return costPerConversion;
   }
-  
+
   public void setCostPerConversion(String costPerConversion) {
     this.costPerConversion = BigDecimalUtil.parseFromNumberString(costPerConversion);
   }
@@ -649,7 +654,7 @@ public abstract class ReportBase extends Report {
   public String getValuePerConv() {
     return BigDecimalUtil.formatAsReadable(valuePerConv);
   }
-  
+
   public BigDecimal getValuePerConvBigDecimal() {
     return valuePerConv;
   }
@@ -659,9 +664,9 @@ public abstract class ReportBase extends Report {
   }
 
   public String getValuePerConversion() {
-    return  BigDecimalUtil.formatAsReadable(valuePerConversion);
+    return BigDecimalUtil.formatAsReadable(valuePerConversion);
   }
-  
+
   public BigDecimal getValuePerConversionBigDecimal() {
     return valuePerConversion;
   }
@@ -710,8 +715,8 @@ public abstract class ReportBase extends Report {
   public int hashCode() {
     final int prime = 31;
     int result = super.hashCode();
-    result = prime * result
-        + ((accountDescriptiveName == null) ? 0 : accountDescriptiveName.hashCode());
+    result =
+        prime * result + ((accountDescriptiveName == null) ? 0 : accountDescriptiveName.hashCode());
     result = prime * result + ((accountTimeZoneId == null) ? 0 : accountTimeZoneId.hashCode());
     result = prime * result + ((adNetwork == null) ? 0 : adNetwork.hashCode());
     result = prime * result + ((adNetworkPartners == null) ? 0 : adNetworkPartners.hashCode());
@@ -720,8 +725,8 @@ public abstract class ReportBase extends Report {
     result = prime * result + ((avgPosition == null) ? 0 : avgPosition.hashCode());
     result = prime * result + ((clickType == null) ? 0 : clickType.hashCode());
     result = prime * result + ((clicks == null) ? 0 : clicks.hashCode());
-    result = prime * result
-        + ((conversionCategoryName == null) ? 0 : conversionCategoryName.hashCode());
+    result =
+        prime * result + ((conversionCategoryName == null) ? 0 : conversionCategoryName.hashCode());
     result = prime * result + ((conversionRate == null) ? 0 : conversionRate.hashCode());
     result = prime * result
         + ((conversionRateManyPerClick == null) ? 0 : conversionRateManyPerClick.hashCode());
@@ -751,11 +756,10 @@ public abstract class ReportBase extends Report {
     result = prime * result
         + ((valuePerConvManyPerClick == null) ? 0 : valuePerConvManyPerClick.hashCode());
     result = prime * result + ((valuePerConversion == null) ? 0 : valuePerConversion.hashCode());
-    result = prime
-        * result
-        + ((valuePerConversionManyPerClick == null) ? 0 : valuePerConversionManyPerClick.hashCode());
-    result = prime * result
-        + ((viewThroughConversions == null) ? 0 : viewThroughConversions.hashCode());
+    result = prime * result + ((valuePerConversionManyPerClick == null) ? 0
+        : valuePerConversionManyPerClick.hashCode());
+    result =
+        prime * result + ((viewThroughConversions == null) ? 0 : viewThroughConversions.hashCode());
     result = prime * result + ((week == null) ? 0 : week.hashCode());
     result = prime * result + ((year == null) ? 0 : year.hashCode());
     return result;
@@ -763,203 +767,282 @@ public abstract class ReportBase extends Report {
 
   @Override
   public boolean equals(Object obj) {
-    if (this == obj)
+    if (this == obj) {
       return true;
-    if (!super.equals(obj))
+    }
+    if (!super.equals(obj)) {
       return false;
-    if (getClass() != obj.getClass())
+    }
+    if (getClass() != obj.getClass()) {
       return false;
+    }
     ReportBase other = (ReportBase) obj;
     if (accountDescriptiveName == null) {
-      if (other.accountDescriptiveName != null)
+      if (other.accountDescriptiveName != null) {
         return false;
-    } else if (!accountDescriptiveName.equals(other.accountDescriptiveName))
+      }
+    } else if (!accountDescriptiveName.equals(other.accountDescriptiveName)) {
       return false;
+    }
     if (accountTimeZoneId == null) {
-      if (other.accountTimeZoneId != null)
+      if (other.accountTimeZoneId != null) {
         return false;
-    } else if (!accountTimeZoneId.equals(other.accountTimeZoneId))
+      }
+    } else if (!accountTimeZoneId.equals(other.accountTimeZoneId)) {
       return false;
+    }
     if (adNetwork == null) {
-      if (other.adNetwork != null)
+      if (other.adNetwork != null) {
         return false;
-    } else if (!adNetwork.equals(other.adNetwork))
+      }
+    } else if (!adNetwork.equals(other.adNetwork)) {
       return false;
+    }
     if (adNetworkPartners == null) {
-      if (other.adNetworkPartners != null)
+      if (other.adNetworkPartners != null) {
         return false;
-    } else if (!adNetworkPartners.equals(other.adNetworkPartners))
+      }
+    } else if (!adNetworkPartners.equals(other.adNetworkPartners)) {
       return false;
+    }
     if (avgCpc == null) {
-      if (other.avgCpc != null)
+      if (other.avgCpc != null) {
         return false;
-    } else if (!avgCpc.equals(other.avgCpc))
+      }
+    } else if (!avgCpc.equals(other.avgCpc)) {
       return false;
+    }
     if (avgCpm == null) {
-      if (other.avgCpm != null)
+      if (other.avgCpm != null) {
         return false;
-    } else if (!avgCpm.equals(other.avgCpm))
+      }
+    } else if (!avgCpm.equals(other.avgCpm)) {
       return false;
+    }
     if (avgPosition == null) {
-      if (other.avgPosition != null)
+      if (other.avgPosition != null) {
         return false;
-    } else if (!avgPosition.equals(other.avgPosition))
+      }
+    } else if (!avgPosition.equals(other.avgPosition)) {
       return false;
+    }
     if (clickType == null) {
-      if (other.clickType != null)
+      if (other.clickType != null) {
         return false;
-    } else if (!clickType.equals(other.clickType))
+      }
+    } else if (!clickType.equals(other.clickType)) {
       return false;
+    }
     if (clicks == null) {
-      if (other.clicks != null)
+      if (other.clicks != null) {
         return false;
-    } else if (!clicks.equals(other.clicks))
+      }
+    } else if (!clicks.equals(other.clicks)) {
       return false;
+    }
     if (conversionCategoryName == null) {
-      if (other.conversionCategoryName != null)
+      if (other.conversionCategoryName != null) {
         return false;
-    } else if (!conversionCategoryName.equals(other.conversionCategoryName))
+      }
+    } else if (!conversionCategoryName.equals(other.conversionCategoryName)) {
       return false;
+    }
     if (conversionRate == null) {
-      if (other.conversionRate != null)
+      if (other.conversionRate != null) {
         return false;
-    } else if (!conversionRate.equals(other.conversionRate))
+      }
+    } else if (!conversionRate.equals(other.conversionRate)) {
       return false;
+    }
     if (conversionRateManyPerClick == null) {
-      if (other.conversionRateManyPerClick != null)
+      if (other.conversionRateManyPerClick != null) {
         return false;
-    } else if (!conversionRateManyPerClick.equals(other.conversionRateManyPerClick))
+      }
+    } else if (!conversionRateManyPerClick.equals(other.conversionRateManyPerClick)) {
       return false;
+    }
     if (conversionTypeName == null) {
-      if (other.conversionTypeName != null)
+      if (other.conversionTypeName != null) {
         return false;
-    } else if (!conversionTypeName.equals(other.conversionTypeName))
+      }
+    } else if (!conversionTypeName.equals(other.conversionTypeName)) {
       return false;
+    }
     if (conversionValue == null) {
-      if (other.conversionValue != null)
+      if (other.conversionValue != null) {
         return false;
-    } else if (!conversionValue.equals(other.conversionValue))
+      }
+    } else if (!conversionValue.equals(other.conversionValue)) {
       return false;
+    }
     if (conversions == null) {
-      if (other.conversions != null)
+      if (other.conversions != null) {
         return false;
-    } else if (!conversions.equals(other.conversions))
+      }
+    } else if (!conversions.equals(other.conversions)) {
       return false;
+    }
     if (conversionsManyPerClick == null) {
-      if (other.conversionsManyPerClick != null)
+      if (other.conversionsManyPerClick != null) {
         return false;
-    } else if (!conversionsManyPerClick.equals(other.conversionsManyPerClick))
+      }
+    } else if (!conversionsManyPerClick.equals(other.conversionsManyPerClick)) {
       return false;
+    }
     if (cost == null) {
-      if (other.cost != null)
+      if (other.cost != null) {
         return false;
-    } else if (!cost.equals(other.cost))
+      }
+    } else if (!cost.equals(other.cost)) {
       return false;
+    }
     if (costPerConversion == null) {
-      if (other.costPerConversion != null)
+      if (other.costPerConversion != null) {
         return false;
-    } else if (!costPerConversion.equals(other.costPerConversion))
+      }
+    } else if (!costPerConversion.equals(other.costPerConversion)) {
       return false;
+    }
     if (costPerConversionManyPerClick == null) {
-      if (other.costPerConversionManyPerClick != null)
+      if (other.costPerConversionManyPerClick != null) {
         return false;
-    } else if (!costPerConversionManyPerClick.equals(other.costPerConversionManyPerClick))
+      }
+    } else if (!costPerConversionManyPerClick.equals(other.costPerConversionManyPerClick)) {
       return false;
+    }
     if (ctr == null) {
-      if (other.ctr != null)
+      if (other.ctr != null) {
         return false;
-    } else if (!ctr.equals(other.ctr))
+      }
+    } else if (!ctr.equals(other.ctr)) {
       return false;
+    }
     if (currencyCode == null) {
-      if (other.currencyCode != null)
+      if (other.currencyCode != null) {
         return false;
-    } else if (!currencyCode.equals(other.currencyCode))
+      }
+    } else if (!currencyCode.equals(other.currencyCode)) {
       return false;
+    }
     if (customerDescriptiveName == null) {
-      if (other.customerDescriptiveName != null)
+      if (other.customerDescriptiveName != null) {
         return false;
-    } else if (!customerDescriptiveName.equals(other.customerDescriptiveName))
+      }
+    } else if (!customerDescriptiveName.equals(other.customerDescriptiveName)) {
       return false;
+    }
     if (day == null) {
-      if (other.day != null)
+      if (other.day != null) {
         return false;
-    } else if (!day.equals(other.day))
+      }
+    } else if (!day.equals(other.day)) {
       return false;
+    }
     if (dayOfWeek == null) {
-      if (other.dayOfWeek != null)
+      if (other.dayOfWeek != null) {
         return false;
-    } else if (!dayOfWeek.equals(other.dayOfWeek))
+      }
+    } else if (!dayOfWeek.equals(other.dayOfWeek)) {
       return false;
+    }
     if (device == null) {
-      if (other.device != null)
+      if (other.device != null) {
         return false;
-    } else if (!device.equals(other.device))
+      }
+    } else if (!device.equals(other.device)) {
       return false;
+    }
     if (impressions == null) {
-      if (other.impressions != null)
+      if (other.impressions != null) {
         return false;
-    } else if (!impressions.equals(other.impressions))
+      }
+    } else if (!impressions.equals(other.impressions)) {
       return false;
+    }
     if (month == null) {
-      if (other.month != null)
+      if (other.month != null) {
         return false;
-    } else if (!month.equals(other.month))
+      }
+    } else if (!month.equals(other.month)) {
       return false;
+    }
     if (monthOfYear == null) {
-      if (other.monthOfYear != null)
+      if (other.monthOfYear != null) {
         return false;
-    } else if (!monthOfYear.equals(other.monthOfYear))
+      }
+    } else if (!monthOfYear.equals(other.monthOfYear)) {
       return false;
+    }
     if (primaryCompanyName == null) {
-      if (other.primaryCompanyName != null)
+      if (other.primaryCompanyName != null) {
         return false;
-    } else if (!primaryCompanyName.equals(other.primaryCompanyName))
+      }
+    } else if (!primaryCompanyName.equals(other.primaryCompanyName)) {
       return false;
+    }
     if (primaryUserLogin == null) {
-      if (other.primaryUserLogin != null)
+      if (other.primaryUserLogin != null) {
         return false;
-    } else if (!primaryUserLogin.equals(other.primaryUserLogin))
+      }
+    } else if (!primaryUserLogin.equals(other.primaryUserLogin)) {
       return false;
+    }
     if (quarter == null) {
-      if (other.quarter != null)
+      if (other.quarter != null) {
         return false;
-    } else if (!quarter.equals(other.quarter))
+      }
+    } else if (!quarter.equals(other.quarter)) {
       return false;
+    }
     if (valuePerConv == null) {
-      if (other.valuePerConv != null)
+      if (other.valuePerConv != null) {
         return false;
-    } else if (!valuePerConv.equals(other.valuePerConv))
+      }
+    } else if (!valuePerConv.equals(other.valuePerConv)) {
       return false;
+    }
     if (valuePerConvManyPerClick == null) {
-      if (other.valuePerConvManyPerClick != null)
+      if (other.valuePerConvManyPerClick != null) {
         return false;
-    } else if (!valuePerConvManyPerClick.equals(other.valuePerConvManyPerClick))
+      }
+    } else if (!valuePerConvManyPerClick.equals(other.valuePerConvManyPerClick)) {
       return false;
+    }
     if (valuePerConversion == null) {
-      if (other.valuePerConversion != null)
+      if (other.valuePerConversion != null) {
         return false;
-    } else if (!valuePerConversion.equals(other.valuePerConversion))
+      }
+    } else if (!valuePerConversion.equals(other.valuePerConversion)) {
       return false;
+    }
     if (valuePerConversionManyPerClick == null) {
-      if (other.valuePerConversionManyPerClick != null)
+      if (other.valuePerConversionManyPerClick != null) {
         return false;
-    } else if (!valuePerConversionManyPerClick.equals(other.valuePerConversionManyPerClick))
+      }
+    } else if (!valuePerConversionManyPerClick.equals(other.valuePerConversionManyPerClick)) {
       return false;
+    }
     if (viewThroughConversions == null) {
-      if (other.viewThroughConversions != null)
+      if (other.viewThroughConversions != null) {
         return false;
-    } else if (!viewThroughConversions.equals(other.viewThroughConversions))
+      }
+    } else if (!viewThroughConversions.equals(other.viewThroughConversions)) {
       return false;
+    }
     if (week == null) {
-      if (other.week != null)
+      if (other.week != null) {
         return false;
-    } else if (!week.equals(other.week))
+      }
+    } else if (!week.equals(other.week)) {
       return false;
+    }
     if (year == null) {
-      if (other.year != null)
+      if (other.year != null) {
         return false;
-    } else if (!year.equals(other.year))
+      }
+    } else if (!year.equals(other.year)) {
       return false;
+    }
     return true;
   }
 }
