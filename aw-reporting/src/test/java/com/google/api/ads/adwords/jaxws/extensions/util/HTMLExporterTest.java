@@ -66,12 +66,12 @@ public class HTMLExporterTest {
     reportMap.put(ReportDefinitionReportType.PLACEHOLDER_FEED_ITEM_REPORT.name(), list);
     
     FileSystemReportWriter htmlReportWriter = FileSystemReportWriter.newFileSystemReportWriter(
-        templateFile, "20140101", "20140131", 123L, outputDirectory,  ReportFileType.HTML);
+        templateFile.getName(), "20140101", "20140131", 123L, outputDirectory,  ReportFileType.HTML);
 
     HTMLExporter.exportHtml(reportMap, templateFile, htmlReportWriter);
     
     FileSystemReportWriter pdfReportWriter = FileSystemReportWriter.newFileSystemReportWriter(
-        templateFile, "20140101", "20140131", 123L, outputDirectory,  ReportFileType.PDF);
+        templateFile.getName(), "20140101", "20140131", 123L, outputDirectory,  ReportFileType.PDF);
 
     HTMLExporter.exportHtmlToPdf(htmlFile, pdfReportWriter);
   }
@@ -129,12 +129,12 @@ public class HTMLExporterTest {
     reportMap.put(ReportDefinitionReportType.ACCOUNT_PERFORMANCE_REPORT.name(), list);
     
     FileSystemReportWriter htmlReportWriter = FileSystemReportWriter.newFileSystemReportWriter(
-        templateFile, "20140101", "20140131", 123L, outputDirectory,  ReportFileType.HTML);
+        templateFile.getName(), "20140101", "20140131", 123L, outputDirectory,  ReportFileType.HTML);
     
     HTMLExporter.exportHtml(reportMap, templateFile, htmlReportWriter);
     
     FileSystemReportWriter pdfReportWriter = FileSystemReportWriter.newFileSystemReportWriter(
-        templateFile, "20140101", "20140131", 123L, outputDirectory,  ReportFileType.PDF);
+        templateFile.getName(), "20140101", "20140131", 123L, outputDirectory,  ReportFileType.PDF);
 
     HTMLExporter.exportHtmlToPdf(htmlFile, pdfReportWriter);
   }
