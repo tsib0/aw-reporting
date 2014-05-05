@@ -50,7 +50,7 @@ public class ReportExporterLocal extends ReportExporter {
     LOGGER.info("Starting PDF Generation for all Accounts");
     for (Long accountId : accountIds) {
       exportReport(credential, mccAccountId, dateStart, dateEnd, accountId, properties, 
-          htmlTemplateFile, outputDirectory, sumAdExtensions);
+          htmlTemplateFile, htmlTemplateFile.getName(), outputDirectory, sumAdExtensions);
     }
   }
 }
