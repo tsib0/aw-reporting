@@ -81,11 +81,11 @@ public class FileSystemReportWriter extends FileWriter implements ReportWriter {
    * @param reportFileType either PDF or HTML
    * @throws IOException 
    */
-  public static FileSystemReportWriter newFileSystemReportWriter(File htmlTemplateFile, String dateStart,
+  public static FileSystemReportWriter newFileSystemReportWriter(String templateName, String dateStart,
       String dateEnd, Long accountId, File outputDirectory, ReportFileType reportFileType)
           throws IOException {
 
-    String fileNameWithOutExt = FilenameUtils.removeExtension((htmlTemplateFile.getName()));
+    String fileNameWithOutExt = FilenameUtils.removeExtension((templateName));
     
     String reportFileName = fileNameWithOutExt + "_" + accountId + "_" + dateStart + "_" 
         + dateEnd + "." + reportFileType.toString().toLowerCase();

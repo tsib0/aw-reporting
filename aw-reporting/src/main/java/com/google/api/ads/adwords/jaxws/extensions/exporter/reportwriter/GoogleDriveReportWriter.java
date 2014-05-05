@@ -49,7 +49,7 @@ public class GoogleDriveReportWriter implements ReportWriter {
   private GoogleDriveService googleDriveService;
   private Credential credential;
   private ReportFileType reportFileType;
-  private final java.io.File htmlTemplateFile;
+  private final String templateName;
 
   private GoogleDriveReportWriter(GoogleDriveReportWriterBuilder builder) throws IOException, OAuthException {
     this.accountId = builder.accountId;
@@ -59,7 +59,7 @@ public class GoogleDriveReportWriter implements ReportWriter {
     this.mccAccountId = builder.mccAccountId;
     this.credential = builder.credential;
     this.reportFileType = builder.reportFileType;
-    this.htmlTemplateFile = builder.htmlTemplateFile;
+    this.templateName = builder.templateName;
 
     // Replace this when GoogleDriveService properly extends Drive.
     LOGGER.debug("Getting GoogleDrive service.");
@@ -119,18 +119,18 @@ public class GoogleDriveReportWriter implements ReportWriter {
     private boolean folderPerAccount = false;
     private final Credential credential;
     private final ReportFileType reportFileType;
-    private final java.io.File htmlTemplateFile;
+    private final String templateName;
 
     public GoogleDriveReportWriterBuilder(long accountId, String dateStart, 
         String dateEnd, String mccAccountId,
-        Credential credential, ReportFileType reportFileType, java.io.File htmlTemplateFile) {
+        Credential credential, ReportFileType reportFileType, String templateName) {
       this.accountId = accountId;
       this.dateStart = dateStart;
       this.dateEnd = dateEnd;
       this.mccAccountId = mccAccountId;
       this.credential = credential;
       this.reportFileType = reportFileType;
-      this.htmlTemplateFile = htmlTemplateFile;
+      this.templateName = templateName;
     }
 
     /**
@@ -158,7 +158,7 @@ public class GoogleDriveReportWriter implements ReportWriter {
     File reportFile = new File();
     reportFile.setFileExtension(reportFileType.name());
 
-    String fileNameWithOutExt = FilenameUtils.removeExtension((htmlTemplateFile.getName()));
+    String fileNameWithOutExt = FilenameUtils.removeExtension((templateName));
     String reportFileName = fileNameWithOutExt + "_" + accountId + "_" + dateStart + "_" 
         + dateEnd + "." + reportFileType.toString().toLowerCase();
     

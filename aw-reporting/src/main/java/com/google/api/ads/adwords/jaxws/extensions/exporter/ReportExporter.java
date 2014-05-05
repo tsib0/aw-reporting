@@ -38,7 +38,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.io.File;
+import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -61,6 +64,7 @@ public abstract class ReportExporter {
 
   protected EntityPersister persister;
 
+  
   /**
    * Export reports to PDF/HTML for one account.
    *
@@ -68,7 +72,7 @@ public abstract class ReportExporter {
    * @param dateEnd the end date for the reports
    * @param accountId the account CID to generate PDF for
    * @param properties the properties file containing all the configuration
-   * @param htmlTemplateFile the template file to generete the report
+   * @param templateFile the template file to generete the report
    * @param outputDirectory where to output the files
    * @param sumAdExtensions to add up all the extensions
    * @throws IOException 
@@ -77,7 +81,57 @@ public abstract class ReportExporter {
    * @throws Exception error creating PDF
    */
   public void exportReport(Credential credential, String mccAccountId, String dateStart, String dateEnd, Long accountId, Properties properties,
-      File htmlTemplateFile, File outputDirectory, Boolean sumAdExtensions)
+      File templateFile, String tempateName, File outputDirectory, Boolean sumAdExtensions)
+          throws IOException, OAuthException, DocumentException {
+    
+    FileReader template = new FileReader(templateFile);
+
+    exportReport(credential, mccAccountId, dateStart, dateEnd, accountId, properties,
+        template, tempateName, outputDirectory, sumAdExtensions);
+  }
+  
+  /**
+   * Export reports to PDF/HTML for one account.
+   *
+   * @param dateStart the start date for the reports
+   * @param dateEnd the end date for the reports
+   * @param accountId the account CID to generate PDF for
+   * @param properties the properties file containing all the configuration
+   * @param templateInputStream the template file to generete the report
+   * @param outputDirectory where to output the files
+   * @param sumAdExtensions to add up all the extensions
+   * @throws IOException 
+   * @throws OAuthException 
+   * @throws DocumentException 
+   * @throws Exception error creating PDF
+   */
+  public void exportReport(Credential credential, String mccAccountId, String dateStart, String dateEnd, Long accountId, Properties properties,
+      InputStream templateInputStream, String tempateName, File outputDirectory, Boolean sumAdExtensions)
+          throws IOException, OAuthException, DocumentException {
+
+    InputStreamReader template = new InputStreamReader(templateInputStream);
+
+    exportReport(credential, mccAccountId, dateStart, dateEnd, accountId, properties,
+        template, tempateName, outputDirectory, sumAdExtensions);
+  }
+
+  /**
+   * Export reports to PDF/HTML for one account.
+   *
+   * @param dateStart the start date for the reports
+   * @param dateEnd the end date for the reports
+   * @param accountId the account CID to generate PDF for
+   * @param properties the properties file containing all the configuration
+   * @param template the template file to generete the report
+   * @param outputDirectory where to output the files
+   * @param sumAdExtensions to add up all the extensions
+   * @throws IOException 
+   * @throws OAuthException 
+   * @throws DocumentException 
+   * @throws Exception error creating PDF
+   */
+  public void exportReport(Credential credential, String mccAccountId, String dateStart, String dateEnd, Long accountId, Properties properties,
+      InputStreamReader template, String templateName, File outputDirectory, Boolean sumAdExtensions)
           throws IOException, OAuthException, DocumentException {
 
     LOGGER.info("Starting Report Export for account " + accountId);
@@ -101,7 +155,7 @@ public abstract class ReportExporter {
       LOGGER.debug("Generating in Memory HTML for account: " + accountId);
       // Writing HTML to Memory
       MemoryReportWriter mrwHtml = MemoryReportWriter.newMemoryReportWriter();
-      HTMLExporter.exportHtml(reportDataMap, htmlTemplateFile, mrwHtml);
+      HTMLExporter.exportHtml(reportDataMap, template, mrwHtml);
 
       if (propertyReportWriterType != null && 
           propertyReportWriterType.equals(ReportWriterType.GoogleDriveWriter.name())) {
@@ -111,7 +165,7 @@ public abstract class ReportExporter {
           LOGGER.debug("Writing (to GoogleDrive) HTML for account: " + accountId);
           GoogleDriveReportWriter gdrwHtml = new GoogleDriveReportWriter.GoogleDriveReportWriterBuilder(
               accountId, dateStart, dateEnd, mccAccountId, credential, ReportFileType.HTML,
-              htmlTemplateFile).build();
+              templateName).build();
           gdrwHtml.write(mrwHtml.getAsSource());
         }
 
@@ -120,7 +174,7 @@ public abstract class ReportExporter {
           LOGGER.debug("Writing (to GoogleDrive) PDF for account: " + accountId);
           GoogleDriveReportWriter gdrwPdf = new GoogleDriveReportWriter.GoogleDriveReportWriterBuilder(
               accountId, dateStart, dateEnd, mccAccountId, credential, ReportFileType.PDF,
-              htmlTemplateFile).build();
+              templateName).build();
           HTMLExporter.exportHtmlToPdf(mrwHtml.getAsSource(), gdrwPdf);
         }
 
@@ -130,7 +184,7 @@ public abstract class ReportExporter {
         if (writeHtml) {
           LOGGER.debug("Writing (to FileSystem) HTML for account: " + accountId);
           FileSystemReportWriter fsrwHtml = FileSystemReportWriter.newFileSystemReportWriter(
-              htmlTemplateFile, dateStart, dateEnd, accountId, outputDirectory, ReportFileType.HTML);
+              templateName, dateStart, dateEnd, accountId, outputDirectory, ReportFileType.HTML);
           fsrwHtml.write(mrwHtml.getAsSource());
         }
 
@@ -138,7 +192,7 @@ public abstract class ReportExporter {
         if (writePdf) {
           LOGGER.debug("Writing (to FileSystem) PDF for account: " + accountId);
           FileSystemReportWriter fsrwPdf = FileSystemReportWriter.newFileSystemReportWriter(
-              htmlTemplateFile, dateStart, dateEnd, accountId, outputDirectory, ReportFileType.PDF);
+              templateName, dateStart, dateEnd, accountId, outputDirectory, ReportFileType.PDF);
           HTMLExporter.exportHtmlToPdf(mrwHtml.getAsSource(), fsrwPdf);
         }
       }
