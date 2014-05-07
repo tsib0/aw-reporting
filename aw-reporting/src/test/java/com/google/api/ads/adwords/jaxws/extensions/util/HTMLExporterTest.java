@@ -73,7 +73,7 @@ public class HTMLExporterTest {
     FileSystemReportWriter pdfReportWriter = FileSystemReportWriter.newFileSystemReportWriter(
         templateFile.getName(), "20140101", "20140131", 123L, outputDirectory,  ReportFileType.PDF);
 
-    HTMLExporter.exportHtmlToPdf(htmlFile, pdfReportWriter);
+    HTMLExporter.exportHtmlToPdf(htmlFile, pdfReportWriter, null);
   }
 
   /**
@@ -136,7 +136,7 @@ public class HTMLExporterTest {
     FileSystemReportWriter pdfReportWriter = FileSystemReportWriter.newFileSystemReportWriter(
         templateFile.getName(), "20140101", "20140131", 123L, outputDirectory,  ReportFileType.PDF);
 
-    HTMLExporter.exportHtmlToPdf(htmlFile, pdfReportWriter);
+    HTMLExporter.exportHtmlToPdf(htmlFile, pdfReportWriter, null);
   }
 
   /**
