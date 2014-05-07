@@ -14,6 +14,7 @@
 
 package com.google.api.ads.adwords.jaxws.extensions.kratu.data;
 
+import com.google.api.ads.adwords.jaxws.extensions.kratu.KratuCompute;
 import com.google.common.collect.Lists;
 
 import java.util.Calendar;
@@ -63,7 +64,7 @@ public class RunnableKratu implements Runnable {
           calendar.setTime(dateStart);
           while(calendar.getTime().compareTo(dateEnd) <= 0) {
 
-            Kratu kratu = Kratu.createDailyKratuFromDB(
+            Kratu kratu = KratuCompute.createDailyKratuFromDB(
                 storageHelper, topAccountId, account, calendar.getTime());
             if (kratu != null){
               storageHelper.saveKratu(kratu);
