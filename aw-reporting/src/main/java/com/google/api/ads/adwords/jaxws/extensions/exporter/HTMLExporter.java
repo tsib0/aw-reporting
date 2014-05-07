@@ -14,18 +14,6 @@
 
 package com.google.api.ads.adwords.jaxws.extensions.exporter;
 
-import com.google.api.ads.adwords.jaxws.extensions.exporter.reportwriter.ReportWriter;
-import com.google.api.ads.adwords.jaxws.extensions.util.MediaReplacedElementFactory;
-import com.google.api.client.util.Lists;
-
-import com.lowagie.text.DocumentException;
-import com.lowagie.text.pdf.BaseFont;
-import com.samskivert.mustache.Mustache;
-
-import org.w3c.dom.Document;
-import org.xhtmlrenderer.pdf.ITextRenderer;
-import org.xhtmlrenderer.resource.XMLResource;
-
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -35,12 +23,18 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Writer;
-import java.net.URL;
-import java.security.CodeSource;
-import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipInputStream;
+
+import org.w3c.dom.Document;
+import org.xhtmlrenderer.pdf.ITextRenderer;
+import org.xhtmlrenderer.resource.XMLResource;
+
+import com.google.api.ads.adwords.jaxws.extensions.exporter.reportwriter.ReportWriter;
+import com.google.api.ads.adwords.jaxws.extensions.util.MediaReplacedElementFactory;
+import com.lowagie.text.DocumentException;
+import com.lowagie.text.pdf.BaseFont;
+import com.samskivert.mustache.Mustache;
 
 /**
  * Class to export reports to HTML using JMoustache, and convert HTML to PDF using Flying Saucer
@@ -50,8 +44,6 @@ import java.util.zip.ZipInputStream;
  * @author jtoledo@google.com (Julian Toledo)
  */
 public class HTMLExporter {
-
-  private static final ArrayList<String> fonts = getFonts();
 
   public HTMLExporter() {}
 
@@ -114,12 +106,12 @@ public class HTMLExporter {
    * @throws DocumentException error creating PDF file
    * @throws IOException error closing file
    */
-  public static void exportHtmlToPdf(File file, ReportWriter reportWriter)
+  public static void exportHtmlToPdf(File file, ReportWriter reportWriter, List<String> fontPaths)
       throws DocumentException, IOException {
 
     FileReader fileReader = new FileReader(file);
     Document document = XMLResource.load(fileReader).getDocument();
-    exportHtmlToPdf(document, reportWriter);
+    exportHtmlToPdf(document, reportWriter, fontPaths);
     fileReader.close();
   }
 
@@ -131,11 +123,11 @@ public class HTMLExporter {
    * @throws DocumentException error creating PDF file
    * @throws IOException error closing file
    */
-  public static void exportHtmlToPdf(InputStream inputStream, ReportWriter reportWriter)
+  public static void exportHtmlToPdf(InputStream inputStream, ReportWriter reportWriter, List<String> fontPaths)
       throws DocumentException, IOException {
 
     Document document = XMLResource.load(inputStream).getDocument();
-    exportHtmlToPdf(document, reportWriter);
+    exportHtmlToPdf(document, reportWriter, fontPaths);
     inputStream.close();
   }
 
@@ -150,14 +142,16 @@ public class HTMLExporter {
    * @throws DocumentException error creating PDF file
    * @throws IOException error closing file
    */
-  public static void exportHtmlToPdf(Document document, ReportWriter reportWriter)
+  public static void exportHtmlToPdf(Document document, ReportWriter reportWriter, List<String> fontPaths)
       throws DocumentException, IOException {
 
     ITextRenderer renderer = new ITextRenderer();
 
     // Adding fonts for PDF generation
-    for(String font : fonts) {
-      renderer.getFontResolver().addFont(font, BaseFont.IDENTITY_H, BaseFont.EMBEDDED);
+    if (fontPaths != null) {
+      for(String font : fontPaths) {
+        renderer.getFontResolver().addFont(font, BaseFont.IDENTITY_H, BaseFont.EMBEDDED);
+      }
     }
 
     renderer.getSharedContext().setReplacedElementFactory(
@@ -173,47 +167,5 @@ public class HTMLExporter {
     outputStream.flush();
     outputStream.close();
   }
-
-  /**
-   * Searches for Fonts in the fonts/ directory inside the Jar
-   * 
-   * @returns a string list of fonts
-   */
-  private static ArrayList<String> getFonts() {
-    ArrayList<String> list = Lists.newArrayList();
-    try {
-      // Searh in the Jar
-      CodeSource src = HTMLExporter.class.getProtectionDomain().getCodeSource();
-      if (src != null) {
-        URL jar = src.getLocation();
-        ZipInputStream zip = new ZipInputStream(jar.openStream());
-        while(true) {
-          ZipEntry e = zip.getNextEntry();
-          if (e == null)
-            break;
-          String name = e.getName();
-
-          if (name.startsWith("fonts/") &&  name.endsWith(".ttf") ) {
-            list.add(name);
-            System.out.println("Added Font: " + name);
-          }
-        }
-      }
-
-      // Search in the folder
-      if ( list.size() == 0) {
-        final File dir = new File(HTMLExporter.class.getProtectionDomain().getCodeSource().getLocation().getPath());
-        File directory = new File(dir + "/fonts");
-        if (directory.listFiles() != null) {
-          for(File file : directory.listFiles()) {
-            list.add(file.getPath());
-            System.out.println("Added Font: " + file.getPath());
-          }
-        }
-      }
-    } catch (IOException e) {
-      System.out.println("Not Fonts found");
-    }
-    return list;
-  }
 }
+
