@@ -30,7 +30,6 @@ import com.google.api.ads.common.lib.exception.OAuthException;
 import com.google.api.client.auth.oauth2.Credential;
 import com.google.api.client.util.Maps;
 import com.google.common.collect.Lists;
-
 import com.lowagie.text.DocumentException;
 
 import org.apache.log4j.Logger;
@@ -43,6 +42,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -72,7 +72,7 @@ public abstract class ReportExporter {
    * @param dateEnd the end date for the reports
    * @param accountId the account CID to generate PDF for
    * @param properties the properties file containing all the configuration
-   * @param templateFile the template file to generete the report
+   * @param templateFile the template file to generate the report
    * @param outputDirectory where to output the files
    * @param sumAdExtensions to add up all the extensions
    * @throws IOException 
@@ -97,7 +97,7 @@ public abstract class ReportExporter {
    * @param dateEnd the end date for the reports
    * @param accountId the account CID to generate PDF for
    * @param properties the properties file containing all the configuration
-   * @param templateInputStream the template file to generete the report
+   * @param templateInputStream the template file to generate the report
    * @param outputDirectory where to output the files
    * @param sumAdExtensions to add up all the extensions
    * @throws IOException 
@@ -152,6 +152,13 @@ public abstract class ReportExporter {
         writePdf = Boolean.valueOf(properties.getProperty("aw.report.exporter.writePdf"));
       }
 
+      // Get the Fonts for the PDF from the properties file
+      String propertyReportFonts = properties.getProperty("aw.report.exporter.reportfonts");
+      List<String> fontPaths = Lists.newArrayList();
+      if (propertyReportFonts != null) {
+        fontPaths = Arrays.asList(propertyReportFonts.split(","));
+      }
+
       LOGGER.debug("Generating in Memory HTML for account: " + accountId);
       // Writing HTML to Memory
       MemoryReportWriter mrwHtml = MemoryReportWriter.newMemoryReportWriter();
@@ -175,7 +182,7 @@ public abstract class ReportExporter {
           GoogleDriveReportWriter gdrwPdf = new GoogleDriveReportWriter.GoogleDriveReportWriterBuilder(
               accountId, dateStart, dateEnd, mccAccountId, credential, ReportFileType.PDF,
               templateName).build();
-          HTMLExporter.exportHtmlToPdf(mrwHtml.getAsSource(), gdrwPdf);
+          HTMLExporter.exportHtmlToPdf(mrwHtml.getAsSource(), gdrwPdf, fontPaths);
         }
 
       } else {
@@ -193,7 +200,7 @@ public abstract class ReportExporter {
           LOGGER.debug("Writing (to FileSystem) PDF for account: " + accountId);
           FileSystemReportWriter fsrwPdf = FileSystemReportWriter.newFileSystemReportWriter(
               templateName, dateStart, dateEnd, accountId, outputDirectory, ReportFileType.PDF);
-          HTMLExporter.exportHtmlToPdf(mrwHtml.getAsSource(), fsrwPdf);
+          HTMLExporter.exportHtmlToPdf(mrwHtml.getAsSource(), fsrwPdf, fontPaths);
         }
       }
     }
