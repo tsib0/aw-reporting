@@ -102,7 +102,23 @@ public class ReportKeyword extends ReportBase {
   @Column(name = "COSTPERCONVERSIONSIGNIFICANCE")
   @CsvField(value = "Cost/converted click ACE indicator", reportField = "CostPerConversionSignificance")
   protected BigDecimal costPerConversionSignificance;
-  
+
+  @Column(name = "AVERAGE_PAGEVIEWS")
+  @CsvField(value = "Pages / visit", reportField = "AveragePageviews")
+  private BigDecimal averagePageviews;
+
+  @Column(name = "AVERAGE_TIME_ON_SITE")
+  @CsvField(value = "Avg. visit duration (seconds)", reportField = "AverageTimeOnSite")
+  private BigDecimal averageTimeOnSite;
+
+  @Column(name = "BOUNCE_RATE")
+  @CsvField(value = "Bounce rate", reportField = "BounceRate")
+  private BigDecimal bounceRate;
+
+  @Column(name = "PERCENT_NEW_VISITORS")
+  @CsvField(value = "% new visits", reportField = "PercentNewVisitors")
+  private BigDecimal percentNewVisitors;
+
   /**
    * Hibernate needs an empty constructor
    */
@@ -314,5 +330,53 @@ public class ReportKeyword extends ReportBase {
 
   public void setCostPerConversionSignificance(String costPerConversionSignificance) {
     this.costPerConversionSignificance = BigDecimalUtil.parseFromNumberString(costPerConversionSignificance);
+  }
+
+  public String getAveragePageviews() {
+    return BigDecimalUtil.formatAsReadable(averagePageviews);
+  }
+
+  public BigDecimal getAveragePageviewsBigDecimal() {
+    return averagePageviews;
+  }
+  
+  public void setAveragePageviews(String averagePageviews) {
+    this.averagePageviews =  BigDecimalUtil.parseFromNumberString(averagePageviews);
+  }
+
+  public String getAverageTimeOnSite() {
+    return BigDecimalUtil.formatAsReadable(averageTimeOnSite);
+  }
+
+  public BigDecimal getAverageTimeOnSiteBigDecimal() {
+    return averageTimeOnSite;
+  }
+  
+  public void setAverageTimeOnSite(String averageTimeOnSite) {
+    this.averageTimeOnSite =  BigDecimalUtil.parseFromNumberString(averageTimeOnSite);
+  }
+
+  public String getBounceRate() {
+    return BigDecimalUtil.formatAsReadable(bounceRate);
+  }
+
+  public BigDecimal getBounceRateBigDecimal() {
+    return bounceRate;
+  }
+  
+  public void setBounceRate(String bounceRate) {
+    this.bounceRate =  BigDecimalUtil.parseFromNumberString(bounceRate);
+  }
+
+  public String getPercentNewVisitors() {
+    return BigDecimalUtil.formatAsReadable(percentNewVisitors);
+  }
+
+  public BigDecimal getPercentNewVisitorsBigDecimal() {
+    return percentNewVisitors;
+  }
+  
+  public void setPercentNewVisitors(String percentNewVisitors) {
+    this.percentNewVisitors =  BigDecimalUtil.parseFromNumberString(percentNewVisitors);
   }
 }
