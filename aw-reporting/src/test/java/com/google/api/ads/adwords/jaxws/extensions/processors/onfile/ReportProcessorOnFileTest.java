@@ -224,6 +224,11 @@ public class ReportProcessorOnFileTest {
               "reportDownload-CAMPAIGN_LOCATION_TARGET_REPORT-9250931436-3311462434933679712.report",
               numberOfFiles);
         }
+        if (reportType.equals(ReportDefinitionReportType.GEO_PERFORMANCE_REPORT)) {
+          return getReportFiles(
+              "reportDownload-GEO_PERFORMANCE_REPORT-2084918008-570857839140990020.report10",
+              numberOfFiles);
+        }
         // Undefined report type on this test
         throw (new Exception("Undefined report type on Tests: " + reportType.value()));
       }
