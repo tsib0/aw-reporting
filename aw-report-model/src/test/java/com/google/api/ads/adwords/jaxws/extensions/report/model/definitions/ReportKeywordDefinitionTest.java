@@ -178,7 +178,12 @@ public class ReportKeywordDefinitionTest extends AbstractReportDefinitionTest<Re
         "KeywordText",
         "DestinationUrl",
         "IsNegative",
-        "CampaignName"
-        };
+        "CampaignName",
+        // Analytics Fieds        
+        "AveragePageviews",
+        "AverageTimeOnSite",
+        "BounceRate",
+        "PercentNewVisitors"
+    };
   }
 }
