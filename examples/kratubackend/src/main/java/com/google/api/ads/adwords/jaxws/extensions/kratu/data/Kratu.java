@@ -14,527 +14,788 @@
 
 package com.google.api.ads.adwords.jaxws.extensions.kratu.data;
 
-import com.google.api.ads.adwords.jaxws.extensions.report.model.entities.ReportAccount;
-import com.google.api.ads.adwords.jaxws.extensions.report.model.entities.ReportAd;
-import com.google.api.ads.adwords.jaxws.extensions.report.model.entities.ReportAdExtension;
-import com.google.api.ads.adwords.jaxws.extensions.report.model.entities.ReportAdGroup;
-import com.google.api.ads.adwords.jaxws.extensions.report.model.entities.ReportCampaign;
-import com.google.api.ads.adwords.jaxws.extensions.report.model.entities.ReportCampaignNegativeKeyword;
-import com.google.api.ads.adwords.jaxws.extensions.report.model.entities.ReportKeyword;
-import com.google.api.ads.adwords.jaxws.extensions.report.model.persistence.mongodb.MongoEntity;
-import com.google.api.ads.adwords.jaxws.extensions.report.model.util.DateUtil;
-
-import org.joda.time.DateTime;
-import org.joda.time.Days;
-
 import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
+import com.google.api.ads.adwords.jaxws.extensions.report.model.persistence.mongodb.MongoEntity;
+import com.google.api.ads.adwords.jaxws.extensions.report.model.util.DateUtil;
+
 /**
- * Kratu
+ * Kratu is a colection of signals from different AdWords Reports
  * 
  * @author jtoledo@google.com (Julian Toledo)
  */
 @Entity
 @Table(name = "AW_Kratu")
 public class Kratu implements MongoEntity {
-  
-  private static final BigDecimal BIGDECIMAL_100 = new BigDecimal(100);
 
-  protected static final String _topAccountId = "topAccountId";
-  protected static final String _externalCustomerId = "externalCustomerId";
-  protected static final String _day = "day";
-  protected static final String DISPLAY_NETWORK = "Display Network";
-  protected static final String SEARCH_NETWORK = "Search Network";
-  protected static final String ACTIVE = "active";
-  protected static final String DELETED = "deleted";
-  protected static final String ENABLE = "enabled";
-  protected static final String BROAD = "Broad";
-  protected static final String PHRASE = "Phrase";
-  protected static final String EXACT = "Exact";
-  protected static final String DISAPPROVED = "disapproved";
-  protected static final String ELIGIBLE = "eligible";
-  protected static final String LOCATION_EXTENSION = "location extension";
-  protected static final String MOBILE_EXTENSION = "mobile extension";
-  protected static final String SITE_LINKS_EXTENSION = "site links extension";
+  public static final String _topAccountId = "topAccountId";
+  public static final String _externalCustomerId = "externalCustomerId";
+  public static final String _day = "day";
 
   @Id
   @Column(name = "ID")
-  protected String id;
+  private String id;
 
   @Column(name = "EXTERNAL_CUSTOMER_ID")
-  protected Long externalCustomerId;
-  
+  private Long externalCustomerId;
+
   @Column(name = "TOP_ACCOUNT_ID")
-  protected Long topAccountId;
-  
+  private Long topAccountId;
+
   @Column(name = "ACCOUNT_NAME")
-  protected String accountName;
-  
+  private String accountName;
+
   @Column(name = "CURRENCY_CODE")
-  protected String currencyCode;
-  
+  private String currencyCode;
+
   @Column(name = "DATE_TIME_ZONE")
-  protected String dateTimeZone;
-  
+  private String dateTimeZone;
+
   @Column(name = "ACCOUNT_ACIVE")
-  protected String accountActive = "No";
+  private String accountActive = "No";
 
   @Column(name = "TOTAL_CLICKS_SEARCH")
-  protected Long totalClicksSearch = 0l;
-  
+  private Long totalClicksSearch = 0l;
+
   @Column(name = "IMPRESSIONS_SEARCH")
-  protected Long impressionsSearch = 0l;
-  
+  private Long impressionsSearch = 0l;
+
   @Column(name = "CTR_SEARCH")
-  protected BigDecimal ctrSearch = BigDecimal.ZERO;
-  
+  private BigDecimal ctrSearch = BigDecimal.ZERO;
+
   @Column(name = "AVERAGE_CPC_SEARCH")
-  protected BigDecimal averageCpcSearch = BigDecimal.ZERO;
-  
+  private BigDecimal averageCpcSearch = BigDecimal.ZERO;
+
   @Column(name = "AVERAGE_CPM_SEARCH")
-  protected BigDecimal averageCpmSearch = BigDecimal.ZERO;
-  
+  private BigDecimal averageCpmSearch = BigDecimal.ZERO;
+
   @Column(name = "AVERAGE_POSITION_SEARCH")
-  protected BigDecimal averagePositionSearch = BigDecimal.ZERO;
-  
+  private BigDecimal averagePositionSearch = BigDecimal.ZERO;
+
   @Column(name = "TOTAL_CLICKS_DISPLAY")
-  protected Long totalClicksDisplay = 0l;
-  
+  private Long totalClicksDisplay = 0l;
+
   @Column(name = "IMPRESSIONS_DISPLAY")
-  protected Long impressionsDisplay = 0l;
-  
+  private Long impressionsDisplay = 0l;
+
   @Column(name = "CTR_DISPLAY")
-  protected BigDecimal ctrDisplay = BigDecimal.ZERO;
-  
+  private BigDecimal ctrDisplay = BigDecimal.ZERO;
+
   @Column(name = "AVERAGE_CPC_DISPLAY")
-  protected BigDecimal averageCpcDisplay = BigDecimal.ZERO;
-  
+  private BigDecimal averageCpcDisplay = BigDecimal.ZERO;
+
   @Column(name = "AVERAGE_CPM_DISPLAY")
-  protected BigDecimal averageCpmDisplay = BigDecimal.ZERO;
-  
+  private BigDecimal averageCpmDisplay = BigDecimal.ZERO;
+
   @Column(name = "AVERAGE_POSITION_DISPLAY")
-  protected BigDecimal averagePositionDisplay = BigDecimal.ZERO;
-  
+  private BigDecimal averagePositionDisplay = BigDecimal.ZERO;
+
   @Column(name = "DAY")
-  protected Date day;
-  
+  private Date day;
+
   @Column(name = "SPEND")
-  protected BigDecimal spend = BigDecimal.ZERO;
-  
+  private BigDecimal spend = BigDecimal.ZERO;
+
   @Column(name = "CONVERSIONS")
-  protected Long conversions = 0l;
-  
+  private Long conversions = 0l;
+
   @Column(name = "ELEGIBLE_IMPRESSION_SEARCH")
   private BigDecimal elegibleImpressionsSearch = BigDecimal.ZERO;
-  
+
   @Column(name = "ELEGIBLE_IMPRESSION_DISPLAY")
   private BigDecimal elegibleImpressionsDisplay = BigDecimal.ZERO;
-  
+
   @Column(name = "LOST_IMPRESSIONS_DUE_TO_BUDGET_SEARCH")
-  protected BigDecimal lostImpressionsDueToBudgetSearch = BigDecimal.ZERO;
-  
+  private BigDecimal lostImpressionsDueToBudgetSearch = BigDecimal.ZERO;
+
   @Column(name = "LOST_IMPRESSIONS_DUE_TO_BID_RANK_SEARCH")
-  protected BigDecimal lostImpressionsDueToBidAdRankSearch = BigDecimal.ZERO;
-  
+  private BigDecimal lostImpressionsDueToBidAdRankSearch = BigDecimal.ZERO;
+
   @Column(name = "LOST_IMPRESSIONS_DUE_TO_BUDGET_DISPLAY")
-  protected BigDecimal lostImpressionsDueToBudgetDisplay = BigDecimal.ZERO;
-  
+  private BigDecimal lostImpressionsDueToBudgetDisplay = BigDecimal.ZERO;
+
   @Column(name = "LOST_IMPRESSIONS_DUE_TO_BID_RANK_DISPLAY")
-  protected BigDecimal lostImpressionsDueToBidAdRankDisplay = BigDecimal.ZERO;
-  
+  private BigDecimal lostImpressionsDueToBidAdRankDisplay = BigDecimal.ZERO;
+
   @Column(name = "NUMBER_OF_ACTIVE_CAMPAINGS")
-  protected BigDecimal numberOfActiveCampaigns = BigDecimal.ZERO;
-  
+  private BigDecimal numberOfActiveCampaigns = BigDecimal.ZERO;
+
   @Column(name = "NUMBER_OF_ACTIVE_ADGROUPS")
-  protected BigDecimal numberOfActiveAdGroups = BigDecimal.ZERO;
-  
+  private BigDecimal numberOfActiveAdGroups = BigDecimal.ZERO;
+
   @Column(name = "NUMBER_OF_ACTIVE_ADS")
-  protected BigDecimal numberOfActiveAds = BigDecimal.ZERO;
-  
+  private BigDecimal numberOfActiveAds = BigDecimal.ZERO;
+
   @Column(name = "NUMBER_OF_POSITIVE_ACTIVE_KEYWORDS")
-  protected BigDecimal numberOfPositiveActiveKeywords = BigDecimal.ZERO;
-  
+  private BigDecimal numberOfPositiveActiveKeywords = BigDecimal.ZERO;
+
   @Column(name = "NUMBER_OF_ACTIVE_BROAD_MATCHING_KEYWORDS")
-  protected BigDecimal numberOfActiveBroadMatchingKeywords = BigDecimal.ZERO;
-  
+  private BigDecimal numberOfActiveBroadMatchingKeywords = BigDecimal.ZERO;
+
   @Column(name = "NUMBER_OF_ACTIVE_PHRASE_MATCHING_KEYWORDS")
-  protected BigDecimal numberOfActivePhraseMatchingKeywords = BigDecimal.ZERO;
-  
+  private BigDecimal numberOfActivePhraseMatchingKeywords = BigDecimal.ZERO;
+
   @Column(name = "NUMBER_OF_ACTIVE_EXACT_MATCHING_KEYWORDS")
-  protected BigDecimal numberOfActiveExactMatchingKeywords = BigDecimal.ZERO;
-  
+  private BigDecimal numberOfActiveExactMatchingKeywords = BigDecimal.ZERO;
+
   @Column(name = "NUMBER_OF_NEGATIVE_ACTIVE_KEYWORDS")
-  protected BigDecimal numberOfNegativeActiveKeywords = BigDecimal.ZERO;
-  
+  private BigDecimal numberOfNegativeActiveKeywords = BigDecimal.ZERO;
+
   @Column(name = "NUMBER_OF_CAMPAIGN_NEGATIVE_ACTIVE_KEYWORDS")
-  protected BigDecimal numberOfCampaignNegativeActiveKeywords = BigDecimal.ZERO;
-  
+  private BigDecimal numberOfCampaignNegativeActiveKeywords = BigDecimal.ZERO;
+
   @Column(name = "NUMBER_OF_ADGROUP_NEGATIVE_ACTIVE_KEYWORDS")
-  protected BigDecimal numberOfAdGroupNegativeActiveKeywords = BigDecimal.ZERO;
-  
+  private BigDecimal numberOfAdGroupNegativeActiveKeywords = BigDecimal.ZERO;
+
   @Column(name = "NUMBER_OF_ACTIVE_GOOD_QUALITY_SCORE_KEYWORDS")
-  protected BigDecimal numberOfActiveGoodQualityScoreKeywords = BigDecimal.ZERO;
-  
+  private BigDecimal numberOfActiveGoodQualityScoreKeywords = BigDecimal.ZERO;
+
   @Column(name = "NUMBER_OF_ACTIVE_AVERAGE_QUALITY_SCORE_KEYWORDS")
-  protected BigDecimal numberOfActiveAverageQualityScoreKeywords = BigDecimal.ZERO;
-  
+  private BigDecimal numberOfActiveAverageQualityScoreKeywords = BigDecimal.ZERO;
+
   @Column(name = "NUMBER_OF_ACTIVE_POOR_QUALITY_SCORE_KEYWORDS")
-  protected BigDecimal numberOfActivePoorQualityScoreKeywords = BigDecimal.ZERO;
-  
+  private BigDecimal numberOfActivePoorQualityScoreKeywords = BigDecimal.ZERO;
+
   @Column(name = "NUMBER_OF_CAMPAIGNS_WITH_CALL_EXTENSIONS_ENABLE")
-  protected BigDecimal numberOfCampaignsWithCallExtensionEnabled = BigDecimal.ZERO;
-  
+  private BigDecimal numberOfCampaignsWithCallExtensionEnabled = BigDecimal.ZERO;
+
   @Column(name = "NUMBER_OF_CAMPAIGNS_WITH_LOCATION_EXTENSIONS_ENABLE")
-  protected BigDecimal numberOfCampaignsWithLocationExtensionEnabled = BigDecimal.ZERO;
-  
+  private BigDecimal numberOfCampaignsWithLocationExtensionEnabled = BigDecimal.ZERO;
+
   @Column(name = "NUMBER_OF_CAMPAIGNS_WITH_SITELINKS_ENABLE")
-  protected BigDecimal numberOfCampaignsWithSiteLinksEnabled = BigDecimal.ZERO;
-  
+  private BigDecimal numberOfCampaignsWithSiteLinksEnabled = BigDecimal.ZERO;
+
   @Column(name = "WEIHTED_AVERAGE_KEYWORD_POSITION")
-  protected BigDecimal weightedAverageKeywordPosition = BigDecimal.ZERO;
-  
+  private BigDecimal weightedAverageKeywordPosition = BigDecimal.ZERO;
+
   @Column(name = "WEIHTED_AVERAGE_QUALITY_SCORE")
-  protected BigDecimal weightedAverageQualityScore = BigDecimal.ZERO;
-  
+  private BigDecimal weightedAverageQualityScore = BigDecimal.ZERO;
+
   @Column(name = "SUM_BUDGET")
-  protected BigDecimal sumBudget = BigDecimal.ZERO;
-  
+  private BigDecimal sumBudget = BigDecimal.ZERO;
+
   @Column(name = "ACCOUNT_SUSPENDED")
-  protected Boolean accountSuspended = false;
-  
+  private Boolean accountSuspended = false;
+
   @Column(name = "NUMBER_OF_ADGROUPS_WITH_ONE_ACTIVE_AD")
-  protected BigDecimal numberOfAdgroupsWithoneActiveAd = BigDecimal.ZERO;
-  
+  private BigDecimal numberOfAdgroupsWithoneActiveAd = BigDecimal.ZERO;
+
   @Column(name = "NUMBER_OF_ADGROUPS_WITH_TWO_ACTIVE_AD")
-  protected BigDecimal numberOfAdgroupsWithTwoActiveAds = BigDecimal.ZERO;
-  
+  private BigDecimal numberOfAdgroupsWithTwoActiveAds = BigDecimal.ZERO;
+
   @Column(name = "NUMBER_OF_DISAPPROVED_ADS")
-  protected BigDecimal numberOfDisapprovedAds = BigDecimal.ZERO;
+  private BigDecimal numberOfDisapprovedAds = BigDecimal.ZERO;
 
   /**
-   * C'tor to satisfy Hibernate.
+   * C'tor
    */
-  private Kratu() {
+  public Kratu() {
   }
-  
+
+  /**
+   * Creates a new Kratu with the base Account Info
+   * 
+   * @param topAccountId The top MCC for the account
+   * @param account the AdWords Account
+   * @param day the Day to create the Kratu for
+   */
+  public Kratu(Long topAccountId, Account account, Date day) {
+    this.setTopAccountId(topAccountId);
+    this.setExternalCustomerId(account.getExternalCustomerId());
+    this.setAccountName(account.getName());
+    this.setCurrencyCode(account.getCurrencyCode());
+    this.setDateTimeZone(account.getDateTimeZone());
+    this.setDay(day);
+    this.setId(account.getExternalCustomerId() + "-" + DateUtil.formatYearMonthDayNoDash(day));
+  }
+
   public String getId() {
     return id;
   }
 
-  // Creates a Kratu, summarizing for a DateRange and for the same externalCustomerId.
-  // Each item on the list is one Day.
-  protected static Kratu createKratuSummary(List<Kratu> dailyKratus, Date startDate, Date endDate) {
-
-    Kratu summarizedKratu = new Kratu();
-
-    BigDecimal daysInRange = new BigDecimal(Days.daysBetween(new DateTime(startDate.getTime()), new DateTime(endDate.getTime())).getDays()).add(BigDecimal.ONE);
-
-    if (dailyKratus != null && dailyKratus.size() > 0) {
-      summarizedKratu.topAccountId = dailyKratus.get(0).topAccountId;
-      summarizedKratu.accountName = dailyKratus.get(0).accountName;
-      summarizedKratu.externalCustomerId = dailyKratus.get(0).externalCustomerId;
-      summarizedKratu.currencyCode = dailyKratus.get(0).currencyCode;
-      summarizedKratu.dateTimeZone = dailyKratus.get(0).dateTimeZone;
-      summarizedKratu.accountSuspended = dailyKratus.get(0).accountSuspended;
-    }
-
-    for (Kratu dailyKratu : dailyKratus) {
-      summarizedKratu.spend = summarizedKratu.spend.add(dailyKratu.spend);
-      summarizedKratu.spend = summarizedKratu.spend.setScale(2, RoundingMode.HALF_UP);
-      summarizedKratu.conversions += dailyKratu.conversions;
-      summarizedKratu.totalClicksSearch += dailyKratu.totalClicksSearch;
-      summarizedKratu.impressionsSearch += dailyKratu.impressionsSearch;      
-
-      summarizedKratu.elegibleImpressionsSearch = summarizedKratu.elegibleImpressionsSearch.add(dailyKratu.elegibleImpressionsSearch);
-      summarizedKratu.lostImpressionsDueToBudgetSearch = summarizedKratu.lostImpressionsDueToBudgetSearch.add(dailyKratu.lostImpressionsDueToBudgetSearch);
-      summarizedKratu.lostImpressionsDueToBidAdRankSearch = summarizedKratu.lostImpressionsDueToBidAdRankSearch.add(dailyKratu.lostImpressionsDueToBidAdRankSearch);
-
-      summarizedKratu.ctrSearch = summarizedKratu.ctrSearch.add(dailyKratu.ctrSearch.divide(daysInRange, 2, RoundingMode.HALF_UP));
-      summarizedKratu.averageCpcSearch = summarizedKratu.averageCpcSearch.add(dailyKratu.ctrSearch.divide(daysInRange, 2, RoundingMode.HALF_UP));
-      summarizedKratu.averageCpmSearch = summarizedKratu.averageCpmSearch.add(dailyKratu.averageCpmSearch.divide(daysInRange, 2, RoundingMode.HALF_UP));
-      summarizedKratu.averagePositionSearch = summarizedKratu.averagePositionSearch.add(dailyKratu.averagePositionSearch.divide(daysInRange, 2, RoundingMode.HALF_UP));
-
-      summarizedKratu.totalClicksDisplay += dailyKratu.totalClicksDisplay;
-      summarizedKratu.impressionsDisplay += dailyKratu.impressionsDisplay;
-
-      summarizedKratu.elegibleImpressionsDisplay = summarizedKratu.elegibleImpressionsDisplay.add(dailyKratu.elegibleImpressionsDisplay);
-      summarizedKratu.lostImpressionsDueToBudgetDisplay = summarizedKratu.lostImpressionsDueToBudgetDisplay.add(dailyKratu.lostImpressionsDueToBudgetDisplay);
-      summarizedKratu.lostImpressionsDueToBidAdRankDisplay = summarizedKratu.lostImpressionsDueToBidAdRankDisplay.add(dailyKratu.lostImpressionsDueToBidAdRankDisplay);
-
-      summarizedKratu.ctrDisplay = summarizedKratu.ctrDisplay.add(dailyKratu.ctrDisplay.divide(daysInRange, 2, RoundingMode.HALF_UP));
-      summarizedKratu.averageCpcDisplay = summarizedKratu.averageCpcDisplay.add(dailyKratu.averageCpcDisplay.divide(daysInRange, 2, RoundingMode.HALF_UP));
-      summarizedKratu.averageCpmDisplay = summarizedKratu.averageCpmDisplay.add(dailyKratu.averageCpmDisplay.divide(daysInRange, 2, RoundingMode.HALF_UP));
-      summarizedKratu.averagePositionDisplay = summarizedKratu.averagePositionDisplay.add(dailyKratu.averagePositionDisplay.divide(daysInRange, 2, RoundingMode.HALF_UP));
-
-      summarizedKratu.numberOfActiveCampaigns = summarizedKratu.numberOfActiveCampaigns.add(dailyKratu.numberOfActiveCampaigns.divide(daysInRange, 2, RoundingMode.HALF_UP));
-      summarizedKratu.numberOfActiveAdGroups = summarizedKratu.numberOfActiveAdGroups.add(dailyKratu.numberOfActiveAdGroups.divide(daysInRange, 2, RoundingMode.HALF_UP));
-      summarizedKratu.numberOfActiveAds = summarizedKratu.numberOfActiveAds.add(dailyKratu.numberOfActiveAds.divide(daysInRange, 2, RoundingMode.HALF_UP));
-      summarizedKratu.numberOfPositiveActiveKeywords = summarizedKratu.numberOfPositiveActiveKeywords.add(dailyKratu.numberOfPositiveActiveKeywords.divide(daysInRange, 2, RoundingMode.HALF_UP));
-
-      summarizedKratu.numberOfActiveBroadMatchingKeywords = summarizedKratu.numberOfActiveBroadMatchingKeywords.add(dailyKratu.numberOfActiveBroadMatchingKeywords.divide(daysInRange, 2, RoundingMode.HALF_UP));
-      summarizedKratu.numberOfActivePhraseMatchingKeywords = summarizedKratu.numberOfActivePhraseMatchingKeywords.add(dailyKratu.numberOfActivePhraseMatchingKeywords.divide(daysInRange, 2, RoundingMode.HALF_UP));
-      summarizedKratu.numberOfActiveExactMatchingKeywords = summarizedKratu.numberOfActivePhraseMatchingKeywords.add(dailyKratu.numberOfActivePhraseMatchingKeywords.divide(daysInRange, 2, RoundingMode.HALF_UP));
-
-      summarizedKratu.numberOfNegativeActiveKeywords = summarizedKratu.numberOfNegativeActiveKeywords.add(dailyKratu.numberOfNegativeActiveKeywords.divide(daysInRange, 2, RoundingMode.HALF_UP));
-      summarizedKratu.numberOfCampaignNegativeActiveKeywords = summarizedKratu.numberOfNegativeActiveKeywords.add(dailyKratu.numberOfNegativeActiveKeywords.divide(daysInRange, 2, RoundingMode.HALF_UP));
-      summarizedKratu.numberOfAdGroupNegativeActiveKeywords = summarizedKratu.numberOfAdGroupNegativeActiveKeywords.add(dailyKratu.numberOfAdGroupNegativeActiveKeywords.divide(daysInRange, 2, RoundingMode.HALF_UP));
-      summarizedKratu.numberOfActiveGoodQualityScoreKeywords = summarizedKratu.numberOfActiveGoodQualityScoreKeywords.add(dailyKratu.numberOfActiveGoodQualityScoreKeywords.divide(daysInRange, 2, RoundingMode.HALF_UP));
-      summarizedKratu.numberOfActiveAverageQualityScoreKeywords = summarizedKratu.numberOfActiveAverageQualityScoreKeywords.add(dailyKratu.numberOfActiveAverageQualityScoreKeywords.divide(daysInRange, 2, RoundingMode.HALF_UP));
-      summarizedKratu.numberOfActivePoorQualityScoreKeywords = summarizedKratu.numberOfActivePoorQualityScoreKeywords.add(dailyKratu.numberOfActivePoorQualityScoreKeywords.divide(daysInRange, 2, RoundingMode.HALF_UP));
-
-      summarizedKratu.numberOfCampaignsWithCallExtensionEnabled = summarizedKratu.numberOfCampaignsWithCallExtensionEnabled.add(dailyKratu.numberOfCampaignsWithCallExtensionEnabled.divide(daysInRange, 2, RoundingMode.HALF_UP));
-      summarizedKratu.numberOfCampaignsWithLocationExtensionEnabled = summarizedKratu.numberOfCampaignsWithLocationExtensionEnabled.add(dailyKratu.numberOfCampaignsWithLocationExtensionEnabled.divide(daysInRange, 2, RoundingMode.HALF_UP));
-      summarizedKratu.numberOfCampaignsWithSiteLinksEnabled = summarizedKratu.numberOfCampaignsWithSiteLinksEnabled.add(dailyKratu.numberOfCampaignsWithSiteLinksEnabled.divide(daysInRange, 2, RoundingMode.HALF_UP));
-
-      summarizedKratu.numberOfAdgroupsWithoneActiveAd = summarizedKratu.numberOfAdgroupsWithoneActiveAd.add(dailyKratu.numberOfAdgroupsWithoneActiveAd.divide(daysInRange, 2, RoundingMode.HALF_UP));
-      summarizedKratu.numberOfAdgroupsWithTwoActiveAds = summarizedKratu.numberOfAdgroupsWithTwoActiveAds.add(dailyKratu.numberOfAdgroupsWithTwoActiveAds.divide(daysInRange, 2, RoundingMode.HALF_UP));
-      summarizedKratu.numberOfDisapprovedAds = summarizedKratu.numberOfDisapprovedAds.add(dailyKratu.numberOfDisapprovedAds.divide(daysInRange, 2, RoundingMode.HALF_UP));
-
-      summarizedKratu.weightedAverageKeywordPosition = summarizedKratu.weightedAverageKeywordPosition.add(dailyKratu.weightedAverageKeywordPosition.divide(daysInRange, 2, RoundingMode.HALF_UP));
-      summarizedKratu.weightedAverageQualityScore = summarizedKratu.weightedAverageQualityScore.add(dailyKratu.weightedAverageQualityScore.divide(daysInRange, 2, RoundingMode.HALF_UP));
-
-      summarizedKratu.sumBudget = summarizedKratu.sumBudget.add(dailyKratu.sumBudget);
-      System.out.print(".");
-    }
-
-    if (summarizedKratu.impressionsDisplay + summarizedKratu.impressionsSearch > 0) {
-      summarizedKratu.accountActive = "Yes"; 
-    }
-
-    return summarizedKratu;
+  public void setId(String id) {
+    this.id = id;
   }
 
-  /*
-   * Retrieves 7 reports types per account and creates a Kratu data object for each day.
-   */
-  protected static Kratu createDailyKratuFromDB(
-      StorageHelper storageHelper,
-      Long topAccountId,
-      Account account,
-      Date day) {
-    
-    Long accountId = account.getExternalCustomerId();
-    
-    List<ReportAccount> reportAccountList = storageHelper.getReportByAccountId(ReportAccount.class, accountId, day, day);
-    
-    if (reportAccountList.size() == 0) {
-      return null;
-    } else {
+  public Long getExternalCustomerId() {
+    return externalCustomerId;
+  }
 
-      Kratu kratu = new Kratu();
-      kratu.topAccountId = topAccountId;
-      kratu.externalCustomerId = account.getExternalCustomerId();
-      kratu.accountName = account.getName();
-      kratu.currencyCode = account.getCurrencyCode();
-      kratu.dateTimeZone = account.getDateTimeZone();
-      kratu.day = day;
-      kratu.id = accountId + "-" + DateUtil.formatYearMonthDayNoDash(day);
-      //kratu.accountName = reportAccountList.get(0).getAccountDescriptiveName();
-      kratu.spend = BigDecimal.ZERO;
+  public void setExternalCustomerId(Long externalCustomerId) {
+    this.externalCustomerId = externalCustomerId;
+  }
 
-      List<ReportCampaign> reportCampaignList = storageHelper.getReportByAccountId(ReportCampaign.class, accountId, day, day);
-      List<ReportAdGroup> reportAdGroupList = storageHelper.getReportByAccountId(ReportAdGroup.class, accountId, day, day);
-      List<ReportAd> reportAdList = storageHelper.getReportByAccountId(ReportAd.class, accountId, day, day);
-      List<ReportKeyword> reportKeywordList = storageHelper.getReportByAccountId(ReportKeyword.class, accountId, day, day);
-      List<ReportAdExtension> reportAdExtensionsList = storageHelper.getReportByAccountId(ReportAdExtension.class, accountId, day, day);
+  public Long getTopAccountId() {
+    return topAccountId;
+  }
 
-      List<ReportCampaignNegativeKeyword> reportCampaignNegativeKeywordList =
-          storageHelper.getReportCampaignNegativeKeywordByAccountAndEndDateInRange(accountId, day, day);
+  public void setTopAccountId(Long topAccountId) {
+    this.topAccountId = topAccountId;
+  }
 
-      for (ReportAccount reportAccount : reportAccountList) {
-        // Search
-        if (reportAccount.getAdNetwork() != null
-            && reportAccount.getAdNetwork().equals(SEARCH_NETWORK)) {
-          kratu.spend = kratu.spend.add(reportAccount.getCostBigDecimal());
-          kratu.conversions += reportAccount.getConversions();
-          kratu.totalClicksSearch = reportAccount.getClicks();
-          kratu.impressionsSearch = reportAccount.getImpressions();
+  public String getAccountName() {
+    return accountName;
+  }
 
-          if (reportAccount.getSearchImpressionShareBigDecimal() != null  &&
-              reportAccount.getSearchImpressionShareBigDecimal().compareTo(BigDecimal.ZERO) == 1)  {
-            kratu.elegibleImpressionsSearch = new BigDecimal(kratu.impressionsSearch).divide(
-                reportAccount.getSearchImpressionShareBigDecimal().divide(BIGDECIMAL_100), 2, RoundingMode.HALF_UP);
+  public void setAccountName(String accountName) {
+    this.accountName = accountName;
+  }
 
-            kratu.lostImpressionsDueToBudgetSearch = reportAccount.getSearchLostISBudgetBigDecimal().divide(
-                BIGDECIMAL_100).multiply(kratu.elegibleImpressionsSearch);
-            kratu.lostImpressionsDueToBidAdRankSearch = reportAccount.getSearchLostISRankBigDecimal().divide(
-                BIGDECIMAL_100).multiply(kratu.elegibleImpressionsSearch);
-          }
+  public String getCurrencyCode() {
+    return currencyCode;
+  }
 
-          kratu.ctrSearch = reportAccount.getCtrBigDecimal();
-          kratu.averageCpcSearch = reportAccount.getAvgCpcBigDecimal();
-          kratu.averageCpmSearch = reportAccount.getAvgCpmBigDecimal();
-          kratu.averagePositionSearch = reportAccount.getAvgPositionBigDecimal();
-        }
-        // Display
-        if (reportAccount.getAdNetwork() != null
-            && reportAccount.getAdNetwork().equals(DISPLAY_NETWORK)) {
-          kratu.spend = kratu.spend.add(reportAccount.getCostBigDecimal());
-          kratu.conversions += reportAccount.getConversions();
-          kratu.totalClicksDisplay = reportAccount.getClicks();
-          kratu.impressionsDisplay = reportAccount.getImpressions();
+  public void setCurrencyCode(String currencyCode) {
+    this.currencyCode = currencyCode;
+  }
 
-          if (reportAccount.getContentImpressionShareBigDecimal() != null  &&
-              reportAccount.getContentImpressionShareBigDecimal().compareTo(BigDecimal.ZERO) == 1)  {
-            kratu.elegibleImpressionsDisplay = new BigDecimal(kratu.impressionsDisplay).divide(
-                reportAccount.getContentImpressionShareBigDecimal().divide(BIGDECIMAL_100), 2, RoundingMode.HALF_UP);
-            
-            kratu.lostImpressionsDueToBudgetDisplay = reportAccount.getContentLostISBudgetBigDecimal().divide(
-                BIGDECIMAL_100).multiply(kratu.elegibleImpressionsDisplay);
-            kratu.lostImpressionsDueToBidAdRankDisplay = reportAccount.getContentLostISRankBigDecimal().divide(
-                BIGDECIMAL_100).multiply(kratu.elegibleImpressionsDisplay);
-          }
+  public String getDateTimeZone() {
+    return dateTimeZone;
+  }
 
-          kratu.ctrDisplay = reportAccount.getCtrBigDecimal();
-          kratu.averageCpcDisplay = reportAccount.getAvgCpcBigDecimal();
-          kratu.averageCpmDisplay = reportAccount.getAvgCpmBigDecimal();
-          kratu.averagePositionDisplay = reportAccount.getAvgPositionBigDecimal();
-        }
-      }
-      reportAccountList = null;
+  public void setDateTimeZone(String dateTimeZone) {
+    this.dateTimeZone = dateTimeZone;
+  }
 
-      if (kratu.impressionsDisplay + kratu.impressionsSearch > 0) {
-        kratu.accountActive = "Yes"; 
-      }
+  public String getAccountActive() {
+    return accountActive;
+  }
 
-      // Process Campaigns
-      for (ReportCampaign reportCampaign : reportCampaignList) {
-        if (reportCampaign.getStatus().equals(ACTIVE)) {
-          kratu.numberOfActiveCampaigns = kratu.numberOfActiveCampaigns.add(BigDecimal.ONE);
-        }
+  public void setAccountActive(String accountActive) {
+    this.accountActive = accountActive;
+  }
 
-        if (reportCampaign.getBudgetBigDecimal() != null) {
-          kratu.sumBudget = kratu.sumBudget.add(reportCampaign.getBudgetBigDecimal());
-        }
-      }
-      reportCampaignList = null;
+  public Long getTotalClicksSearch() {
+    return totalClicksSearch;
+  }
 
-      // Process AdGroups
-      for (ReportAdGroup reportAdGroup : reportAdGroupList) {
-        if (reportAdGroup.getStatus().equals(ENABLE)) {
-          kratu.numberOfActiveAdGroups = kratu.numberOfActiveAdGroups.add(BigDecimal.ONE);
-        }
-      }
-      reportAdGroupList = null;
-      
-      // Process Ads
-      Map<Long, Integer> activeAdsPerAdGroup = new HashMap<Long, Integer>();
-      for (ReportAd reportAd : reportAdList) {
-        if (reportAd.getAdState().equals(ENABLE)) {
-          kratu.numberOfActiveAds = kratu.numberOfActiveAds.add(BigDecimal.ONE);
-          // Adding activeAdsPerAdGroup
-          if (activeAdsPerAdGroup.containsKey(reportAd.getAdGroupId())) {
-            activeAdsPerAdGroup.put(reportAd.getAdGroupId(),
-                activeAdsPerAdGroup.get(reportAd.getAdGroupId()) + 1);
-          } else {
-            activeAdsPerAdGroup.put(reportAd.getAdGroupId(), 1);
-          }
-        }
-        if (reportAd.getCreativeApprovalStatus().equals(DISAPPROVED)) {
-          kratu.numberOfDisapprovedAds = kratu.numberOfDisapprovedAds.add(BigDecimal.ONE);
-        }
-      }
-      reportAdList = null;
+  public void setTotalClicksSearch(Long totalClicksSearch) {
+    this.totalClicksSearch = totalClicksSearch;
+  }
 
-      // Process activeAdsPerAdGroup
-      for (Integer activeAds : activeAdsPerAdGroup.values()) {
-        if (activeAds == 1) {
-          kratu.numberOfAdgroupsWithoneActiveAd = kratu.numberOfAdgroupsWithoneActiveAd.add(BigDecimal.ONE);
-        }
-        if (activeAds == 2) {
-          kratu.numberOfAdgroupsWithTwoActiveAds = kratu.numberOfAdgroupsWithTwoActiveAds.add(BigDecimal.ONE);
-        }
-      }
+  public Long getImpressionsSearch() {
+    return impressionsSearch;
+  }
 
-      // Process Keywords
-      Long sumImpressions = 0l;
-      BigDecimal totalPositions = BigDecimal.ZERO;
-      BigDecimal totalWeight = BigDecimal.ZERO;
-      for (ReportKeyword reportKeyword : reportKeywordList) {
-        if (reportKeyword.getStatus().equals(ENABLE)) {
-          if (!reportKeyword.isNegative()) {
-            kratu.numberOfPositiveActiveKeywords = kratu.numberOfPositiveActiveKeywords.add(BigDecimal.ONE);
+  public void setImpressionsSearch(Long impressionsSearch) {
+    this.impressionsSearch = impressionsSearch;
+  }
 
-            // numberOfActiveGoodQualityScoreKeywords: QS > 7
-            if (reportKeyword.getQualityScoreAsBigDecimal().compareTo(BigDecimal.valueOf(7)) == 1) {
-              kratu.numberOfActiveGoodQualityScoreKeywords = kratu.numberOfActiveGoodQualityScoreKeywords.add(BigDecimal.ONE);
-            }
-            // numberOfActiveAverageQualityScoreKeywords: QS>4 && <=7
-            if (reportKeyword.getQualityScoreAsBigDecimal().compareTo(BigDecimal.valueOf(4)) == 1
-                && reportKeyword.getQualityScoreAsBigDecimal().compareTo(BigDecimal.valueOf(7)) < 1) {
-              kratu.numberOfActiveAverageQualityScoreKeywords = kratu.numberOfActiveAverageQualityScoreKeywords.add(BigDecimal.ONE);
-            }
-            // numberOfActivePoorQualityScoreKeywords: QS <= 4
-            if (reportKeyword.getQualityScoreAsBigDecimal().compareTo(BigDecimal.valueOf(4)) < 1) {
-              kratu.numberOfActivePoorQualityScoreKeywords = kratu.numberOfActivePoorQualityScoreKeywords.add(BigDecimal.ONE);
-            }
+  public BigDecimal getCtrSearch() {
+    return ctrSearch;
+  }
 
-            if (reportKeyword.getKeywordMatchType().equals(BROAD))
-              kratu.numberOfActiveBroadMatchingKeywords = kratu.numberOfActiveBroadMatchingKeywords.add(BigDecimal.ONE);
+  public void setCtrSearch(BigDecimal ctrSearch) {
+    this.ctrSearch = ctrSearch;
+  }
 
-            if (reportKeyword.getKeywordMatchType().equals(PHRASE))
-              kratu.numberOfActivePhraseMatchingKeywords = kratu.numberOfActivePhraseMatchingKeywords.add(BigDecimal.ONE);
+  public BigDecimal getAverageCpcSearch() {
+    return averageCpcSearch;
+  }
 
-            if (reportKeyword.getKeywordMatchType().equals(EXACT))
-              kratu.numberOfActiveExactMatchingKeywords = kratu.numberOfActiveExactMatchingKeywords.add(BigDecimal.ONE);
+  public void setAverageCpcSearch(BigDecimal averageCpcSearch) {
+    this.averageCpcSearch = averageCpcSearch;
+  }
 
-            sumImpressions += reportKeyword.getImpressions();
-            totalPositions = totalPositions.add(reportKeyword.getAvgPositionBigDecimal().multiply(
-                BigDecimal.valueOf(reportKeyword.getImpressions())));
-            totalWeight = totalWeight.add(reportKeyword.getQualityScoreAsBigDecimal().multiply(
-                BigDecimal.valueOf(reportKeyword.getImpressions())));
+  public BigDecimal getAverageCpmSearch() {
+    return averageCpmSearch;
+  }
 
-          } else {
-            kratu.numberOfNegativeActiveKeywords = kratu.numberOfNegativeActiveKeywords.add(BigDecimal.ONE);
-            kratu.numberOfAdGroupNegativeActiveKeywords = kratu.numberOfAdGroupNegativeActiveKeywords.add(BigDecimal.ONE);
-          }
-        }
-      }
-      if (sumImpressions > 0) {
-        kratu.weightedAverageKeywordPosition = totalPositions.divide(BigDecimal.valueOf(sumImpressions), 2,
-            RoundingMode.HALF_UP);
-        kratu.weightedAverageQualityScore = totalWeight.divide(BigDecimal.valueOf(sumImpressions), 2,
-            RoundingMode.HALF_UP);
-      }
-      reportKeywordList = null;
+  public void setAverageCpmSearch(BigDecimal averageCpmSearch) {
+    this.averageCpmSearch = averageCpmSearch;
+  }
 
-      // Process Ad Extensions
-      for (ReportAdExtension reportAdExtension : reportAdExtensionsList) {
-        if (reportAdExtension.getStatus().equals(ACTIVE)) {
-          if (reportAdExtension.getAdExtensionType().equals(LOCATION_EXTENSION)) {
-            kratu.numberOfCampaignsWithLocationExtensionEnabled =
-                kratu.numberOfCampaignsWithLocationExtensionEnabled.add(BigDecimal.ONE);
-          }
-          if (reportAdExtension.getAdExtensionType().equals(MOBILE_EXTENSION)) {
-            kratu.numberOfCampaignsWithCallExtensionEnabled =
-                kratu.numberOfCampaignsWithCallExtensionEnabled.add(BigDecimal.ONE);
-          }
-          if (reportAdExtension.getAdExtensionType().equals(SITE_LINKS_EXTENSION)) {
-            kratu.numberOfCampaignsWithSiteLinksEnabled =
-                kratu.numberOfCampaignsWithSiteLinksEnabled.add(BigDecimal.ONE);
-          }
-        }
-      }
-      reportAdExtensionsList = null;
+  public BigDecimal getAveragePositionSearch() {
+    return averagePositionSearch;
+  }
 
-      // Process CampaignNegativeKeywords    
-      kratu.numberOfNegativeActiveKeywords = kratu.numberOfNegativeActiveKeywords.add(new BigDecimal(reportCampaignNegativeKeywordList.size()));
-      kratu.numberOfCampaignNegativeActiveKeywords = kratu.numberOfCampaignNegativeActiveKeywords.add(new BigDecimal(reportCampaignNegativeKeywordList.size())); 
-      reportCampaignNegativeKeywordList = null;
-      
-      kratu.spend = kratu.spend.setScale(2, RoundingMode.HALF_UP);
+  public void setAveragePositionSearch(BigDecimal averagePositionSearch) {
+    this.averagePositionSearch = averagePositionSearch;
+  }
 
-      return kratu;
-    }
-  } 
+  public Long getTotalClicksDisplay() {
+    return totalClicksDisplay;
+  }
+
+  public void setTotalClicksDisplay(Long totalClicksDisplay) {
+    this.totalClicksDisplay = totalClicksDisplay;
+  }
+
+  public Long getImpressionsDisplay() {
+    return impressionsDisplay;
+  }
+
+  public void setImpressionsDisplay(Long impressionsDisplay) {
+    this.impressionsDisplay = impressionsDisplay;
+  }
+
+  public BigDecimal getCtrDisplay() {
+    return ctrDisplay;
+  }
+
+  public void setCtrDisplay(BigDecimal ctrDisplay) {
+    this.ctrDisplay = ctrDisplay;
+  }
+
+  public BigDecimal getAverageCpcDisplay() {
+    return averageCpcDisplay;
+  }
+
+  public void setAverageCpcDisplay(BigDecimal averageCpcDisplay) {
+    this.averageCpcDisplay = averageCpcDisplay;
+  }
+
+  public BigDecimal getAverageCpmDisplay() {
+    return averageCpmDisplay;
+  }
+
+  public void setAverageCpmDisplay(BigDecimal averageCpmDisplay) {
+    this.averageCpmDisplay = averageCpmDisplay;
+  }
+
+  public BigDecimal getAveragePositionDisplay() {
+    return averagePositionDisplay;
+  }
+
+  public void setAveragePositionDisplay(BigDecimal averagePositionDisplay) {
+    this.averagePositionDisplay = averagePositionDisplay;
+  }
+
+  public Date getDay() {
+    return day;
+  }
+
+  public void setDay(Date day) {
+    this.day = day;
+  }
+
+  public BigDecimal getSpend() {
+    return spend;
+  }
+
+  public void setSpend(BigDecimal spend) {
+    this.spend = spend;
+  }
+
+  public Long getConversions() {
+    return conversions;
+  }
+
+  public void setConversions(Long conversions) {
+    this.conversions = conversions;
+  }
+
+  public BigDecimal getElegibleImpressionsSearch() {
+    return elegibleImpressionsSearch;
+  }
+
+  public void setElegibleImpressionsSearch(BigDecimal elegibleImpressionsSearch) {
+    this.elegibleImpressionsSearch = elegibleImpressionsSearch;
+  }
+
+  public BigDecimal getElegibleImpressionsDisplay() {
+    return elegibleImpressionsDisplay;
+  }
+
+  public void setElegibleImpressionsDisplay(BigDecimal elegibleImpressionsDisplay) {
+    this.elegibleImpressionsDisplay = elegibleImpressionsDisplay;
+  }
+
+  public BigDecimal getLostImpressionsDueToBudgetSearch() {
+    return lostImpressionsDueToBudgetSearch;
+  }
+
+  public void setLostImpressionsDueToBudgetSearch(BigDecimal lostImpressionsDueToBudgetSearch) {
+    this.lostImpressionsDueToBudgetSearch = lostImpressionsDueToBudgetSearch;
+  }
+
+  public BigDecimal getLostImpressionsDueToBidAdRankSearch() {
+    return lostImpressionsDueToBidAdRankSearch;
+  }
+
+  public void setLostImpressionsDueToBidAdRankSearch(BigDecimal lostImpressionsDueToBidAdRankSearch) {
+    this.lostImpressionsDueToBidAdRankSearch = lostImpressionsDueToBidAdRankSearch;
+  }
+
+  public BigDecimal getLostImpressionsDueToBudgetDisplay() {
+    return lostImpressionsDueToBudgetDisplay;
+  }
+
+  public void setLostImpressionsDueToBudgetDisplay(BigDecimal lostImpressionsDueToBudgetDisplay) {
+    this.lostImpressionsDueToBudgetDisplay = lostImpressionsDueToBudgetDisplay;
+  }
+
+  public BigDecimal getLostImpressionsDueToBidAdRankDisplay() {
+    return lostImpressionsDueToBidAdRankDisplay;
+  }
+
+  public void setLostImpressionsDueToBidAdRankDisplay(BigDecimal lostImpressionsDueToBidAdRankDisplay) {
+    this.lostImpressionsDueToBidAdRankDisplay = lostImpressionsDueToBidAdRankDisplay;
+  }
+
+  public BigDecimal getNumberOfActiveCampaigns() {
+    return numberOfActiveCampaigns;
+  }
+
+  public void setNumberOfActiveCampaigns(BigDecimal numberOfActiveCampaigns) {
+    this.numberOfActiveCampaigns = numberOfActiveCampaigns;
+  }
+
+  public BigDecimal getNumberOfActiveAdGroups() {
+    return numberOfActiveAdGroups;
+  }
+
+  public void setNumberOfActiveAdGroups(BigDecimal numberOfActiveAdGroups) {
+    this.numberOfActiveAdGroups = numberOfActiveAdGroups;
+  }
+
+  public BigDecimal getNumberOfActiveAds() {
+    return numberOfActiveAds;
+  }
+
+  public void setNumberOfActiveAds(BigDecimal numberOfActiveAds) {
+    this.numberOfActiveAds = numberOfActiveAds;
+  }
+
+  public BigDecimal getNumberOfPositiveActiveKeywords() {
+    return numberOfPositiveActiveKeywords;
+  }
+
+  public void setNumberOfPositiveActiveKeywords(BigDecimal numberOfPositiveActiveKeywords) {
+    this.numberOfPositiveActiveKeywords = numberOfPositiveActiveKeywords;
+  }
+
+  public BigDecimal getNumberOfActiveBroadMatchingKeywords() {
+    return numberOfActiveBroadMatchingKeywords;
+  }
+
+  public void setNumberOfActiveBroadMatchingKeywords(BigDecimal numberOfActiveBroadMatchingKeywords) {
+    this.numberOfActiveBroadMatchingKeywords = numberOfActiveBroadMatchingKeywords;
+  }
+
+  public BigDecimal getNumberOfActivePhraseMatchingKeywords() {
+    return numberOfActivePhraseMatchingKeywords;
+  }
+
+  public void setNumberOfActivePhraseMatchingKeywords(BigDecimal numberOfActivePhraseMatchingKeywords) {
+    this.numberOfActivePhraseMatchingKeywords = numberOfActivePhraseMatchingKeywords;
+  }
+
+  public BigDecimal getNumberOfActiveExactMatchingKeywords() {
+    return numberOfActiveExactMatchingKeywords;
+  }
+
+  public void setNumberOfActiveExactMatchingKeywords(BigDecimal numberOfActiveExactMatchingKeywords) {
+    this.numberOfActiveExactMatchingKeywords = numberOfActiveExactMatchingKeywords;
+  }
+
+  public BigDecimal getNumberOfNegativeActiveKeywords() {
+    return numberOfNegativeActiveKeywords;
+  }
+
+  public void setNumberOfNegativeActiveKeywords(BigDecimal numberOfNegativeActiveKeywords) {
+    this.numberOfNegativeActiveKeywords = numberOfNegativeActiveKeywords;
+  }
+
+  public BigDecimal getNumberOfCampaignNegativeActiveKeywords() {
+    return numberOfCampaignNegativeActiveKeywords;
+  }
+
+  public void setNumberOfCampaignNegativeActiveKeywords(
+      BigDecimal numberOfCampaignNegativeActiveKeywords) {
+    this.numberOfCampaignNegativeActiveKeywords = numberOfCampaignNegativeActiveKeywords;
+  }
+
+  public BigDecimal getNumberOfAdGroupNegativeActiveKeywords() {
+    return numberOfAdGroupNegativeActiveKeywords;
+  }
+
+  public void setNumberOfAdGroupNegativeActiveKeywords(
+      BigDecimal numberOfAdGroupNegativeActiveKeywords) {
+    this.numberOfAdGroupNegativeActiveKeywords = numberOfAdGroupNegativeActiveKeywords;
+  }
+
+  public BigDecimal getNumberOfActiveGoodQualityScoreKeywords() {
+    return numberOfActiveGoodQualityScoreKeywords;
+  }
+
+  public void setNumberOfActiveGoodQualityScoreKeywords(
+      BigDecimal numberOfActiveGoodQualityScoreKeywords) {
+    this.numberOfActiveGoodQualityScoreKeywords = numberOfActiveGoodQualityScoreKeywords;
+  }
+
+  public BigDecimal getNumberOfActiveAverageQualityScoreKeywords() {
+    return numberOfActiveAverageQualityScoreKeywords;
+  }
+
+  public void setNumberOfActiveAverageQualityScoreKeywords(
+      BigDecimal numberOfActiveAverageQualityScoreKeywords) {
+    this.numberOfActiveAverageQualityScoreKeywords = numberOfActiveAverageQualityScoreKeywords;
+  }
+
+  public BigDecimal getNumberOfActivePoorQualityScoreKeywords() {
+    return numberOfActivePoorQualityScoreKeywords;
+  }
+
+  public void setNumberOfActivePoorQualityScoreKeywords(
+      BigDecimal numberOfActivePoorQualityScoreKeywords) {
+    this.numberOfActivePoorQualityScoreKeywords = numberOfActivePoorQualityScoreKeywords;
+  }
+
+  public BigDecimal getNumberOfCampaignsWithCallExtensionEnabled() {
+    return numberOfCampaignsWithCallExtensionEnabled;
+  }
+
+  public void setNumberOfCampaignsWithCallExtensionEnabled(
+      BigDecimal numberOfCampaignsWithCallExtensionEnabled) {
+    this.numberOfCampaignsWithCallExtensionEnabled = numberOfCampaignsWithCallExtensionEnabled;
+  }
+
+  public BigDecimal getNumberOfCampaignsWithLocationExtensionEnabled() {
+    return numberOfCampaignsWithLocationExtensionEnabled;
+  }
+
+  public void setNumberOfCampaignsWithLocationExtensionEnabled(
+      BigDecimal numberOfCampaignsWithLocationExtensionEnabled) {
+    this.numberOfCampaignsWithLocationExtensionEnabled =
+        numberOfCampaignsWithLocationExtensionEnabled;
+  }
+
+  public BigDecimal getNumberOfCampaignsWithSiteLinksEnabled() {
+    return numberOfCampaignsWithSiteLinksEnabled;
+  }
+
+  public void setNumberOfCampaignsWithSiteLinksEnabled(
+      BigDecimal numberOfCampaignsWithSiteLinksEnabled) {
+    this.numberOfCampaignsWithSiteLinksEnabled = numberOfCampaignsWithSiteLinksEnabled;
+  }
+
+  public BigDecimal getWeightedAverageKeywordPosition() {
+    return weightedAverageKeywordPosition;
+  }
+
+  public void setWeightedAverageKeywordPosition(BigDecimal weightedAverageKeywordPosition) {
+    this.weightedAverageKeywordPosition = weightedAverageKeywordPosition;
+  }
+
+  public BigDecimal getWeightedAverageQualityScore() {
+    return weightedAverageQualityScore;
+  }
+
+  public void setWeightedAverageQualityScore(BigDecimal weightedAverageQualityScore) {
+    this.weightedAverageQualityScore = weightedAverageQualityScore;
+  }
+
+  public BigDecimal getSumBudget() {
+    return sumBudget;
+  }
+
+  public void setSumBudget(BigDecimal sumBudget) {
+    this.sumBudget = sumBudget;
+  }
+
+  public Boolean getAccountSuspended() {
+    return accountSuspended;
+  }
+
+  public void setAccountSuspended(Boolean accountSuspended) {
+    this.accountSuspended = accountSuspended;
+  }
+
+  public BigDecimal getNumberOfAdgroupsWithoneActiveAd() {
+    return numberOfAdgroupsWithoneActiveAd;
+  }
+
+  public void setNumberOfAdgroupsWithoneActiveAd(BigDecimal numberOfAdgroupsWithoneActiveAd) {
+    this.numberOfAdgroupsWithoneActiveAd = numberOfAdgroupsWithoneActiveAd;
+  }
+
+  public BigDecimal getNumberOfAdgroupsWithTwoActiveAds() {
+    return numberOfAdgroupsWithTwoActiveAds;
+  }
+
+  public void setNumberOfAdgroupsWithTwoActiveAds(BigDecimal numberOfAdgroupsWithTwoActiveAds) {
+    this.numberOfAdgroupsWithTwoActiveAds = numberOfAdgroupsWithTwoActiveAds;
+  }
+
+  public BigDecimal getNumberOfDisapprovedAds() {
+    return numberOfDisapprovedAds;
+  }
+
+  public void setNumberOfDisapprovedAds(BigDecimal numberOfDisapprovedAds) {
+    this.numberOfDisapprovedAds = numberOfDisapprovedAds;
+  }
+
+  // Add methods  
+
+  public void addTotalClicksSearch(Long totalClicksSearch) {
+    this.totalClicksSearch += totalClicksSearch;
+  }
+
+  public void addImpressionsSearch(Long impressionsSearch) {
+    this.impressionsSearch += impressionsSearch;
+  }
+
+  public void addTotalClicksDisplay(Long totalClicksDisplay) {
+    this.totalClicksDisplay += totalClicksDisplay;
+  }
+
+  public void addImpressionsDisplay(Long impressionsDisplay) {
+    this.impressionsDisplay += impressionsDisplay;
+  }  
+  public void addCtrSearch(BigDecimal bigDecimal) {
+    ctrSearch = ctrSearch.add(bigDecimal);
+  }
+
+  public void addAverageCpcSearch(BigDecimal bigDecimal) {
+    averageCpcSearch = averageCpcSearch.add(bigDecimal);
+  }
+
+  public void addAverageCpmSearch(BigDecimal bigDecimal) {
+    averageCpmSearch = averageCpmSearch.add(bigDecimal);
+  }
+
+  public void addAveragePositionSearch(BigDecimal bigDecimal) {
+    averagePositionSearch = averagePositionSearch.add(bigDecimal);
+  }
+
+  public void addCtrDisplay(BigDecimal bigDecimal) {
+    ctrDisplay = ctrDisplay.add(bigDecimal);
+  }
+
+  public void addAverageCpcDisplay(BigDecimal bigDecimal) {
+    averageCpcDisplay = averageCpcDisplay.add(bigDecimal);
+  }
+
+  public void addAverageCpmDisplay(BigDecimal bigDecimal) {
+    averageCpmDisplay = averageCpmDisplay.add(bigDecimal);
+  }
+
+  public void addAveragePositionDisplay(BigDecimal bigDecimal) {
+    averagePositionDisplay = averagePositionDisplay.add(bigDecimal);
+  }
+
+  public void addSpend(BigDecimal bigDecimal) {
+    spend = spend.add(bigDecimal);
+  }
+  
+  public void addConversions(Long conversions) {
+    this.conversions =+ conversions;
+  }
+
+  public void addElegibleImpressionsSearch(BigDecimal bigDecimal) {
+    elegibleImpressionsSearch = elegibleImpressionsSearch.add(bigDecimal);
+  }
+
+  public void addElegibleImpressionsDisplay(BigDecimal bigDecimal) {
+    elegibleImpressionsDisplay = elegibleImpressionsDisplay.add(bigDecimal);
+  }
+
+  public void addLostImpressionsDueToBudgetSearch(BigDecimal bigDecimal) {
+    lostImpressionsDueToBudgetSearch = lostImpressionsDueToBudgetSearch.add(bigDecimal);
+  }
+
+  public void addLostImpressionsDueToBidAdRankSearch(BigDecimal bigDecimal) {
+    lostImpressionsDueToBidAdRankSearch = lostImpressionsDueToBidAdRankSearch.add(bigDecimal);
+  }
+
+  public void addLostImpressionsDueToBudgetDisplay(BigDecimal bigDecimal) {
+    lostImpressionsDueToBudgetDisplay = lostImpressionsDueToBudgetDisplay.add(bigDecimal);
+  }
+
+  public void addLostImpressionsDueToBidAdRankDisplay(BigDecimal bigDecimal) {
+    lostImpressionsDueToBidAdRankDisplay = lostImpressionsDueToBidAdRankDisplay.add(bigDecimal);
+  }
+  public void addNumberOfActiveCampaigns(BigDecimal bigDecimal) {
+    numberOfActiveCampaigns = numberOfActiveCampaigns.add(bigDecimal);
+  }
+
+  public void addNumberOfActiveAdGroups(BigDecimal bigDecimal) {
+    numberOfActiveAdGroups = numberOfActiveAdGroups.add(bigDecimal);
+  }
+
+  public void addNumberOfActiveAds(BigDecimal bigDecimal) {
+    numberOfActiveAds = numberOfActiveAds.add(bigDecimal);
+  }
+
+  public void addNumberOfPositiveActiveKeywords(BigDecimal bigDecimal) {
+    numberOfPositiveActiveKeywords = numberOfPositiveActiveKeywords.add(bigDecimal);
+  }
+
+  public void addNumberOfActiveBroadMatchingKeywords(BigDecimal bigDecimal) {
+    numberOfActiveBroadMatchingKeywords = numberOfActiveBroadMatchingKeywords.add(bigDecimal);
+  }
+
+  public void addNumberOfActivePhraseMatchingKeywords(BigDecimal bigDecimal) {
+    numberOfActivePhraseMatchingKeywords = numberOfActivePhraseMatchingKeywords.add(bigDecimal);
+  }
+
+  public void addNumberOfActiveExactMatchingKeywords(BigDecimal bigDecimal) {
+    numberOfActiveExactMatchingKeywords = numberOfActiveExactMatchingKeywords.add(bigDecimal);
+  }
+
+  public void addNumberOfNegativeActiveKeywords(BigDecimal bigDecimal) {
+    numberOfNegativeActiveKeywords = numberOfNegativeActiveKeywords.add(bigDecimal);
+  }
+
+  public void addNumberOfCampaignNegativeActiveKeywords(BigDecimal bigDecimal) {
+    numberOfCampaignNegativeActiveKeywords = numberOfCampaignNegativeActiveKeywords.add(bigDecimal);
+  }
+
+  public void addNumberOfAdGroupNegativeActiveKeywords(BigDecimal bigDecimal) {
+    numberOfAdGroupNegativeActiveKeywords = numberOfAdGroupNegativeActiveKeywords.add(bigDecimal);
+  }
+
+  public void addNumberOfActiveGoodQualityScoreKeywords(BigDecimal bigDecimal) {
+    numberOfActiveGoodQualityScoreKeywords = numberOfActiveGoodQualityScoreKeywords.add(bigDecimal);
+  }
+
+  public void addNumberOfActiveAverageQualityScoreKeywords(BigDecimal bigDecimal) {
+    numberOfActiveAverageQualityScoreKeywords = numberOfActiveAverageQualityScoreKeywords.add(bigDecimal);
+  }
+
+  public void addNumberOfActivePoorQualityScoreKeywords(BigDecimal bigDecimal) {
+    numberOfActivePoorQualityScoreKeywords = numberOfActivePoorQualityScoreKeywords.add(bigDecimal);
+  }
+
+  public void addNumberOfCampaignsWithCallExtensionEnabled(BigDecimal bigDecimal) {
+    numberOfCampaignsWithCallExtensionEnabled = numberOfCampaignsWithCallExtensionEnabled.add(bigDecimal);
+  }
+
+  public void addNumberOfCampaignsWithLocationExtensionEnabled(BigDecimal bigDecimal) {
+    numberOfCampaignsWithLocationExtensionEnabled = numberOfCampaignsWithLocationExtensionEnabled.add(bigDecimal);
+  }
+
+  public void addNumberOfCampaignsWithSiteLinksEnabled(BigDecimal bigDecimal) {
+    numberOfCampaignsWithSiteLinksEnabled = numberOfCampaignsWithSiteLinksEnabled.add(bigDecimal);
+  }
+  public void addWeightedAverageKeywordPosition(BigDecimal bigDecimal) {
+    weightedAverageKeywordPosition = weightedAverageKeywordPosition.add(bigDecimal);
+  }
+
+  public void addWeightedAverageQualityScore(BigDecimal bigDecimal) {
+    weightedAverageQualityScore = weightedAverageQualityScore.add(bigDecimal);
+  }
+
+  public void addSumBudget(BigDecimal bigDecimal) {
+    sumBudget = sumBudget.add(bigDecimal);
+  }
+
+  public void addNumberOfAdgroupsWithoneActiveAd(BigDecimal bigDecimal) {
+    numberOfAdgroupsWithoneActiveAd = numberOfAdgroupsWithoneActiveAd.add(bigDecimal);
+  }
+
+  public void addNumberOfAdgroupsWithTwoActiveAds(BigDecimal bigDecimal) {
+    numberOfAdgroupsWithTwoActiveAds = numberOfAdgroupsWithTwoActiveAds.add(bigDecimal);
+  }
+
+  public void addNumberOfDisapprovedAds(BigDecimal bigDecimal) { 
+    numberOfDisapprovedAds = numberOfDisapprovedAds.add(bigDecimal);
+  }
 }
