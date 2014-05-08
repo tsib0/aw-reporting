@@ -17,11 +17,11 @@ package com.google.api.ads.adwords.jaxws.extensions.report.model.definitions;
 import com.google.api.ads.adwords.jaxws.extensions.report.model.entities.ReportCampaign;
 import com.google.api.ads.adwords.lib.jaxb.v201402.ReportDefinitionReportType;
 
-import junit.framework.Assert;
-
 import org.junit.runner.RunWith;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+
+import junit.framework.Assert;
 
 /**
  * Tests the Campaign Performance report definition.
@@ -160,7 +160,12 @@ public class ReportCampaignDefinitionTest extends AbstractReportDefinitionTest<R
         "CampaignId",
         "CampaignName",
         "Status",
-        "Amount"
-        };
+        "Amount",
+        // Analytics Fieds        
+        "AveragePageviews",
+        "AverageTimeOnSite",
+        "BounceRate",
+        "PercentNewVisitors"
+    };
   }
 }

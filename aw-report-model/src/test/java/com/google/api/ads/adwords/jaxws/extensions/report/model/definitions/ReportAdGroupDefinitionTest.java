@@ -157,7 +157,12 @@ public class ReportAdGroupDefinitionTest extends AbstractReportDefinitionTest<Re
         "AdGroupId",
         "AdGroupName",
         "Status",
-        "TargetCpa"
-        };
+        "TargetCpa",
+        // Analytics Fieds        
+        "AveragePageviews",
+        "AverageTimeOnSite",
+        "BounceRate",
+        "PercentNewVisitors"
+    };
   }
 }
