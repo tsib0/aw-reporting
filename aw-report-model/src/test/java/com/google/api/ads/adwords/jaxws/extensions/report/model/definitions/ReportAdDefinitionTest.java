@@ -168,7 +168,12 @@ public class ReportAdDefinitionTest extends AbstractReportDefinitionTest<ReportA
         "Headline",
         "Description1",
         "Description2",
-        "CreativeApprovalStatus"
+        "CreativeApprovalStatus",
+        // Analytics Fieds        
+        "AveragePageviews",
+        "AverageTimeOnSite",
+        "BounceRate",
+        "PercentNewVisitors"
     };
   }
 }

@@ -14,6 +14,7 @@
 
 package com.google.api.ads.adwords.jaxws.extensions.kratu.data;
 
+import com.google.api.ads.adwords.jaxws.extensions.kratu.KratuCompute;
 import com.google.api.ads.adwords.jaxws.extensions.report.model.entities.Report;
 import com.google.api.ads.adwords.jaxws.extensions.report.model.entities.ReportAccount;
 import com.google.api.ads.adwords.jaxws.extensions.report.model.entities.ReportAd;
@@ -201,7 +202,7 @@ public class StorageHelper {
       System.out.print(i++ + " ");
       List<Kratu> accountDailyKratus = entityPersister.get(Kratu.class, Kratu._externalCustomerId, account.getExternalCustomerId(), Kratu._day, startDate, endDate);
       if (accountDailyKratus != null && accountDailyKratus.size() > 0) {
-        kratusSummary.add(Kratu.createKratuSummary(accountDailyKratus, startDate, endDate));
+        kratusSummary.add(KratuCompute.createKratuSummary(accountDailyKratus, startDate, endDate));
       }
     }
 
@@ -213,7 +214,7 @@ public class StorageHelper {
   }
 
   public void createReportIndexes() {
-    // Crete Indexes
+    // Create Indexes
     List<String> indexes = Lists.newArrayList();
     indexes.add(Report.ACCOUNT_ID);
     indexes.add(Report.DAY);
