@@ -650,39 +650,39 @@ public class Kratu implements MongoEntity {
     this.impressionsDisplay += impressionsDisplay;
   }  
   public void addCtrSearch(BigDecimal bigDecimal) {
-    ctrSearch.add(bigDecimal);
+    ctrSearch = ctrSearch.add(bigDecimal);
   }
 
   public void addAverageCpcSearch(BigDecimal bigDecimal) {
-    averageCpcSearch.add(bigDecimal);
+    averageCpcSearch = averageCpcSearch.add(bigDecimal);
   }
 
   public void addAverageCpmSearch(BigDecimal bigDecimal) {
-    averageCpmSearch.add(bigDecimal);
+    averageCpmSearch = averageCpmSearch.add(bigDecimal);
   }
 
   public void addAveragePositionSearch(BigDecimal bigDecimal) {
-    averagePositionSearch.add(bigDecimal);
+    averagePositionSearch = averagePositionSearch.add(bigDecimal);
   }
 
   public void addCtrDisplay(BigDecimal bigDecimal) {
-    ctrDisplay.add(bigDecimal);
+    ctrDisplay = ctrDisplay.add(bigDecimal);
   }
 
   public void addAverageCpcDisplay(BigDecimal bigDecimal) {
-    averageCpcDisplay.add(bigDecimal);
+    averageCpcDisplay = averageCpcDisplay.add(bigDecimal);
   }
 
   public void addAverageCpmDisplay(BigDecimal bigDecimal) {
-    averageCpmDisplay.add(bigDecimal);
+    averageCpmDisplay = averageCpmDisplay.add(bigDecimal);
   }
 
   public void addAveragePositionDisplay(BigDecimal bigDecimal) {
-    averagePositionDisplay.add(bigDecimal);
+    averagePositionDisplay = averagePositionDisplay.add(bigDecimal);
   }
 
   public void addSpend(BigDecimal bigDecimal) {
-    spend.add(bigDecimal);
+    spend = spend.add(bigDecimal);
   }
   
   public void addConversions(Long conversions) {
@@ -690,27 +690,27 @@ public class Kratu implements MongoEntity {
   }
 
   public void addElegibleImpressionsSearch(BigDecimal bigDecimal) {
-    elegibleImpressionsSearch.add(bigDecimal);
+    elegibleImpressionsSearch = elegibleImpressionsSearch.add(bigDecimal);
   }
 
   public void addElegibleImpressionsDisplay(BigDecimal bigDecimal) {
-    elegibleImpressionsDisplay.add(bigDecimal);
+    elegibleImpressionsDisplay = elegibleImpressionsDisplay.add(bigDecimal);
   }
 
   public void addLostImpressionsDueToBudgetSearch(BigDecimal bigDecimal) {
-    lostImpressionsDueToBudgetSearch.add(bigDecimal);
+    lostImpressionsDueToBudgetSearch = lostImpressionsDueToBudgetSearch.add(bigDecimal);
   }
 
   public void addLostImpressionsDueToBidAdRankSearch(BigDecimal bigDecimal) {
-    lostImpressionsDueToBidAdRankSearch.add(bigDecimal);
+    lostImpressionsDueToBidAdRankSearch = lostImpressionsDueToBidAdRankSearch.add(bigDecimal);
   }
 
   public void addLostImpressionsDueToBudgetDisplay(BigDecimal bigDecimal) {
-    lostImpressionsDueToBudgetDisplay.add(bigDecimal);
+    lostImpressionsDueToBudgetDisplay = lostImpressionsDueToBudgetDisplay.add(bigDecimal);
   }
 
   public void addLostImpressionsDueToBidAdRankDisplay(BigDecimal bigDecimal) {
-    lostImpressionsDueToBidAdRankDisplay.add(bigDecimal);
+    lostImpressionsDueToBidAdRankDisplay = lostImpressionsDueToBidAdRankDisplay.add(bigDecimal);
   }
   public void addNumberOfActiveCampaigns(BigDecimal bigDecimal) {
     numberOfActiveCampaigns = numberOfActiveCampaigns.add(bigDecimal);
@@ -776,26 +776,26 @@ public class Kratu implements MongoEntity {
     numberOfCampaignsWithSiteLinksEnabled = numberOfCampaignsWithSiteLinksEnabled.add(bigDecimal);
   }
   public void addWeightedAverageKeywordPosition(BigDecimal bigDecimal) {
-    weightedAverageKeywordPosition.add(bigDecimal);
+    weightedAverageKeywordPosition = weightedAverageKeywordPosition.add(bigDecimal);
   }
 
   public void addWeightedAverageQualityScore(BigDecimal bigDecimal) {
-    weightedAverageQualityScore.add(bigDecimal);
+    weightedAverageQualityScore = weightedAverageQualityScore.add(bigDecimal);
   }
 
   public void addSumBudget(BigDecimal bigDecimal) {
-    sumBudget.add(bigDecimal);
+    sumBudget = sumBudget.add(bigDecimal);
   }
 
   public void addNumberOfAdgroupsWithoneActiveAd(BigDecimal bigDecimal) {
-    numberOfAdgroupsWithoneActiveAd.add(bigDecimal);
+    numberOfAdgroupsWithoneActiveAd = numberOfAdgroupsWithoneActiveAd.add(bigDecimal);
   }
 
   public void addNumberOfAdgroupsWithTwoActiveAds(BigDecimal bigDecimal) {
-    numberOfAdgroupsWithTwoActiveAds.add(bigDecimal);
+    numberOfAdgroupsWithTwoActiveAds = numberOfAdgroupsWithTwoActiveAds.add(bigDecimal);
   }
 
   public void addNumberOfDisapprovedAds(BigDecimal bigDecimal) { 
-    numberOfDisapprovedAds.add(bigDecimal);
+    numberOfDisapprovedAds = numberOfDisapprovedAds.add(bigDecimal);
   }
 }
