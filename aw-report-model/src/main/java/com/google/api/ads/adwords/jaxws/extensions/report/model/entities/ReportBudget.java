@@ -118,8 +118,7 @@ public class ReportBudget extends ReportBase {
    * @param amount the amount to set
    */
   public void setAmount(String amount) {
-    amount = amount.replaceAll("--", "0");
-    this.amount = new BigDecimal(amount.replaceAll("\\s|%|>|<", ""));
+    this.amount = BigDecimalUtil.parseFromNumberString(amount);
   }
 
   /**
