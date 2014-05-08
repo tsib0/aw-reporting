@@ -104,7 +104,8 @@ public class ManagedCustomerDelegate {
     List<ManagedCustomer> accountList = Lists.newArrayList();
     try {
       this.retrieveAccounts(selector, accountList);
-    } catch (ExceptionInInitializerError e) {
+    } catch (Exception e) {
+      LOGGER.error("Error on managedCustomerService.get(selector), probably an AuthenticationError");
       throw new ApiException(
           "Error on managedCustomerService.get(selector), probably an AuthenticationError",
           new com.google.api.ads.adwords.jaxws.v201402.cm.ApiException());
