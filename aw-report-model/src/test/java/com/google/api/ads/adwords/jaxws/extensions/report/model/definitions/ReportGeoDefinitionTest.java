@@ -1,4 +1,4 @@
-// Copyright 2013 Google Inc. All Rights Reserved.
+// Copyright 2014 Google Inc. All Rights Reserved.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -32,7 +32,7 @@ import com.google.api.ads.adwords.lib.jaxb.v201402.ReportDefinitionReportType;
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration("classpath:aw-report-model-test-beans.xml")
 
-public class ReportGeoDefinitionTest  extends
+public class ReportGeoDefinitionTest extends
 AbstractReportDefinitionTest<ReportGeo>{
 
   /**

@@ -229,6 +229,11 @@ public class ReportProcessorOnFileTest {
               "reportDownload-GEO_PERFORMANCE_REPORT-2084918008-570857839140990020.report10",
               numberOfFiles);
         }
+        if (reportType.equals(ReportDefinitionReportType.PLACEMENT_PERFORMANCE_REPORT)) {
+          return getReportFiles(
+              "reportDownload-PLACEMENT_PERFORMANCE_REPORT-501111125-37111114339129.report10",
+              numberOfFiles);
+        }
         // Undefined report type on this test
         throw (new Exception("Undefined report type on Tests: " + reportType.value()));
       }
