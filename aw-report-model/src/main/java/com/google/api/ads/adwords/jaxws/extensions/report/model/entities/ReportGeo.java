@@ -100,50 +100,61 @@ public class ReportGeo extends ReportBase {
 
   @Override
   public void setId() {
-
-    // Generating unique id after having date and accountId
+    // Generating unique id after having accountId, campaignId and date
+    this.id = "";
     if (this.getAccountId() != null) {
-      this.id = this.getAccountId().toString();
-    } else {
-      this.id = "null";
+      this.id += this.getAccountId().toString();
     }
     if (this.getCampaignId() != null) {
       this.id += "-" + this.getCampaignId().toString();
-    } else {
-      this.id += "null";
     }
     if (this.getAdGroupId() != null) {
       this.id += "-" + this.getAdGroupId().toString();
-    } else {
-      this.id += "null";
     }
+
+    this.id += setIdDates();
+
     if (this.getConversionTrackerId() != null) {
       this.id += "-" + this.getConversionTrackerId().toString();
     } else {
-      this.id += "null";
+      this.id += "-";
     }
+
+    // Geo Ids
     if (this.getCityCriteriaId() != null) {
       this.id += "-" + this.getCityCriteriaId().toString();
     } else {
-      this.id += "null";
+      this.id += "-";
     }
     if (this.getMetroArea() != null) {
       this.id += "-" + this.getMetroArea().toString();
     } else {
-      this.id += "null";
+      this.id += "-";
     }
     if (this.getCountryTerritory() != null) {
       this.id += "-" + this.getCountryTerritory().toString();
     } else {
-      this.id += "null";
+      this.id += "-";
     }
     if (this.getMostSpecificLocation() != null) {
       this.id += "-" + this.getMostSpecificLocation().toString();
     } else {
-      this.id += "null";
+      this.id += "-";
     }
-    
-    this.id += setIdDates();
+
+    // Adding extra fields for unique ID
+    if (this.getAdNetwork() != null && this.getAdNetwork().length() > 0) {
+      this.id += "-" + this.getAdNetwork();
+    }
+    if (this.getAdNetworkPartners() != null && this.getAdNetworkPartners().length() > 0) {
+      this.id += "-" + this.getAdNetworkPartners();
+    }
+    if (this.getDevice() != null && this.getDevice().length() > 0) {
+      this.id += "-" + this.getDevice();
+    }
+    if (this.getClickType() != null && this.getClickType().length() > 0) {
+      this.id += "-" + this.getClickType();
+    }
   }
 
   public String getAdFormat() {
@@ -265,5 +276,4 @@ public class ReportGeo extends ReportBase {
   public void setCampaignId(Long campaignId) {
     this.campaignId = campaignId;
   }
-
 }
