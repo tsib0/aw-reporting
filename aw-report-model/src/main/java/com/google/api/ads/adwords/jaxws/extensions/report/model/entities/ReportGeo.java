@@ -114,15 +114,14 @@ public class ReportGeo extends ReportBase {
 
     this.id += setIdDates();
 
-    if (this.getConversionTrackerId() != null) {
-      this.id += "-" + this.getConversionTrackerId().toString();
+    // Geo Ids
+    if (this.getCountryTerritory() != null) {
+      this.id += "-" + this.getCountryTerritory().toString();
     } else {
       this.id += "-";
     }
-
-    // Geo Ids
-    if (this.getCityCriteriaId() != null) {
-      this.id += "-" + this.getCityCriteriaId().toString();
+    if (this.getRegion() != null) {
+      this.id += "-" + this.getRegion().toString();
     } else {
       this.id += "-";
     }
@@ -131,8 +130,8 @@ public class ReportGeo extends ReportBase {
     } else {
       this.id += "-";
     }
-    if (this.getCountryTerritory() != null) {
-      this.id += "-" + this.getCountryTerritory().toString();
+    if (this.getCityCriteriaId() != null) {
+      this.id += "-" + this.getCityCriteriaId().toString();
     } else {
       this.id += "-";
     }
