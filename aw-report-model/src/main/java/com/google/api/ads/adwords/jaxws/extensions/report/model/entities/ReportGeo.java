@@ -61,15 +61,15 @@ public class ReportGeo extends ReportBase {
   @CsvField(value = "Campaign state", reportField = "CampaignStatus")
   private String campaignStatus;
 
-  @Column(name = "CITY_CRITERIA_ID", length = 16)
+  @Column(name = "CITY_CRITERIA_ID", length = 64)
   @CsvField(value = "City", reportField = "CityCriteriaId")
   private String cityCriteriaId;
 
-  @Column(name = "CONVERSION_TRACKER_ID")
+  @Column(name = "CONVERSION_TRACKER_ID", length = 64)
   @CsvField(value = "Conversion Tracker Id", reportField = "ConversionTrackerId")
   private String conversionTrackerId;
 
-  @Column(name = "COUNTRY_CRITERIA_ID")
+  @Column(name = "COUNTRY_CRITERIA_ID", length = 64)
   @CsvField(value = "Country/Territory", reportField = "CountryCriteriaId")
   private String countryTerritory;
 
@@ -77,19 +77,19 @@ public class ReportGeo extends ReportBase {
   @CsvField(value = "Is Targetable", reportField = "IsTargetingLocation")
   private String isTargetable;
 
-  @Column(name = "LOCATION_TYPE")
+  @Column(name = "LOCATION_TYPE", length = 32)
   @CsvField(value = "Location type", reportField = "LocationType")
   private String locationType;
 
-  @Column(name = "METRO_CRITERIA_ID")
+  @Column(name = "METRO_CRITERIA_ID", length = 64)
   @CsvField(value = "Metro area", reportField = "MetroCriteriaId")
   private String metroArea;
 
-  @Column(name = "MOST_SPECIFIC_LOCATION")
+  @Column(name = "MOST_SPECIFIC_LOCATION", length = 64)
   @CsvField(value = "Most specific location", reportField = "MostSpecificCriteriaId")
   private String mostSpecificLocation;
 
-  @Column(name = "REGION_CRITERIA_ID")
+  @Column(name = "REGION_CRITERIA_ID", length = 64)
   @CsvField(value = "Region", reportField = "RegionCriteriaId")
   private String region;
 
