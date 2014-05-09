@@ -77,7 +77,7 @@ public class ReportPlacement extends ReportBase {
   @CsvField(value = "Destination URL", reportField = "DestinationUrl")
   private String destinationUrl;
 
-  @Column(name = "DISPLAY_NAME")
+  @Column(name = "DISPLAY_NAME", length = 2048)
   @CsvField(value = "Criteria Display Name", reportField = "DisplayName")
   private String displayName;
 
@@ -121,23 +121,26 @@ public class ReportPlacement extends ReportBase {
     if (this.getAccountId() != null) {
       this.id = this.getAccountId().toString();
     } else {
-      this.id = "null";
+      this.id = "-";
     }
     if (this.getCampaignId() != null) {
       this.id += "-" + this.getCampaignId().toString();
     } else {
-      this.id += "null";
+      this.id += "-";
     }
     if (this.getAdGroupId() != null) {
       this.id += "-" + this.getAdGroupId().toString();
     } else {
-      this.id += "null";
+      this.id += "-";
     }
     if (this.getCriterionId() != null) {
       this.id += "-" + this.getCriterionId().toString();
     } else {
-      this.id += "null";
+      this.id += "-";
     }
+
+    this.id += setIdDates();
+
     // Adding extra fields for unique ID
     if (this.getAdNetwork() != null && this.getAdNetwork().length() > 0) {
       this.id += "-" + this.getAdNetwork();
@@ -154,7 +157,6 @@ public class ReportPlacement extends ReportBase {
     if (this.getPlacementUrl() != null && this.getPlacementUrl().length() > 0) {
       this.id += "-" + this.getPlacementUrl();
     }
-    this.id += setIdDates();
   }
 
   public Long getAdGroupId() {
