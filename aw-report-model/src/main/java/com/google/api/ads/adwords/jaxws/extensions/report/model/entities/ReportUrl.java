@@ -59,7 +59,7 @@ public class ReportUrl extends ReportBase {
   @CsvField(value = "Keyword / Placement", reportField = "CriteriaParameters")
   public String criteriaParameters;
 
-  @Column(name = "DISPLAY_NAME")
+  @Column(name = "DISPLAY_NAME", length = 2048)
   @CsvField(value = "Criteria Display Name", reportField = "DisplayName")
   private String displayName;
 
