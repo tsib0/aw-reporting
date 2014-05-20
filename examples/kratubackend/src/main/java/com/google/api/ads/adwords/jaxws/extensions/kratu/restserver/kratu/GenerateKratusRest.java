@@ -40,8 +40,10 @@ public class GenerateKratusRest extends AbstractServerResource {
       if (topAccountId != null && dateStart != null && dateEnd != null) {
         // Launching a new Service(Thread) to make the request async.
         KratuProcessor kratuProcessor = getApplicationContext().getBean(KratuProcessor.class);
+
         RunnableKratu runnableKratu = kratuProcessor.createRunnableKratu(
-            topAccountId, getStorageHelper(), dateStart, dateEnd);
+            topAccountId, null, getStorageHelper(), dateStart, dateEnd);
+
         taskService.submit(runnableKratu);
 
         result = "OK - Task created, this usually takes 1-2mins for each 1000 accounts/month";
