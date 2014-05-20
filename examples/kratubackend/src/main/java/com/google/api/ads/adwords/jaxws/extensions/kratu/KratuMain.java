@@ -15,14 +15,14 @@
 package com.google.api.ads.adwords.jaxws.extensions.kratu;
 
 import com.google.api.ads.adwords.jaxws.extensions.AwReporting;
-import com.google.api.ads.adwords.jaxws.extensions.kratu.data.Account;
 import com.google.api.ads.adwords.jaxws.extensions.kratu.data.KratuProcessor;
-import com.google.api.ads.adwords.jaxws.extensions.kratu.data.StorageHelper;
 import com.google.api.ads.adwords.jaxws.extensions.kratu.restserver.RestServer;
 import com.google.api.ads.adwords.jaxws.extensions.processors.ReportProcessor;
 import com.google.api.ads.adwords.jaxws.extensions.proxy.JaxWsProxySelector;
 import com.google.api.ads.adwords.jaxws.extensions.util.DataBaseType;
 import com.google.api.ads.adwords.jaxws.extensions.util.DynamicPropertyPlaceholderConfigurer;
+import com.google.api.ads.adwords.jaxws.extensions.util.FileUtil;
+import com.google.api.client.util.Sets;
 
 import org.apache.commons.cli.BasicParser;
 import org.apache.commons.cli.CommandLine;
@@ -32,6 +32,11 @@ import org.apache.commons.cli.Option;
 import org.apache.commons.cli.OptionBuilder;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
+import org.apache.log4j.ConsoleAppender;
+import org.apache.log4j.FileAppender;
+import org.apache.log4j.Level;
+import org.apache.log4j.Logger;
+import org.apache.log4j.PatternLayout;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.core.io.ClassPathResource;
@@ -39,11 +44,14 @@ import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.support.PropertiesLoaderUtils;
 
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.ProxySelector;
+import java.util.List;
 import java.util.Properties;
 import java.util.Scanner;
+import java.util.Set;
 
 /**
  * Main class that executes the report processing logic delegating to the {@link ReportProcessor}.
@@ -59,6 +67,8 @@ import java.util.Scanner;
  * @author jtoledo@google.com (Julian Toledo)
  */
 public class KratuMain {
+
+  private static final Logger LOGGER = Logger.getLogger(KratuMain.class);
 
   private static final int DEFAULT_SERVER_PORT = 8081; 
   
@@ -98,6 +108,15 @@ public class KratuMain {
       CommandLineParser parser = new BasicParser();
       CommandLine cmdLine = parser.parse(options, args);
 
+      // Print full help and quit
+      if (cmdLine.hasOption("help")) {
+        printHelpMessage(options);
+        printSamplePropertiesFile();
+        System.exit(0);
+      }
+
+      setLogLevel(cmdLine);
+
       if (cmdLine.hasOption("file")) {
         propertiesPath = cmdLine.getOptionValue("file");
       }
@@ -109,8 +128,6 @@ public class KratuMain {
       if (cmdLine.hasOption("startServer")) {
         // Start the Rest Server
         System.out.println("Starting Rest Server...");
-        
-        updateAccounts(null, mccAccountId);
 
         // Set the server port from the properties file or use 8081 as default. 
         int serverPort = DEFAULT_SERVER_PORT;
@@ -123,14 +140,22 @@ public class KratuMain {
 
       } else {
         if (cmdLine.hasOption("startDate") && cmdLine.hasOption("endDate")) {
+
           if (cmdLine.hasOption("processKratus")) {
             // Process Kratus, this process runs for the whole MCC
             // within the given dates and creates a daily Kratu per account.
             System.out.println("Starting Process Kratus...");
-            updateAccounts(null, mccAccountId);
+
+            // Process only the accounts at accountIdsFile
+            Set<Long> accountIdsSet = Sets.newHashSet();
+            if (cmdLine.hasOption("accountIdsFile")) {
+              String accountsFileName = cmdLine.getOptionValue("accountIdsFile");
+              System.out.println("Using accounts file: " + accountsFileName);              
+              addAccountsFromFile(accountIdsSet, accountsFileName);
+            }
 
             KratuProcessor kratuProcessor = appCtx.getBean(KratuProcessor.class);
-            kratuProcessor.processKratus(Long.valueOf(mccAccountId),
+            kratuProcessor.processKratus(Long.valueOf(mccAccountId), accountIdsSet,
                 cmdLine.getOptionValue("startDate"), cmdLine.getOptionValue("endDate"));
             System.exit(0);
 
@@ -163,22 +188,6 @@ public class KratuMain {
       printHelpMessage(options);
       System.exit(1);      
     }
-  }
-
-  /**
-   * Refreshes the Accounts by downloading the whole list using the API
-   * and refreshes the report indexes before heavily reading reports.
-   */
-  private static void updateAccounts(String userId, String mccAccountId) throws Exception {
-    StorageHelper storageHelper = appCtx.getBean(StorageHelper.class);
-    ReportProcessor reportProcessor = appCtx.getBean(ReportProcessor.class);
-
-    // Refresh Account List and refresh indexes
-    System.out.println("Updating Accounts from server... (may take few seconds)");
-    storageHelper.getEntityPersister().save(
-        Account.fromList(reportProcessor.getAccounts(userId, mccAccountId), Long.valueOf(mccAccountId)));
-    System.out.println("Updating DB indexes... (may take few seconds)");
-    storageHelper.createReportIndexes();
   }
 
   /**
@@ -300,6 +309,65 @@ public class KratuMain {
         fileScanner.close();
       }
     }
+  }
+
+  /**
+   * Reads the account ids from the file, and adds them to the given set.
+   *
+   * @param accountIdsSet the set to add the accounts
+   * @param accountsFileName the file to be read
+   * @throws FileNotFoundException file not found
+   */
+  protected static void addAccountsFromFile(Set<Long> accountIdsSet, String accountsFileName)
+      throws FileNotFoundException {
+
+    LOGGER.info("Using accounts file: " + accountsFileName);
+
+    List<String> linesAsStrings = FileUtil.readFileLinesAsStrings(new File(accountsFileName));
+
+    LOGGER.debug("Acount IDs to be queried:");
+    for (String line : linesAsStrings) {
+
+      String accountIdAsString = line.replaceAll("-", "");
+      long accountId = Long.parseLong(accountIdAsString);
+      accountIdsSet.add(accountId);
+
+      LOGGER.debug("Acount ID: " + accountId);
+    }
+  }
+
+  /**
+   * Sets the Log level based on the command line arguments
+   *
+   * @param commandLine the command line
+   */
+  private static void setLogLevel(CommandLine commandLine) {
+
+    Level logLevel = Level.INFO;
+
+    if (commandLine.hasOption("debug")) {
+      logLevel = Level.DEBUG;
+    }
+
+    ConsoleAppender console = new ConsoleAppender(); // create appender
+    String pattern = "%d [%p|%c|%C{1}] %m%n";
+    console.setLayout(new PatternLayout(pattern));
+    console.activateOptions();
+    if (commandLine.hasOption("verbose")) {
+      console.setThreshold(logLevel);
+    } else {
+      console.setThreshold(Level.ERROR);
+    }
+    Logger.getLogger("com.google.api.ads.adwords.jaxws.extensions").addAppender(console);
+
+    FileAppender fa = new FileAppender();
+    fa.setName("FileLogger");
+    fa.setFile("aw-reporting.log");
+    fa.setLayout(new PatternLayout("%d %-5p [%c{1}] %m%n"));
+    fa.setThreshold(logLevel);
+    fa.setAppend(true);
+    fa.activateOptions();
+    Logger.getLogger("com.google.api.ads.adwords.jaxws.extensions").addAppender(fa);
   }
 
   /**
