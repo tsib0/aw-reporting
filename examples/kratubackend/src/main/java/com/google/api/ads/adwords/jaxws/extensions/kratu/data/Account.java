@@ -15,6 +15,7 @@
 package com.google.api.ads.adwords.jaxws.extensions.kratu.data;
 
 import com.google.api.ads.adwords.jaxws.extensions.report.model.persistence.mongodb.MongoEntity;
+import com.google.api.ads.adwords.jaxws.v201402.mcm.Customer;
 import com.google.api.ads.adwords.jaxws.v201402.mcm.ManagedCustomer;
 import com.google.common.collect.Lists;
 
@@ -35,6 +36,8 @@ import javax.persistence.Table;
 public class Account implements MongoEntity {
 
   public static final String __id = "_id";
+  public static final String ID = "id";
+  public static final String TOP_ACCOUNT_ID = "topAccountId";  
 
   @Id
   @Column(name = "ID")
@@ -64,17 +67,43 @@ public class Account implements MongoEntity {
   public Account() {
   }
 
+  /** 
+   * Creates a new Account from the API's ManagedCustomer
+   * @param managedCustomer
+   * @param topAccountId
+   */
   Account(ManagedCustomer managedCustomer, Long topAccountId) {
     id = String.valueOf(managedCustomer.getCustomerId());
     externalCustomerId = managedCustomer.getCustomerId();
-    name = managedCustomer.getName();
+    name = managedCustomer.getName()  + " (" + managedCustomer.getCompanyName() + ")";
     currencyCode = managedCustomer.getCurrencyCode();
     dateTimeZone = managedCustomer.getDateTimeZone();
     isCanManageClients = managedCustomer.isCanManageClients();
     this.topAccountId = topAccountId;
   }
+  
+  /**
+   * Creates a new Account from the API's Customer
+   * @param customer
+   * @param topAccountId
+   */
+  Account(Customer customer, Long topAccountId) {
+    id = String.valueOf(customer.getCustomerId());
+    externalCustomerId = customer.getCustomerId();
+    name = customer.getDescriptiveName() + " (" + customer.getCompanyName() + ")";
+    currencyCode = customer.getCurrencyCode();
+    dateTimeZone = customer.getDateTimeZone();
+    isCanManageClients = customer.isCanManageClients();
+    this.topAccountId = topAccountId;
+  }
 
-  public static List<Account> fromList(List<ManagedCustomer> list, Long topAccountId) {
+  /**
+   * Resturs a list of Accounts from the API's ManagedCustomer
+   * @param list
+   * @param topAccountId
+   * @return a list of Accounts
+   */
+  public static List<Account> fromManagedCustomerList(List<ManagedCustomer> list, Long topAccountId) {
     List<Account> returnList = Lists.newArrayList();
     for (ManagedCustomer managedCustomer : list) {
       returnList.add(new Account(managedCustomer, topAccountId));
@@ -82,6 +111,20 @@ public class Account implements MongoEntity {
     return returnList;
   }
 
+  /**
+   * Resturs a list of Accounts from the API's Customer
+   * @param list
+   * @param topAccountId
+   * @return a list of Accounts
+   */
+  public static List<Account> fromCustomerList(List<Customer> list, Long topAccountId) {
+    List<Account> returnList = Lists.newArrayList();
+    for (Customer customer : list) {
+      returnList.add(new Account(customer, topAccountId));
+    }
+    return returnList;
+  }
+  
   public String getId() {
     return id;
   }
