@@ -46,9 +46,9 @@ public class ReportAccountDefinitionTest extends AbstractReportDefinitionTest<Re
   @Override
   protected void testFirstEntry(ReportAccount first) {
 
-    Assert.assertEquals(2602198216L, first.getAccountId().longValue());
+    Assert.assertEquals(1232198123L, first.getAccountId().longValue());
     Assert.assertEquals("2013-05-01", first.getDay());
-    Assert.assertEquals("Lucotte - Vernoil- Le-fourrier", first.getAccountDescriptiveName());
+    Assert.assertEquals("Test Le Test", first.getAccountDescriptiveName());
     Assert.assertEquals(1.42, first.getCostBigDecimal().doubleValue());
     Assert.assertEquals(10L, first.getClicks().longValue());
     Assert.assertEquals(1978L, first.getImpressions().longValue());
@@ -74,9 +74,9 @@ public class ReportAccountDefinitionTest extends AbstractReportDefinitionTest<Re
   @Override
   protected void testLastEntry(ReportAccount last) {
 
-    Assert.assertEquals(2602198216L, last.getAccountId().longValue());
+    Assert.assertEquals(1232198123L, last.getAccountId().longValue());
     Assert.assertEquals("2013-05-10", last.getDay());
-    Assert.assertEquals("Lucotte - Vernoil- Le-fourrier", last.getAccountDescriptiveName());
+    Assert.assertEquals("Test Le Test", last.getAccountDescriptiveName());
     Assert.assertEquals(0.75, last.getCostBigDecimal().doubleValue());
     Assert.assertEquals(4L, last.getClicks().longValue());
     Assert.assertEquals(2793L, last.getImpressions().longValue());
