@@ -21,7 +21,9 @@ import com.google.api.ads.adwords.jaxws.extensions.proxy.JaxWsProxySelector;
 import com.google.api.ads.adwords.jaxws.extensions.util.DataBaseType;
 import com.google.api.ads.adwords.jaxws.extensions.util.DynamicPropertyPlaceholderConfigurer;
 import com.google.api.ads.adwords.jaxws.extensions.util.FileUtil;
+import com.google.api.ads.adwords.jaxws.extensions.util.ProcessorType;
 import com.google.api.ads.adwords.lib.jaxb.v201402.ReportDefinitionDateRangeType;
+import com.google.api.client.util.Lists;
 import com.google.api.client.util.Sets;
 
 import org.apache.commons.cli.BasicParser;
@@ -75,6 +77,11 @@ public class AwReporting {
    * The DB type key specified in the properties file.
    */
   private static final String AW_REPORT_MODEL_DB_TYPE = "aw.report.model.db.type";
+  
+  /**
+   * The Processor type key specified in the properties file.
+   */
+  private static final String AW_REPORT_PROCESSOR_TYPE = "aw.report.processor.type";
 
   /**
    * The Spring application context used to get all the beans.
@@ -439,19 +446,33 @@ public class AwReporting {
     }
     LOGGER.trace("Innitializing Spring application context.");
     DynamicPropertyPlaceholderConfigurer.setDynamicResource(resource);
-
     Properties properties = PropertiesLoaderUtils.loadProperties(resource);
+    
+    // Selecting the XMLs to choose the Spring Beans to load.
+    List<String> listOfClassPathXml = Lists.newArrayList();
+   
+    // Choose the DB type to use based properties file
     String dbType = (String) properties.get(AW_REPORT_MODEL_DB_TYPE);
     if (dbType != null && dbType.equals(DataBaseType.MONGODB.name())) {
-
-      LOGGER.debug("Using MONGO DB configuration properties.");
-      appCtx = new ClassPathXmlApplicationContext("classpath:aw-reporting-mongodb-beans.xml");
+      LOGGER.info("Using MONGO DB configuration properties.");
+      listOfClassPathXml.add("classpath:aw-report-mongodb-beans.xml");
     } else {
-
-      LOGGER.debug("Using SQL DB configuration properties.");
-      appCtx = new ClassPathXmlApplicationContext("classpath:aw-reporting-sql-beans.xml");
+      LOGGER.info("Using SQL DB configuration properties.");
+      listOfClassPathXml.add("classpath:aw-report-sql-beans.xml");
+    }
+    
+    // Choose the Processor type to use based properties file
+    String processorType = (String) properties.get(AW_REPORT_PROCESSOR_TYPE);
+    if (processorType != null && processorType.equals(ProcessorType.ONMEMORY.name())) {
+      LOGGER.info("Using ONMEMORY Processor.");
+      listOfClassPathXml.add("classpath:aw-report-processor-beans-onmemory.xml");
+    } else {
+      LOGGER.info("Using ONFILE Processor.");
+      listOfClassPathXml.add("classpath:aw-report-processor-beans-onfile.xml");
     }
 
+    appCtx = new ClassPathXmlApplicationContext(listOfClassPathXml.toArray(new String[listOfClassPathXml.size()]));    
+    
     return properties;
   }
 }
