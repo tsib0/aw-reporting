@@ -120,6 +120,16 @@ public interface EntityPersister {
   <T, V> List<T> get(Class<T> classT, String key, V value);
 
   /**
+   * Gets the entity that contains the given values on the given property.
+   *
+   * @param classT the entity T class
+   * @param key the property name
+   * @param values the property values
+   * @return the list of entities that were found.
+   */
+  <T, V> List<T> get(Class<T> classT, String key, List<V> values);
+
+  /**
    * Gets the entity that contains the given value on the given property in a paginated fashion.
    *
    * @param classT the entity T class
@@ -212,6 +222,24 @@ public interface EntityPersister {
    * @param entities the entities to be removed
    */
   <T> void remove(Collection<T> entities);
+
+  /**
+   * Removes the collection of entities by key,value
+   *
+   * @param classT the entity T class
+   * @param key the property name
+   * @param value the property value
+   */
+  <T, V> void remove(Class<T> classT, String key, V value);
+
+  /**
+   * Removes the collection of entities by key,values
+   *
+   * @param classT the entity T class
+   * @param key the property name
+   * @param a list of values
+   */
+  <T, V> void remove(Class<T> classT, String key, List<V> values);
 
   /**
    * Saves the entity.

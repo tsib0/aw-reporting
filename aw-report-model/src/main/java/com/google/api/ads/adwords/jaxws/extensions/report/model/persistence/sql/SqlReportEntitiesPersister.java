@@ -98,9 +98,9 @@ public class SqlReportEntitiesPersister implements EntityPersister {
   @Override
   @Transactional
   @SuppressWarnings("unchecked")
-  public <T extends Report> List<T> listReports(Class<T> clazz) {
+  public <T extends Report> List<T> listReports(Class<T> classT) {
 
-    Criteria criteria = createCriteria(clazz);
+    Criteria criteria = createCriteria(classT);
 
     return criteria.list();
   }
@@ -108,13 +108,13 @@ public class SqlReportEntitiesPersister implements EntityPersister {
   /**
    * Creates a new criteria for the current session
    *
-   * @param clazz the class of the entity
+   * @param classT the class of the entity
    * @return the criteria for the current session
    */
-  private <T> Criteria createCriteria(Class<T> clazz) {
+  private <T> Criteria createCriteria(Class<T> classT) {
 
     Session session = this.sessionFactory.getCurrentSession();
-    return session.createCriteria(clazz);
+    return session.createCriteria(classT);
   }
 
   /**
@@ -134,14 +134,14 @@ public class SqlReportEntitiesPersister implements EntityPersister {
   /**
    * Create a paginated query
    *
-   * @param clazz the entity class
+   * @param classT the entity class
    * @param numToSkip the first result
    * @param limit the max number of results
    * @return the list of results
    */
-  private <T> Criteria createPaginatedCriteria(Class<T> clazz, int numToSkip, int limit) {
+  private <T> Criteria createPaginatedCriteria(Class<T> classT, int numToSkip, int limit) {
 
-    Criteria criteria = this.createCriteria(clazz);
+    Criteria criteria = this.createCriteria(classT);
     criteria.setFirstResult(numToSkip);
     criteria.setMaxResults(limit);
     return criteria;
@@ -153,25 +153,25 @@ public class SqlReportEntitiesPersister implements EntityPersister {
   @Override
   @Transactional(readOnly = true)
   @SuppressWarnings("unchecked")
-  public <T> List<T> get(Class<T> clazz) {
+  public <T> List<T> get(Class<T> classT) {
 
-    Criteria criteria = this.createCriteria(clazz);
+    Criteria criteria = this.createCriteria(classT);
     return criteria.list();
   }
 
   /**
    * Gets the entity list for the given report class.
    *
-   * @param clazz the report class
+   * @param classT the report class
    * @param numToSkip the number to begin pagination
    * @param limit the number to limit the pagination
    */
   @Override
   @Transactional(readOnly = true)
   @SuppressWarnings("unchecked")
-  public <T> List<T> get(Class<T> clazz, int numToSkip, int limit) {
+  public <T> List<T> get(Class<T> classT, int numToSkip, int limit) {
 
-    Criteria criteria = this.createPaginatedCriteria(clazz, numToSkip, limit);
+    Criteria criteria = this.createPaginatedCriteria(classT, numToSkip, limit);
     return criteria.list();
   }
 
@@ -181,17 +181,36 @@ public class SqlReportEntitiesPersister implements EntityPersister {
   @Override
   @Transactional(readOnly = true)
   @SuppressWarnings("unchecked")
-  public <T, V> List<T> get(Class<T> clazz, String key, V value) {
+  public <T, V> List<T> get(Class<T> classT, String key, V value) {
 
-    Criteria criteria = this.createCriteria(clazz);
+    Criteria criteria = this.createCriteria(classT);
     criteria.add(Restrictions.eq(key, value));
+    return criteria.list();
+  }
+
+  /**
+   * Gets the entity list for the given report class, with a key in those values
+   *
+   * @param classT the report class
+   * @param key the name of the property
+   * @param values the values that meet key
+   */
+  @Override
+  @Transactional(readOnly = true)
+  @SuppressWarnings("unchecked")
+  public <T, V> List<T> get(Class<T> classT, String key, List<V> values) {
+
+    Criteria criteria = this.createCriteria(classT);
+    if (key != null) {
+      criteria.add(Restrictions.in(key, values));
+    }
     return criteria.list();
   }
 
   /**
    * Gets the entity list for the given report class and with the given value.
    *
-   * @param clazz the report class
+   * @param classT the report class
    * @param key the name of the property
    * @param value the value for the property
    * @param numToSkip the number to begin pagination
@@ -200,9 +219,9 @@ public class SqlReportEntitiesPersister implements EntityPersister {
   @Override
   @Transactional(readOnly = true)
   @SuppressWarnings("unchecked")
-  public <T, V> List<T> get(Class<T> clazz, String key, V value, int numToSkip, int limit) {
+  public <T, V> List<T> get(Class<T> classT, String key, V value, int numToSkip, int limit) {
 
-    Criteria criteria = this.createPaginatedCriteria(clazz, numToSkip, limit);
+    Criteria criteria = this.createPaginatedCriteria(classT, numToSkip, limit);
     criteria.add(Restrictions.eq(key, value));
     return criteria.list();
   }
@@ -213,14 +232,14 @@ public class SqlReportEntitiesPersister implements EntityPersister {
   @Override
   @Transactional(readOnly = true)
   @SuppressWarnings("unchecked")
-  public <T> List<T> get(Class<T> clazz,
+  public <T> List<T> get(Class<T> classT,
       String key,
       Object value,
       String dateKey,
       Date dateStart,
       Date dateEnd) {
 
-    Criteria criteria = this.createCriteria(clazz);
+    Criteria criteria = this.createCriteria(classT);
     if (key != null) {
       criteria.add(Restrictions.eq(key, value));
     }
@@ -235,14 +254,14 @@ public class SqlReportEntitiesPersister implements EntityPersister {
   @Override
   @Transactional(readOnly = true)
   @SuppressWarnings("unchecked")
-  public <T> List<T> get(Class<T> clazz,
+  public <T> List<T> get(Class<T> classT,
       String key,
       Object value,
       String dateKey,
       String dateStart,
       String dateEnd) {
 
-    Criteria criteria = this.createCriteria(clazz);
+    Criteria criteria = this.createCriteria(classT);
     if (key != null) {
       criteria.add(Restrictions.eq(key, value));
     }
@@ -257,7 +276,7 @@ public class SqlReportEntitiesPersister implements EntityPersister {
   @Override
   @Transactional(readOnly = true)
   @SuppressWarnings("unchecked")
-  public <T> List<T> get(Class<T> clazz,
+  public <T> List<T> get(Class<T> classT,
       String key,
       Object value,
       String dateKey,
@@ -266,7 +285,7 @@ public class SqlReportEntitiesPersister implements EntityPersister {
       int numToSkip,
       int limit) {
 
-    Criteria criteria = this.createPaginatedCriteria(clazz, numToSkip, limit);
+    Criteria criteria = this.createPaginatedCriteria(classT, numToSkip, limit);
     criteria.add(Restrictions.eq(key, value));
     criteria.add(Restrictions.ge(dateKey, dateStart));
     criteria.add(Restrictions.le(dateKey, dateEnd));
@@ -279,9 +298,9 @@ public class SqlReportEntitiesPersister implements EntityPersister {
   @Override
   @Transactional(readOnly = true)
   @SuppressWarnings("unchecked")
-  public <T, V> List<T> get(Class<T> clazz, Map<String, V> keyValueList) {
+  public <T, V> List<T> get(Class<T> classT, Map<String, V> keyValueList) {
 
-    Criteria criteria = this.createCriteria(clazz);
+    Criteria criteria = this.createCriteria(classT);
     for (Entry<String, V> entry : keyValueList.entrySet()) {
       criteria.add(Restrictions.eq(entry.getKey(), entry.getValue()));
     }
@@ -294,9 +313,9 @@ public class SqlReportEntitiesPersister implements EntityPersister {
   @Override
   @Transactional(readOnly = true)
   @SuppressWarnings("unchecked")
-  public <T, V> List<T> get(Class<T> clazz, Map<String, V> keyValueList, int numToSkip, int limit) {
+  public <T, V> List<T> get(Class<T> classT, Map<String, V> keyValueList, int numToSkip, int limit) {
 
-    Criteria criteria = this.createPaginatedCriteria(clazz, numToSkip, limit);
+    Criteria criteria = this.createPaginatedCriteria(classT, numToSkip, limit);
     for (Entry<String, V> entry : keyValueList.entrySet()) {
       criteria.add(Restrictions.eq(entry.getKey(), entry.getValue()));
     }
@@ -339,6 +358,32 @@ public class SqlReportEntitiesPersister implements EntityPersister {
         return getField(superClass, fieldName);
       }
     }
+  }
+
+  /**
+   * Removes the collection of entities by key,value
+   *
+   * @param classT the entity T class
+   * @param key the property name
+   * @param value the property value
+   */
+  @Override
+  @Transactional
+  public <T, V> void remove(Class<T> classT, String key, V value) {
+    remove(get(classT, key, value));
+  }
+
+  /**
+   * Removes the collection of entities by key,values
+   *
+   * @param classT the entity T class
+   * @param key the property name
+   * @param a list of values
+   */
+  @Override
+  @Transactional
+  public <T, V> void remove(Class<T> classT, String key, List<V> values) {
+    remove(get(classT, key, values));
   }
 
   /**
