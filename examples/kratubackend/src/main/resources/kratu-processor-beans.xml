@@ -16,5 +16,5 @@
   <bean id="awReportProperties"
     class="com.google.api.ads.adwords.jaxws.extensions.util.DynamicPropertyPlaceholderConfigurer">
   </bean>
-
+  
 </beans>
