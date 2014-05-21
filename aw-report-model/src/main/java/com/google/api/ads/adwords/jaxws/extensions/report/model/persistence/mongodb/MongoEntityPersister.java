@@ -21,6 +21,7 @@ import com.google.api.ads.adwords.jaxws.extensions.report.model.util.DateUtil;
 import com.google.api.ads.adwords.jaxws.extensions.report.model.util.GsonUtil;
 import com.google.gson.Gson;
 
+import com.mongodb.BasicDBList;
 import com.mongodb.BasicDBObject;
 import com.mongodb.BasicDBObjectBuilder;
 import com.mongodb.DB;
@@ -93,8 +94,8 @@ public class MongoEntityPersister implements EntityPersister {
    *      #get(java.lang.Class, java.util.Map)
    */
   @Override
-  public <T, V> List<T> get(Class<T> t, Map<String, V> keyValueList) {
-    return get(t, keyValueList, 0, 0);
+  public <T, V> List<T> get(Class<T> classT, Map<String, V> keyValueList) {
+    return get(classT, keyValueList, 0, 0);
   }
 
   /**
@@ -102,12 +103,12 @@ public class MongoEntityPersister implements EntityPersister {
    *      #get(java.lang.Class, java.lang.String, java.lang.Object, int, int)
    */
   @Override
-  public <T, V> List<T> get(Class<T> t, String key, V value, int numToSkip, int limit) {
+  public <T, V> List<T> get(Class<T> classT, String key, V value, int numToSkip, int limit) {
     Map<String, V> keyValueList = new HashMap<String, V>();
     if (key != null && value != null) {
       keyValueList.put(key, value);
     }
-    return get(t, keyValueList, numToSkip, limit);
+    return get(classT, keyValueList, numToSkip, limit);
   }
 
   /**
@@ -117,6 +118,30 @@ public class MongoEntityPersister implements EntityPersister {
   @Override
   public <T, V> List<T> get(Class<T> t, String key, V value) {
     return get(t, key, value, 0, 0);
+  }
+
+  /**
+   * Gets the entity list for the given report class, with a key in those values
+   *
+   * @param classT the report class
+   * @param key the name of the property
+   * @param values the values that meet key
+   */
+  @Override
+  public <T, V> List<T> get(Class<T> classT, String key, List<V> values) {
+
+    BasicDBList valuesIds = new BasicDBList();
+    valuesIds.addAll(values);
+    DBObject inClause = new BasicDBObject("$in", valuesIds);
+    DBObject query = new BasicDBObject(key, inClause);
+    DBCursor cur = getCollection(classT).find(query);
+
+    List<T> list = new ArrayList<T>();
+    while (cur.hasNext()) {
+      DBObject dbObject = cur.next();
+      list.add(gson.fromJson(com.mongodb.util.JSON.serialize(dbObject), classT));
+    }
+    return list;
   }
 
   /**
@@ -283,6 +308,30 @@ public class MongoEntityPersister implements EntityPersister {
         getCollection(t.getClass()).remove(dbObject);
       }
     }
+  }
+  
+  /**
+   * Removes the collection of entities by key,value
+   *
+   * @param classT the entity T class
+   * @param key the property name
+   * @param value the property value
+   */
+  @Override
+  public <T, V> void remove(Class<T> classT, String key, V value) {
+    remove(get(classT, key, value));
+  }
+
+  /**
+   * Removes the collection of entities by key,values
+   *
+   * @param classT the entity T class
+   * @param key the property name
+   * @param a list of values
+   */
+  @Override
+  public <T, V> void remove(Class<T> classT, String key, List<V> values) {
+    remove(get(classT, key, values));
   }
 
   /**
