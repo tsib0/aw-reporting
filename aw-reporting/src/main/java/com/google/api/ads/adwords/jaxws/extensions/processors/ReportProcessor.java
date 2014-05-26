@@ -17,9 +17,12 @@ package com.google.api.ads.adwords.jaxws.extensions.processors;
 import com.google.api.ads.adwords.jaxws.extensions.authentication.Authenticator;
 import com.google.api.ads.adwords.jaxws.extensions.report.model.csv.CsvReportEntitiesMapping;
 import com.google.api.ads.adwords.jaxws.extensions.report.model.persistence.EntityPersister;
+import com.google.api.ads.adwords.jaxws.extensions.util.CustomerDelegate;
 import com.google.api.ads.adwords.jaxws.extensions.util.ManagedCustomerDelegate;
 import com.google.api.ads.adwords.jaxws.v201402.mcm.ApiException;
+import com.google.api.ads.adwords.jaxws.v201402.mcm.Customer;
 import com.google.api.ads.adwords.jaxws.v201402.mcm.ManagedCustomer;
+import com.google.api.ads.adwords.lib.client.AdWordsSession;
 import com.google.api.ads.adwords.lib.jaxb.v201402.DateRange;
 import com.google.api.ads.adwords.lib.jaxb.v201402.DownloadFormat;
 import com.google.api.ads.adwords.lib.jaxb.v201402.ReportDefinition;
@@ -141,6 +144,32 @@ public abstract class ReportProcessor {
         LOGGER.error("API error: " + e.getMessage());
         e.printStackTrace();
         throw e;
+      }
+    }
+    return accounts;
+  }
+
+  public List<Customer> getAccountsInfo(String userId, String mccAccountId, Set<Long> accountIds) throws Exception {
+    List<Customer> accounts = Lists.newArrayList();
+    AdWordsSession adWordsSession = authenticator.authenticate(userId, mccAccountId, false).build();
+
+    CustomerDelegate customerDelegate = new CustomerDelegate(adWordsSession);
+    for (Long accountId : accountIds) {
+      adWordsSession.setClientCustomerId(String.valueOf(accountId));
+      try {
+        accounts.add(customerDelegate.getCustomer());
+      } catch (ApiException e) {
+        if (e.getMessage().contains("AuthenticationError")) {
+          // retries Auth once for expired Tokens
+          LOGGER.info("AuthenticationError, Getting a new Token...");
+          adWordsSession = authenticator.authenticate(userId, mccAccountId, false).build();
+          customerDelegate = new CustomerDelegate(adWordsSession);
+          accounts.add(customerDelegate.getCustomer());
+        } else {
+          LOGGER.error("API error: " + e.getMessage());
+          e.printStackTrace();
+          throw e;
+        } 
       }
     }
     return accounts;
