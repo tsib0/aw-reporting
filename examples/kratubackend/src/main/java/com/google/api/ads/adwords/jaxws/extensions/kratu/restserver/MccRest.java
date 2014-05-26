@@ -14,12 +14,15 @@
 
 package com.google.api.ads.adwords.jaxws.extensions.kratu.restserver;
 
-import com.google.api.ads.adwords.jaxws.extensions.report.model.entities.AuthMcc;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.restlet.data.Status;
 import org.restlet.representation.Representation;
 
-import java.util.List;
+import com.google.api.ads.adwords.jaxws.extensions.kratu.persisters.InterestingQueries;
+import com.google.api.ads.adwords.jaxws.extensions.report.model.entities.AuthMcc;
+import com.google.api.ads.adwords.jaxws.extensions.report.model.entities.ReportAccount;
 
 /**
  * MccRest
@@ -27,32 +30,57 @@ import java.util.List;
  * @author jtoledo@google.com (Julian Toledo)
  */
 public class MccRest extends AbstractServerResource {
+	class AuthMccPlus {
+		public AuthMcc mccInfo;
+		public String minDate;
+		public String maxDate;
+	}
 
-  public Representation getHandler() {
-    String result = null;
-    try {
-      getParameters();
+	public Representation getHandler() {
+		String result = null;
+		try {
+			getParameters();
+			InterestingQueries interestingQueries = this
+					.getApplicationContext().getBean(InterestingQueries.class);
 
-      List<AuthMcc> listAuthMcc = getStorageHelper().getEntityPersister().get(AuthMcc.class);
-      for (AuthMcc authMcc : listAuthMcc) {
-        authMcc.setScope(null);
-        authMcc.setAuthToken(null);
-      }
-      result =  gson.toJson(listAuthMcc);
+			ArrayList<AuthMccPlus> fixed = new ArrayList<AuthMccPlus>();
 
-    } catch (Exception exception) {
-      return handleException(exception);
-    }
-    addReadOnlyHeaders();
-    return createJsonResult(result);
-  }
+			List<AuthMcc> listAuthMcc = getStorageHelper().getEntityPersister()
+					.get(AuthMcc.class);
+			for (AuthMcc authMcc : listAuthMcc) {
+				authMcc.setScope(null);
+				authMcc.setAuthToken(null);
 
-  public void deleteHandler() {
-    this.setStatus(Status.CLIENT_ERROR_METHOD_NOT_ALLOWED);
-  }
+				List<?> o = interestingQueries.getMin(ReportAccount.class,
+						authMcc.getTopAccountId(), "dateStart", "dateEnd");
+				Object obj = o.get(0);
+				System.out.println(((Object[]) obj)[0]);
+				System.out.println(((Object[]) obj)[1]);
+				AuthMccPlus amp = new AuthMccPlus();
+				amp.mccInfo = authMcc;
+				amp.minDate = (String) ((Object[]) obj)[0];
+				amp.maxDate = (String) ((Object[]) obj)[1];
 
-  public Representation postPutHandler(String json) {
-    this.setStatus(Status.CLIENT_ERROR_METHOD_NOT_ALLOWED);
-    return createJsonResult(Status.CLIENT_ERROR_METHOD_NOT_ALLOWED.getDescription());
-  }
+				fixed.add(amp);
+
+			}
+			result = gson.toJson(fixed);
+
+		} catch (Exception exception) {
+			System.out.println(exception.getMessage());
+			return handleException(exception);
+		}
+		addReadOnlyHeaders();
+		return createJsonResult(result);
+	}
+
+	public void deleteHandler() {
+		this.setStatus(Status.CLIENT_ERROR_METHOD_NOT_ALLOWED);
+	}
+
+	public Representation postPutHandler(String json) {
+		this.setStatus(Status.CLIENT_ERROR_METHOD_NOT_ALLOWED);
+		return createJsonResult(Status.CLIENT_ERROR_METHOD_NOT_ALLOWED
+				.getDescription());
+	}
 }
