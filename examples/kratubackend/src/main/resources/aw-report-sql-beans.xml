@@ -34,7 +34,7 @@
         <value>com.google.api.ads.adwords.jaxws.extensions.report.model.entities</value>
         <value>com.google.api.ads.adwords.jaxws.extensions.kratu.data</value>
      </list>
-</property>
+	</property>
   </bean>
 
   <bean id="transactionManager" class="org.springframework.orm.hibernate4.HibernateTransactionManager">

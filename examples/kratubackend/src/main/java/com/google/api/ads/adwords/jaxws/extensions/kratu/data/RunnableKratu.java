@@ -34,30 +34,30 @@ public class RunnableKratu implements Runnable {
   Long topAccountId;
   Date dateStart;
   Date dateEnd;
-  
+  List<Account> accounts;
+
   StorageHelper storageHelper;
 
-  public RunnableKratu(Long topAccountId, StorageHelper storageHelper, Date dateStart, Date dateEnd) {
+  public RunnableKratu(Long topAccountId, List<Account> accounts, StorageHelper storageHelper, Date dateStart, Date dateEnd) {
+    
     super();
     this.topAccountId = topAccountId;
     this.dateStart = dateStart;
     this.dateEnd = dateEnd;
     this.storageHelper = storageHelper;
+    this.accounts = accounts;
   }
 
   public void run() {
     try {
 
-      List<Account> listAccounts =
-          storageHelper.getEntityPersister().get(Account.class, "topAccountId", topAccountId);
-
-      System.out.println("\n ** Generating Kratus (for: " + listAccounts.size() + ") **");
+      System.out.println("\n ** Generating Kratus (for: " + accounts.size() + ") **");
       long start = System.currentTimeMillis();
 
       // Get all the (not-MCC) Accounts under TopAccount
       int i = 0;
-      for (Account account : listAccounts) {
-        if (!account.getIsCanManageClients()) {
+      for (Account account : accounts) {
+        if (account != null && !account.getIsCanManageClients()) {
           System.out.println();
           System.out.print(i++);
           Calendar calendar = Calendar.getInstance();
