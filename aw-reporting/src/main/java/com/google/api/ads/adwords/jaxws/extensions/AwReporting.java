@@ -449,7 +449,9 @@ public class AwReporting {
     } else {
 
       LOGGER.debug("Using SQL DB configuration properties.");
+      LOGGER.warn("Updating database schema, this could take a few minutes ...");
       appCtx = new ClassPathXmlApplicationContext("classpath:aw-reporting-sql-beans.xml");
+      LOGGER.warn("Done.");
     }
 
     return properties;

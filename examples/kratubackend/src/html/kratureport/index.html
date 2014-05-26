@@ -83,7 +83,7 @@ limitations under the License.
           } catch (e) {
               $("#load_progress").css("display", "none");
               $("#load_error").css("display", "block");
-console.log(e);
+              console.log(e);
               if (e == "Need atleast one entity in order to calculated number of pages") {
                   $("#generic_error").text("");
                   $("#actual_error_was").text("Sorry, no accounts have any data for this date range.");
@@ -91,7 +91,7 @@ console.log(e);
           }
         }
         function failedToLoad(err) {
-console.log(err);
+            console.log(err);
             $("#load_progress").css("display", "none");
             $("#load_error").css("display", "block");
         }
