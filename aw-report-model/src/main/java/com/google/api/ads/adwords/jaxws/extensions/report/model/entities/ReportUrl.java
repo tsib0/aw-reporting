@@ -112,6 +112,10 @@ public class ReportUrl extends ReportBase {
       this.id += UrlHashUtil.createUrlHash(this.getUrl());
     }
 
+    if (this.getAdFormat() != null) {
+      this.id += this.getAdFormat() + "-";
+    }
+
     this.id += setIdDates();
 
     // Adding extra fields for unique ID
