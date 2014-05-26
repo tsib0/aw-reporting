@@ -14,6 +14,7 @@
 
 package com.google.api.ads.adwords.jaxws.extensions.report.model.persistence.sql;
 
+import com.google.api.ads.adwords.jaxws.extensions.report.model.entities.AuthMcc;
 import com.google.api.ads.adwords.jaxws.extensions.report.model.entities.Report;
 import com.google.api.ads.adwords.jaxws.extensions.report.model.entities.ReportAccount;
 import com.google.api.ads.adwords.jaxws.extensions.report.model.entities.ReportBase;
@@ -54,6 +55,9 @@ public class SqlReportEntitiesPersisterTest {
 
     List<ReportAccount> reports = this.reportEntitiesPersister.listReports(ReportAccount.class);
     this.reportEntitiesPersister.remove(reports);
+    
+    List<AuthMcc> authMccs = this.reportEntitiesPersister.get(AuthMcc.class);
+    this.reportEntitiesPersister.remove(authMccs);
   }
 
   /**
@@ -367,5 +371,27 @@ public class SqlReportEntitiesPersisterTest {
     Assert.assertEquals(report2, reports.get(1));
 
     this.reportEntitiesPersister.remove(reports);
+  }
+  
+  @Test
+  public void testGetAndRemoveWithListValues() {
+    List<AuthMcc> authMccs = Lists.newArrayList();
+    authMccs.add(new AuthMcc("1", "Name1", "Token", "OAuth"));
+    authMccs.add(new AuthMcc("2", "Name2", "Token", "OAuth"));
+    authMccs.add(new AuthMcc("3", "Name3", "Token", "OAuth"));
+
+    reportEntitiesPersister.save(authMccs);
+
+    List<AuthMcc> authMccsResult = reportEntitiesPersister.get(
+        AuthMcc.class, AuthMcc.TOP_ACCOUNT_ID, Lists.newArrayList("1", "2", "3"));
+
+    Assert.assertEquals(authMccsResult.size(), 3);
+    Assert.assertEquals(authMccsResult.get(0).getTopAccountName(), "Name1");
+    Assert.assertEquals(authMccsResult.get(1).getTopAccountName(), "Name2");
+    Assert.assertEquals(authMccsResult.get(2).getTopAccountName(), "Name3");
+    
+    reportEntitiesPersister.remove(AuthMcc.class, AuthMcc.TOP_ACCOUNT_ID, Lists.newArrayList("1", "2", "3"));
+    
+    Assert.assertEquals(reportEntitiesPersister.get(AuthMcc.class).size(), 0);
   }
 }
