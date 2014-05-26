@@ -14,6 +14,8 @@
 
 package com.google.api.ads.adwords.jaxws.extensions.kratu.restserver.reports;
 
+import com.google.api.ads.adwords.jaxws.extensions.kratu.data.Kratu;
+import com.google.api.ads.adwords.jaxws.extensions.kratu.persisters.InterestingQueries;
 import com.google.api.ads.adwords.jaxws.extensions.kratu.restserver.AbstractServerResource;
 import com.google.api.ads.adwords.jaxws.extensions.report.model.entities.ReportAccount;
 
@@ -33,6 +35,7 @@ public class ReportAccountRest extends AbstractServerResource {
     String result = null;
     try {
       getParameters();
+      
       List<ReportAccount> listReport = null;
       if (accountId != null) { //LIST Account level
         listReport = getStorageHelper().getReportByAccountId(ReportAccount.class, accountId, dateStart, dateEnd);
