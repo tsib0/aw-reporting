@@ -17,4 +17,8 @@
     class="com.google.api.ads.adwords.jaxws.extensions.util.DynamicPropertyPlaceholderConfigurer">
   </bean>
 
+
+  <context:component-scan
+     base-package="com.google.api.ads.adwords.jaxws.extensions.kratu.persisters" />
+
 </beans>
