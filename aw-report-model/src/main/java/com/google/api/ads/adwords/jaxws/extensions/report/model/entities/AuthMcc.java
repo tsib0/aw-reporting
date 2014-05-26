@@ -32,6 +32,8 @@ import javax.persistence.Table;
 @Table(name = "AW_AuthMcc")
 public class AuthMcc implements MongoEntity {
 
+  public static final String TOP_ACCOUNT_ID = "topAccountId";
+
   @Id
   @com.googlecode.objectify.annotation.Id
   @Column(name = "TOP_ACCOUNT_ID")
