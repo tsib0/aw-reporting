@@ -309,7 +309,10 @@ public abstract class ReportBase extends Report {
 
   public void setDay(String day) {
     try {
-      this.day = DateUtil.parseDateTime(day).toDate();
+      DateTime parseDateTime = DateUtil.parseDateTime(day);
+      if (parseDateTime != null) {
+        this.day = parseDateTime.toDate();
+      }
     } catch (IllegalArgumentException e) {
       this.day = null;
     }
@@ -333,7 +336,10 @@ public abstract class ReportBase extends Report {
 
   public void setMonth(String month) {
     try {
-      this.month = DateUtil.parseDateTime(month).toDate();
+      DateTime parseDateTime = DateUtil.parseDateTime(month);
+      if (parseDateTime != null) {
+        this.month = parseDateTime.toDate();
+      }
     } catch (IllegalArgumentException e) {
       this.month = null;
     }

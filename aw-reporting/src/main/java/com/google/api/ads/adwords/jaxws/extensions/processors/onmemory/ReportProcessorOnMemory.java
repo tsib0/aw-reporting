@@ -56,16 +56,6 @@ public class ReportProcessorOnMemory extends ReportProcessor {
   /**
    * Constructor.
    * 
-   * @param mccAccountId
-   *            the MCC account ID
-   * @param developerToken
-   *            the developer token
-   * @param companyName
-   *            the company name (optional)
-   * @param clientId
-   *            the OAuth2 authentication clientId
-   * @param clientSecret
-   *            the OAuth2 authentication clientSecret
    * @param reportRowsSetSize
    *            the size of the set parsed before send to the DB
    */
@@ -88,8 +78,9 @@ public class ReportProcessorOnMemory extends ReportProcessor {
    * @param accountIdsSet
    *            the set with all the accounts
    */
+  @Override
   protected void cacheAccounts(Set<Long> accountIdsSet) {
-    // TODO: Cache accounts on DB insted of File.
+    // TODO: Cache accounts on DB instead of File.
   }
 
   /**
@@ -108,6 +99,7 @@ public class ReportProcessorOnMemory extends ReportProcessor {
    * @throws Exception
    *             error reaching the API.
    */
+  @Override
   public void generateReportsForMCC(
       String userId, String mccAccountId,
       ReportDefinitionDateRangeType dateRangeType, String dateStart,
@@ -136,7 +128,7 @@ public class ReportProcessorOnMemory extends ReportProcessor {
     for (ReportDefinitionReportType reportType : reports) {
 
       if (properties.containsKey(reportType.name())) {
-        this.downloadAndProcess(userId, mccAccountId, builder, reportType, dateRangeType,
+        this.downloadAndProcess(mccAccountId, builder, reportType, dateRangeType,
             dateStart, dateEnd, accountIdsSet, properties);
       }
     }
@@ -167,7 +159,7 @@ public class ReportProcessorOnMemory extends ReportProcessor {
    *            the properties resource.
    */
   private <R extends Report> void downloadAndProcess(
-      String userId, String mccAccountId,
+      String mccAccountId,
       AdWordsSession.Builder builder,
       ReportDefinitionReportType reportType,
       ReportDefinitionDateRangeType dateRangeType, String dateStart,
@@ -189,15 +181,13 @@ public class ReportProcessorOnMemory extends ReportProcessor {
         .newFixedThreadPool(numberOfReportProcessors);
 
     Stopwatch stopwatch = Stopwatch.createStarted();
+    ModifiedCsvToBean<R> csvToBean = new ModifiedCsvToBean<R>();
+    MappingStrategy<R> mappingStrategy = new AnnotationBasedMappingStrategy<R>(
+        reportBeanClass);
 
     for (Long accountId : acountIdList) {
       LOGGER.trace(".");
       try {
-
-        ModifiedCsvToBean<R> csvToBean = new ModifiedCsvToBean<R>();
-        MappingStrategy<R> mappingStrategy = new AnnotationBasedMappingStrategy<R>(
-            reportBeanClass);
-
         LOGGER.debug("Parsing account: " + accountId); 
 
         RunnableProcessorOnMemory<R> runnableProcesor = new RunnableProcessorOnMemory<R>(

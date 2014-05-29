@@ -176,7 +176,7 @@ public class RunnableProcessorOnMemory<R extends Report> implements Runnable {
   /**
    * Creates the proper {@link CSVReader} to parse the AW reports.
    *
-   * @param file the CSV file.
+   * @param inputStream the CSV file.
    * @return the {@code CSVReader}
    * @throws UnsupportedEncodingException should not happen.
    */
