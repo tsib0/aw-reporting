@@ -100,12 +100,12 @@ public class ReportProcessorOnFile extends ReportProcessor {
 
     Stopwatch stopwatch = Stopwatch.createStarted();
 
+    ModifiedCsvToBean<R> csvToBean = new ModifiedCsvToBean<R>();
+    MappingStrategy<R> mappingStrategy = new AnnotationBasedMappingStrategy<R>(reportBeanClass);
+
     for (File file : localFiles) {
       LOGGER.trace(".");
       try {
-
-        ModifiedCsvToBean<R> csvToBean = new ModifiedCsvToBean<R>();
-        MappingStrategy<R> mappingStrategy = new AnnotationBasedMappingStrategy<R>(reportBeanClass);
 
         LOGGER.debug("Parsing file: " + file.getAbsolutePath());
         RunnableProcessorOnFile<R> runnableProcesor = new RunnableProcessorOnFile<R>(file,
