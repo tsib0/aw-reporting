@@ -181,14 +181,15 @@ public class ReportProcessorOnMemory extends ReportProcessor {
         .newFixedThreadPool(numberOfReportProcessors);
 
     Stopwatch stopwatch = Stopwatch.createStarted();
-    ModifiedCsvToBean<R> csvToBean = new ModifiedCsvToBean<R>();
-    MappingStrategy<R> mappingStrategy = new AnnotationBasedMappingStrategy<R>(
-        reportBeanClass);
 
     for (Long accountId : acountIdList) {
       LOGGER.trace(".");
       try {
         LOGGER.debug("Parsing account: " + accountId); 
+        
+        ModifiedCsvToBean<R> csvToBean = new ModifiedCsvToBean<R>();
+        MappingStrategy<R> mappingStrategy = new AnnotationBasedMappingStrategy<R>(
+            reportBeanClass);
 
         RunnableProcessorOnMemory<R> runnableProcesor = new RunnableProcessorOnMemory<R>(
             accountId, builder, reportDefinition, csvToBean, mappingStrategy, dateRangeType,
