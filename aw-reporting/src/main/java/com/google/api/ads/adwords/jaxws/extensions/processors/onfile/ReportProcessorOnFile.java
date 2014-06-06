@@ -96,7 +96,7 @@ public class ReportProcessorOnFile extends ReportProcessor {
     ExecutorService executorService = Executors.newFixedThreadPool(numberOfReportProcessors);
 
     // Processing Report Local Files
-    LOGGER.info(" Procesing reports...");
+    LOGGER.info(" Processing reports...");
 
     Stopwatch stopwatch = Stopwatch.createStarted();
 
