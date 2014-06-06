@@ -136,7 +136,6 @@ public class CsvReportEntitiesMappingTest {
     Assert.assertTrue(propertiesToSelect.contains("AccountTimeZoneId"));
     Assert.assertTrue(propertiesToSelect.contains("CustomerDescriptiveName"));
     Assert.assertTrue(propertiesToSelect.contains("PrimaryCompanyName"));
-    Assert.assertTrue(propertiesToSelect.contains("PrimaryUserLogin"));
     Assert.assertTrue(propertiesToSelect.contains("AccountCurrencyCode"));
     Assert.assertTrue(propertiesToSelect.contains("Date"));
     Assert.assertTrue(propertiesToSelect.contains("DayOfWeek"));
@@ -178,7 +177,7 @@ public class CsvReportEntitiesMappingTest {
     Assert.assertTrue(propertiesToSelect.contains("ContentBudgetLostImpressionShare"));
     Assert.assertTrue(propertiesToSelect.contains("ContentRankLostImpressionShare"));
 
-    Assert.assertEquals(45, propertiesToSelect.size());
+    Assert.assertEquals(44, propertiesToSelect.size());
   }
 
   /**
