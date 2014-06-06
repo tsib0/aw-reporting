@@ -85,7 +85,6 @@ AbstractReportDefinitionTest<ReportCriteriaPerformance> {
         "AccountTimeZoneId",
         "CustomerDescriptiveName",
         "PrimaryCompanyName",
-        "PrimaryUserLogin",
         "AccountCurrencyCode",
         "Date",
         "DayOfWeek",
