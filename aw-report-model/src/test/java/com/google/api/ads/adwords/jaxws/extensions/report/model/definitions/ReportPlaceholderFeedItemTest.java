@@ -109,7 +109,6 @@ AbstractReportDefinitionTest<ReportPlaceholderFeedItem> {
         "AccountTimeZoneId",
         "CustomerDescriptiveName",
         "PrimaryCompanyName",
-        "PrimaryUserLogin",
         "AccountCurrencyCode",
         "Date",
         "DayOfWeek",

@@ -106,7 +106,6 @@ AbstractReportDefinitionTest<ReportPlacement> {
         "AccountTimeZoneId",
         "CustomerDescriptiveName",
         "PrimaryCompanyName",
-        "PrimaryUserLogin",
         "AccountCurrencyCode",
         "Date",
         "DayOfWeek",
