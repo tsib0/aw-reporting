@@ -151,6 +151,11 @@ public abstract class ReportExporter {
       if (properties.getProperty("aw.report.exporter.writePdf") != null) {
         writePdf = Boolean.valueOf(properties.getProperty("aw.report.exporter.writePdf"));
       }
+      
+      Boolean writeDriveDoc = false;
+      if (properties.getProperty("aw.report.exporter.writeDriveDoc") != null) {
+        writeDriveDoc = Boolean.valueOf(properties.getProperty("aw.report.exporter.writeDriveDoc"));
+      }
 
       // Get the Fonts for the PDF from the properties file
       String propertyReportFonts = properties.getProperty("aw.report.exporter.reportfonts");
@@ -183,6 +188,15 @@ public abstract class ReportExporter {
               accountId, dateStart, dateEnd, mccAccountId, credential, ReportFileType.PDF,
               templateName).build();
           HTMLExporter.exportHtmlToPdf(mrwHtml.getAsSource(), gdrwPdf, fontPaths);
+        }
+        
+        // Writing Drive Doc to GoogleDrive
+        if (writeDriveDoc) {
+          LOGGER.debug("Writing GoogleDrive Doc for account: " + accountId);
+          GoogleDriveReportWriter gdrwDriveDoc = new GoogleDriveReportWriter.GoogleDriveReportWriterBuilder(
+              accountId, dateStart, dateEnd, mccAccountId, credential, ReportFileType.DRIVE_DOC,
+              templateName).build();
+          gdrwDriveDoc.write(mrwHtml.getAsSource());
         }
 
       } else {
