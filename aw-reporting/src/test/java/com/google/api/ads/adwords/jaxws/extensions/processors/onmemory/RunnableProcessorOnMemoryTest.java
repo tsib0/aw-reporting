@@ -24,11 +24,13 @@ import com.google.api.ads.adwords.jaxws.extensions.report.model.entities.ReportA
 import com.google.api.ads.adwords.jaxws.extensions.report.model.persistence.EntityPersister;
 import com.google.api.ads.adwords.jaxws.extensions.report.model.util.ModifiedCsvToBean;
 import com.google.api.ads.adwords.jaxws.extensions.util.FileUtil;
+import com.google.api.ads.adwords.lib.client.AdWordsSession;
 import com.google.api.ads.adwords.lib.jaxb.v201402.ReportDefinitionDateRangeType;
 import com.google.api.ads.adwords.lib.utils.ReportDownloadResponseException;
 import com.google.api.ads.adwords.lib.utils.ReportException;
 import com.google.api.ads.common.lib.exception.OAuthException;
 import com.google.api.ads.common.lib.exception.ValidationException;
+import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -73,8 +75,16 @@ public class RunnableProcessorOnMemoryTest {
     ModifiedCsvToBean<ReportAccount> csvToBean = new ModifiedCsvToBean<ReportAccount>();
     MappingStrategy<ReportAccount> mappingStrategy =
         new AnnotationBasedMappingStrategy<ReportAccount>(ReportAccount.class);
+    
+    AdWordsSession adWordsSession =
+        new AdWordsSession.Builder().withEndpoint("http://www.google.com")
+            .withDeveloperToken("DeveloperToken")
+            .withClientCustomerId("123")
+            .withUserAgent("UserAgent")
+            .withOAuth2Credential( new GoogleCredential.Builder().build())
+            .build();
 
-    runnableProcessorOnMemory = new RunnableProcessorOnMemory<ReportAccount>(456L, null, null,
+    runnableProcessorOnMemory = new RunnableProcessorOnMemory<ReportAccount>(456L, adWordsSession, null,
         csvToBean, mappingStrategy, ReportDefinitionDateRangeType.CUSTOM_DATE,
         "20140101", "20140131", "123", mockedEntitiesPersister, 5);
 

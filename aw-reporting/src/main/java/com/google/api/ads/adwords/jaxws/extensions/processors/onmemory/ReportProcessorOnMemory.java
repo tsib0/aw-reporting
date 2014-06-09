@@ -14,6 +14,7 @@
 
 package com.google.api.ads.adwords.jaxws.extensions.processors.onmemory;
 
+import com.google.api.ads.adwords.jaxws.extensions.downloader.AdWordsSessionBuilderSynchronizer;
 import com.google.api.ads.adwords.jaxws.extensions.processors.ReportProcessor;
 import com.google.api.ads.adwords.jaxws.extensions.report.model.csv.AnnotationBasedMappingStrategy;
 import com.google.api.ads.adwords.jaxws.extensions.report.model.entities.Report;
@@ -114,7 +115,8 @@ public class ReportProcessorOnMemory extends ReportProcessor {
       LOGGER.info("Accounts loaded from file.");
     }
 
-    AdWordsSession.Builder builder = authenticator.authenticate(userId, mccAccountId, false);
+    AdWordsSessionBuilderSynchronizer sessionBuilder =
+        new AdWordsSessionBuilderSynchronizer(authenticator.authenticate(userId, mccAccountId, false));
 
     LOGGER.info("*** Generating Reports for " + accountIdsSet.size()
         + " accounts ***");
@@ -128,7 +130,7 @@ public class ReportProcessorOnMemory extends ReportProcessor {
     for (ReportDefinitionReportType reportType : reports) {
 
       if (properties.containsKey(reportType.name())) {
-        this.downloadAndProcess(mccAccountId, builder, reportType, dateRangeType,
+        this.downloadAndProcess(mccAccountId, sessionBuilder, reportType, dateRangeType,
             dateStart, dateEnd, accountIdsSet, properties);
       }
     }
@@ -160,7 +162,7 @@ public class ReportProcessorOnMemory extends ReportProcessor {
    */
   private <R extends Report> void downloadAndProcess(
       String mccAccountId,
-      AdWordsSession.Builder builder,
+      AdWordsSessionBuilderSynchronizer sessionBuilder,
       ReportDefinitionReportType reportType,
       ReportDefinitionDateRangeType dateRangeType, String dateStart,
       String dateEnd, Set<Long> acountIdList, Properties properties) {
@@ -191,8 +193,11 @@ public class ReportProcessorOnMemory extends ReportProcessor {
         MappingStrategy<R> mappingStrategy = new AnnotationBasedMappingStrategy<R>(
             reportBeanClass);
 
+        // We create a copy of the AdWordsSession specific for the Account
+        AdWordsSession adWordsSession = sessionBuilder.getAdWordsSessionCopy(accountId);
+
         RunnableProcessorOnMemory<R> runnableProcesor = new RunnableProcessorOnMemory<R>(
-            accountId, builder, reportDefinition, csvToBean, mappingStrategy, dateRangeType,
+            accountId, adWordsSession, reportDefinition, csvToBean, mappingStrategy, dateRangeType,
             dateStart, dateEnd, mccAccountId, persister,
             reportRowsSetSize);
 
