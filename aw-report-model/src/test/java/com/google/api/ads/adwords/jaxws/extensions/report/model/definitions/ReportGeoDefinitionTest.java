@@ -108,7 +108,6 @@ AbstractReportDefinitionTest<ReportGeo>{
         "AccountTimeZoneId",
         "CustomerDescriptiveName",
         "PrimaryCompanyName",
-        "PrimaryUserLogin",
         "AccountCurrencyCode",
         "Date",
         "DayOfWeek",
