@@ -39,7 +39,8 @@ public class GoogleDriveReportWriter implements ReportWriter {
   private static final Logger LOGGER = Logger.getLogger(GoogleDriveReportWriter.class);
 
   private final String PDF_MIME_TYPE = "application/pdf";
-  private final String HTML_MIME_TYPE = "application/html";
+  private final String HTML_MIME_TYPE = "text/html";
+  private final String DOC_MIME_TYPE = "application/vnd.google-apps.document";
 
   private final long accountId;
   private final String dateStart;
@@ -182,6 +183,13 @@ public class GoogleDriveReportWriter implements ReportWriter {
       reportFile.setMimeType(HTML_MIME_TYPE);
       AbstractInputStreamContent aisc = new InputStreamContent(HTML_MIME_TYPE, inputStream);
       googleDriveService.getDriveService().files().insert(reportFile, aisc).execute();
+    }
+    
+    // Convert the HTML file to a Drive Doc and write to Drive.
+    if (reportFileType.equals(ReportFileType.DRIVE_DOC)) {
+      reportFile.setMimeType(DOC_MIME_TYPE);
+      AbstractInputStreamContent aisc = new InputStreamContent(HTML_MIME_TYPE, inputStream);
+      googleDriveService.getDriveService().files().insert(reportFile, aisc).setConvert(true).execute();
     }
     inputStream.close(); 
   }
