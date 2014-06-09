@@ -1,5 +1,6 @@
 package com.google.api.ads.adwords.jaxws.extensions.downloader;
 
+import com.google.api.ads.adwords.jaxws.extensions.util.AdWordsSessionUtil;
 import com.google.api.ads.adwords.lib.client.AdWordsSession;
 import com.google.api.ads.common.lib.exception.ValidationException;
 
@@ -25,16 +26,16 @@ public class AdWordsSessionBuilderSynchronizer {
   }
 
   /**
-   * Builds a new {@code AdWordsSession} for the given cid.
+   * Builds a new COPY {@code AdWordsSession} for the given cid.
    *
    * @param cid the cid
    * @return the session.
    * @throws ValidationException error validating the CID.
    */
-  public synchronized AdWordsSession getAdWordsSession(Long cid) throws ValidationException {
+  public synchronized AdWordsSession getAdWordsSessionCopy(Long cid) throws ValidationException {
 
-    return this.builder.withClientCustomerId(String.valueOf(cid))
-      .disableReportMoneyInMicros().build();
+    AdWordsSession adWordsSession = AdWordsSessionUtil.copy(this.builder.build());
+    adWordsSession.setClientCustomerId(String.valueOf(cid));
+    return adWordsSession;
   }
-
 }

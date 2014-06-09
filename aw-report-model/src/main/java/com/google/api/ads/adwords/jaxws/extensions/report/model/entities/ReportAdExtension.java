@@ -33,7 +33,7 @@ import javax.persistence.Table;
 @Table(name = "AW_ReportAdExtension")
 @CsvReport(value = ReportDefinitionReportType.AD_EXTENSIONS_PERFORMANCE_REPORT,
     reportExclusions = {"ExternalCustomerId", "AccountDescriptiveName", "AccountCurrencyCode",
-    "AccountTimeZoneId", "CustomerDescriptiveName", "PrimaryCompanyName", "PrimaryUserLogin"})
+    "AccountTimeZoneId", "CustomerDescriptiveName", "PrimaryCompanyName"})
 public class ReportAdExtension extends ReportBase {
 
   @Column(name = "CAMPAIGN_ID")
