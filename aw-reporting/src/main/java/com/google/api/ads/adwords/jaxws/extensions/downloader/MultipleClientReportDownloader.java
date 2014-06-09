@@ -16,6 +16,7 @@ package com.google.api.ads.adwords.jaxws.extensions.downloader;
 
 import com.google.api.ads.adwords.lib.client.AdWordsSession;
 import com.google.api.ads.adwords.lib.jaxb.v201402.ReportDefinition;
+import com.google.api.ads.common.lib.exception.ValidationException;
 import com.google.common.base.Stopwatch;
 
 import org.apache.log4j.Logger;
@@ -70,28 +71,30 @@ public class MultipleClientReportDownloader {
    * @param cids CIDs to download the report for.
    * @return Collection of File objects reports have been downloaded to.
    * @throws InterruptedException error trying to stop downloader thread.
+   * @throws ValidationException 
    */
-  public Collection<File> downloadReports(final AdWordsSession.Builder builder,
-      final ReportDefinition reportDefinition, final Set<Long> cids) throws InterruptedException {
-
-    AdWordsSessionBuilderSynchronizer sessionBuilder =
-        new AdWordsSessionBuilderSynchronizer(builder);
+  public Collection<File> downloadReports(final AdWordsSessionBuilderSynchronizer sessionBuilder,
+      final ReportDefinition reportDefinition, final Set<Long> accountIds) throws InterruptedException, ValidationException {
 
     final Collection<Long> failed = new ConcurrentSkipListSet<Long>();
     final Collection<File> results = new ConcurrentSkipListSet<File>();
 
     // We use a Latch so the main thread knows when all the worker threads are complete.
-    final CountDownLatch latch = new CountDownLatch(cids.size());
+    final CountDownLatch latch = new CountDownLatch(accountIds.size());
 
     Stopwatch stopwatch = Stopwatch.createStarted();
 
-    for (final Long cid : cids) {
+    for (final Long accountId : accountIds) {
+      
+      // We create a copy of the AdWordsSession specific for the Account
+      AdWordsSession adWordsSession = sessionBuilder.getAdWordsSessionCopy(accountId);
+      
       RunnableDownloader downloader = new RunnableDownloader(this.retriesCount,
           this.backoffInterval,
           this.bufferSize,
-          cid,
+          accountId,
           reportDefinition,
-          sessionBuilder,
+          adWordsSession,
           results);
       downloader.setFailed(failed);
       executeRunnableDownloader(downloader, latch);
@@ -100,7 +103,7 @@ public class MultipleClientReportDownloader {
     latch.await();
     stopwatch.stop();
     return this.printResultsAndReturn(
-        results, stopwatch.elapsed(TimeUnit.MILLISECONDS), failed, cids);
+        results, stopwatch.elapsed(TimeUnit.MILLISECONDS), failed, accountIds);
   }
 
   protected void executeRunnableDownloader(

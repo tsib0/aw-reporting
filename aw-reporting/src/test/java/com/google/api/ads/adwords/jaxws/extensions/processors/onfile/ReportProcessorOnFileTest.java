@@ -22,6 +22,7 @@ import static org.mockito.Mockito.when;
 
 import com.google.api.ads.adwords.jaxws.extensions.authentication.Authenticator;
 import com.google.api.ads.adwords.jaxws.extensions.authentication.InstalledOAuth2Authenticator;
+import com.google.api.ads.adwords.jaxws.extensions.downloader.AdWordsSessionBuilderSynchronizer;
 import com.google.api.ads.adwords.jaxws.extensions.downloader.MultipleClientReportDownloader;
 import com.google.api.ads.adwords.jaxws.extensions.exporter.reportwriter.ReportWriterType;
 import com.google.api.ads.adwords.jaxws.extensions.report.model.csv.CsvReportEntitiesMapping;
@@ -35,6 +36,7 @@ import com.google.api.ads.adwords.lib.jaxb.v201402.ReportDefinition;
 import com.google.api.ads.adwords.lib.jaxb.v201402.ReportDefinitionDateRangeType;
 import com.google.api.ads.adwords.lib.jaxb.v201402.ReportDefinitionReportType;
 import com.google.api.ads.common.lib.exception.OAuthException;
+import com.google.api.ads.common.lib.exception.ValidationException;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Lists;
 
@@ -98,7 +100,7 @@ public class ReportProcessorOnFileTest {
   ArgumentCaptor<List<? extends Report>> reportEntitiesCaptor;
 
   @Before
-  public void setUp() throws InterruptedException, IOException, OAuthException {
+  public void setUp() throws InterruptedException, IOException, OAuthException, ValidationException {
     Resource resource = new FileSystemResource("src/test/resources/aw-report-sample.properties");
     DynamicPropertyPlaceholderConfigurer.setDynamicResource(resource);
     properties = PropertiesLoaderUtils.loadProperties(resource);
@@ -147,7 +149,7 @@ public class ReportProcessorOnFileTest {
         properties);
 
     verify(mockedMultipleClientReportDownloader, times(REPORT_TYPES_SIZE)).downloadReports(
-        Mockito.<AdWordsSession.Builder>anyObject(), Mockito.<ReportDefinition>anyObject(),
+        Mockito.<AdWordsSessionBuilderSynchronizer>anyObject(), Mockito.<ReportDefinition>anyObject(),
         Mockito.<Set<Long>>anyObject());
 
     verify(mockedReportEntitiesPersister, times(ROW_COUNT_CSV_TOTAL)).persistReportEntities(
@@ -162,7 +164,7 @@ public class ReportProcessorOnFileTest {
     }
   }
 
-  private void mockDownloadReports(final int numberOfFiles) throws InterruptedException {
+  private void mockDownloadReports(final int numberOfFiles) throws InterruptedException, ValidationException {
     Mockito.doAnswer(new Answer<Collection<File>>() {
       @Override
       public Collection<File> answer(InvocationOnMock invocation) throws Throwable {
@@ -238,7 +240,7 @@ public class ReportProcessorOnFileTest {
         throw (new Exception("Undefined report type on Tests: " + reportType.value()));
       }
     }).when(mockedMultipleClientReportDownloader).downloadReports(
-        Mockito.<AdWordsSession.Builder>anyObject(), Mockito.<ReportDefinition>anyObject(),
+        Mockito.<AdWordsSessionBuilderSynchronizer>anyObject(), Mockito.<ReportDefinition>anyObject(),
         Mockito.<Set<Long>>anyObject());
   }
 
