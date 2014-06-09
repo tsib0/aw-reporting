@@ -67,35 +67,45 @@ public class RunnableProcessorOnMemory<R extends Report> implements Runnable {
   private static final Logger LOGGER = Logger.getLogger(RunnableProcessorOnMemory.class);
   
   private CountDownLatch latch;
+  
+  private final String mccAccountId;
+  private final AdWordsSession adWordsSession;
+  private final Long accountId;
+  private final ReportDefinition reportDefinition;
 
   private ModifiedCsvToBean<R> csvToBean;
   private MappingStrategy<R> mappingStrategy;
   private ReportDefinitionDateRangeType dateRangeType;
   private String dateStart;
   private String dateEnd;
-  private String mccAccountId;
+  
   private EntityPersister entityPersister;
   private int reportRowsSetSize;
 
-  private final AdWordsSessionBuilderSynchronizer sessionBuilder;
-
-  private final Long accountId;
-  private final ReportDefinition reportDefinition;
-  
   /**
    * C'tor.
    *
-   * @param file the CSV file.
+   * @param accountId
+   * @param adWordsSession
+   * @param reportDefinition
    * @param csvToBean the {@code CsvToBean}
    * @param mappingStrategy
+   * @param file the CSV file.
+   * @param dateRangeType
+   * @param dateStart
+   * @param dateEnd
+   * @param mccAccountId
+   * @param entityPersister
+   * @param reportRowsSetSize
    */
-  public RunnableProcessorOnMemory(Long accountId, AdWordsSession.Builder builder, 
+  public RunnableProcessorOnMemory(final Long accountId, final AdWordsSession adWordsSession, 
       ReportDefinition reportDefinition, ModifiedCsvToBean<R> csvToBean,
       MappingStrategy<R> mappingStrategy, ReportDefinitionDateRangeType dateRangeType,
-      String dateStart, String dateEnd, String mccAccountId, EntityPersister entityPersister,
+      String dateStart, String dateEnd, final String mccAccountId, EntityPersister entityPersister,
       Integer reportRowsSetSize) {
     this.accountId = accountId;
-    this.sessionBuilder = new AdWordsSessionBuilderSynchronizer(builder);
+    this.adWordsSession = adWordsSession;
+    this.adWordsSession.setClientCustomerId(String.valueOf(accountId));
     this.reportDefinition = reportDefinition;
     this.csvToBean = csvToBean;
     this.mappingStrategy = mappingStrategy;
@@ -204,9 +214,8 @@ public class RunnableProcessorOnMemory<R extends Report> implements Runnable {
       throws ValidationException, ReportException, ReportDownloadResponseException {
 
     InputStream inputStream = null;
-    AdWordsSession session = this.sessionBuilder.getAdWordsSession(this.accountId);
 
-    ReportDownloader reportDownloader = new ReportDownloader(session);
+    ReportDownloader reportDownloader = new ReportDownloader(adWordsSession);
     ReportDownloadResponse reportDownloadResponse =
         reportDownloader.downloadReport(this.reportDefinition);
 
