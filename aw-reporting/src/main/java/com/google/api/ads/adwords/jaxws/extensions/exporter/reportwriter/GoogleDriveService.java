@@ -46,7 +46,7 @@ public class GoogleDriveService {
   
   private static final String DRIVE_APP_NAME = "AwReporting-AppEngine";
 
-  private static final String REPORT_FOLDER_NAME_PRE = "AW Reports - AdWords generated PDF Reports";
+  private static final String REPORT_FOLDER_NAME_PRE = "AW Reports - AdWords generated Reports";
 
   private static final String FOLDER_MIME_TYPE = "application/vnd.google-apps.folder";
 
@@ -78,7 +78,7 @@ public class GoogleDriveService {
   }
 
   /**
-   * Gets the Drive instace for the GoogleDriveService
+   * Gets the Drive instance for the GoogleDriveService
    */
   public Drive getDriveService() {
     return service;
