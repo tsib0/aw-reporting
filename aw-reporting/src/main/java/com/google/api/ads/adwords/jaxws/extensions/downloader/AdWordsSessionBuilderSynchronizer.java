@@ -22,7 +22,7 @@ public class AdWordsSessionBuilderSynchronizer {
    */
   public AdWordsSessionBuilderSynchronizer(AdWordsSession.Builder builder) {
 
-    this.builder = builder;
+    this.builder = builder.disableReportMoneyInMicros();
   }
 
   /**
