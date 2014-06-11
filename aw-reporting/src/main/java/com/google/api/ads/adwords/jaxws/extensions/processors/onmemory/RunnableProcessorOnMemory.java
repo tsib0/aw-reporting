@@ -35,7 +35,6 @@ import org.apache.log4j.Logger;
 import au.com.bytecode.opencsv.CSVReader;
 import au.com.bytecode.opencsv.bean.MappingStrategy;
 
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
@@ -67,7 +66,7 @@ public class RunnableProcessorOnMemory<R extends Report> implements Runnable {
   private static final Logger LOGGER = Logger.getLogger(RunnableProcessorOnMemory.class);
   
   private CountDownLatch latch;
-  
+
   private final String mccAccountId;
   private final AdWordsSession adWordsSession;
   private final Long accountId;
@@ -81,6 +80,8 @@ public class RunnableProcessorOnMemory<R extends Report> implements Runnable {
   
   private EntityPersister entityPersister;
   private int reportRowsSetSize;
+
+  private Exception error = null;
 
   /**
    * C'tor.
@@ -161,20 +162,9 @@ public class RunnableProcessorOnMemory<R extends Report> implements Runnable {
       }
       LOGGER.debug("... success.");
       csvReader.close();
-    } catch (UnsupportedEncodingException e) {
-      LOGGER.error("Error processing report for account: " + this.accountId);
-      e.printStackTrace();
-    } catch (IOException e) {
-      LOGGER.error("Error processing report for account: " + this.accountId);
-      e.printStackTrace();
-    } catch (ValidationException e) {
-      LOGGER.error("Error processing report for account: " + this.accountId);
-      e.printStackTrace();
-    } catch (ReportException e) {
-      LOGGER.error("Error processing report for account: " + this.accountId);
-      e.printStackTrace();
-    } catch (ReportDownloadResponseException e) {
-      LOGGER.error("Error processing report for account: " + this.accountId);
+    } catch (Exception e) {
+      error = new Exception("Error processing report for account: " + this.accountId, e);
+      LOGGER.error("Error processing report for account: " + this.accountId + " " + e.getMessage());
       e.printStackTrace();
     } finally {
       if (this.latch != null) {
@@ -229,7 +219,11 @@ public class RunnableProcessorOnMemory<R extends Report> implements Runnable {
     }
     return inputStream;
   }
-  
+
+  public Exception getError() {
+    return error;
+  }
+
   /**
    * @param entityPersister
    *            the entityPersister to set
