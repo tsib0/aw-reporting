@@ -14,9 +14,12 @@
 
 package com.google.api.ads.adwords.jaxws.extensions.processors.onmemory;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 
 import com.google.api.ads.adwords.jaxws.extensions.authentication.Authenticator;
 import com.google.api.ads.adwords.jaxws.extensions.authentication.InstalledOAuth2Authenticator;
@@ -75,7 +78,10 @@ public class ReportProcessorOnMemoryTest {
       "src/test/resources/csv/reportDownload-ACCOUNT_PERFORMANCE_REPORT-2602198216-1370030134500.report";
   
   private static final int NUMBER_OF_ACCOUNTS = 50;
+  
   private static final int NUMBER_OF_THREADS = 50;
+  
+  private static final int CALLS_TO_PERSIST_ENTITIES = 200;
 
   private Properties properties;
 
@@ -124,7 +130,7 @@ public class ReportProcessorOnMemoryTest {
     properties = PropertiesLoaderUtils.loadProperties(resource);
     appCtx = new ClassPathXmlApplicationContext("classpath:aw-report-test-beans.xml");
 
-    reportProcessorOnMemory = new ReportProcessorOnMemory(100, NUMBER_OF_THREADS);
+    reportProcessorOnMemory = new ReportProcessorOnMemory(2, NUMBER_OF_THREADS);
 
     authenticator = new InstalledOAuth2Authenticator("DevToken", "ClientId", "ClientSecret",
         ReportWriterType.FileSystemWriter);
@@ -184,6 +190,12 @@ public class ReportProcessorOnMemoryTest {
     reportProcessorOnMemory.generateReportsForMCC(null, "123",
         ReportDefinitionDateRangeType.CUSTOM_DATE, "20130101", "20130131", CIDS, properties);
 
+    verify(mockedEntitiesPersister, times(CALLS_TO_PERSIST_ENTITIES)).persistReportEntities(
+        reportEntitiesCaptor.capture());
+
+    assertEquals(CALLS_TO_PERSIST_ENTITIES, reportEntitiesCaptor.getAllValues().size());
+
+    // Check that all RunnableProcessorOnMemory executed without errors
     for(RunnableProcessorOnMemory<ReportAccount> runnable : runnableProcessorOnMemoryList) {
       Exception error = runnable.getError();
       if (error != null) {

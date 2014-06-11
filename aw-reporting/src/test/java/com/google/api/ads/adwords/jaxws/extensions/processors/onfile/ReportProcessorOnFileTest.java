@@ -20,25 +20,12 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import com.google.api.ads.adwords.jaxws.extensions.authentication.Authenticator;
-import com.google.api.ads.adwords.jaxws.extensions.authentication.InstalledOAuth2Authenticator;
-import com.google.api.ads.adwords.jaxws.extensions.downloader.AdWordsSessionBuilderSynchronizer;
-import com.google.api.ads.adwords.jaxws.extensions.downloader.MultipleClientReportDownloader;
-import com.google.api.ads.adwords.jaxws.extensions.exporter.reportwriter.ReportWriterType;
-import com.google.api.ads.adwords.jaxws.extensions.report.model.csv.CsvReportEntitiesMapping;
-import com.google.api.ads.adwords.jaxws.extensions.report.model.entities.AuthMcc;
-import com.google.api.ads.adwords.jaxws.extensions.report.model.entities.Report;
-import com.google.api.ads.adwords.jaxws.extensions.report.model.persistence.AuthTokenPersister;
-import com.google.api.ads.adwords.jaxws.extensions.report.model.persistence.EntityPersister;
-import com.google.api.ads.adwords.jaxws.extensions.util.DynamicPropertyPlaceholderConfigurer;
-import com.google.api.ads.adwords.lib.client.AdWordsSession;
-import com.google.api.ads.adwords.lib.jaxb.v201402.ReportDefinition;
-import com.google.api.ads.adwords.lib.jaxb.v201402.ReportDefinitionDateRangeType;
-import com.google.api.ads.adwords.lib.jaxb.v201402.ReportDefinitionReportType;
-import com.google.api.ads.common.lib.exception.OAuthException;
-import com.google.api.ads.common.lib.exception.ValidationException;
-import com.google.common.collect.ImmutableSet;
-import com.google.common.collect.Lists;
+import java.io.File;
+import java.io.IOException;
+import java.util.Collection;
+import java.util.List;
+import java.util.Properties;
+import java.util.Set;
 
 import org.apache.commons.io.FileUtils;
 import org.junit.Before;
@@ -57,12 +44,25 @@ import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.support.PropertiesLoaderUtils;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.Collection;
-import java.util.List;
-import java.util.Properties;
-import java.util.Set;
+import com.google.api.ads.adwords.jaxws.extensions.authentication.Authenticator;
+import com.google.api.ads.adwords.jaxws.extensions.authentication.InstalledOAuth2Authenticator;
+import com.google.api.ads.adwords.jaxws.extensions.downloader.AdWordsSessionBuilderSynchronizer;
+import com.google.api.ads.adwords.jaxws.extensions.downloader.MultipleClientReportDownloader;
+import com.google.api.ads.adwords.jaxws.extensions.exporter.reportwriter.ReportWriterType;
+import com.google.api.ads.adwords.jaxws.extensions.report.model.csv.CsvReportEntitiesMapping;
+import com.google.api.ads.adwords.jaxws.extensions.report.model.entities.AuthMcc;
+import com.google.api.ads.adwords.jaxws.extensions.report.model.entities.Report;
+import com.google.api.ads.adwords.jaxws.extensions.report.model.persistence.AuthTokenPersister;
+import com.google.api.ads.adwords.jaxws.extensions.report.model.persistence.EntityPersister;
+import com.google.api.ads.adwords.jaxws.extensions.util.DynamicPropertyPlaceholderConfigurer;
+import com.google.api.ads.adwords.lib.client.AdWordsSession;
+import com.google.api.ads.adwords.lib.jaxb.v201402.ReportDefinition;
+import com.google.api.ads.adwords.lib.jaxb.v201402.ReportDefinitionDateRangeType;
+import com.google.api.ads.adwords.lib.jaxb.v201402.ReportDefinitionReportType;
+import com.google.api.ads.common.lib.exception.OAuthException;
+import com.google.api.ads.common.lib.exception.ValidationException;
+import com.google.common.collect.Lists;
+import com.google.common.collect.Sets;
 
 /**
  * Test case for the {@code ReportProcessorOnFile} class.
@@ -71,11 +71,21 @@ import java.util.Set;
  */
 public class ReportProcessorOnFileTest {
 
+  private static final int NUMBER_OF_ACCOUNTS = 100;
+  
+  private static final int NUMBER_OF_THREADS = 50;
+  
+  private static final int REPORT_TYPES_SIZE = 11;
+  
+  private static final int CALLS_TO_PERSIST_ENTITIES = 2800;
+  
+  private static final Set<Long> CIDS = Sets.newHashSet();
+  
   @Mock
   private AuthTokenPersister mockedAuthTokenPersister;
 
   @Mock
-  private EntityPersister mockedReportEntitiesPersister;
+  private EntityPersister mockedEntitiesPersister;
 
   @Mock
   private MultipleClientReportDownloader mockedMultipleClientReportDownloader;
@@ -90,23 +100,22 @@ public class ReportProcessorOnFileTest {
 
   private ApplicationContext appCtx;
 
-  private static final Set<Long> CIDS = ImmutableSet.of(1L, 2L, 3L, 4L, 5L, 6L, 7L, 8L, 9L, 10L);
-
-  private static final int REPORT_TYPES_SIZE = 11;
-
-  private static final int ROW_COUNT_CSV_TOTAL = 280;
-
   @Captor
   ArgumentCaptor<List<? extends Report>> reportEntitiesCaptor;
 
   @Before
   public void setUp() throws InterruptedException, IOException, OAuthException, ValidationException {
+
+    for (int i = 1; i <= NUMBER_OF_ACCOUNTS; i++) {
+      CIDS.add(Long.valueOf(i));
+    }
+
     Resource resource = new FileSystemResource("src/test/resources/aw-report-sample.properties");
     DynamicPropertyPlaceholderConfigurer.setDynamicResource(resource);
     properties = PropertiesLoaderUtils.loadProperties(resource);
     appCtx = new ClassPathXmlApplicationContext("classpath:aw-report-test-beans.xml");
 
-    reportProcessorOnFile = new ReportProcessorOnFile(10, 2);
+    reportProcessorOnFile = new ReportProcessorOnFile(10, NUMBER_OF_THREADS);
     authenticator = new InstalledOAuth2Authenticator("DevToken", "ClientId", "ClientSecret",
         ReportWriterType.FileSystemWriter);
 
@@ -120,13 +129,13 @@ public class ReportProcessorOnFileTest {
       public Void answer(InvocationOnMock invocation) throws Throwable {
         return null;
       }
-    }).when(mockedReportEntitiesPersister)
+    }).when(mockedEntitiesPersister)
         .persistReportEntities(Mockito.<List<? extends Report>>anyObject());
 
     mockDownloadReports(CIDS.size());
 
     reportProcessorOnFile.setMultipleClientReportDownloader(mockedMultipleClientReportDownloader);
-    reportProcessorOnFile.setPersister(mockedReportEntitiesPersister);
+    reportProcessorOnFile.setPersister(mockedEntitiesPersister);
     reportProcessorOnFile.setCsvReportEntitiesMapping(
         appCtx.getBean(CsvReportEntitiesMapping.class));
     reportProcessorOnFile.setAuthentication(authenticator);
@@ -152,10 +161,11 @@ public class ReportProcessorOnFileTest {
         Mockito.<AdWordsSessionBuilderSynchronizer>anyObject(), Mockito.<ReportDefinition>anyObject(),
         Mockito.<Set<Long>>anyObject());
 
-    verify(mockedReportEntitiesPersister, times(ROW_COUNT_CSV_TOTAL)).persistReportEntities(
+    verify(mockedEntitiesPersister, times(CALLS_TO_PERSIST_ENTITIES)).persistReportEntities(
         reportEntitiesCaptor.capture());
 
-    assertEquals(ROW_COUNT_CSV_TOTAL, reportEntitiesCaptor.getAllValues().size());
+    assertEquals(CALLS_TO_PERSIST_ENTITIES, reportEntitiesCaptor.getAllValues().size());
+    
     for (List<? extends Report> reportEntities : reportEntitiesCaptor.getAllValues()) {
       for (Report report : reportEntities) {
         assertNotNull(report.getId());
