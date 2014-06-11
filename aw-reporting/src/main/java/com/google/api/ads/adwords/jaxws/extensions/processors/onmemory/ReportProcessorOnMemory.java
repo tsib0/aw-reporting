@@ -53,8 +53,6 @@ import java.util.concurrent.TimeUnit;
 public class ReportProcessorOnMemory extends ReportProcessor {
 
   private static final Logger LOGGER = Logger.getLogger(ReportProcessorOnMemory.class);
-  
-  private ExecutorService executorService;
 
   /**
    * Constructor.
@@ -72,7 +70,6 @@ public class ReportProcessorOnMemory extends ReportProcessor {
     }
     if (numberOfReportProcessors != null && numberOfReportProcessors > 0) {
       this.numberOfReportProcessors = numberOfReportProcessors;
-      this.executorService = Executors.newFixedThreadPool(numberOfReportProcessors);
     }
   }
 
@@ -182,6 +179,7 @@ public class ReportProcessorOnMemory extends ReportProcessor {
     .getReportBeanClass(reportType);
 
     final CountDownLatch latch = new CountDownLatch(acountIdList.size());
+    ExecutorService executorService = Executors.newFixedThreadPool(numberOfReportProcessors);
 
     Stopwatch stopwatch = Stopwatch.createStarted();
 
