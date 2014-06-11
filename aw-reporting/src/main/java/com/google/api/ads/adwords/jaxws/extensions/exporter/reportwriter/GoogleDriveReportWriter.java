@@ -152,8 +152,15 @@ public class GoogleDriveReportWriter implements ReportWriter {
   @Override
   public void write(InputStream inputStream) throws IOException {
     LOGGER.info("Getting AW Reports Drive output folder");
+    File outputFolder;
     // Get or create an AW Reports folder
     File reportsFolder = googleDriveService.getReportsFolder(mccAccountId);
+    outputFolder = reportsFolder;
+    
+    if( folderPerAccount ) {
+      File accountFolder = googleDriveService.getAccountFolder(reportsFolder, String.valueOf(accountId));
+      outputFolder = accountFolder;
+    }
 
     // Create a Google Drive PDF file
     File reportFile = new File();
@@ -169,7 +176,7 @@ public class GoogleDriveReportWriter implements ReportWriter {
     reportFile.setTitle(reportFileName);
 
     // Place the file in the correct Drive folder
-    reportFile.setParents(Arrays.asList(new ParentReference().setId(reportsFolder.getId())));
+    reportFile.setParents(Arrays.asList(new ParentReference().setId(outputFolder.getId())));
 
     // Write the PDF file to Drive.
     if (reportFileType.equals(ReportFileType.PDF)) {
