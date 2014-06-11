@@ -99,7 +99,10 @@ public class RunnableProcessorOnMemoryTest {
     FileUtil.copy(fis, gzipOut);
     gzipOut.flush();
     gzipOut.close();
-    doReturn(new ByteArrayInputStream(baos.toByteArray())).when(
+    ByteArrayInputStream bais = new ByteArrayInputStream(baos.toByteArray());
+    baos.flush();
+    baos.close();
+    doReturn(bais).when(
         runnableProcessorOnMemory).getReportInputStream();
   }
 
