@@ -14,6 +14,20 @@
 
 package com.google.api.ads.adwords.jaxws.extensions.processors.onmemory;
 
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.UnsupportedEncodingException;
+import java.net.HttpURLConnection;
+import java.util.Collection;
+import java.util.List;
+import java.util.concurrent.CountDownLatch;
+import java.util.zip.GZIPInputStream;
+
+import org.apache.log4j.Logger;
+
+import au.com.bytecode.opencsv.CSVReader;
+import au.com.bytecode.opencsv.bean.MappingStrategy;
+
 import com.google.api.ads.adwords.jaxws.extensions.downloader.AdWordsSessionBuilderSynchronizer;
 import com.google.api.ads.adwords.jaxws.extensions.report.model.csv.AwReportCsvReader;
 import com.google.api.ads.adwords.jaxws.extensions.report.model.entities.Report;
@@ -29,20 +43,6 @@ import com.google.api.ads.adwords.lib.utils.ReportException;
 import com.google.api.ads.adwords.lib.utils.v201402.ReportDownloader;
 import com.google.api.ads.common.lib.exception.ValidationException;
 import com.google.common.collect.Lists;
-
-import org.apache.log4j.Logger;
-
-import au.com.bytecode.opencsv.CSVReader;
-import au.com.bytecode.opencsv.bean.MappingStrategy;
-
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.UnsupportedEncodingException;
-import java.net.HttpURLConnection;
-import java.util.Collection;
-import java.util.List;
-import java.util.concurrent.CountDownLatch;
-import java.util.zip.GZIPInputStream;
 
 /**
  * This {@link Runnable} implements the core logic to download the report file
@@ -64,22 +64,20 @@ import java.util.zip.GZIPInputStream;
 public class RunnableProcessorOnMemory<R extends Report> implements Runnable {
 
   private static final Logger LOGGER = Logger.getLogger(RunnableProcessorOnMemory.class);
-  
-  private CountDownLatch latch;
 
   private final String mccAccountId;
   private final AdWordsSession adWordsSession;
   private final Long accountId;
   private final ReportDefinition reportDefinition;
-
-  private ModifiedCsvToBean<R> csvToBean;
-  private MappingStrategy<R> mappingStrategy;
-  private ReportDefinitionDateRangeType dateRangeType;
-  private String dateStart;
-  private String dateEnd;
-  
+  private final ModifiedCsvToBean<R> csvToBean;
+  private final MappingStrategy<R> mappingStrategy;
+  private final ReportDefinitionDateRangeType dateRangeType;
+  private final String dateStart;
+  private final String dateEnd;
   private EntityPersister entityPersister;
-  private int reportRowsSetSize;
+  private final int reportRowsSetSize;
+
+  private CountDownLatch latch;
 
   private Exception error = null;
 
@@ -222,6 +220,10 @@ public class RunnableProcessorOnMemory<R extends Report> implements Runnable {
 
   public Exception getError() {
     return error;
+  }
+
+  public ReportDefinition getReportDefinition() {
+    return reportDefinition;
   }
 
   /**
