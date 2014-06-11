@@ -206,6 +206,7 @@ public class ReportProcessorOnMemory extends ReportProcessor {
 
       } catch (Exception e) {
         System.err.println("Ignoring account (Error when processing): " + accountId + " " + e.getMessage());
+        e.printStackTrace();
       }
     }
 

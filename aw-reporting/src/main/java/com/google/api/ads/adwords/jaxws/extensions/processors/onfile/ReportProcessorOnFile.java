@@ -105,6 +105,7 @@ public class ReportProcessorOnFile extends ReportProcessor {
       LOGGER.trace(".");
       try {
         
+        // We need to create a csvToBean and mappingStrategy for each thread
         ModifiedCsvToBean<R> csvToBean = new ModifiedCsvToBean<R>();
         MappingStrategy<R> mappingStrategy = new AnnotationBasedMappingStrategy<R>(reportBeanClass);
 
