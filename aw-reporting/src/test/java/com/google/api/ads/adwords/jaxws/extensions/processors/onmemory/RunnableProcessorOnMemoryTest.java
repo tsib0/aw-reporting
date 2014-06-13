@@ -14,6 +14,8 @@
 
 package com.google.api.ads.adwords.jaxws.extensions.processors.onmemory;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -46,6 +48,7 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.zip.GZIPOutputStream;
 
@@ -84,7 +87,7 @@ public class RunnableProcessorOnMemoryTest {
             .withOAuth2Credential( new GoogleCredential.Builder().build())
             .build();
 
-    runnableProcessorOnMemory = new RunnableProcessorOnMemory<ReportAccount>(456L, adWordsSession, null,
+    runnableProcessorOnMemory = new RunnableProcessorOnMemory<ReportAccount>(1232198123L, adWordsSession, null,
         csvToBean, mappingStrategy, ReportDefinitionDateRangeType.CUSTOM_DATE,
         "20140101", "20140131", "123", mockedEntitiesPersister, 5);
 
@@ -109,8 +112,14 @@ public class RunnableProcessorOnMemoryTest {
   @Test
   public void testRun() {
     runnableProcessorOnMemory.run();
+
     verify(runnableProcessorOnMemory, times(1)).run();
+
     verify(mockedEntitiesPersister, times(2)).persistReportEntities(
         reportEntitiesCaptor.capture());
+
+    assertTrue(reportEntitiesCaptor.getValue() instanceof ArrayList);
+    assertTrue(reportEntitiesCaptor.getValue().get(0) instanceof ReportAccount);
+    assertEquals(reportEntitiesCaptor.getValue().get(0).getAccountId(), new Long(1232198123));
   }
 }
