@@ -19,7 +19,7 @@ import java.io.IOException;
 import java.io.InputStream;
 
 /**
- * Writes HTML or PDF reports. Should be extended by any classes that
+ * Writes HTML, PDF or Drive Doc reports. Should be extended by any classes that
  * write report files.
  *
  * @author joeltoby@google.com (Joel Toby)
@@ -29,7 +29,7 @@ public interface ReportWriter {
   /**
    * Represents the type of report file to be written for a given report
    */
-  public enum ReportFileType { HTML, PDF };
+  public enum ReportFileType { HTML, PDF, DRIVE_DOC };
 
   /**
    * Writes the InputStream to to the file
