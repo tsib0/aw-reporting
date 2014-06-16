@@ -75,10 +75,6 @@ public abstract class ReportBase extends Report {
   @CsvField(value = "Company name", reportField = "PrimaryCompanyName")
   protected String primaryCompanyName;
 
-  @Column(name = "PRIMARYUSERLOGIN")
-  @CsvField(value = "Login email", reportField = "PrimaryUserLogin")
-  protected String primaryUserLogin;
-
   @Column(name = "CURRENCY_CODE", length = 6)
   @CsvField(value = "Currency", reportField = "AccountCurrencyCode")
   protected String currencyCode;
@@ -309,7 +305,10 @@ public abstract class ReportBase extends Report {
 
   public void setDay(String day) {
     try {
-      this.day = DateUtil.parseDateTime(day).toDate();
+      DateTime parseDateTime = DateUtil.parseDateTime(day);
+      if (parseDateTime != null) {
+        this.day = parseDateTime.toDate();
+      }
     } catch (IllegalArgumentException e) {
       this.day = null;
     }
@@ -333,7 +332,10 @@ public abstract class ReportBase extends Report {
 
   public void setMonth(String month) {
     try {
-      this.month = DateUtil.parseDateTime(month).toDate();
+      DateTime parseDateTime = DateUtil.parseDateTime(month);
+      if (parseDateTime != null) {
+        this.month = parseDateTime.toDate();
+      }
     } catch (IllegalArgumentException e) {
       this.month = null;
     }
@@ -421,14 +423,6 @@ public abstract class ReportBase extends Report {
 
   public void setPrimaryCompanyName(String primaryCompanyName) {
     this.primaryCompanyName = primaryCompanyName;
-  }
-
-  public String getPrimaryUserLogin() {
-    return primaryUserLogin;
-  }
-
-  public void setPrimaryUserLogin(String primaryUserLogin) {
-    this.primaryUserLogin = primaryUserLogin;
   }
 
   public String getCustomerDescriptiveName() {
@@ -715,8 +709,8 @@ public abstract class ReportBase extends Report {
   public int hashCode() {
     final int prime = 31;
     int result = super.hashCode();
-    result =
-        prime * result + ((accountDescriptiveName == null) ? 0 : accountDescriptiveName.hashCode());
+    result = prime * result
+        + ((accountDescriptiveName == null) ? 0 : accountDescriptiveName.hashCode());
     result = prime * result + ((accountTimeZoneId == null) ? 0 : accountTimeZoneId.hashCode());
     result = prime * result + ((adNetwork == null) ? 0 : adNetwork.hashCode());
     result = prime * result + ((adNetworkPartners == null) ? 0 : adNetworkPartners.hashCode());
@@ -725,8 +719,8 @@ public abstract class ReportBase extends Report {
     result = prime * result + ((avgPosition == null) ? 0 : avgPosition.hashCode());
     result = prime * result + ((clickType == null) ? 0 : clickType.hashCode());
     result = prime * result + ((clicks == null) ? 0 : clicks.hashCode());
-    result =
-        prime * result + ((conversionCategoryName == null) ? 0 : conversionCategoryName.hashCode());
+    result = prime * result
+        + ((conversionCategoryName == null) ? 0 : conversionCategoryName.hashCode());
     result = prime * result + ((conversionRate == null) ? 0 : conversionRate.hashCode());
     result = prime * result
         + ((conversionRateManyPerClick == null) ? 0 : conversionRateManyPerClick.hashCode());
@@ -750,16 +744,16 @@ public abstract class ReportBase extends Report {
     result = prime * result + ((month == null) ? 0 : month.hashCode());
     result = prime * result + ((monthOfYear == null) ? 0 : monthOfYear.hashCode());
     result = prime * result + ((primaryCompanyName == null) ? 0 : primaryCompanyName.hashCode());
-    result = prime * result + ((primaryUserLogin == null) ? 0 : primaryUserLogin.hashCode());
     result = prime * result + ((quarter == null) ? 0 : quarter.hashCode());
     result = prime * result + ((valuePerConv == null) ? 0 : valuePerConv.hashCode());
     result = prime * result
         + ((valuePerConvManyPerClick == null) ? 0 : valuePerConvManyPerClick.hashCode());
     result = prime * result + ((valuePerConversion == null) ? 0 : valuePerConversion.hashCode());
-    result = prime * result + ((valuePerConversionManyPerClick == null) ? 0
-        : valuePerConversionManyPerClick.hashCode());
-    result =
-        prime * result + ((viewThroughConversions == null) ? 0 : viewThroughConversions.hashCode());
+    result = prime
+        * result
+        + ((valuePerConversionManyPerClick == null) ? 0 : valuePerConversionManyPerClick.hashCode());
+    result = prime * result
+        + ((viewThroughConversions == null) ? 0 : viewThroughConversions.hashCode());
     result = prime * result + ((week == null) ? 0 : week.hashCode());
     result = prime * result + ((year == null) ? 0 : year.hashCode());
     return result;
@@ -767,282 +761,198 @@ public abstract class ReportBase extends Report {
 
   @Override
   public boolean equals(Object obj) {
-    if (this == obj) {
+    if (this == obj)
       return true;
-    }
-    if (!super.equals(obj)) {
+    if (!super.equals(obj))
       return false;
-    }
-    if (getClass() != obj.getClass()) {
+    if (getClass() != obj.getClass())
       return false;
-    }
     ReportBase other = (ReportBase) obj;
     if (accountDescriptiveName == null) {
-      if (other.accountDescriptiveName != null) {
+      if (other.accountDescriptiveName != null)
         return false;
-      }
-    } else if (!accountDescriptiveName.equals(other.accountDescriptiveName)) {
+    } else if (!accountDescriptiveName.equals(other.accountDescriptiveName))
       return false;
-    }
     if (accountTimeZoneId == null) {
-      if (other.accountTimeZoneId != null) {
+      if (other.accountTimeZoneId != null)
         return false;
-      }
-    } else if (!accountTimeZoneId.equals(other.accountTimeZoneId)) {
+    } else if (!accountTimeZoneId.equals(other.accountTimeZoneId))
       return false;
-    }
     if (adNetwork == null) {
-      if (other.adNetwork != null) {
+      if (other.adNetwork != null)
         return false;
-      }
-    } else if (!adNetwork.equals(other.adNetwork)) {
+    } else if (!adNetwork.equals(other.adNetwork))
       return false;
-    }
     if (adNetworkPartners == null) {
-      if (other.adNetworkPartners != null) {
+      if (other.adNetworkPartners != null)
         return false;
-      }
-    } else if (!adNetworkPartners.equals(other.adNetworkPartners)) {
+    } else if (!adNetworkPartners.equals(other.adNetworkPartners))
       return false;
-    }
     if (avgCpc == null) {
-      if (other.avgCpc != null) {
+      if (other.avgCpc != null)
         return false;
-      }
-    } else if (!avgCpc.equals(other.avgCpc)) {
+    } else if (!avgCpc.equals(other.avgCpc))
       return false;
-    }
     if (avgCpm == null) {
-      if (other.avgCpm != null) {
+      if (other.avgCpm != null)
         return false;
-      }
-    } else if (!avgCpm.equals(other.avgCpm)) {
+    } else if (!avgCpm.equals(other.avgCpm))
       return false;
-    }
     if (avgPosition == null) {
-      if (other.avgPosition != null) {
+      if (other.avgPosition != null)
         return false;
-      }
-    } else if (!avgPosition.equals(other.avgPosition)) {
+    } else if (!avgPosition.equals(other.avgPosition))
       return false;
-    }
     if (clickType == null) {
-      if (other.clickType != null) {
+      if (other.clickType != null)
         return false;
-      }
-    } else if (!clickType.equals(other.clickType)) {
+    } else if (!clickType.equals(other.clickType))
       return false;
-    }
     if (clicks == null) {
-      if (other.clicks != null) {
+      if (other.clicks != null)
         return false;
-      }
-    } else if (!clicks.equals(other.clicks)) {
+    } else if (!clicks.equals(other.clicks))
       return false;
-    }
     if (conversionCategoryName == null) {
-      if (other.conversionCategoryName != null) {
+      if (other.conversionCategoryName != null)
         return false;
-      }
-    } else if (!conversionCategoryName.equals(other.conversionCategoryName)) {
+    } else if (!conversionCategoryName.equals(other.conversionCategoryName))
       return false;
-    }
     if (conversionRate == null) {
-      if (other.conversionRate != null) {
+      if (other.conversionRate != null)
         return false;
-      }
-    } else if (!conversionRate.equals(other.conversionRate)) {
+    } else if (!conversionRate.equals(other.conversionRate))
       return false;
-    }
     if (conversionRateManyPerClick == null) {
-      if (other.conversionRateManyPerClick != null) {
+      if (other.conversionRateManyPerClick != null)
         return false;
-      }
-    } else if (!conversionRateManyPerClick.equals(other.conversionRateManyPerClick)) {
+    } else if (!conversionRateManyPerClick.equals(other.conversionRateManyPerClick))
       return false;
-    }
     if (conversionTypeName == null) {
-      if (other.conversionTypeName != null) {
+      if (other.conversionTypeName != null)
         return false;
-      }
-    } else if (!conversionTypeName.equals(other.conversionTypeName)) {
+    } else if (!conversionTypeName.equals(other.conversionTypeName))
       return false;
-    }
     if (conversionValue == null) {
-      if (other.conversionValue != null) {
+      if (other.conversionValue != null)
         return false;
-      }
-    } else if (!conversionValue.equals(other.conversionValue)) {
+    } else if (!conversionValue.equals(other.conversionValue))
       return false;
-    }
     if (conversions == null) {
-      if (other.conversions != null) {
+      if (other.conversions != null)
         return false;
-      }
-    } else if (!conversions.equals(other.conversions)) {
+    } else if (!conversions.equals(other.conversions))
       return false;
-    }
     if (conversionsManyPerClick == null) {
-      if (other.conversionsManyPerClick != null) {
+      if (other.conversionsManyPerClick != null)
         return false;
-      }
-    } else if (!conversionsManyPerClick.equals(other.conversionsManyPerClick)) {
+    } else if (!conversionsManyPerClick.equals(other.conversionsManyPerClick))
       return false;
-    }
     if (cost == null) {
-      if (other.cost != null) {
+      if (other.cost != null)
         return false;
-      }
-    } else if (!cost.equals(other.cost)) {
+    } else if (!cost.equals(other.cost))
       return false;
-    }
     if (costPerConversion == null) {
-      if (other.costPerConversion != null) {
+      if (other.costPerConversion != null)
         return false;
-      }
-    } else if (!costPerConversion.equals(other.costPerConversion)) {
+    } else if (!costPerConversion.equals(other.costPerConversion))
       return false;
-    }
     if (costPerConversionManyPerClick == null) {
-      if (other.costPerConversionManyPerClick != null) {
+      if (other.costPerConversionManyPerClick != null)
         return false;
-      }
-    } else if (!costPerConversionManyPerClick.equals(other.costPerConversionManyPerClick)) {
+    } else if (!costPerConversionManyPerClick.equals(other.costPerConversionManyPerClick))
       return false;
-    }
     if (ctr == null) {
-      if (other.ctr != null) {
+      if (other.ctr != null)
         return false;
-      }
-    } else if (!ctr.equals(other.ctr)) {
+    } else if (!ctr.equals(other.ctr))
       return false;
-    }
     if (currencyCode == null) {
-      if (other.currencyCode != null) {
+      if (other.currencyCode != null)
         return false;
-      }
-    } else if (!currencyCode.equals(other.currencyCode)) {
+    } else if (!currencyCode.equals(other.currencyCode))
       return false;
-    }
     if (customerDescriptiveName == null) {
-      if (other.customerDescriptiveName != null) {
+      if (other.customerDescriptiveName != null)
         return false;
-      }
-    } else if (!customerDescriptiveName.equals(other.customerDescriptiveName)) {
+    } else if (!customerDescriptiveName.equals(other.customerDescriptiveName))
       return false;
-    }
     if (day == null) {
-      if (other.day != null) {
+      if (other.day != null)
         return false;
-      }
-    } else if (!day.equals(other.day)) {
+    } else if (!day.equals(other.day))
       return false;
-    }
     if (dayOfWeek == null) {
-      if (other.dayOfWeek != null) {
+      if (other.dayOfWeek != null)
         return false;
-      }
-    } else if (!dayOfWeek.equals(other.dayOfWeek)) {
+    } else if (!dayOfWeek.equals(other.dayOfWeek))
       return false;
-    }
     if (device == null) {
-      if (other.device != null) {
+      if (other.device != null)
         return false;
-      }
-    } else if (!device.equals(other.device)) {
+    } else if (!device.equals(other.device))
       return false;
-    }
     if (impressions == null) {
-      if (other.impressions != null) {
+      if (other.impressions != null)
         return false;
-      }
-    } else if (!impressions.equals(other.impressions)) {
+    } else if (!impressions.equals(other.impressions))
       return false;
-    }
     if (month == null) {
-      if (other.month != null) {
+      if (other.month != null)
         return false;
-      }
-    } else if (!month.equals(other.month)) {
+    } else if (!month.equals(other.month))
       return false;
-    }
     if (monthOfYear == null) {
-      if (other.monthOfYear != null) {
+      if (other.monthOfYear != null)
         return false;
-      }
-    } else if (!monthOfYear.equals(other.monthOfYear)) {
+    } else if (!monthOfYear.equals(other.monthOfYear))
       return false;
-    }
     if (primaryCompanyName == null) {
-      if (other.primaryCompanyName != null) {
+      if (other.primaryCompanyName != null)
         return false;
-      }
-    } else if (!primaryCompanyName.equals(other.primaryCompanyName)) {
+    } else if (!primaryCompanyName.equals(other.primaryCompanyName))
       return false;
-    }
-    if (primaryUserLogin == null) {
-      if (other.primaryUserLogin != null) {
-        return false;
-      }
-    } else if (!primaryUserLogin.equals(other.primaryUserLogin)) {
-      return false;
-    }
     if (quarter == null) {
-      if (other.quarter != null) {
+      if (other.quarter != null)
         return false;
-      }
-    } else if (!quarter.equals(other.quarter)) {
+    } else if (!quarter.equals(other.quarter))
       return false;
-    }
     if (valuePerConv == null) {
-      if (other.valuePerConv != null) {
+      if (other.valuePerConv != null)
         return false;
-      }
-    } else if (!valuePerConv.equals(other.valuePerConv)) {
+    } else if (!valuePerConv.equals(other.valuePerConv))
       return false;
-    }
     if (valuePerConvManyPerClick == null) {
-      if (other.valuePerConvManyPerClick != null) {
+      if (other.valuePerConvManyPerClick != null)
         return false;
-      }
-    } else if (!valuePerConvManyPerClick.equals(other.valuePerConvManyPerClick)) {
+    } else if (!valuePerConvManyPerClick.equals(other.valuePerConvManyPerClick))
       return false;
-    }
     if (valuePerConversion == null) {
-      if (other.valuePerConversion != null) {
+      if (other.valuePerConversion != null)
         return false;
-      }
-    } else if (!valuePerConversion.equals(other.valuePerConversion)) {
+    } else if (!valuePerConversion.equals(other.valuePerConversion))
       return false;
-    }
     if (valuePerConversionManyPerClick == null) {
-      if (other.valuePerConversionManyPerClick != null) {
+      if (other.valuePerConversionManyPerClick != null)
         return false;
-      }
-    } else if (!valuePerConversionManyPerClick.equals(other.valuePerConversionManyPerClick)) {
+    } else if (!valuePerConversionManyPerClick.equals(other.valuePerConversionManyPerClick))
       return false;
-    }
     if (viewThroughConversions == null) {
-      if (other.viewThroughConversions != null) {
+      if (other.viewThroughConversions != null)
         return false;
-      }
-    } else if (!viewThroughConversions.equals(other.viewThroughConversions)) {
+    } else if (!viewThroughConversions.equals(other.viewThroughConversions))
       return false;
-    }
     if (week == null) {
-      if (other.week != null) {
+      if (other.week != null)
         return false;
-      }
-    } else if (!week.equals(other.week)) {
+    } else if (!week.equals(other.week))
       return false;
-    }
     if (year == null) {
-      if (other.year != null) {
+      if (other.year != null)
         return false;
-      }
-    } else if (!year.equals(other.year)) {
+    } else if (!year.equals(other.year))
       return false;
-    }
     return true;
   }
 }
