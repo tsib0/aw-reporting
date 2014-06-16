@@ -128,7 +128,6 @@ public class ReportKeywordDefinitionTest extends AbstractReportDefinitionTest<Re
         "AccountTimeZoneId",
         "CustomerDescriptiveName",
         "PrimaryCompanyName",
-        "PrimaryUserLogin",
         "AccountCurrencyCode",
         "Date",
         "DayOfWeek",
