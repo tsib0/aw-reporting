@@ -163,4 +163,15 @@ public class GoogleDriveService {
       return service.files().insert(accountFolder).execute();
     }
   }
+  
+  /**
+   * Gets a Google Drive file by ID or null if it does not exist.
+   * Currently used as a workaround for Drive bug (https://code.google.com/p/google-apps-script-issues/issues/detail?id=3713)
+   * @param mccAccountId
+   * @throws IOException
+   */
+  public synchronized File getFileById(String fileId) throws IOException {
+    File file = service.files().get(fileId).execute();
+    return file;
+  }
 }
