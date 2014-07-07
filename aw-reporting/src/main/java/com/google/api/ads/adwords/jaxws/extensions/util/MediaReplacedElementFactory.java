@@ -15,6 +15,7 @@
 package com.google.api.ads.adwords.jaxws.extensions.util;
 
 import com.lowagie.text.Image;
+import com.lowagie.text.pdf.codec.Base64;
 
 import org.apache.commons.io.IOUtils;
 import org.w3c.dom.Element;
@@ -28,8 +29,10 @@ import org.xhtmlrenderer.pdf.ITextImageElement;
 import org.xhtmlrenderer.render.BlockBox;
 import org.xhtmlrenderer.simple.extend.FormSubmissionListener;
 
+import java.io.ByteArrayInputStream;
 import java.io.FileInputStream;
 import java.io.InputStream;
+import java.net.URL;
 
 /**
  * Replaced element in order to replace elements like
@@ -68,9 +71,25 @@ public class MediaReplacedElementFactory implements ReplacedElementFactory {
                 + "attribute indicating the media file.");
       }
       InputStream input = null;
+      
+      
+      String dataSrc = element.getAttribute("data-src");
+      
       try {
-        input =
-            new FileInputStream(element.getAttribute("data-src"));
+
+        if (dataSrc.startsWith("http")) {
+          input = new URL(dataSrc).openStream();
+        } else if (dataSrc.startsWith("data:image") && dataSrc.contains("base64")) {
+
+          byte[] image = Base64.decode(dataSrc.split(",")[1]);
+          input = new ByteArrayInputStream(image);
+
+        } else {
+          input = new FileInputStream(dataSrc);
+        }
+
+        
+      
         final byte[] bytes = IOUtils.toByteArray(input);
         final Image image = Image.getInstance(bytes);
         final FSImage fsImage = new ITextFSImage(image);
