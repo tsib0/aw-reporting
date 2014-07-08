@@ -70,11 +70,9 @@ public class MediaReplacedElementFactory implements ReplacedElementFactory {
             "An element with class `media` is missing a `data-src` "
                 + "attribute indicating the media file.");
       }
+
       InputStream input = null;
-      
-      
       String dataSrc = element.getAttribute("data-src");
-      
       try {
 
         if (dataSrc.startsWith("http")) {
@@ -88,8 +86,6 @@ public class MediaReplacedElementFactory implements ReplacedElementFactory {
           input = new FileInputStream(dataSrc);
         }
 
-        
-      
         final byte[] bytes = IOUtils.toByteArray(input);
         final Image image = Image.getInstance(bytes);
         final FSImage fsImage = new ITextFSImage(image);
