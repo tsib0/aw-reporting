@@ -62,9 +62,10 @@ public class MediaReplacedElementFactory implements ReplacedElementFactory {
     }
     String nodeName = element.getNodeName();
     String className = element.getAttribute("class");
+
     // Replace any <div class="media" data-src="image.png" /> with the
     // binary data of `image.png` into the PDF.
-    if ("div".equals(nodeName) && "media".equals(className)) {
+    if ("div".equals(nodeName) && className.startsWith("media")) {
       if (!element.hasAttribute("data-src")) {
         throw new RuntimeException(
             "An element with class `media` is missing a `data-src` "
