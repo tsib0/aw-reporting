@@ -151,6 +151,11 @@ public abstract class ReportExporter {
       if (properties.getProperty("aw.report.exporter.writePdf") != null) {
         writePdf = Boolean.valueOf(properties.getProperty("aw.report.exporter.writePdf"));
       }
+      
+      Boolean writeDriveDoc = false;
+      if (properties.getProperty("aw.report.exporter.writeDriveDoc") != null) {
+        writeDriveDoc = Boolean.valueOf(properties.getProperty("aw.report.exporter.writeDriveDoc"));
+      }
 
       // Get the Fonts for the PDF from the properties file
       String propertyReportFonts = properties.getProperty("aw.report.exporter.reportfonts");
@@ -166,13 +171,21 @@ public abstract class ReportExporter {
 
       if (propertyReportWriterType != null && 
           propertyReportWriterType.equals(ReportWriterType.GoogleDriveWriter.name())) {
+        
+        // One folder per account
+        Boolean perAccountFolder = false;
+        if (properties.getProperty("aw.report.exporter.reportwritertype.drive.peraccountfolder") != null) {
+          perAccountFolder = Boolean.valueOf(properties.getProperty("aw.report.exporter.writeDriveDoc"));
+        }
 
         // Writing HTML to GoogleDrive
         if (writeHtml) {
           LOGGER.debug("Writing (to GoogleDrive) HTML for account: " + accountId);
           GoogleDriveReportWriter gdrwHtml = new GoogleDriveReportWriter.GoogleDriveReportWriterBuilder(
               accountId, dateStart, dateEnd, mccAccountId, credential, ReportFileType.HTML,
-              templateName).build();
+              templateName)
+            .withFolderPerAccount(perAccountFolder)
+            .build();
           gdrwHtml.write(mrwHtml.getAsSource());
         }
 
@@ -181,8 +194,21 @@ public abstract class ReportExporter {
           LOGGER.debug("Writing (to GoogleDrive) PDF for account: " + accountId);
           GoogleDriveReportWriter gdrwPdf = new GoogleDriveReportWriter.GoogleDriveReportWriterBuilder(
               accountId, dateStart, dateEnd, mccAccountId, credential, ReportFileType.PDF,
-              templateName).build();
+              templateName)
+            .withFolderPerAccount(perAccountFolder)
+            .build();
           HTMLExporter.exportHtmlToPdf(mrwHtml.getAsSource(), gdrwPdf, fontPaths);
+        }
+        
+        // Writing Drive Doc to GoogleDrive
+        if (writeDriveDoc) {
+          LOGGER.debug("Writing GoogleDrive Doc for account: " + accountId);
+          GoogleDriveReportWriter gdrwDriveDoc = new GoogleDriveReportWriter.GoogleDriveReportWriterBuilder(
+              accountId, dateStart, dateEnd, mccAccountId, credential, ReportFileType.DRIVE_DOC,
+              templateName)
+            .withFolderPerAccount(perAccountFolder)
+            .build();
+          gdrwDriveDoc.write(mrwHtml.getAsSource());
         }
 
       } else {
