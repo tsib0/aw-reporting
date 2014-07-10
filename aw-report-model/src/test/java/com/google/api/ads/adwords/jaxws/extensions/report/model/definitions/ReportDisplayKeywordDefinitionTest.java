@@ -119,7 +119,6 @@ public class ReportDisplayKeywordDefinitionTest extends AbstractReportDefinition
         "AccountTimeZoneId",
         "CustomerDescriptiveName",
         "PrimaryCompanyName",
-        "PrimaryUserLogin",
         "AccountCurrencyCode",
         "Date",
         "DayOfWeek",

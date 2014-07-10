@@ -111,7 +111,7 @@ public class ReportCampaignLocationTargetDefinitionTest extends
         // Report
         "ExternalCustomerId",
         // ReportBase
-        "AccountDescriptiveName", "AccountTimeZoneId", "CustomerDescriptiveName", "PrimaryCompanyName", "PrimaryUserLogin", "AccountCurrencyCode", "Date", "DayOfWeek", "Week", "Month", "MonthOfYear", "Quarter", "Year", "Cost", "Clicks", "Impressions", "Ctr", "AverageCpm", "AverageCpc", "AveragePosition", "Device", "ClickType", "AdNetworkType1", "AdNetworkType2", "ConversionsManyPerClick", "ConversionRateManyPerClick", "CostPerConversionManyPerClick", "ValuePerConvManyPerClick", "ValuePerConversionManyPerClick", "Conversions", "ConversionRate", "CostPerConversion", "ValuePerConv", "ValuePerConversion", "ConversionCategoryName", "ConversionTypeName", "ConversionValue", "ViewThroughConversions",
+        "AccountDescriptiveName", "AccountTimeZoneId", "CustomerDescriptiveName", "PrimaryCompanyName", "AccountCurrencyCode", "Date", "DayOfWeek", "Week", "Month", "MonthOfYear", "Quarter", "Year", "Cost", "Clicks", "Impressions", "Ctr", "AverageCpm", "AverageCpc", "AveragePosition", "Device", "ClickType", "AdNetworkType1", "AdNetworkType2", "ConversionsManyPerClick", "ConversionRateManyPerClick", "CostPerConversionManyPerClick", "ValuePerConvManyPerClick", "ValuePerConversionManyPerClick", "Conversions", "ConversionRate", "CostPerConversion", "ValuePerConv", "ValuePerConversion", "ConversionCategoryName", "ConversionTypeName", "ConversionValue", "ViewThroughConversions",
         // Specific
         "Id", "BidModifier", "CampaignId", "CampaignName", "CampaignStatus", "IsNegative"};
   }

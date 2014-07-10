@@ -53,7 +53,7 @@ public class RunnableDownloader implements Runnable {
 
   private static final Logger LOGGER = Logger.getLogger(RunnableDownloader.class);
   
-  private final AdWordsSessionBuilderSynchronizer sessionBuilder;
+  private final AdWordsSession adWordsSession;
 
   private final int retriesCount;
   private final int backoffInterval;
@@ -83,7 +83,7 @@ public class RunnableDownloader implements Runnable {
       int bufferSize,
       Long cid,
       ReportDefinition reportDefinition,
-      AdWordsSessionBuilderSynchronizer sessionBuilder,
+      AdWordsSession adWordsSession,
       Collection<File> results) {
     super();
     this.retriesCount = retriesCount;
@@ -91,7 +91,8 @@ public class RunnableDownloader implements Runnable {
     this.bufferSize = bufferSize;
     this.cid = cid;
     this.reportDefinition = reportDefinition;
-    this.sessionBuilder = sessionBuilder;
+    this.adWordsSession = adWordsSession;
+    this.adWordsSession.setClientCustomerId(String.valueOf(cid));
     this.results = results;
   }
 
@@ -179,9 +180,8 @@ public class RunnableDownloader implements Runnable {
       FileNotFoundException {
 
     File reportFile = null;
-    AdWordsSession session = this.sessionBuilder.getAdWordsSession(this.cid);
 
-    ReportDownloader reportDownloader = new ReportDownloader(session);
+    ReportDownloader reportDownloader = new ReportDownloader(adWordsSession);
     ReportDownloadResponse reportDownloadResponse =
         reportDownloader.downloadReport(this.reportDefinition);
 
