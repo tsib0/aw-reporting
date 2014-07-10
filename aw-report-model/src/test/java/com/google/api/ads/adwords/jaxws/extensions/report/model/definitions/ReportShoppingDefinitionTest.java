@@ -113,7 +113,6 @@ public class ReportShoppingDefinitionTest extends AbstractReportDefinitionTest<R
         "AccountTimeZoneId",
         "CustomerDescriptiveName",
         "PrimaryCompanyName",
-        "PrimaryUserLogin",
         "AccountCurrencyCode",
         "Date",
         "DayOfWeek",

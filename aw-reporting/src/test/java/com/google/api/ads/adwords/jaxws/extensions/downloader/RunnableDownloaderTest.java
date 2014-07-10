@@ -29,6 +29,7 @@ import com.google.api.ads.adwords.lib.utils.ReportDownloadResponseException;
 import com.google.api.ads.adwords.lib.utils.ReportException;
 import com.google.api.ads.adwords.lib.utils.v201402.DetailedReportDownloadResponseException;
 import com.google.api.ads.common.lib.exception.ValidationException;
+import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
 import com.google.common.collect.Lists;
 
 import org.junit.Before;
@@ -52,16 +53,15 @@ public class RunnableDownloaderTest {
   private RunnableDownloader mockedRunnableDownloader;
 
   @Before
-  public void setUp() {
+  public void setUp() throws ValidationException {
 
-    AdWordsSession.Builder builder =
+    AdWordsSession adWordsSession =
         new AdWordsSession.Builder().withEndpoint("http://www.google.com")
             .withDeveloperToken("DeveloperToken")
             .withClientCustomerId("123")
-            .withUserAgent("UserAgent");
-
-    AdWordsSessionBuilderSynchronizer sessionBuilder =
-        new AdWordsSessionBuilderSynchronizer(builder);
+            .withUserAgent("UserAgent")
+            .withOAuth2Credential( new GoogleCredential.Builder().build())
+            .build();
 
     ReportDefinition reportDefinition = new ReportDefinition();
     reportDefinition.setReportName("");
@@ -74,7 +74,7 @@ public class RunnableDownloaderTest {
     Collection<File> results = Lists.newArrayList();
 
     mockedRunnableDownloader =
-        new RunnableDownloader(5, 0, 10, 1L, reportDefinition, sessionBuilder, results);
+        new RunnableDownloader(5, 0, 10, 1L, reportDefinition, adWordsSession, results);
 
     MockitoAnnotations.initMocks(this);
   }
