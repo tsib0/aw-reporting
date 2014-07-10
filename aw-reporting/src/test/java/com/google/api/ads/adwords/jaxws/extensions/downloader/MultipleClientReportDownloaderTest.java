@@ -18,6 +18,9 @@ import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
+import com.google.api.ads.adwords.lib.client.AdWordsSession;
+import com.google.api.ads.common.lib.exception.ValidationException;
+import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
 import com.google.common.collect.ImmutableSet;
 
 import org.junit.Before;
@@ -50,10 +53,11 @@ public class MultipleClientReportDownloaderTest {
 
   /**
    * Tests the downloadReports(...).
+   * @throws ValidationException 
    *
    */
   @Test
-  public void testDownloadReports() throws InterruptedException {
+  public void testDownloadReports() throws InterruptedException, ValidationException {
     Mockito.doAnswer(new Answer<Void>() {
       @Override
       public Void answer(InvocationOnMock invocation) throws Throwable {
@@ -63,8 +67,17 @@ public class MultipleClientReportDownloaderTest {
     }).when(mockedMultipleClientReportDownloader).executeRunnableDownloader(
         Mockito.<RunnableDownloader>anyObject(), Mockito.<CountDownLatch>anyObject());
 
+    AdWordsSession.Builder builder =
+        new AdWordsSession.Builder().withEndpoint("http://www.google.com")
+            .withDeveloperToken("DeveloperToken")
+            .withClientCustomerId("123")
+            .withUserAgent("UserAgent")
+            .withOAuth2Credential( new GoogleCredential.Builder().build());
+    
+    AdWordsSessionBuilderSynchronizer adWordsSessionBuilderSynchronizer = new AdWordsSessionBuilderSynchronizer(builder);
+    
     Set<Long> cids = ImmutableSet.of(1L, 2L, 3L, 4L, 5L);
-    mockedMultipleClientReportDownloader.downloadReports(null, null, cids);
+    mockedMultipleClientReportDownloader.downloadReports(adWordsSessionBuilderSynchronizer, null, cids);
 
     ArgumentCaptor<CountDownLatch> argument = ArgumentCaptor.forClass(CountDownLatch.class);
 
