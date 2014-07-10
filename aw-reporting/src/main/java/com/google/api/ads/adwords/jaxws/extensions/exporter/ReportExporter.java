@@ -223,7 +223,7 @@ public abstract class ReportExporter {
 
     for (ReportDefinitionReportType reportType : reports) {
       if (properties.containsKey(reportType.name())) {
-        // Adding each report type rows from DB to the accounts montlyeports list.
+        // Adding each report type rows from DB to the account's monthly reports list.
 
         List<Report> monthlyReports = Lists.newArrayList(persister.listMonthReports(
             csvReportEntitiesMapping.getReportBeanClass(reportType), accountId,
