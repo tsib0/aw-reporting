@@ -24,8 +24,10 @@ import com.google.api.ads.adwords.jaxws.extensions.report.model.entities.ReportC
 import com.google.api.ads.adwords.jaxws.extensions.report.model.entities.ReportCampaignNegativeKeyword;
 import com.google.api.ads.adwords.jaxws.extensions.report.model.entities.ReportCriteriaPerformance;
 import com.google.api.ads.adwords.jaxws.extensions.report.model.entities.ReportDestinationUrl;
+import com.google.api.ads.adwords.jaxws.extensions.report.model.entities.ReportDisplayKeyword;
 import com.google.api.ads.adwords.jaxws.extensions.report.model.entities.ReportKeyword;
 import com.google.api.ads.adwords.jaxws.extensions.report.model.entities.ReportPlaceholderFeedItem;
+import com.google.api.ads.adwords.jaxws.extensions.report.model.entities.ReportShopping;
 import com.google.api.ads.adwords.jaxws.extensions.report.model.entities.ReportUrl;
 import com.google.api.ads.adwords.lib.jaxb.v201402.ReportDefinitionReportType;
 
@@ -92,6 +94,11 @@ public class CsvReportEntitiesMappingTest {
     this.assertBeanClassIsCorrectForType(ReportUrl.class,
         ReportDefinitionReportType.URL_PERFORMANCE_REPORT);
 
+    this.assertBeanClassIsCorrectForType(ReportDisplayKeyword.class,
+        ReportDefinitionReportType.DISPLAY_KEYWORD_PERFORMANCE_REPORT);
+    
+    this.assertBeanClassIsCorrectForType(ReportShopping.class,
+        ReportDefinitionReportType.SHOPPING_PERFORMANCE_REPORT);
   }
 
   /**
@@ -116,6 +123,8 @@ public class CsvReportEntitiesMappingTest {
     Assert.assertTrue(reports.contains(ReportDefinitionReportType.DESTINATION_URL_REPORT));
     Assert.assertTrue(reports.contains(ReportDefinitionReportType.PLACEHOLDER_FEED_ITEM_REPORT));
     Assert.assertTrue(reports.contains(ReportDefinitionReportType.URL_PERFORMANCE_REPORT));
+    Assert.assertTrue(reports.contains(ReportDefinitionReportType.DISPLAY_KEYWORD_PERFORMANCE_REPORT));
+    Assert.assertTrue(reports.contains(ReportDefinitionReportType.SHOPPING_PERFORMANCE_REPORT));
   }
 
   /**
