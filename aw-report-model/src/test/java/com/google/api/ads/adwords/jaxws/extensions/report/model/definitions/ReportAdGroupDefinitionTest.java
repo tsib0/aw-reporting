@@ -112,7 +112,6 @@ public class ReportAdGroupDefinitionTest extends AbstractReportDefinitionTest<Re
         "AccountTimeZoneId",
         "CustomerDescriptiveName",
         "PrimaryCompanyName",
-        "PrimaryUserLogin",
         "AccountCurrencyCode",
         "Date",
         "DayOfWeek",
