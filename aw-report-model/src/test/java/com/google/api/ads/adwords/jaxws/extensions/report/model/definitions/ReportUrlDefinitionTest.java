@@ -114,7 +114,6 @@ public class ReportUrlDefinitionTest extends AbstractReportDefinitionTest<Report
         "AccountTimeZoneId",
         "CustomerDescriptiveName",
         "PrimaryCompanyName",
-        "PrimaryUserLogin",
         "AccountCurrencyCode",
         "Date",
         "DayOfWeek",
