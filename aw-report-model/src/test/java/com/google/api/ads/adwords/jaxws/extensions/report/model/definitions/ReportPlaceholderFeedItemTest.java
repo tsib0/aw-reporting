@@ -152,7 +152,8 @@ AbstractReportDefinitionTest<ReportPlaceholderFeedItem> {
         "AdId",
         "FeedId",
         "FeedItemId",
-        "PlaceholderType"
+        "PlaceholderType",
+        "IsSelfAction"
         };
   }
 }
