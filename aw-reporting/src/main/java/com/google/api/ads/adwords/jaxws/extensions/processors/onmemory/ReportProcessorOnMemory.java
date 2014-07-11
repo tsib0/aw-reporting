@@ -33,6 +33,7 @@ import org.springframework.stereotype.Component;
 
 import au.com.bytecode.opencsv.bean.MappingStrategy;
 
+import java.util.List;
 import java.util.Properties;
 import java.util.Set;
 import java.util.concurrent.CountDownLatch;
@@ -104,7 +105,8 @@ public class ReportProcessorOnMemory extends ReportProcessor {
   public void generateReportsForMCC(
       String userId, String mccAccountId,
       ReportDefinitionDateRangeType dateRangeType, String dateStart,
-      String dateEnd, Set<Long> accountIdsSet, Properties properties)
+      String dateEnd, Set<Long> accountIdsSet, Properties properties,
+      ReportDefinitionReportType onDemandReportType, List<String> reportFieldsToInclude)
           throws Exception {
 
     LOGGER.info("*** Retrieving account IDs ***");
