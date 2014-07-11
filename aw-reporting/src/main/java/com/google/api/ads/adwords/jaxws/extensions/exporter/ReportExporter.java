@@ -232,26 +232,53 @@ public abstract class ReportExporter {
         if (sumAdExtensions && reportType.name() == "PLACEHOLDER_FEED_ITEM_REPORT") {
           Map<String, NameImprClicks> adExtensionsMap = new HashMap<String, NameImprClicks>();
           int sitelinks = 0;
+          long totalClicks = 0;
+          long totalImpressions = 0;
           for (Report report : monthlyReports) {
-            String clickType = ((ReportPlaceholderFeedItem) report).getClickType();
+            int placeholderType = ((ReportPlaceholderFeedItem) report).getFeedPlaceholderType();
+            String clickType = "Headline";
+            switch (placeholderType) {
+            case 1:
+              clickType = "Sitelink";
+              break;
+            case 2:
+              clickType = "Call";
+              break;
+            case 3:
+              clickType = "App";
+              break;
+            case 7:
+              clickType = "Location";
+              break;
+            case 8:
+              clickType = "Review";
+              break;
+            }
             Long impressions = ((ReportPlaceholderFeedItem) report).getImpressions();
             Long clicks = ((ReportPlaceholderFeedItem) report).getClicks();
+            boolean isSelfAction = ((ReportPlaceholderFeedItem) report).isSelfAction();
             if (!clickType.equals("Headline")) {
               if (clickType.equals("Sitelink")) {
                 sitelinks++;
               }
+              if(isSelfAction) {
               if (adExtensionsMap.containsKey(clickType)) {
-                NameImprClicks oldValues = adExtensionsMap.get(clickType);
-                oldValues.impressions += impressions;
-                oldValues.clicks += clicks;
-                adExtensionsMap.put(clickType, oldValues);
+                  NameImprClicks oldValues = adExtensionsMap.get(clickType);
+                  oldValues.impressions += impressions;
+                  oldValues.clicks += clicks;
+                  totalClicks += clicks;
+                  totalImpressions += impressions;
+                  adExtensionsMap.put(clickType, oldValues);
               } else {
                 NameImprClicks values = new NameImprClicks(); 
                 values.impressions = impressions;
                 values.clicks = clicks;
+                totalClicks += clicks;
+                totalImpressions += impressions;
                 adExtensionsMap.put(clickType, values);
               }
             }
+          }
           }
 
           List<NameImprClicks> adExtensions = new ArrayList<NameImprClicks>();
@@ -265,6 +292,11 @@ public abstract class ReportExporter {
             nic.impressions = entry.getValue().impressions;
             adExtensions.add(nic);
           }
+          NameImprClicks nic = new NameImprClicks();
+          nic.clickType = "Total";
+          nic.clicks = totalClicks;
+          nic.impressions = totalImpressions;
+          adExtensions.add(nic);
           reportDataMap.put("ADEXTENSIONS", adExtensions);
         }
         reportDataMap.put(reportType.name(), monthlyReports);
