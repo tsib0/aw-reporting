@@ -72,7 +72,6 @@ extends AbstractReportDefinitionTest<ReportDestinationUrl> {
     Assert.assertEquals("false" , row.getIsNegative());
     Assert.assertEquals("September" , row.getMonthOfYear());
     Assert.assertEquals("", row.getPrimaryCompanyName());
-    Assert.assertEquals("", row.getPrimaryUserLogin());
     Assert.assertEquals("2013-07-01", row.getQuarter());
 
   }
@@ -110,7 +109,6 @@ extends AbstractReportDefinitionTest<ReportDestinationUrl> {
     Assert.assertEquals("false" , row.getIsNegative());
     Assert.assertEquals("September" , row.getMonthOfYear());
     Assert.assertEquals("", row.getPrimaryCompanyName());
-    Assert.assertEquals("", row.getPrimaryUserLogin());
     Assert.assertEquals("2013-07-01", row.getQuarter());
 
     Assert.assertEquals(true, true);
@@ -140,7 +138,6 @@ extends AbstractReportDefinitionTest<ReportDestinationUrl> {
         "AccountTimeZoneId",
         "CustomerDescriptiveName",
         "PrimaryCompanyName",
-        "PrimaryUserLogin",
         "AccountCurrencyCode",
         "Date",
         "DayOfWeek",

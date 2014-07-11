@@ -68,7 +68,7 @@ public class RunnableKratuTest {
 
     storageHelper = new StorageHelper();
 
-    mockedRunnableKratu = new RunnableKratu(456L, storageHelper, dateStart, dateEnd);
+    mockedRunnableKratu = new RunnableKratu(456L, accountList, storageHelper, dateStart, dateEnd);
 
     MockitoAnnotations.initMocks(this);
 

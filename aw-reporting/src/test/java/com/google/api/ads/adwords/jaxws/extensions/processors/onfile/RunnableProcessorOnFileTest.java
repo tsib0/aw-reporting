@@ -14,6 +14,8 @@
 
 package com.google.api.ads.adwords.jaxws.extensions.processors.onfile;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
@@ -41,6 +43,7 @@ import au.com.bytecode.opencsv.bean.MappingStrategy;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -87,9 +90,15 @@ public class RunnableProcessorOnFileTest {
   @Test
   public void testRun() {
     runnableProcessorOnFile.run();
+    
     verify(runnableProcessorOnFile, times(1)).run();
+    
     verify(mockedEntitiesPersister, times(2)).persistReportEntities(
         reportEntitiesCaptor.capture());
     newFile.delete();
+    
+    assertTrue(reportEntitiesCaptor.getValue() instanceof ArrayList);
+    assertTrue(reportEntitiesCaptor.getValue().get(0) instanceof ReportAccount);
+    assertEquals(reportEntitiesCaptor.getValue().get(0).getAccountId(), new Long(1232198123));
   }
 }
