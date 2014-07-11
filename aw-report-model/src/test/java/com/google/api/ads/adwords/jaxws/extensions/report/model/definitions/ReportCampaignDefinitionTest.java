@@ -47,7 +47,7 @@ public class ReportCampaignDefinitionTest extends AbstractReportDefinitionTest<R
   @Override
   protected void testFirstEntry(ReportCampaign first) {
 
-    Assert.assertEquals(1252422563L, first.getAccountId().longValue());
+    Assert.assertEquals(1232422123L, first.getAccountId().longValue());
     Assert.assertEquals("2013-05-01", first.getDay());
     Assert.assertEquals(1.11, first.getCostBigDecimal().doubleValue());
     Assert.assertEquals(5L, first.getClicks().longValue());
@@ -73,7 +73,7 @@ public class ReportCampaignDefinitionTest extends AbstractReportDefinitionTest<R
   @Override
   protected void testLastEntry(ReportCampaign last) {
 
-    Assert.assertEquals(1252422563L, last.getAccountId().longValue());
+    Assert.assertEquals(1232422123L, last.getAccountId().longValue());
     Assert.assertEquals("2013-05-10", last.getDay());
     Assert.assertEquals(0.88, last.getCostBigDecimal().doubleValue());
     Assert.assertEquals(6L, last.getClicks().longValue());
@@ -116,7 +116,6 @@ public class ReportCampaignDefinitionTest extends AbstractReportDefinitionTest<R
         "AccountTimeZoneId",
         "CustomerDescriptiveName",
         "PrimaryCompanyName",
-        "PrimaryUserLogin",
         "AccountCurrencyCode",
         "Date",
         "DayOfWeek",

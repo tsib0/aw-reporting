@@ -46,7 +46,7 @@ public class ReportAdGroupDefinitionTest extends AbstractReportDefinitionTest<Re
   @Override
   protected void testFirstEntry(ReportAdGroup first) {
 
-    Assert.assertEquals(2450945640L, first.getAccountId().longValue());
+    Assert.assertEquals(1230945123L, first.getAccountId().longValue());
     Assert.assertEquals("2013-05-07", first.getDay());
     Assert.assertEquals(2.72, first.getCostBigDecimal().doubleValue());
     Assert.assertEquals(6L, first.getClicks().longValue());
@@ -71,7 +71,7 @@ public class ReportAdGroupDefinitionTest extends AbstractReportDefinitionTest<Re
   @Override
   protected void testLastEntry(ReportAdGroup last) {
 
-    Assert.assertEquals(2450945640L, last.getAccountId().longValue());
+    Assert.assertEquals(1230945123L, last.getAccountId().longValue());
     Assert.assertEquals("2013-05-10", last.getDay());
     Assert.assertEquals(0.60, last.getCostBigDecimal().doubleValue());
     Assert.assertEquals(1L, last.getClicks().longValue());
@@ -112,7 +112,6 @@ public class ReportAdGroupDefinitionTest extends AbstractReportDefinitionTest<Re
         "AccountTimeZoneId",
         "CustomerDescriptiveName",
         "PrimaryCompanyName",
-        "PrimaryUserLogin",
         "AccountCurrencyCode",
         "Date",
         "DayOfWeek",
