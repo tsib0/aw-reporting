@@ -156,7 +156,9 @@ public class ReportProcessorOnFileTest {
         "20130101",
         "20130131",
         CIDS,
-        properties);
+        properties,
+        null,
+        null);
 
     verify(mockedMultipleClientReportDownloader, times(REPORT_TYPES_SIZE)).downloadReports(
         Mockito.<AdWordsSessionBuilderSynchronizer>anyObject(), Mockito.<ReportDefinition>anyObject(),
