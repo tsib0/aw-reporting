@@ -86,10 +86,13 @@ public class KratuCompute {
     }
 
     for (Kratu dailyKratu : dailyKratus) {
+      // General
       summarizedKratu.addSpend(dailyKratu.getSpend());
       summarizedKratu.setSpend(summarizedKratu.getSpend().setScale(SCALE, ROUNDING));
-
+      summarizedKratu.addSumBudget(dailyKratu.getSumBudget());
       summarizedKratu.addConversions(dailyKratu.getConversions());
+      
+      // Search Info
       summarizedKratu.addTotalClicksSearch(dailyKratu.getTotalClicksSearch());
       summarizedKratu.addImpressionsSearch(dailyKratu.getImpressionsSearch());      
 
@@ -98,10 +101,11 @@ public class KratuCompute {
       summarizedKratu.addLostImpressionsDueToBidAdRankSearch(dailyKratu.getLostImpressionsDueToBidAdRankSearch());
 
       summarizedKratu.addCtrSearch(dailyKratu.getCtrSearch().divide(daysInRange, SCALE, ROUNDING));
-      summarizedKratu.addAverageCpcSearch(dailyKratu.getCtrSearch().divide(daysInRange, SCALE, ROUNDING));
+      summarizedKratu.addAverageCpcSearch(dailyKratu.getAverageCpcSearch().divide(daysInRange, SCALE, ROUNDING));
       summarizedKratu.addAverageCpmSearch(dailyKratu.getAverageCpmSearch().divide(daysInRange, SCALE, ROUNDING));
       summarizedKratu.addAveragePositionSearch(dailyKratu.getAveragePositionSearch().divide(daysInRange, SCALE, ROUNDING));
 
+      // Display Info
       summarizedKratu.addTotalClicksDisplay(dailyKratu.getTotalClicksDisplay());
       summarizedKratu.addImpressionsDisplay(dailyKratu.getImpressionsDisplay());
 
@@ -114,6 +118,7 @@ public class KratuCompute {
       summarizedKratu.addAverageCpmDisplay(dailyKratu.getAverageCpmDisplay().divide(daysInRange, SCALE, ROUNDING));
       summarizedKratu.addAveragePositionDisplay(dailyKratu.getAveragePositionDisplay().divide(daysInRange, SCALE, ROUNDING));
 
+      // Structural Info
       summarizedKratu.addNumberOfActiveCampaigns(dailyKratu.getNumberOfActiveCampaigns().divide(daysInRange, SCALE, ROUNDING));
       summarizedKratu.addNumberOfActiveAdGroups(dailyKratu.getNumberOfActiveAdGroups().divide(daysInRange, SCALE, ROUNDING));
       summarizedKratu.addNumberOfActiveAds(dailyKratu.getNumberOfActiveAds().divide(daysInRange, SCALE, ROUNDING));
@@ -121,10 +126,10 @@ public class KratuCompute {
 
       summarizedKratu.addNumberOfActiveBroadMatchingKeywords(dailyKratu.getNumberOfActiveBroadMatchingKeywords().divide(daysInRange, SCALE, ROUNDING));
       summarizedKratu.addNumberOfActivePhraseMatchingKeywords(dailyKratu.getNumberOfActivePhraseMatchingKeywords().divide(daysInRange, SCALE, ROUNDING));
-      summarizedKratu.addNumberOfActiveExactMatchingKeywords(dailyKratu.getNumberOfActivePhraseMatchingKeywords().divide(daysInRange, SCALE, ROUNDING));
+      summarizedKratu.addNumberOfActiveExactMatchingKeywords(dailyKratu.getNumberOfActiveExactMatchingKeywords().divide(daysInRange, SCALE, ROUNDING));
 
       summarizedKratu.addNumberOfNegativeActiveKeywords(dailyKratu.getNumberOfNegativeActiveKeywords().divide(daysInRange, SCALE, ROUNDING));
-      summarizedKratu.addNumberOfCampaignNegativeActiveKeywords(dailyKratu.getNumberOfNegativeActiveKeywords().divide(daysInRange, SCALE, ROUNDING));
+      summarizedKratu.addNumberOfCampaignNegativeActiveKeywords(dailyKratu.getNumberOfCampaignNegativeActiveKeywords().divide(daysInRange, SCALE, ROUNDING));
       summarizedKratu.addNumberOfAdGroupNegativeActiveKeywords(dailyKratu.getNumberOfAdGroupNegativeActiveKeywords().divide(daysInRange, SCALE, ROUNDING));
       summarizedKratu.addNumberOfActiveGoodQualityScoreKeywords(dailyKratu.getNumberOfActiveGoodQualityScoreKeywords().divide(daysInRange, SCALE, ROUNDING));
       summarizedKratu.addNumberOfActiveAverageQualityScoreKeywords(dailyKratu.getNumberOfActiveAverageQualityScoreKeywords().divide(daysInRange, SCALE, ROUNDING));
@@ -141,7 +146,6 @@ public class KratuCompute {
       summarizedKratu.addWeightedAverageKeywordPosition(dailyKratu.getWeightedAverageKeywordPosition().divide(daysInRange, SCALE, ROUNDING));
       summarizedKratu.addWeightedAverageQualityScore(dailyKratu.getWeightedAverageQualityScore().divide(daysInRange, SCALE, ROUNDING));
 
-      summarizedKratu.addSumBudget(dailyKratu.getSumBudget());
       System.out.print(".");
     }
 

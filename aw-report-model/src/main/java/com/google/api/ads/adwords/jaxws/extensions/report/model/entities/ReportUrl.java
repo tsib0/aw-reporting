@@ -59,7 +59,7 @@ public class ReportUrl extends ReportBase {
   @CsvField(value = "Keyword / Placement", reportField = "CriteriaParameters")
   public String criteriaParameters;
 
-  @Column(name = "DISPLAY_NAME")
+  @Column(name = "DISPLAY_NAME", length = 2048)
   @CsvField(value = "Criteria Display Name", reportField = "DisplayName")
   private String displayName;
 
@@ -110,6 +110,10 @@ public class ReportUrl extends ReportBase {
     // Generating a SHA-1 Hash of the URLs for ID generation
     if (this.getUrl() != null) { 
       this.id += UrlHashUtil.createUrlHash(this.getUrl());
+    }
+
+    if (this.getAdFormat() != null) {
+      this.id += this.getAdFormat() + "-";
     }
 
     this.id += setIdDates();

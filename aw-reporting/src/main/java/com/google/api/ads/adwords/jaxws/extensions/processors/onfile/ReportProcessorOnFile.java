@@ -14,15 +14,16 @@
 
 package com.google.api.ads.adwords.jaxws.extensions.processors.onfile;
 
+import com.google.api.ads.adwords.jaxws.extensions.downloader.AdWordsSessionBuilderSynchronizer;
 import com.google.api.ads.adwords.jaxws.extensions.downloader.MultipleClientReportDownloader;
 import com.google.api.ads.adwords.jaxws.extensions.processors.ReportProcessor;
 import com.google.api.ads.adwords.jaxws.extensions.report.model.csv.AnnotationBasedMappingStrategy;
 import com.google.api.ads.adwords.jaxws.extensions.report.model.entities.Report;
 import com.google.api.ads.adwords.jaxws.extensions.report.model.util.ModifiedCsvToBean;
-import com.google.api.ads.adwords.lib.client.AdWordsSession;
 import com.google.api.ads.adwords.lib.jaxb.v201402.ReportDefinition;
 import com.google.api.ads.adwords.lib.jaxb.v201402.ReportDefinitionDateRangeType;
 import com.google.api.ads.adwords.lib.jaxb.v201402.ReportDefinitionReportType;
+import com.google.api.ads.common.lib.exception.ValidationException;
 import com.google.common.base.Stopwatch;
 import com.google.common.collect.Lists;
 
@@ -96,14 +97,15 @@ public class ReportProcessorOnFile extends ReportProcessor {
     ExecutorService executorService = Executors.newFixedThreadPool(numberOfReportProcessors);
 
     // Processing Report Local Files
-    LOGGER.info(" Procesing reports...");
+    LOGGER.info(" Processing reports...");
 
     Stopwatch stopwatch = Stopwatch.createStarted();
 
     for (File file : localFiles) {
       LOGGER.trace(".");
       try {
-
+        
+        // We need to create a csvToBean and mappingStrategy for each thread
         ModifiedCsvToBean<R> csvToBean = new ModifiedCsvToBean<R>();
         MappingStrategy<R> mappingStrategy = new AnnotationBasedMappingStrategy<R>(reportBeanClass);
 
@@ -192,8 +194,9 @@ public class ReportProcessorOnFile extends ReportProcessor {
     } else {
       LOGGER.info("Accounts loaded from file.");
     }
-
-    AdWordsSession.Builder builder = authenticator.authenticate(userId, mccAccountId, false);
+    
+    AdWordsSessionBuilderSynchronizer sessionBuilder =
+        new AdWordsSessionBuilderSynchronizer(authenticator.authenticate(userId, mccAccountId, false));
 
     LOGGER.info("*** Generating Reports for " + accountIdsSet.size() + " accounts ***");
 
@@ -206,7 +209,7 @@ public class ReportProcessorOnFile extends ReportProcessor {
       if (properties.containsKey(reportType.name())) {
         this.downloadAndProcess(userId,
             mccAccountId,
-            builder,
+            sessionBuilder,
             reportType,
             dateRangeType,
             dateStart,
@@ -237,7 +240,7 @@ public class ReportProcessorOnFile extends ReportProcessor {
    */
   private <R extends Report> void downloadAndProcess(String userId,
       String mccAccountId,
-      AdWordsSession.Builder builder,
+      AdWordsSessionBuilderSynchronizer sessionBuilder,
       ReportDefinitionReportType reportType,
       ReportDefinitionDateRangeType dateRangeType,
       String dateStart,
@@ -254,10 +257,14 @@ public class ReportProcessorOnFile extends ReportProcessor {
       ReportDefinition reportDefinition =
           getReportDefinition(reportType, dateRangeType, dateStart, dateEnd, properties);
 
-      localFiles = this.multipleClientReportDownloader.downloadReports(builder, reportDefinition,
+      localFiles = this.multipleClientReportDownloader.downloadReports(sessionBuilder, reportDefinition,
           acountIdList);
 
     } catch (InterruptedException e) {
+      LOGGER.error(e.getMessage());
+      e.printStackTrace();
+      return;
+    } catch (ValidationException e) {
       LOGGER.error(e.getMessage());
       e.printStackTrace();
       return;
