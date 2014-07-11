@@ -76,7 +76,8 @@ public abstract class ReportProcessor {
   abstract public void generateReportsForMCC(
       String userId, String mccAccountId,
       ReportDefinitionDateRangeType dateRangeType, String dateStart,
-      String dateEnd, Set<Long> accountIdsSet, Properties properties)
+      String dateEnd, Set<Long> accountIdsSet, Properties properties,
+      ReportDefinitionReportType reportType, List<String> reportFieldsToInclude)
           throws Exception;
 
   /**
@@ -203,10 +204,33 @@ public abstract class ReportProcessor {
         .retrievePropertiesToSelect(reportDefinitionReportType);
 
     // Add the inclusions from the properties file
-    List<String> reportInclusions = this.getReportInclusions(
+    List<String> reportFieldsToInclude = this.getReportInclusions(
         reportDefinitionReportType, properties);
     for (String reportField : reportFields) {
-      if (reportInclusions.contains(reportField)) {
+      if (reportFieldsToInclude.contains(reportField)) {
+        selector.getFields().add(reportField);
+      }
+    }
+    this.adjustDateRange(reportDefinitionReportType, dateRangeType,
+        dateStart, dateEnd, selector);
+
+    return this.instantiateReportDefinition(reportDefinitionReportType,
+        dateRangeType, selector);
+  }
+  
+  protected ReportDefinition getReportDefinition(
+      ReportDefinitionReportType reportDefinitionReportType,
+      ReportDefinitionDateRangeType dateRangeType, String dateStart,
+      String dateEnd, List<String> reportFieldsToInclude) {
+
+    // Create the Selector with all the fields defined in the Mapping
+    Selector selector = new Selector();
+
+    List<String> reportFields = this.csvReportEntitiesMapping
+        .retrievePropertiesToSelect(reportDefinitionReportType);
+
+    for (String reportField : reportFields) {
+      if (reportFieldsToInclude.contains(reportField)) {
         selector.getFields().add(reportField);
       }
     }
