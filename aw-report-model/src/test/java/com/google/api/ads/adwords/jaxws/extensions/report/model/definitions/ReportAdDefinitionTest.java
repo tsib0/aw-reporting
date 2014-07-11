@@ -118,7 +118,6 @@ public class ReportAdDefinitionTest extends AbstractReportDefinitionTest<ReportA
         "AccountTimeZoneId",
         "CustomerDescriptiveName",
         "PrimaryCompanyName",
-        "PrimaryUserLogin",
         "AccountCurrencyCode",
         "Date",
         "DayOfWeek",
