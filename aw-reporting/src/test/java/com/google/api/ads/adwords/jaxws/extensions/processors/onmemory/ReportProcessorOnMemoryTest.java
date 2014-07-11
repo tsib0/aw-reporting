@@ -180,7 +180,7 @@ public class ReportProcessorOnMemoryTest {
   public void testGenerateReportsForMCC() throws Exception {
 
     reportProcessorOnMemory.generateReportsForMCC(null, "123",
-        ReportDefinitionDateRangeType.CUSTOM_DATE, "20130101", "20130131", CIDS, properties);
+        ReportDefinitionDateRangeType.CUSTOM_DATE, "20130101", "20130131", CIDS, properties, null, null);
 
     verify(mockedEntitiesPersister, times(CALLS_TO_PERSIST_ENTITIES)).persistReportEntities(
         reportEntitiesCaptor.capture());
