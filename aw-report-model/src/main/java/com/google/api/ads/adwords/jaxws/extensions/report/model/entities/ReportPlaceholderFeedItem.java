@@ -70,6 +70,10 @@ public class ReportPlaceholderFeedItem extends ReportBase {
   @CsvField(value = "Feed placeholder type", reportField = "PlaceholderType")
   private int feedPlaceholderType;
 
+  @Column(name = "IS_SELF_ACTION")
+  @CsvField(value = "This extension vs. Other", reportField = "IsSelfAction")
+  private String isSelfAction;
+  
   /**
    * Hibernate needs an empty constructor
    */
@@ -129,6 +133,12 @@ public class ReportPlaceholderFeedItem extends ReportBase {
     }
     if (this.getClickType() != null && this.getClickType().length() > 0) {
       this.id += "-" + this.getClickType();
+    }
+    this.id += "-" + String.valueOf(this.getFeedPlaceholderType());
+    if (this.getIsSelfAction() != null) {
+      this.id += this.getIsSelfAction();
+    } else {
+        this.id += "null";
     }
   }
 
@@ -202,5 +212,17 @@ public class ReportPlaceholderFeedItem extends ReportBase {
 
   public void setFeedPlaceholderType(int feedPlaceholderType) {
     this.feedPlaceholderType = feedPlaceholderType;
+  }
+
+  public boolean isSelfAction() {
+    return isSelfAction.equals("This extension");
+  }
+  
+  public String getIsSelfAction() {
+    return isSelfAction;
+  }
+
+  public void setIsSelfAction(String isSelfAction) {
+    this.isSelfAction = isSelfAction;
   }
 }
