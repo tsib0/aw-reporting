@@ -245,6 +245,7 @@ public abstract class ReportExporter {
       Long accountId, Properties properties, Boolean sumAdExtensions) {
 
     Map<String, Object> reportDataMap = Maps.newHashMap();
+
     Set<ReportDefinitionReportType> reports = csvReportEntitiesMapping.getDefinedReports();
 
     for (ReportDefinitionReportType reportType : reports) {
@@ -255,7 +256,7 @@ public abstract class ReportExporter {
             csvReportEntitiesMapping.getReportBeanClass(reportType), accountId,
             DateUtil.parseDateTime(dateStart), DateUtil.parseDateTime(dateEnd)));
 
-        if (sumAdExtensions && reportType.name() == "PLACEHOLDER_FEED_ITEM_REPORT") {
+        if (reportType.name() == "PLACEHOLDER_FEED_ITEM_REPORT") {
           Map<String, NameImprClicks> adExtensionsMap = new HashMap<String, NameImprClicks>();
           int sitelinks = 0;
           long totalClicks = 0;
@@ -323,9 +324,15 @@ public abstract class ReportExporter {
           nic.clicks = totalClicks;
           nic.impressions = totalImpressions;
           adExtensions.add(nic);
-          reportDataMap.put("ADEXTENSIONS", adExtensions);
+          
+          if (monthlyReports != null && monthlyReports.size() > 0) {
+            reportDataMap.put("ADEXTENSIONS", adExtensions);
+          }
         }
-        reportDataMap.put(reportType.name(), monthlyReports);
+
+        if (monthlyReports != null && monthlyReports.size() > 0) {
+          reportDataMap.put(reportType.name(), monthlyReports);
+        }
       }
     }
     return reportDataMap;
