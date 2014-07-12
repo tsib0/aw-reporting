@@ -75,9 +75,9 @@ public class ReportProcessorOnFileTest {
   
   private static final int NUMBER_OF_THREADS = 50;
   
-  private static final int REPORT_TYPES_SIZE = 11;
+  private static final int REPORT_TYPES_SIZE = 13;
   
-  private static final int CALLS_TO_PERSIST_ENTITIES = 2800;
+  private static final int CALLS_TO_PERSIST_ENTITIES = 3000;
   
   private static final Set<Long> CIDS = Sets.newHashSet();
   
@@ -99,6 +99,7 @@ public class ReportProcessorOnFileTest {
   private Properties properties;
 
   private ApplicationContext appCtx;
+
 
   @Captor
   ArgumentCaptor<List<? extends Report>> reportEntitiesCaptor;
@@ -155,7 +156,9 @@ public class ReportProcessorOnFileTest {
         "20130101",
         "20130131",
         CIDS,
-        properties);
+        properties,
+        null,
+        null);
 
     verify(mockedMultipleClientReportDownloader, times(REPORT_TYPES_SIZE)).downloadReports(
         Mockito.<AdWordsSessionBuilderSynchronizer>anyObject(), Mockito.<ReportDefinition>anyObject(),
@@ -244,6 +247,16 @@ public class ReportProcessorOnFileTest {
         if (reportType.equals(ReportDefinitionReportType.PLACEMENT_PERFORMANCE_REPORT)) {
           return getReportFiles(
               "reportDownload-PLACEMENT_PERFORMANCE_REPORT-501111125-37111114339129.report10",
+              numberOfFiles);
+        }
+        if (reportType.equals(ReportDefinitionReportType.DISPLAY_KEYWORD_PERFORMANCE_REPORT)) {
+        	return getReportFiles(
+              "reportDownload-DISPLAY_KEYWORD_PERFORMANCE_REPORT-1056270861-4656938936183294408.report",
+              numberOfFiles);
+        }
+        if (reportType.equals(ReportDefinitionReportType.SHOPPING_PERFORMANCE_REPORT)) {
+          return getReportFiles(
+              "reportDownload-SHOPPING_PERFORMANCE_REPORT-4159595773-1835647307310030649.report",
               numberOfFiles);
         }
         // Undefined report type on this test

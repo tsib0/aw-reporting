@@ -80,7 +80,7 @@ public class ReportProcessorOnMemoryTest {
   
   private static final int NUMBER_OF_THREADS = 50;
   
-  private static final int CALLS_TO_PERSIST_ENTITIES = 6250;
+  private static final int CALLS_TO_PERSIST_ENTITIES = 6600;
 
   private Properties properties;
 
@@ -180,7 +180,7 @@ public class ReportProcessorOnMemoryTest {
   public void testGenerateReportsForMCC() throws Exception {
 
     reportProcessorOnMemory.generateReportsForMCC(null, "123",
-        ReportDefinitionDateRangeType.CUSTOM_DATE, "20130101", "20130131", CIDS, properties);
+        ReportDefinitionDateRangeType.CUSTOM_DATE, "20130101", "20130131", CIDS, properties, null, null);
 
     verify(mockedEntitiesPersister, times(CALLS_TO_PERSIST_ENTITIES)).persistReportEntities(
         reportEntitiesCaptor.capture());
@@ -237,6 +237,12 @@ public class ReportProcessorOnMemoryTest {
     }
     if (reportType.equals(ReportDefinitionReportType.PLACEMENT_PERFORMANCE_REPORT)) {
       return "src/test/resources/csv/reportDownload-PLACEMENT_PERFORMANCE_REPORT-501111125-37111114339129.report10";
+    }
+    if (reportType.equals(ReportDefinitionReportType.DISPLAY_KEYWORD_PERFORMANCE_REPORT)) {
+      return "src/test/resources/csv/reportDownload-DISPLAY_KEYWORD_PERFORMANCE_REPORT-1056270861-4656938936183294408.report";
+    }
+    if (reportType.equals(ReportDefinitionReportType.SHOPPING_PERFORMANCE_REPORT)) {
+      return "src/test/resources/csv/reportDownload-SHOPPING_PERFORMANCE_REPORT-4159595773-1835647307310030649.report";
     }
     // Undefined report type on this test
     throw (new Exception("Undefined report type on Tests: " + reportType.value()));
