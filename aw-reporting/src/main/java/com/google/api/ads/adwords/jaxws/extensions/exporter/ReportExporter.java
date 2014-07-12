@@ -342,9 +342,11 @@ public abstract class ReportExporter {
           nic.clicks = totalClicks;
           nic.impressions = totalImpressions;
           adExtensions.add(nic);
-          reportDataMap.put("ADEXTENSIONS", adExtensions);
-          
+
           if (monthlyReports != null && monthlyReports.size() > 0) {
+
+            reportDataMap.put("ADEXTENSIONS", adExtensions);
+
             // Add report data for totals for each clickType
             for(Entry<String, NameImprClicks> clickTypeTotal : totalsByClickType.entrySet()) {
               reportDataMap.put(
