@@ -42,6 +42,7 @@ import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Collection;
+import java.util.List;
 import java.util.Properties;
 import java.util.Set;
 import java.util.concurrent.CountDownLatch;
@@ -185,7 +186,9 @@ public class ReportProcessorOnFile extends ReportProcessor {
       String dateStart,
       String dateEnd,
       Set<Long> accountIdsSet,
-      Properties properties) throws Exception {
+      Properties properties,
+      ReportDefinitionReportType onDemandReportType,
+      List<String> reportFieldsToInclude) throws Exception {
 
     LOGGER.info("*** Retrieving account IDs ***");
 
