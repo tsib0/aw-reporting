@@ -46,6 +46,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Properties;
 import java.util.Set;
 
@@ -245,7 +246,6 @@ public abstract class ReportExporter {
       Long accountId, Properties properties, Boolean sumAdExtensions) {
 
     Map<String, Object> reportDataMap = Maps.newHashMap();
-
     Set<ReportDefinitionReportType> reports = csvReportEntitiesMapping.getDefinedReports();
 
     for (ReportDefinitionReportType reportType : reports) {
@@ -261,6 +261,16 @@ public abstract class ReportExporter {
           int sitelinks = 0;
           long totalClicks = 0;
           long totalImpressions = 0;
+          
+
+          // Aggregate totals by clickType starting with '0' values for each type to avoid NPEs
+          Map<String, NameImprClicks> totalsByClickType = new HashMap<String, NameImprClicks>();          
+          totalsByClickType.put("Sitelink", new NameImprClicks("Sitelink"));
+          totalsByClickType.put("Call", new NameImprClicks("Call"));
+          totalsByClickType.put("App", new NameImprClicks("App"));
+          totalsByClickType.put("Location", new NameImprClicks("Location"));
+          totalsByClickType.put("Review", new NameImprClicks("Review"));
+
           for (Report report : monthlyReports) {
             int placeholderType = ((ReportPlaceholderFeedItem) report).getFeedPlaceholderType();
             String clickType = "Headline";
@@ -304,6 +314,14 @@ public abstract class ReportExporter {
                 totalImpressions += impressions;
                 adExtensionsMap.put(clickType, values);
               }
+              
+              // Add total values for each clickType
+              NameImprClicks clickTypeNic;
+              if(totalsByClickType.containsKey(clickType)) {
+                clickTypeNic = totalsByClickType.get(clickType);
+                clickTypeNic.impressions += impressions;
+                clickTypeNic.clicks += clicks;
+              }
             }
           }
           }
@@ -324,9 +342,15 @@ public abstract class ReportExporter {
           nic.clicks = totalClicks;
           nic.impressions = totalImpressions;
           adExtensions.add(nic);
+          reportDataMap.put("ADEXTENSIONS", adExtensions);
           
           if (monthlyReports != null && monthlyReports.size() > 0) {
-            reportDataMap.put("ADEXTENSIONS", adExtensions);
+            // Add report data for totals for each clickType
+            for(Entry<String, NameImprClicks> clickTypeTotal : totalsByClickType.entrySet()) {
+              reportDataMap.put(
+                  "ADEXTENSIONSTOTALS-" + clickTypeTotal.getKey(), clickTypeTotal.getValue());
+            }
+            reportDataMap.put("ADEXTENSIONSTOTALS", nic);
           }
         }
 
