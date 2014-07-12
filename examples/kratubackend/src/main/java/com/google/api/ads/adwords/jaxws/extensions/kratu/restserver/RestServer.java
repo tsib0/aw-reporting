@@ -142,7 +142,10 @@ public class RestServer extends Application {
     router.attach("/mcc/{topAccountId}/reportadextension/campaign/{campaignId}", ReportAdExtensionRest.class); //LIST Campaign level
     router.attach("/mcc/{topAccountId}/reportadextension/adextension/{adExtensionId}", ReportAdExtensionRest.class); //LIST Keyword level
 
-    
+
+    router.attach("/html2pdf", HtmlToPdfRest.class); 
+
+
     // *** Static files *** 
     // USING FILE
     String target = "index.html";
