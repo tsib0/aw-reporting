@@ -45,7 +45,7 @@ public class ManagedCustomerDelegate {
   /**
    * The amount of results paginated when retrieving the next page of resuts.
    */
-  private static final int NUMBER_OF_RESULTS = 500;
+  private static final int NUMBER_OF_RESULTS = 1000;
 
   private ManagedCustomerServiceInterface managedCustomerService;
 
@@ -105,9 +105,11 @@ public class ManagedCustomerDelegate {
     try {
       this.retrieveAccounts(selector, accountList);
     } catch (Exception e) {
-      LOGGER.error("Error on managedCustomerService.get(selector), probably an AuthenticationError");
+      LOGGER.error("Error on managedCustomerService.get(selector), probably an AuthenticationError: "
+          + e.getMessage());
+      e.printStackTrace();
       throw new ApiException(
-          "Error on managedCustomerService.get(selector), probably an AuthenticationError",
+          "Error on managedCustomerService.get(selector), probably an AuthenticationError: " + e.getMessage(),
           new com.google.api.ads.adwords.jaxws.v201402.cm.ApiException());
     }
     return accountList;
@@ -120,8 +122,8 @@ public class ManagedCustomerDelegate {
    * @param accountList the list of accounts to be populated
    * @throws ApiException error retrieving the accounts page
    */
-  private void retrieveAccounts(Selector selector, List<ManagedCustomer> accountList)
-      throws ApiException {
+  private void retrieveAccounts(Selector selector, List<ManagedCustomer> accountList) throws ApiException
+       {
 
     int startIndex = 0;
     Paging paging = new Paging();
@@ -133,8 +135,14 @@ public class ManagedCustomerDelegate {
 
       LOGGER.info("Retrieving next " + NUMBER_OF_RESULTS + " accounts.");
 
-      managedCustomerPage = managedCustomerService.get(selector);
-      accountList.addAll(managedCustomerPage.getEntries());
+      try {
+        managedCustomerPage = managedCustomerService.get(selector);
+        accountList.addAll(managedCustomerPage.getEntries());
+      } catch (ApiException e) {
+        // Retry Once
+        managedCustomerPage = managedCustomerService.get(selector);
+        accountList.addAll(managedCustomerPage.getEntries());
+      }
 
       LOGGER.info(accountList.size() + " accounts retrieved.");
 
