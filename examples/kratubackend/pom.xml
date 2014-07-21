@@ -4,7 +4,7 @@
 
   <groupId>com.google</groupId>
   <artifactId>kratubackend</artifactId>
-  <version>1.4.1-SNAPSHOT</version>
+  <version>1.4.2-SNAPSHOT</version>
   <packaging>jar</packaging>
 
   <name>kratubackend</name>
@@ -12,7 +12,7 @@
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <springframework.version>3.2.2.RELEASE</springframework.version>
-    <aw-reporting.version>1.4.1-SNAPSHOT</aw-reporting.version>
+    <aw-reporting.version>1.4.2-SNAPSHOT</aw-reporting.version>
   </properties>
 
   <repositories>
