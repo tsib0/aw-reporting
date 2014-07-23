@@ -150,7 +150,7 @@ public abstract class ReportProcessor {
     return accounts;
   }
 
-  public List<Customer> getAccountsInfo(String userId, String mccAccountId, Set<Long> accountIds) throws Exception {
+  public List<Customer> getAccountsInfo(String userId, String mccAccountId, Set<Long> accountIds) throws OAuthException, ValidationException, IOException {
     List<Customer> accounts = Lists.newArrayList();
     AdWordsSession adWordsSession = authenticator.authenticate(userId, mccAccountId, false).build();
 
@@ -165,11 +165,12 @@ public abstract class ReportProcessor {
           LOGGER.info("AuthenticationError, Getting a new Token...");
           adWordsSession = authenticator.authenticate(userId, mccAccountId, false).build();
           customerDelegate = new CustomerDelegate(adWordsSession);
-          accounts.add(customerDelegate.getCustomer());
+          try {
+            accounts.add(customerDelegate.getCustomer());
+          } catch (ApiException e2) {
+            LOGGER.error("Skipping Account " + accountId + " error while getting it's information: " + e2.getMessage());          }
         } else {
-          LOGGER.error("API error: " + e.getMessage());
-          e.printStackTrace();
-          throw e;
+          LOGGER.error("Skipping Account " + accountId + " error while getting it's information: " + e.getMessage());
         } 
       }
     }
