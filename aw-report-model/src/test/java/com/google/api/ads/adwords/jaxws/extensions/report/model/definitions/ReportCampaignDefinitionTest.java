@@ -160,6 +160,13 @@ public class ReportCampaignDefinitionTest extends AbstractReportDefinitionTest<R
         "CampaignName",
         "Status",
         "Amount",
+        "SearchImpressionShare",
+        "SearchBudgetLostImpressionShare",
+        "SearchRankLostImpressionShare",
+        "ContentImpressionShare",
+        "ContentBudgetLostImpressionShare",
+        "ContentRankLostImpressionShare",
+        "SearchExactMatchImpressionShare",
         // Analytics Fieds        
         "AveragePageviews",
         "AverageTimeOnSite",

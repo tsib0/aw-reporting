@@ -14,8 +14,6 @@
 
 package com.google.api.ads.adwords.jaxws.extensions.kratu.restserver.reports;
 
-import com.google.api.ads.adwords.jaxws.extensions.kratu.data.Kratu;
-import com.google.api.ads.adwords.jaxws.extensions.kratu.persisters.InterestingQueries;
 import com.google.api.ads.adwords.jaxws.extensions.kratu.restserver.AbstractServerResource;
 import com.google.api.ads.adwords.jaxws.extensions.report.model.entities.ReportAccount;
 

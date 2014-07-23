@@ -157,6 +157,11 @@ public class ReportAdGroupDefinitionTest extends AbstractReportDefinitionTest<Re
         "AdGroupName",
         "Status",
         "TargetCpa",
+        "SearchImpressionShare",
+        "SearchRankLostImpressionShare",
+        "ContentImpressionShare",
+        "ContentRankLostImpressionShare",
+        "SearchExactMatchImpressionShare",
         // Analytics Fieds        
         "AveragePageviews",
         "AverageTimeOnSite",

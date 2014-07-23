@@ -185,8 +185,9 @@ public class CsvReportEntitiesMappingTest {
     Assert.assertTrue(propertiesToSelect.contains("ContentImpressionShare"));
     Assert.assertTrue(propertiesToSelect.contains("ContentBudgetLostImpressionShare"));
     Assert.assertTrue(propertiesToSelect.contains("ContentRankLostImpressionShare"));
+    Assert.assertTrue(propertiesToSelect.contains("SearchExactMatchImpressionShare"));
 
-    Assert.assertEquals(44, propertiesToSelect.size());
+    Assert.assertEquals(45, propertiesToSelect.size());
   }
 
   /**

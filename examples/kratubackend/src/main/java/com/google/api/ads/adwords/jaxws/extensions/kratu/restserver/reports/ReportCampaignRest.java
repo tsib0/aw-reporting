@@ -14,7 +14,6 @@
 
 package com.google.api.ads.adwords.jaxws.extensions.kratu.restserver.reports;
 
-import com.google.api.ads.adwords.jaxws.extensions.kratu.persisters.InterestingQueries;
 import com.google.api.ads.adwords.jaxws.extensions.kratu.restserver.AbstractServerResource;
 import com.google.api.ads.adwords.jaxws.extensions.report.model.entities.ReportCampaign;
 
@@ -35,9 +34,11 @@ public class ReportCampaignRest extends AbstractServerResource {
 		try {
 			getParameters();
 
+			/*
 			InterestingQueries interestingQueries = this
 					.getApplicationContext().getBean("kratuEntitiesService",
 							InterestingQueries.class);
+			*/
 
 			if (campaignId != null) { // LIST Campaign level
 				List<ReportCampaign> listReport = getStorageHelper()
