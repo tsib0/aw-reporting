@@ -81,27 +81,27 @@ public class ReportKeyword extends ReportBase {
   
   @Column(name = "CONVERSIONRATESIGNIFICANCE")
   @CsvField(value = "Click conversion rate ACE indicator", reportField = "ConversionRateSignificance")
-  protected BigDecimal conversionRateSignificance;
+  private BigDecimal conversionRateSignificance;
 
   @Column(name = "CONVERSIONRATEMANYPERCLICKSIGNIFICANCE")
   @CsvField(value = "Conversion rate ACE indicator", reportField = "ConversionRateManyPerClickSignificance")
-  protected BigDecimal conversionRateManyPerClickSignificance;
+  private BigDecimal conversionRateManyPerClickSignificance;
   
   @Column(name = "CONVERSIONMANYPERCLICKSIGNIFICANCE")
   @CsvField(value = "Conversion ACE indicator", reportField = "ConversionManyPerClickSignificance")
-  protected BigDecimal conversionManyPerClickSignificance;
+  private BigDecimal conversionManyPerClickSignificance;
 
   @Column(name = "COSTPERCONVERSIONMANYPERCLICKSIGNIFICANCE")
   @CsvField(value = "Cost/conversion ACE indicator", reportField = "CostPerConversionManyPerClickSignificance")
-  protected BigDecimal costPerConversionManyPerClickSignificance;
+  private BigDecimal costPerConversionManyPerClickSignificance;
   
   @Column(name = "CONVERSIONSIGNIFICANCE")
   @CsvField(value = "Converted clicks ACE indicator", reportField = "ConversionSignificance")
-  protected BigDecimal conversionSignificance;
+  private BigDecimal conversionSignificance;
 
   @Column(name = "COSTPERCONVERSIONSIGNIFICANCE")
   @CsvField(value = "Cost/converted click ACE indicator", reportField = "CostPerConversionSignificance")
-  protected BigDecimal costPerConversionSignificance;
+  private BigDecimal costPerConversionSignificance;
 
   @Column(name = "AVERAGE_PAGEVIEWS")
   @CsvField(value = "Pages / visit", reportField = "AveragePageviews")
@@ -118,6 +118,26 @@ public class ReportKeyword extends ReportBase {
   @Column(name = "PERCENT_NEW_VISITORS")
   @CsvField(value = "% new visits", reportField = "PercentNewVisitors")
   private BigDecimal percentNewVisitors;
+  
+  @Column(name = "MAX_CPC")
+  @CsvField(value = "Max. CPC", reportField = "MaxCpc")
+  private BigDecimal maxCpc;
+
+  @Column(name = "MAX_CPM")
+  @CsvField(value = "Max. CPM", reportField = "MaxCpm")
+  private BigDecimal maxCpm;
+
+  @Column(name = "SEARCH_EXACT_MATCH_IMPRESSION_SHARE")
+  @CsvField(value = "Search Exact match IS", reportField = "SearchExactMatchImpressionShare")
+  private BigDecimal searchExactMatchImpressionShare;
+
+  @Column(name = "SEARCH_IMPRESSION_SHARE")
+  @CsvField(value = "Search Impr. share", reportField = "SearchImpressionShare")
+  private BigDecimal searchImpressionShare;
+
+  @Column(name = "SEARCH_LOST_IS_RANK")
+  @CsvField(value = "Search Lost IS (rank)", reportField = "SearchRankLostImpressionShare")
+  private BigDecimal searchLostISRank;
 
   /**
    * Hibernate needs an empty constructor
@@ -378,5 +398,65 @@ public class ReportKeyword extends ReportBase {
   
   public void setPercentNewVisitors(String percentNewVisitors) {
     this.percentNewVisitors =  BigDecimalUtil.parseFromNumberString(percentNewVisitors);
+  }
+  
+  public String getMaxCpc() {
+    return BigDecimalUtil.formatAsReadable(maxCpc);
+  }
+
+  public BigDecimal getMaxCpcAsBigDecimal() {
+    return maxCpc;
+  }
+
+  public void setMaxCpc(String maxCpm) {
+    this.maxCpc = BigDecimalUtil.parseFromNumberString(maxCpm);
+  }
+  
+  public String getMaxCpm() {
+    return BigDecimalUtil.formatAsReadable(maxCpm);
+  }
+
+  public BigDecimal getMaxCpmAsBigDecimal() {
+    return maxCpm;
+  }
+
+  public void setMaxCpm(String maxCpm) {
+    this.maxCpm = BigDecimalUtil.parseFromNumberString(maxCpm);
+  }
+  
+  public String getSearchImpressionShare() {
+    return BigDecimalUtil.formatAsReadable(this.searchImpressionShare);
+  }
+
+  public BigDecimal getSearchImpressionShareBigDecimal() {
+    return searchImpressionShare;
+  }
+
+  public void setSearchImpressionShare(String searchImpressionShare) {
+    this.searchImpressionShare = BigDecimalUtil.parseFromNumberStringPercentage(searchImpressionShare);
+  }
+
+  public String getSearchLostISRank() {
+    return BigDecimalUtil.formatAsReadable(this.searchLostISRank);
+  }
+
+  public BigDecimal getSearchLostISRankBigDecimal() {
+    return searchLostISRank;
+  }
+
+  public void setSearchLostISRank(String lostISRank) {
+    this.searchLostISRank = BigDecimalUtil.parseFromNumberStringPercentage(lostISRank);
+  }
+  
+  public String getSearchExactMatchImpressionShare() {
+    return BigDecimalUtil.formatAsReadable(this.searchExactMatchImpressionShare);
+  }
+
+  public BigDecimal getSearchExactMatchImpressionShareBigDecimal() {
+    return searchExactMatchImpressionShare;
+  }
+
+  public void setSearchExactMatchImpressionShare(String searchExactMatchImpressionShare) {
+    this.searchExactMatchImpressionShare = BigDecimalUtil.parseFromNumberStringPercentage(searchExactMatchImpressionShare);
   }
 }

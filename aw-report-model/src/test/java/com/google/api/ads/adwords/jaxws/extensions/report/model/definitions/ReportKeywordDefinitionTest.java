@@ -178,6 +178,11 @@ public class ReportKeywordDefinitionTest extends AbstractReportDefinitionTest<Re
         "DestinationUrl",
         "IsNegative",
         "CampaignName",
+        "MaxCpc",
+        "MaxCpm",
+        "SearchImpressionShare",
+        "SearchRankLostImpressionShare",
+        "SearchExactMatchImpressionShare",
         // Analytics Fieds        
         "AveragePageviews",
         "AverageTimeOnSite",

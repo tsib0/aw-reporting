@@ -96,6 +96,26 @@ public class ReportAdGroup extends ReportBase {
   @Column(name = "PERCENT_NEW_VISITORS")
   @CsvField(value = "% new visits", reportField = "PercentNewVisitors")
   private BigDecimal percentNewVisitors;
+  
+  @Column(name = "SEARCH_IMPRESSION_SHARE")
+  @CsvField(value = "Search Impr. share", reportField = "SearchImpressionShare")
+  private BigDecimal searchImpressionShare;
+
+  @Column(name = "SEARCH_LOST_IS_RANK")
+  @CsvField(value = "Search Lost IS (rank)", reportField = "SearchRankLostImpressionShare")
+  private BigDecimal searchLostISRank;
+
+  @Column(name = "CONTENT_IMPRESSION_SHARE")
+  @CsvField(value = "Content Impr. share", reportField = "ContentImpressionShare")
+  private BigDecimal contentImpressionShare;
+
+  @Column(name = "CONTENT_LOST_IS_RANK")
+  @CsvField(value = "Content Lost IS (rank)", reportField = "ContentRankLostImpressionShare")
+  private BigDecimal contentLostISRank;
+
+  @Column(name = "SEARCH_EXACT_MATCH_IMPRESSION_SHARE")
+  @CsvField(value = "Search Exact match IS", reportField = "SearchExactMatchImpressionShare")
+  private BigDecimal searchExactMatchImpressionShare;
 
   /**
    * Hibernate needs an empty constructor
@@ -288,5 +308,65 @@ public class ReportAdGroup extends ReportBase {
   
   public void setPercentNewVisitors(String percentNewVisitors) {
     this.percentNewVisitors =  BigDecimalUtil.parseFromNumberString(percentNewVisitors);
+  }
+  
+  public String getSearchImpressionShare() {
+    return BigDecimalUtil.formatAsReadable(this.searchImpressionShare);
+  }
+
+  public BigDecimal getSearchImpressionShareBigDecimal() {
+    return searchImpressionShare;
+  }
+
+  public void setSearchImpressionShare(String searchImpressionShare) {
+    this.searchImpressionShare = BigDecimalUtil.parseFromNumberStringPercentage(searchImpressionShare);
+  }
+
+  public String getSearchLostISRank() {
+    return BigDecimalUtil.formatAsReadable(this.searchLostISRank);
+  }
+
+  public BigDecimal getSearchLostISRankBigDecimal() {
+    return searchLostISRank;
+  }
+
+  public void setSearchLostISRank(String lostISRank) {
+    this.searchLostISRank = BigDecimalUtil.parseFromNumberStringPercentage(lostISRank);
+  }
+
+  public String getContentImpressionShare() {
+    return BigDecimalUtil.formatAsReadable(this.contentImpressionShare);
+  }
+
+  public BigDecimal getContentImpressionShareBigDecimal() {
+    return contentImpressionShare;
+  }
+
+  public void setContentImpressionShare(String contentImpressionShare) {
+    this.contentImpressionShare = BigDecimalUtil.parseFromNumberStringPercentage(contentImpressionShare);
+  }
+
+  public String getContentLostISRank() {
+    return BigDecimalUtil.formatAsReadable(this.contentLostISRank);
+  }
+
+  public BigDecimal getContentLostISRankBigDecimal() {
+    return contentLostISRank;
+  }
+
+  public void setContentLostISRank(String lostISRank) {
+    this.contentLostISRank = BigDecimalUtil.parseFromNumberStringPercentage(lostISRank);
+  }
+  
+  public String getSearchExactMatchImpressionShare() {
+    return BigDecimalUtil.formatAsReadable(this.searchExactMatchImpressionShare);
+  }
+
+  public BigDecimal getSearchExactMatchImpressionShareBigDecimal() {
+    return searchExactMatchImpressionShare;
+  }
+
+  public void setSearchExactMatchImpressionShare(String searchExactMatchImpressionShare) {
+    this.searchExactMatchImpressionShare = BigDecimalUtil.parseFromNumberStringPercentage(searchExactMatchImpressionShare);
   }
 }

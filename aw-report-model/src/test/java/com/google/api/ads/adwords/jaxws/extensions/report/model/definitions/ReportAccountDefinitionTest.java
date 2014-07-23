@@ -156,7 +156,8 @@ public class ReportAccountDefinitionTest extends AbstractReportDefinitionTest<Re
         "SearchRankLostImpressionShare",
         "ContentImpressionShare",
         "ContentBudgetLostImpressionShare",
-        "ContentRankLostImpressionShare"
+        "ContentRankLostImpressionShare",
+        "SearchExactMatchImpressionShare"
     };
   }
 

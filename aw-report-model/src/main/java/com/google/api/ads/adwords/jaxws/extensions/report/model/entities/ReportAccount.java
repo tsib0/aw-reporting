@@ -60,6 +60,10 @@ public class ReportAccount extends ReportBase {
   @CsvField(value = "Content Lost IS (rank)", reportField = "ContentRankLostImpressionShare")
   private BigDecimal contentLostISRank;
 
+  @Column(name = "SEARCH_EXACT_MATCH_IMPRESSION_SHARE")
+  @CsvField(value = "Search Exact match IS", reportField = "SearchExactMatchImpressionShare")
+  private BigDecimal searchExactMatchImpressionShare;
+
   /**
    * Hibernate needs an empty constructor
    */
@@ -102,8 +106,7 @@ public class ReportAccount extends ReportBase {
   }
 
   public void setSearchImpressionShare(String searchImpressionShare) {
-    searchImpressionShare = searchImpressionShare.replaceAll("--", "0");
-    this.searchImpressionShare = new BigDecimal(searchImpressionShare.replaceAll("\\s|%|>|<", ""));
+    this.searchImpressionShare = BigDecimalUtil.parseFromNumberStringPercentage(searchImpressionShare);
   }
   
   public String getSearchLostISBudget() {
@@ -115,8 +118,7 @@ public class ReportAccount extends ReportBase {
   }
 
   public void setSearchLostISBudget(String lostISBudget) {
-    lostISBudget = lostISBudget.replaceAll("--", "0");
-    this.searchLostISBudget = new BigDecimal(lostISBudget.replaceAll("\\s|%|>|<", ""));
+    this.searchLostISBudget = BigDecimalUtil.parseFromNumberStringPercentage(lostISBudget);
   }
 
   public String getSearchLostISRank() {
@@ -128,8 +130,7 @@ public class ReportAccount extends ReportBase {
   }
 
   public void setSearchLostISRank(String lostISRank) {
-    lostISRank = lostISRank.replaceAll("--", "0");
-    this.searchLostISRank = new BigDecimal(lostISRank.replaceAll("\\s|%|>|<", ""));
+    this.searchLostISRank = BigDecimalUtil.parseFromNumberStringPercentage(lostISRank);
   }
 
   public String getContentImpressionShare() {
@@ -141,9 +142,7 @@ public class ReportAccount extends ReportBase {
   }
 
   public void setContentImpressionShare(String contentImpressionShare) {
-    contentImpressionShare = contentImpressionShare.replaceAll("--", "0");
-    this.contentImpressionShare =
-        new BigDecimal(contentImpressionShare.replaceAll("\\s|%|>|<", ""));
+    this.contentImpressionShare = BigDecimalUtil.parseFromNumberStringPercentage(contentImpressionShare);
   }
 
   public String getContentLostISBudget() {
@@ -155,8 +154,7 @@ public class ReportAccount extends ReportBase {
   }
 
   public void setContentLostISBudget(String lostISBudget) {
-    lostISBudget = lostISBudget.replaceAll("--", "0");
-    this.contentLostISBudget = new BigDecimal(lostISBudget.replaceAll("\\s|%|>|<", ""));
+    this.contentLostISBudget = BigDecimalUtil.parseFromNumberStringPercentage(lostISBudget);
   }
 
   public String getContentLostISRank() {
@@ -168,7 +166,18 @@ public class ReportAccount extends ReportBase {
   }
 
   public void setContentLostISRank(String lostISRank) {
-    lostISRank = lostISRank.replaceAll("--", "0");
-    this.contentLostISRank = new BigDecimal(lostISRank.replaceAll("\\s|%|>|<", ""));
+    this.contentLostISRank = BigDecimalUtil.parseFromNumberStringPercentage(lostISRank);
+  }
+  
+  public String getSearchExactMatchImpressionShare() {
+    return BigDecimalUtil.formatAsReadable(this.searchExactMatchImpressionShare);
+  }
+
+  public BigDecimal getSearchExactMatchImpressionShareBigDecimal() {
+    return searchExactMatchImpressionShare;
+  }
+
+  public void setSearchExactMatchImpressionShare(String searchExactMatchImpressionShare) {
+    this.searchExactMatchImpressionShare = BigDecimalUtil.parseFromNumberStringPercentage(searchExactMatchImpressionShare);
   }
 }
