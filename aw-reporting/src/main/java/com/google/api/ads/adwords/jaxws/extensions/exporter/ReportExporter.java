@@ -230,6 +230,8 @@ public abstract class ReportExporter {
           HTMLExporter.exportHtmlToPdf(mrwHtml.getAsSource(), fsrwPdf, fontPaths);
         }
       }
+    } else {
+    	LOGGER.info("No data found for account " + accountId);
     }
   }
 
