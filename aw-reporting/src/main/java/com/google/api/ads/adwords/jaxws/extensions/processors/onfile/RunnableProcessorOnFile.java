@@ -14,6 +14,20 @@
 
 package com.google.api.ads.adwords.jaxws.extensions.processors.onfile;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.InputStreamReader;
+import java.io.UnsupportedEncodingException;
+import java.util.Collection;
+import java.util.List;
+import java.util.concurrent.CountDownLatch;
+
+import org.apache.log4j.Logger;
+
+import au.com.bytecode.opencsv.CSVReader;
+import au.com.bytecode.opencsv.bean.MappingStrategy;
+
 import com.google.api.ads.adwords.jaxws.extensions.downloader.AdWordsSessionBuilderSynchronizer;
 import com.google.api.ads.adwords.jaxws.extensions.report.model.csv.AwReportCsvReader;
 import com.google.api.ads.adwords.jaxws.extensions.report.model.entities.Report;
@@ -22,21 +36,6 @@ import com.google.api.ads.adwords.jaxws.extensions.report.model.util.CsvParserIt
 import com.google.api.ads.adwords.jaxws.extensions.report.model.util.ModifiedCsvToBean;
 import com.google.api.ads.adwords.lib.jaxb.v201402.ReportDefinitionDateRangeType;
 import com.google.common.collect.Lists;
-
-import org.apache.log4j.Logger;
-
-import au.com.bytecode.opencsv.CSVReader;
-import au.com.bytecode.opencsv.bean.MappingStrategy;
-
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.UnsupportedEncodingException;
-import java.util.Collection;
-import java.util.List;
-import java.util.concurrent.CountDownLatch;
 
 /**
  * This {@link Runnable} implements the core logic to download the report file
@@ -70,6 +69,8 @@ public class RunnableProcessorOnFile<R extends Report> implements Runnable {
   private String mccAccountId;
   private EntityPersister entityPersister;
   private int reportRowsSetSize;
+
+  private Exception error = null;
 
   /**
    * C'tor.
@@ -146,13 +147,8 @@ public class RunnableProcessorOnFile<R extends Report> implements Runnable {
       LOGGER.debug("... success.");
       csvReader.close();
 
-    } catch (UnsupportedEncodingException e) {
-      LOGGER.error("Error processing file: " + file.getAbsolutePath());
-      e.printStackTrace();
-    } catch (FileNotFoundException e) {
-      LOGGER.error("Error processing file: " + file.getAbsolutePath());
-      e.printStackTrace();
-    } catch (IOException e) {
+    } catch (Exception e) {
+      error = new Exception("Error processing file: " + file.getAbsolutePath(), e);
       LOGGER.error("Error processing file: " + file.getAbsolutePath());
       e.printStackTrace();
     } finally {
@@ -184,6 +180,10 @@ public class RunnableProcessorOnFile<R extends Report> implements Runnable {
    */
   public void setLatch(CountDownLatch latch) {
     this.latch = latch;
+  }
+
+  public Exception getError() {
+    return error;
   }
 
   /**

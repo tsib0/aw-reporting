@@ -686,7 +686,7 @@ public class Kratu implements MongoEntity {
   }
   
   public void addConversions(Long conversions) {
-    this.conversions =+ conversions;
+    this.conversions += conversions;
   }
 
   public void addElegibleImpressionsSearch(BigDecimal bigDecimal) {

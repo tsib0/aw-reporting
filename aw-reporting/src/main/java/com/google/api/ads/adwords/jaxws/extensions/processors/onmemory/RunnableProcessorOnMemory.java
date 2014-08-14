@@ -14,6 +14,20 @@
 
 package com.google.api.ads.adwords.jaxws.extensions.processors.onmemory;
 
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.UnsupportedEncodingException;
+import java.net.HttpURLConnection;
+import java.util.Collection;
+import java.util.List;
+import java.util.concurrent.CountDownLatch;
+import java.util.zip.GZIPInputStream;
+
+import org.apache.log4j.Logger;
+
+import au.com.bytecode.opencsv.CSVReader;
+import au.com.bytecode.opencsv.bean.MappingStrategy;
+
 import com.google.api.ads.adwords.jaxws.extensions.downloader.AdWordsSessionBuilderSynchronizer;
 import com.google.api.ads.adwords.jaxws.extensions.report.model.csv.AwReportCsvReader;
 import com.google.api.ads.adwords.jaxws.extensions.report.model.entities.Report;
@@ -29,21 +43,6 @@ import com.google.api.ads.adwords.lib.utils.ReportException;
 import com.google.api.ads.adwords.lib.utils.v201402.ReportDownloader;
 import com.google.api.ads.common.lib.exception.ValidationException;
 import com.google.common.collect.Lists;
-
-import org.apache.log4j.Logger;
-
-import au.com.bytecode.opencsv.CSVReader;
-import au.com.bytecode.opencsv.bean.MappingStrategy;
-
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.UnsupportedEncodingException;
-import java.net.HttpURLConnection;
-import java.util.Collection;
-import java.util.List;
-import java.util.concurrent.CountDownLatch;
-import java.util.zip.GZIPInputStream;
 
 /**
  * This {@link Runnable} implements the core logic to download the report file
@@ -65,37 +64,47 @@ import java.util.zip.GZIPInputStream;
 public class RunnableProcessorOnMemory<R extends Report> implements Runnable {
 
   private static final Logger LOGGER = Logger.getLogger(RunnableProcessorOnMemory.class);
-  
-  private CountDownLatch latch;
 
-  private ModifiedCsvToBean<R> csvToBean;
-  private MappingStrategy<R> mappingStrategy;
-  private ReportDefinitionDateRangeType dateRangeType;
-  private String dateStart;
-  private String dateEnd;
-  private String mccAccountId;
-  private EntityPersister entityPersister;
-  private int reportRowsSetSize;
-
-  private final AdWordsSessionBuilderSynchronizer sessionBuilder;
-
+  private final String mccAccountId;
+  private final AdWordsSession adWordsSession;
   private final Long accountId;
   private final ReportDefinition reportDefinition;
-  
+  private final ModifiedCsvToBean<R> csvToBean;
+  private final MappingStrategy<R> mappingStrategy;
+  private final ReportDefinitionDateRangeType dateRangeType;
+  private final String dateStart;
+  private final String dateEnd;
+  private EntityPersister entityPersister;
+  private final int reportRowsSetSize;
+
+  private CountDownLatch latch;
+
+  private Exception error = null;
+
   /**
    * C'tor.
    *
-   * @param file the CSV file.
+   * @param accountId
+   * @param adWordsSession
+   * @param reportDefinition
    * @param csvToBean the {@code CsvToBean}
    * @param mappingStrategy
+   * @param file the CSV file.
+   * @param dateRangeType
+   * @param dateStart
+   * @param dateEnd
+   * @param mccAccountId
+   * @param entityPersister
+   * @param reportRowsSetSize
    */
-  public RunnableProcessorOnMemory(Long accountId, AdWordsSession.Builder builder, 
+  public RunnableProcessorOnMemory(final Long accountId, final AdWordsSession adWordsSession, 
       ReportDefinition reportDefinition, ModifiedCsvToBean<R> csvToBean,
       MappingStrategy<R> mappingStrategy, ReportDefinitionDateRangeType dateRangeType,
-      String dateStart, String dateEnd, String mccAccountId, EntityPersister entityPersister,
+      String dateStart, String dateEnd, final String mccAccountId, EntityPersister entityPersister,
       Integer reportRowsSetSize) {
     this.accountId = accountId;
-    this.sessionBuilder = new AdWordsSessionBuilderSynchronizer(builder);
+    this.adWordsSession = adWordsSession;
+    this.adWordsSession.setClientCustomerId(String.valueOf(accountId));
     this.reportDefinition = reportDefinition;
     this.csvToBean = csvToBean;
     this.mappingStrategy = mappingStrategy;
@@ -151,20 +160,9 @@ public class RunnableProcessorOnMemory<R extends Report> implements Runnable {
       }
       LOGGER.debug("... success.");
       csvReader.close();
-    } catch (UnsupportedEncodingException e) {
-      LOGGER.error("Error processing report for account: " + this.accountId);
-      e.printStackTrace();
-    } catch (IOException e) {
-      LOGGER.error("Error processing report for account: " + this.accountId);
-      e.printStackTrace();
-    } catch (ValidationException e) {
-      LOGGER.error("Error processing report for account: " + this.accountId);
-      e.printStackTrace();
-    } catch (ReportException e) {
-      LOGGER.error("Error processing report for account: " + this.accountId);
-      e.printStackTrace();
-    } catch (ReportDownloadResponseException e) {
-      LOGGER.error("Error processing report for account: " + this.accountId);
+    } catch (Exception e) {
+      error = new Exception("Error processing report for account: " + this.accountId, e);
+      LOGGER.error("Error processing report for account: " + this.accountId + " " + e.getMessage());
       e.printStackTrace();
     } finally {
       if (this.latch != null) {
@@ -204,9 +202,8 @@ public class RunnableProcessorOnMemory<R extends Report> implements Runnable {
       throws ValidationException, ReportException, ReportDownloadResponseException {
 
     InputStream inputStream = null;
-    AdWordsSession session = this.sessionBuilder.getAdWordsSession(this.accountId);
 
-    ReportDownloader reportDownloader = new ReportDownloader(session);
+    ReportDownloader reportDownloader = new ReportDownloader(adWordsSession);
     ReportDownloadResponse reportDownloadResponse =
         reportDownloader.downloadReport(this.reportDefinition);
 
@@ -220,7 +217,15 @@ public class RunnableProcessorOnMemory<R extends Report> implements Runnable {
     }
     return inputStream;
   }
-  
+
+  public Exception getError() {
+    return error;
+  }
+
+  public ReportDefinition getReportDefinition() {
+    return reportDefinition;
+  }
+
   /**
    * @param entityPersister
    *            the entityPersister to set

@@ -14,6 +14,7 @@
 
 package com.google.api.ads.adwords.jaxws.extensions.processors.onmemory;
 
+import com.google.api.ads.adwords.jaxws.extensions.downloader.AdWordsSessionBuilderSynchronizer;
 import com.google.api.ads.adwords.jaxws.extensions.processors.ReportProcessor;
 import com.google.api.ads.adwords.jaxws.extensions.report.model.csv.AnnotationBasedMappingStrategy;
 import com.google.api.ads.adwords.jaxws.extensions.report.model.entities.Report;
@@ -32,6 +33,7 @@ import org.springframework.stereotype.Component;
 
 import au.com.bytecode.opencsv.bean.MappingStrategy;
 
+import java.util.List;
 import java.util.Properties;
 import java.util.Set;
 import java.util.concurrent.CountDownLatch;
@@ -103,7 +105,8 @@ public class ReportProcessorOnMemory extends ReportProcessor {
   public void generateReportsForMCC(
       String userId, String mccAccountId,
       ReportDefinitionDateRangeType dateRangeType, String dateStart,
-      String dateEnd, Set<Long> accountIdsSet, Properties properties)
+      String dateEnd, Set<Long> accountIdsSet, Properties properties,
+      ReportDefinitionReportType onDemandReportType, List<String> reportFieldsToInclude)
           throws Exception {
 
     LOGGER.info("*** Retrieving account IDs ***");
@@ -114,7 +117,8 @@ public class ReportProcessorOnMemory extends ReportProcessor {
       LOGGER.info("Accounts loaded from file.");
     }
 
-    AdWordsSession.Builder builder = authenticator.authenticate(userId, mccAccountId, false);
+    AdWordsSessionBuilderSynchronizer sessionBuilder =
+        new AdWordsSessionBuilderSynchronizer(authenticator.authenticate(userId, mccAccountId, false));
 
     LOGGER.info("*** Generating Reports for " + accountIdsSet.size()
         + " accounts ***");
@@ -128,7 +132,7 @@ public class ReportProcessorOnMemory extends ReportProcessor {
     for (ReportDefinitionReportType reportType : reports) {
 
       if (properties.containsKey(reportType.name())) {
-        this.downloadAndProcess(mccAccountId, builder, reportType, dateRangeType,
+        this.downloadAndProcess(mccAccountId, sessionBuilder, reportType, dateRangeType,
             dateStart, dateEnd, accountIdsSet, properties);
       }
     }
@@ -160,7 +164,7 @@ public class ReportProcessorOnMemory extends ReportProcessor {
    */
   private <R extends Report> void downloadAndProcess(
       String mccAccountId,
-      AdWordsSession.Builder builder,
+      AdWordsSessionBuilderSynchronizer sessionBuilder,
       ReportDefinitionReportType reportType,
       ReportDefinitionDateRangeType dateRangeType, String dateStart,
       String dateEnd, Set<Long> acountIdList, Properties properties) {
@@ -177,29 +181,33 @@ public class ReportProcessorOnMemory extends ReportProcessor {
     .getReportBeanClass(reportType);
 
     final CountDownLatch latch = new CountDownLatch(acountIdList.size());
-    ExecutorService executorService = Executors
-        .newFixedThreadPool(numberOfReportProcessors);
+    ExecutorService executorService = Executors.newFixedThreadPool(numberOfReportProcessors);
 
     Stopwatch stopwatch = Stopwatch.createStarted();
-    ModifiedCsvToBean<R> csvToBean = new ModifiedCsvToBean<R>();
-    MappingStrategy<R> mappingStrategy = new AnnotationBasedMappingStrategy<R>(
-        reportBeanClass);
 
     for (Long accountId : acountIdList) {
       LOGGER.trace(".");
       try {
         LOGGER.debug("Parsing account: " + accountId); 
 
-        RunnableProcessorOnMemory<R> runnableProcesor = new RunnableProcessorOnMemory<R>(
-            accountId, builder, reportDefinition, csvToBean, mappingStrategy, dateRangeType,
-            dateStart, dateEnd, mccAccountId, persister,
-            reportRowsSetSize);
+        // We create a copy of the AdWordsSession specific for the Account
+        AdWordsSession adWordsSession = sessionBuilder.getAdWordsSessionCopy(accountId);
+
+        // We need to create a csvToBean and mappingStrategy for each thread
+        ModifiedCsvToBean<R> csvToBean = new ModifiedCsvToBean<R>();
+        MappingStrategy<R> mappingStrategy = new AnnotationBasedMappingStrategy<R>(
+            reportBeanClass);
+        
+        RunnableProcessorOnMemory<R> runnableProcesor = getRunnableProcessorOnMemory(
+            new RunnableProcessorOnMemory<R>(
+                accountId, adWordsSession, reportDefinition, csvToBean, mappingStrategy, dateRangeType,
+                dateStart, dateEnd, mccAccountId, persister, reportRowsSetSize));
 
         runnableProcesor.setLatch(latch);
         executorService.execute(runnableProcesor);
 
       } catch (Exception e) {
-        LOGGER.error("Ignoring account (Error when processing): " + accountId);
+        System.err.println("Ignoring account (Error when processing): " + accountId + " " + e.getMessage());
         e.printStackTrace();
       }
     }
@@ -215,5 +223,11 @@ public class ReportProcessorOnMemory extends ReportProcessor {
     stopwatch.stop();
     LOGGER.info("*** Finished processing all reports in "
         + (stopwatch.elapsed(TimeUnit.MILLISECONDS) / 1000) + " seconds ***\n");
+  }
+
+  // Dummy method use for Testing
+  // TODO: Find a better way to run the Mockito Test to avoid this.
+  public <R extends Report> RunnableProcessorOnMemory<R> getRunnableProcessorOnMemory(RunnableProcessorOnMemory<R> runnableProcessorOnMemory) {
+    return runnableProcessorOnMemory;
   }
 }

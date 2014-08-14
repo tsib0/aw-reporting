@@ -117,7 +117,6 @@ public class ReportAccountDefinitionTest extends AbstractReportDefinitionTest<Re
         "AccountTimeZoneId",
         "CustomerDescriptiveName",
         "PrimaryCompanyName",
-        "PrimaryUserLogin",
         "AccountCurrencyCode",
         "Date",
         "DayOfWeek",
@@ -157,7 +156,8 @@ public class ReportAccountDefinitionTest extends AbstractReportDefinitionTest<Re
         "SearchRankLostImpressionShare",
         "ContentImpressionShare",
         "ContentBudgetLostImpressionShare",
-        "ContentRankLostImpressionShare"
+        "ContentRankLostImpressionShare",
+        "SearchExactMatchImpressionShare"
     };
   }
 

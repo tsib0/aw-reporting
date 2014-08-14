@@ -88,6 +88,22 @@ public class BigDecimalUtil {
     return null;
   }
 
+  /**
+   * Finds out the number format in {@code String} format, and parse the number to
+   * {@code BigDecimal} format.
+   *
+   * Mainly use for the ugly "< 10%", "> 90%" or "--" numbers from the API.
+   *
+   * @param numberString the number in {@code String} format
+   * @return the {@code BigDecimal} that was parsed from the {@code String}. If the number format is
+   *         not recognized, than {@code null} is returned.
+   */
+  public static BigDecimal parseFromNumberStringPercentage(String numberString) {
+    if (numberString != null) {
+      return new BigDecimal(numberString.replaceAll("--", "0").replaceAll("\\s|%|>|<", ""));
+    }
+    return null;
+  }
 
   /**
    * Formats the given {@code BigDecimal} to a readable String.

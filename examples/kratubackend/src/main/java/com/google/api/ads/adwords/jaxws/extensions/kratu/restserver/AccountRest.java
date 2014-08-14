@@ -15,7 +15,6 @@
 package com.google.api.ads.adwords.jaxws.extensions.kratu.restserver;
 
 import com.google.api.ads.adwords.jaxws.extensions.kratu.data.Account;
-
 import org.restlet.data.Status;
 import org.restlet.representation.Representation;
 
@@ -27,7 +26,7 @@ import java.util.List;
  * @author jtoledo@google.com (Julian Toledo)
  */
 public class AccountRest extends AbstractServerResource {
-
+	
   public Representation getHandler() {
     String result = null;
     try {

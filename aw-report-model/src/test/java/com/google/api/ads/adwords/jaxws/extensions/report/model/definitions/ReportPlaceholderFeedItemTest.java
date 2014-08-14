@@ -109,7 +109,6 @@ AbstractReportDefinitionTest<ReportPlaceholderFeedItem> {
         "AccountTimeZoneId",
         "CustomerDescriptiveName",
         "PrimaryCompanyName",
-        "PrimaryUserLogin",
         "AccountCurrencyCode",
         "Date",
         "DayOfWeek",
@@ -152,7 +151,8 @@ AbstractReportDefinitionTest<ReportPlaceholderFeedItem> {
         "AdId",
         "FeedId",
         "FeedItemId",
-        "PlaceholderType"
+        "PlaceholderType",
+        "IsSelfAction"
         };
   }
 }
