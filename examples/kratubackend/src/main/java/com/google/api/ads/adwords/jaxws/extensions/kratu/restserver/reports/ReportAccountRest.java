@@ -33,6 +33,7 @@ public class ReportAccountRest extends AbstractServerResource {
     String result = null;
     try {
       getParameters();
+      
       List<ReportAccount> listReport = null;
       if (accountId != null) { //LIST Account level
         listReport = getStorageHelper().getReportByAccountId(ReportAccount.class, accountId, dateStart, dateEnd);

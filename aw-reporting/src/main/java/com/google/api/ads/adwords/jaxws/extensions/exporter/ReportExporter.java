@@ -46,6 +46,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Properties;
 import java.util.Set;
 
@@ -151,6 +152,11 @@ public abstract class ReportExporter {
       if (properties.getProperty("aw.report.exporter.writePdf") != null) {
         writePdf = Boolean.valueOf(properties.getProperty("aw.report.exporter.writePdf"));
       }
+      
+      Boolean writeDriveDoc = false;
+      if (properties.getProperty("aw.report.exporter.writeDriveDoc") != null) {
+        writeDriveDoc = Boolean.valueOf(properties.getProperty("aw.report.exporter.writeDriveDoc"));
+      }
 
       // Get the Fonts for the PDF from the properties file
       String propertyReportFonts = properties.getProperty("aw.report.exporter.reportfonts");
@@ -166,13 +172,21 @@ public abstract class ReportExporter {
 
       if (propertyReportWriterType != null && 
           propertyReportWriterType.equals(ReportWriterType.GoogleDriveWriter.name())) {
+        
+        // One folder per account
+        Boolean perAccountFolder = false;
+        if (properties.getProperty("aw.report.exporter.reportwritertype.drive.peraccountfolder") != null) {
+          perAccountFolder = Boolean.valueOf(properties.getProperty("aw.report.exporter.writeDriveDoc"));
+        }
 
         // Writing HTML to GoogleDrive
         if (writeHtml) {
           LOGGER.debug("Writing (to GoogleDrive) HTML for account: " + accountId);
           GoogleDriveReportWriter gdrwHtml = new GoogleDriveReportWriter.GoogleDriveReportWriterBuilder(
               accountId, dateStart, dateEnd, mccAccountId, credential, ReportFileType.HTML,
-              templateName).build();
+              templateName)
+            .withFolderPerAccount(perAccountFolder)
+            .build();
           gdrwHtml.write(mrwHtml.getAsSource());
         }
 
@@ -181,8 +195,21 @@ public abstract class ReportExporter {
           LOGGER.debug("Writing (to GoogleDrive) PDF for account: " + accountId);
           GoogleDriveReportWriter gdrwPdf = new GoogleDriveReportWriter.GoogleDriveReportWriterBuilder(
               accountId, dateStart, dateEnd, mccAccountId, credential, ReportFileType.PDF,
-              templateName).build();
+              templateName)
+            .withFolderPerAccount(perAccountFolder)
+            .build();
           HTMLExporter.exportHtmlToPdf(mrwHtml.getAsSource(), gdrwPdf, fontPaths);
+        }
+        
+        // Writing Drive Doc to GoogleDrive
+        if (writeDriveDoc) {
+          LOGGER.debug("Writing GoogleDrive Doc for account: " + accountId);
+          GoogleDriveReportWriter gdrwDriveDoc = new GoogleDriveReportWriter.GoogleDriveReportWriterBuilder(
+              accountId, dateStart, dateEnd, mccAccountId, credential, ReportFileType.DRIVE_DOC,
+              templateName)
+            .withFolderPerAccount(perAccountFolder)
+            .build();
+          gdrwDriveDoc.write(mrwHtml.getAsSource());
         }
 
       } else {
@@ -203,6 +230,8 @@ public abstract class ReportExporter {
           HTMLExporter.exportHtmlToPdf(mrwHtml.getAsSource(), fsrwPdf, fontPaths);
         }
       }
+    } else {
+    	LOGGER.info("No data found for account " + accountId);
     }
   }
 
@@ -223,35 +252,80 @@ public abstract class ReportExporter {
 
     for (ReportDefinitionReportType reportType : reports) {
       if (properties.containsKey(reportType.name())) {
-        // Adding each report type rows from DB to the accounts montlyeports list.
+        // Adding each report type rows from DB to the account's monthly reports list.
 
         List<Report> monthlyReports = Lists.newArrayList(persister.listMonthReports(
             csvReportEntitiesMapping.getReportBeanClass(reportType), accountId,
             DateUtil.parseDateTime(dateStart), DateUtil.parseDateTime(dateEnd)));
 
-        if (sumAdExtensions && reportType.name() == "PLACEHOLDER_FEED_ITEM_REPORT") {
+        if (reportType.name() == "PLACEHOLDER_FEED_ITEM_REPORT") {
           Map<String, NameImprClicks> adExtensionsMap = new HashMap<String, NameImprClicks>();
           int sitelinks = 0;
+          long totalClicks = 0;
+          long totalImpressions = 0;
+          
+
+          // Aggregate totals by clickType starting with '0' values for each type to avoid NPEs
+          Map<String, NameImprClicks> totalsByClickType = new HashMap<String, NameImprClicks>();          
+          totalsByClickType.put("Sitelink", new NameImprClicks("Sitelink"));
+          totalsByClickType.put("Call", new NameImprClicks("Call"));
+          totalsByClickType.put("App", new NameImprClicks("App"));
+          totalsByClickType.put("Location", new NameImprClicks("Location"));
+          totalsByClickType.put("Review", new NameImprClicks("Review"));
+
           for (Report report : monthlyReports) {
-            String clickType = ((ReportPlaceholderFeedItem) report).getClickType();
+            int placeholderType = ((ReportPlaceholderFeedItem) report).getFeedPlaceholderType();
+            String clickType = "Headline";
+            switch (placeholderType) {
+            case 1:
+              clickType = "Sitelink";
+              break;
+            case 2:
+              clickType = "Call";
+              break;
+            case 3:
+              clickType = "App";
+              break;
+            case 7:
+              clickType = "Location";
+              break;
+            case 8:
+              clickType = "Review";
+              break;
+            }
             Long impressions = ((ReportPlaceholderFeedItem) report).getImpressions();
             Long clicks = ((ReportPlaceholderFeedItem) report).getClicks();
+            boolean isSelfAction = ((ReportPlaceholderFeedItem) report).isSelfAction();
             if (!clickType.equals("Headline")) {
               if (clickType.equals("Sitelink")) {
                 sitelinks++;
               }
+              if(isSelfAction) {
               if (adExtensionsMap.containsKey(clickType)) {
-                NameImprClicks oldValues = adExtensionsMap.get(clickType);
-                oldValues.impressions += impressions;
-                oldValues.clicks += clicks;
-                adExtensionsMap.put(clickType, oldValues);
+                  NameImprClicks oldValues = adExtensionsMap.get(clickType);
+                  oldValues.impressions += impressions;
+                  oldValues.clicks += clicks;
+                  totalClicks += clicks;
+                  totalImpressions += impressions;
+                  adExtensionsMap.put(clickType, oldValues);
               } else {
                 NameImprClicks values = new NameImprClicks(); 
                 values.impressions = impressions;
                 values.clicks = clicks;
+                totalClicks += clicks;
+                totalImpressions += impressions;
                 adExtensionsMap.put(clickType, values);
               }
+              
+              // Add total values for each clickType
+              NameImprClicks clickTypeNic;
+              if(totalsByClickType.containsKey(clickType)) {
+                clickTypeNic = totalsByClickType.get(clickType);
+                clickTypeNic.impressions += impressions;
+                clickTypeNic.clicks += clicks;
+              }
             }
+          }
           }
 
           List<NameImprClicks> adExtensions = new ArrayList<NameImprClicks>();
@@ -265,9 +339,28 @@ public abstract class ReportExporter {
             nic.impressions = entry.getValue().impressions;
             adExtensions.add(nic);
           }
-          reportDataMap.put("ADEXTENSIONS", adExtensions);
+          NameImprClicks nic = new NameImprClicks();
+          nic.clickType = "Total";
+          nic.clicks = totalClicks;
+          nic.impressions = totalImpressions;
+          adExtensions.add(nic);
+
+          if (monthlyReports != null && monthlyReports.size() > 0) {
+
+            reportDataMap.put("ADEXTENSIONS", adExtensions);
+
+            // Add report data for totals for each clickType
+            for(Entry<String, NameImprClicks> clickTypeTotal : totalsByClickType.entrySet()) {
+              reportDataMap.put(
+                  "ADEXTENSIONSTOTALS-" + clickTypeTotal.getKey(), clickTypeTotal.getValue());
+            }
+            reportDataMap.put("ADEXTENSIONSTOTALS", nic);
+          }
         }
-        reportDataMap.put(reportType.name(), monthlyReports);
+
+        if (monthlyReports != null && monthlyReports.size() > 0) {
+          reportDataMap.put(reportType.name(), monthlyReports);
+        }
       }
     }
     return reportDataMap;

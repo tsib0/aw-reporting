@@ -177,7 +177,7 @@ public class AwReporting {
             "Starting report download for dateStart: " + dateStart + " and dateEnd: " + dateEnd);
 
         processor.generateReportsForMCC(null, mccAccountId, ReportDefinitionDateRangeType.CUSTOM_DATE, dateStart,
-            dateEnd, accountIdsSet, properties);
+            dateEnd, accountIdsSet, properties, null, null);
 
       } else if (cmdLine.hasOption("dateRange")) {
 
@@ -186,7 +186,7 @@ public class AwReporting {
 
         LOGGER.info("Starting report download for dateRange: " + dateRangeType.name());
 
-        processor.generateReportsForMCC(null, mccAccountId, dateRangeType, null, null, accountIdsSet, properties);
+        processor.generateReportsForMCC(null, mccAccountId, dateRangeType, null, null, accountIdsSet, properties, null, null);
 
       } else {
         errors = true;
@@ -458,7 +458,9 @@ public class AwReporting {
       listOfClassPathXml.add("classpath:aw-report-mongodb-beans.xml");
     } else {
       LOGGER.info("Using SQL DB configuration properties.");
+      LOGGER.warn("Updating database schema, this could take a few minutes ...");
       listOfClassPathXml.add("classpath:aw-report-sql-beans.xml");
+      LOGGER.warn("Done."); 
     }
     
     // Choose the Processor type to use based properties file
