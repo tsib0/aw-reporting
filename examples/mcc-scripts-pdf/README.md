@@ -1,6 +1,7 @@
-# Sending PDF Reports from Google Drive (Exampe)
+# Sending PDF Reports from Google Drive (Example)
 
 ## Overview
+
 This example covers one of the most requested use cases for PDF Reports: sending reports automatically to clients.
 
 It is important to know that all the reports must be sent to Google Drive in order to the script work.
