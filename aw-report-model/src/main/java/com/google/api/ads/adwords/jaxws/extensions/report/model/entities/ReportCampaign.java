@@ -56,6 +56,10 @@ public class ReportCampaign extends ReportBase {
   @CsvField(value = "Budget", reportField = "Amount")
   @MoneyField
   private BigDecimal budget;
+  
+  @Column(name = "BUDGET_ID")
+  @CsvField(value = "Budget ID", reportField = "BudgetId")
+  private Long budgetId;
 
   @Column(name = "CONVERSIONRATESIGNIFICANCE")
   @CsvField(value = "Click conversion rate ACE indicator", reportField = "ConversionRateSignificance")
@@ -195,6 +199,14 @@ public class ReportCampaign extends ReportBase {
   public void setBudget(BigDecimal budget) {
     this.budget = budget;
   }  
+  
+  public Long getBudgetId() {
+    return budgetId;
+  }
+
+  public void setBudgetId(Long budgetId) {
+    this.budgetId = budgetId;
+  }
 
   public String getConversionRateSignificance() {
     return BigDecimalUtil.formatAsReadable(conversionRateSignificance);

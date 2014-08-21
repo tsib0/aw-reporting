@@ -62,7 +62,8 @@ public class ReportCampaignDefinitionTest extends AbstractReportDefinitionTest<R
     Assert.assertEquals(132449648L, first.getCampaignId().longValue());
     Assert.assertEquals("active", first.getStatus());
     Assert.assertEquals(1.00, first.getBudget().doubleValue());
-
+    Assert.assertEquals(41273L, first.getBudgetId().longValue());
+    
   }
 
   /**
@@ -88,6 +89,7 @@ public class ReportCampaignDefinitionTest extends AbstractReportDefinitionTest<R
     Assert.assertEquals(132449648L, last.getCampaignId().longValue());
     Assert.assertEquals("active", last.getStatus());
     Assert.assertEquals(1.00, last.getBudget().doubleValue());
+    Assert.assertEquals(412987L, last.getBudgetId().longValue());
 
   }
 
@@ -160,6 +162,7 @@ public class ReportCampaignDefinitionTest extends AbstractReportDefinitionTest<R
         "CampaignName",
         "Status",
         "Amount",
+        "BudgetId",
         "SearchImpressionShare",
         "SearchBudgetLostImpressionShare",
         "SearchRankLostImpressionShare",
