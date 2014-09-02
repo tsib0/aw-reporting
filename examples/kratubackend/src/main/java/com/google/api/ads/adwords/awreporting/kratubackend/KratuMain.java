@@ -365,7 +365,7 @@ public class KratuMain {
     } else {
       console.setThreshold(Level.ERROR);
     }
-    Logger.getLogger("com.google.api.ads.adwords.jaxws.extensions").addAppender(console);
+    Logger.getLogger("com.google.api.ads.adwords.awreporting").addAppender(console);
 
     FileAppender fa = new FileAppender();
     fa.setName("FileLogger");
@@ -374,7 +374,7 @@ public class KratuMain {
     fa.setThreshold(logLevel);
     fa.setAppend(true);
     fa.activateOptions();
-    Logger.getLogger("com.google.api.ads.adwords.jaxws.extensions").addAppender(fa);
+    Logger.getLogger("com.google.api.ads.adwords.awreporting").addAppender(fa);
   }
 
   /**
