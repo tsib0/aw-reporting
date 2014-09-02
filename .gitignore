@@ -1,10 +1,12 @@
 *.log
 
-aw-report-model/target/*
+aw-reporting-model/target/*
 
-aw-report-model/.classpath
+aw-reporting-model/.classpath
 
-aw-report-model/.project
+aw-reporting-model/.project
+
+aw-reporting-model/.settings/
 
 
 aw-reporting/target/*
@@ -12,6 +14,8 @@ aw-reporting/target/*
 aw-reporting/.classpath
 
 aw-reporting/.project
+
+aw-reporting/.settings/
 
 
 examples/kratubackend/target/*
@@ -22,8 +26,9 @@ examples/kratubackend/.project
 
 examples/kratubackend/.settings
 
+
 *.DS_Store
 
-aw-report-model/.settings/
 
-aw-reporting/.settings/
+
+
