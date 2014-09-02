@@ -77,7 +77,7 @@
           <configuration>
             <archive>
               <manifest>
-                <mainClass>com.google.api.ads.adwords.jaxws.extensions.kratu.KratuMain</mainClass>
+                <mainClass>com.google.api.ads.adwords.awreporting.kratubackend.KratuMain</mainClass>
               </manifest>
             </archive>
             <descriptorRefs>
