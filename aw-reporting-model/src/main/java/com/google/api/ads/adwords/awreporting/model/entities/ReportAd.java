@@ -53,6 +53,11 @@ public class ReportAd extends ReportBase {
   @CsvField(value = "Destination URL", reportField = "Url")
   private String destinationUrl;
 
+  @Lob
+  @Column(name = "IMAGE_AD_URL", length = 2048)
+  @CsvField(value = "Image Ad URL", reportField = "ImageAdUrl")
+  private String imageAdUrl;
+
   @Column(name = "HEADLINE", length = 255)
   @CsvField(value = "Ad", reportField = "Headline")
   private String headline;
@@ -207,6 +212,15 @@ public class ReportAd extends ReportBase {
     this.destinationUrl = destinationUrl;
   }
 
+  // imageAdUrl
+  public String getImageAdUrl() {
+    return imageAdUrl;
+  }
+  
+  public void setImageAdUrl(String imageAdUrl) {
+    this.imageAdUrl = imageAdUrl;
+  }
+  
   // headline
   public String getHeadline() {
     return headline;

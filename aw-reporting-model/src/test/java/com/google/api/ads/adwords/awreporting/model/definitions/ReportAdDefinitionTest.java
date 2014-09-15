@@ -63,6 +63,7 @@ public class ReportAdDefinitionTest extends AbstractReportDefinitionTest<ReportA
     Assert.assertEquals(20549800987L, first.getAdId().longValue());
     Assert.assertEquals("enabled", first.getAdState());
     Assert.assertEquals("approved", first.getCreativeApprovalStatus());
+    Assert.assertEquals("CICAgICQ_qa2YBDIARjIASgBMggjtZBfNj2xLw", first.getImageAdUrl());
 
   }
 
@@ -91,6 +92,7 @@ public class ReportAdDefinitionTest extends AbstractReportDefinitionTest<ReportA
     Assert.assertEquals(20551837747L, last.getAdId().longValue());
     Assert.assertEquals("enabled", last.getAdState());
     Assert.assertEquals("approved", last.getCreativeApprovalStatus());
+    Assert.assertEquals("CICAgICQ_qb-SBDUAxg8KAEyCKaVuANwDCr0", last.getImageAdUrl());
 
   }
 
@@ -164,6 +166,7 @@ public class ReportAdDefinitionTest extends AbstractReportDefinitionTest<ReportA
         "Status",
         "DisplayUrl",
         "Url",
+        "ImageAdUrl",
         "Headline",
         "Description1",
         "Description2",
