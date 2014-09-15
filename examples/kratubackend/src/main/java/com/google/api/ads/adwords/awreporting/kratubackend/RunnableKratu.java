@@ -12,9 +12,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package com.google.api.ads.adwords.awreporting.kratubackend.data;
+package com.google.api.ads.adwords.awreporting.kratubackend;
 
-import com.google.api.ads.adwords.awreporting.kratubackend.KratuCompute;
+import com.google.api.ads.adwords.awreporting.kratubackend.entities.Account;
+import com.google.api.ads.adwords.awreporting.kratubackend.entities.Kratu;
+import com.google.api.ads.adwords.awreporting.kratubackend.util.KratuStorageHelper;
 import com.google.common.collect.Lists;
 
 import java.util.Calendar;
@@ -36,9 +38,9 @@ public class RunnableKratu implements Runnable {
   Date dateEnd;
   List<Account> accounts;
 
-  StorageHelper storageHelper;
+  KratuStorageHelper storageHelper;
 
-  public RunnableKratu(Long topAccountId, List<Account> accounts, StorageHelper storageHelper, Date dateStart, Date dateEnd) {
+  public RunnableKratu(Long topAccountId, List<Account> accounts, KratuStorageHelper storageHelper, Date dateStart, Date dateEnd) {
     
     super();
     this.topAccountId = topAccountId;

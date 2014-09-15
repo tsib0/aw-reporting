@@ -12,17 +12,17 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package com.google.api.ads.adwords.awreporting.kratubackend.data;
+package com.google.api.ads.adwords.awreporting.kratubackend;
 
 import static org.junit.Assert.assertNotNull;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import com.google.api.ads.adwords.awreporting.kratubackend.data.Account;
-import com.google.api.ads.adwords.awreporting.kratubackend.data.KratuProcessor;
-import com.google.api.ads.adwords.awreporting.kratubackend.data.RunnableKratu;
-import com.google.api.ads.adwords.awreporting.kratubackend.data.StorageHelper;
+import com.google.api.ads.adwords.awreporting.kratubackend.KratuProcessor;
+import com.google.api.ads.adwords.awreporting.kratubackend.RunnableKratu;
+import com.google.api.ads.adwords.awreporting.kratubackend.entities.Account;
+import com.google.api.ads.adwords.awreporting.kratubackend.util.KratuStorageHelper;
 import com.google.api.ads.adwords.awreporting.model.persistence.EntityPersister;
 import com.google.api.ads.adwords.awreporting.model.util.DateUtil;
 import com.google.api.ads.adwords.awreporting.processors.ReportProcessor;
@@ -58,14 +58,14 @@ public class KratuProcessorTest {
   private ReportProcessor mockedReportProcessor;
 
   @Spy
-  private StorageHelper  storageHelper;
+  private KratuStorageHelper  storageHelper;
 
   private final Date dateStart = DateUtil.parseDateTime("20140101").toDate();
   private final Date dateEnd = DateUtil.parseDateTime("20140131").toDate();
 
   @Before
   public void setUp() throws Exception {
-    storageHelper = new StorageHelper(mockedEntitiesPersister);
+    storageHelper = new KratuStorageHelper(mockedEntitiesPersister);
 
     kratuProcessor = new KratuProcessor();
 
@@ -92,7 +92,7 @@ public class KratuProcessorTest {
     assertNotNull(runnableKratu);
 
     verify(kratuProcessor, times(1)).createRunnableKratu(Mockito.anyLong(),
-        Mockito.anySetOf(Long.class), Mockito.any(StorageHelper.class), Mockito.any(Date.class), Mockito.any(Date.class));
+        Mockito.anySetOf(Long.class), Mockito.any(KratuStorageHelper.class), Mockito.any(Date.class), Mockito.any(Date.class));
 
     verify(mockedEntitiesPersister, times(1)).save(Mockito.anyListOf(Account.class));
 

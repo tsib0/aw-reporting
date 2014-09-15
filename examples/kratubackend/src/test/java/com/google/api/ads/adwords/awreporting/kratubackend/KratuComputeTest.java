@@ -18,10 +18,9 @@ import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
-import com.google.api.ads.adwords.awreporting.kratubackend.KratuCompute;
-import com.google.api.ads.adwords.awreporting.kratubackend.data.Account;
-import com.google.api.ads.adwords.awreporting.kratubackend.data.Kratu;
-import com.google.api.ads.adwords.awreporting.kratubackend.data.StorageHelper;
+import com.google.api.ads.adwords.awreporting.kratubackend.entities.Account;
+import com.google.api.ads.adwords.awreporting.kratubackend.entities.Kratu;
+import com.google.api.ads.adwords.awreporting.kratubackend.util.KratuStorageHelper;
 import com.google.api.ads.adwords.awreporting.model.entities.Report;
 import com.google.api.ads.adwords.awreporting.model.entities.ReportAccount;
 import com.google.api.ads.adwords.awreporting.model.entities.ReportAd;
@@ -69,7 +68,7 @@ public class KratuComputeTest {
   private Account account;
   
   @Mock
-  private StorageHelper storageHelper;
+  private KratuStorageHelper storageHelper;
   
   @Captor
   ArgumentCaptor<Class<? extends Report>> classReportCaptor;

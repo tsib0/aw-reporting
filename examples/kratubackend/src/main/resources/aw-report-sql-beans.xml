@@ -32,7 +32,7 @@
     <property name="packagesToScan">
      <list>
         <value>com.google.api.ads.adwords.awreporting.model.entities</value>
-        <value>com.google.api.ads.adwords.awreporting.kratubackend.data</value>
+        <value>com.google.api.ads.adwords.awreporting.kratubackend.entities</value>
      </list>
 	</property>
   </bean>

@@ -12,8 +12,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package com.google.api.ads.adwords.awreporting.kratubackend.data;
+package com.google.api.ads.adwords.awreporting.kratubackend;
 
+import com.google.api.ads.adwords.awreporting.kratubackend.entities.Account;
+import com.google.api.ads.adwords.awreporting.kratubackend.util.KratuStorageHelper;
 import com.google.api.ads.adwords.awreporting.model.persistence.EntityPersister;
 import com.google.api.ads.adwords.awreporting.model.util.DateUtil;
 import com.google.api.ads.adwords.awreporting.processors.ReportProcessor;
@@ -41,7 +43,7 @@ public class KratuProcessor {
   
   private static final Logger LOGGER = Logger.getLogger(KratuProcessor.class);
 
-  private StorageHelper storageHelper;
+  private KratuStorageHelper kratuStorageHelper;
   private ReportProcessor reportProcessor;
 
   public KratuProcessor() {
@@ -64,7 +66,7 @@ public class KratuProcessor {
     final CountDownLatch latch = new CountDownLatch(1);
     Stopwatch stopwatch = Stopwatch.createStarted();
 
-    RunnableKratu runnableKratu = createRunnableKratu(topAccountId, accountIdsSet, storageHelper, dateStart, dateEnd);
+    RunnableKratu runnableKratu = createRunnableKratu(topAccountId, accountIdsSet, kratuStorageHelper, dateStart, dateEnd);
 
     ExecutorService executorService = Executors.newFixedThreadPool(1);
     runnableKratu.setLatch(latch);
@@ -74,7 +76,7 @@ public class KratuProcessor {
     stopwatch.stop();    
   }
 
-  public RunnableKratu createRunnableKratu(Long topAccountId, Set<Long> accountIdsSet, StorageHelper storageHelper, Date dateStart, Date dateEnd) {
+  public RunnableKratu createRunnableKratu(Long topAccountId, Set<Long> accountIdsSet, KratuStorageHelper storageHelper, Date dateStart, Date dateEnd) {
 
     List<Account> accounts = Lists.newArrayList();
 
@@ -111,10 +113,10 @@ public class KratuProcessor {
     try {
 
       accounts = Account.fromManagedCustomerList(reportProcessor.getAccounts(null, String.valueOf(topAccountId)), topAccountId);
-      storageHelper.getEntityPersister().save(accounts);
+      kratuStorageHelper.getEntityPersister().save(accounts);
       
       System.out.println("Updating DB indexes... (may take long)");
-      storageHelper.createReportIndexes();
+      kratuStorageHelper.createReportIndexes();
 
     } catch (Exception e) {
       LOGGER.error( "Error Updating Accounts: " + e.getMessage() );
@@ -127,7 +129,7 @@ public class KratuProcessor {
    */
   @Autowired
   public void setPersister(EntityPersister persister) {
-    storageHelper = new StorageHelper(persister);
+    kratuStorageHelper = new KratuStorageHelper(persister);
   }
 
   /**

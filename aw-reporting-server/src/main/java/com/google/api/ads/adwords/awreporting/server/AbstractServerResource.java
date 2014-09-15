@@ -17,7 +17,6 @@ package com.google.api.ads.adwords.awreporting.server;
 import com.google.api.ads.adwords.awreporting.model.entities.ReportBase;
 import com.google.api.ads.adwords.awreporting.model.util.DateUtil;
 import com.google.api.ads.adwords.awreporting.model.util.GsonUtil;
-import com.google.api.ads.adwords.awreporting.server.util.StorageHelper;
 import com.google.api.ads.adwords.jaxws.v201406.mcm.ApiException;
 import com.google.api.client.util.Maps;
 import com.google.gson.Gson;
@@ -39,7 +38,6 @@ import org.restlet.resource.Put;
 import org.restlet.resource.ResourceException;
 import org.restlet.resource.ServerResource;
 import org.restlet.util.Series;
-import org.springframework.context.ApplicationContext;
 
 import java.text.ParseException;
 import java.util.Date;
@@ -59,11 +57,8 @@ public abstract class AbstractServerResource extends ServerResource {
 
   protected static final Gson gson = GsonUtil.getGsonBuilder().create();
 
-  protected ApplicationContext appCtx = RestServer.getApplicationContext();
-
-  protected StorageHelper storageHelper = RestServer.getStorageHelper();
-
   // HTTP Parameters
+  protected Long partnerId = null;
   protected Long topAccountId = null;
   protected Long accountId = null;
   protected Long campaignId = null;
@@ -105,6 +100,9 @@ public abstract class AbstractServerResource extends ServerResource {
     try {
 
       // Report Fields
+      String partnerIdString = (String)getRequestAttributes().get("partnerId");
+      partnerId = partnerIdString == null ? null : Long.parseLong(partnerIdString);
+      
       String topAccountIdString = (String)getRequestAttributes().get("topAccountId");
       topAccountId = topAccountIdString == null ? null : Long.parseLong(topAccountIdString);
 

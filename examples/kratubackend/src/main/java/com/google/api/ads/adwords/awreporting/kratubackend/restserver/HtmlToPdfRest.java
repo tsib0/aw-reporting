@@ -16,9 +16,9 @@ package com.google.api.ads.adwords.awreporting.kratubackend.restserver;
 
 import com.google.api.ads.adwords.awreporting.exporter.HTMLExporter;
 import com.google.api.ads.adwords.awreporting.exporter.reportwriter.MemoryReportWriter;
+import com.google.api.ads.adwords.awreporting.server.AbstractServerResource;
 
 import org.restlet.data.MediaType;
-import org.restlet.data.Status;
 import org.restlet.representation.InputRepresentation;
 import org.restlet.representation.Representation;
 import org.w3c.dom.Document;
@@ -37,10 +37,6 @@ public class HtmlToPdfRest extends AbstractServerResource {
   public Representation getHandler() {
     String result = null;
     return createJsonResult(result);
-  }
-
-  public void deleteHandler() {
-    this.setStatus(Status.CLIENT_ERROR_METHOD_NOT_ALLOWED);
   }
 
   public Representation postPutHandler(String html) {

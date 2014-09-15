@@ -12,13 +12,12 @@
 //See the License for the specific language governing permissions and
 //limitations under the License.
 
-package com.google.api.ads.adwords.awreporting.kratubackend.restserver.kratu;
+package com.google.api.ads.adwords.awreporting.kratubackend.restserver;
 
-import com.google.api.ads.adwords.awreporting.kratubackend.data.KratuProcessor;
-import com.google.api.ads.adwords.awreporting.kratubackend.data.RunnableKratu;
-import com.google.api.ads.adwords.awreporting.kratubackend.restserver.AbstractServerResource;
+import com.google.api.ads.adwords.awreporting.kratubackend.KratuProcessor;
+import com.google.api.ads.adwords.awreporting.kratubackend.RunnableKratu;
+import com.google.api.ads.adwords.awreporting.server.AbstractServerResource;
 
-import org.restlet.data.Status;
 import org.restlet.representation.Representation;
 import org.restlet.service.TaskService;
 
@@ -28,9 +27,9 @@ import org.restlet.service.TaskService;
  * @author jtoledo@google.com (Julian Toledo)
  */
 public class GenerateKratusRest extends AbstractServerResource {
-  
+
   static TaskService taskService = new TaskService();
-  
+
   public Representation getHandler() {
     String result = null;
     try {
@@ -39,10 +38,11 @@ public class GenerateKratusRest extends AbstractServerResource {
       //Generate Kratus at Mcc level
       if (topAccountId != null && dateStart != null && dateEnd != null) {
         // Launching a new Service(Thread) to make the request async.
-        KratuProcessor kratuProcessor = getApplicationContext().getBean(KratuProcessor.class);
+        
+        KratuProcessor kratuProcessor = KratuRestServer.getApplicationContext().getBean(KratuProcessor.class);
 
         RunnableKratu runnableKratu = kratuProcessor.createRunnableKratu(
-            topAccountId, null, getStorageHelper(), dateStart, dateEnd);
+            topAccountId, null, KratuRestServer.getKratuStorageHelper(), dateStart, dateEnd);
 
         taskService.submit(runnableKratu);
 
@@ -55,14 +55,5 @@ public class GenerateKratusRest extends AbstractServerResource {
     }
     addReadOnlyHeaders();
     return createJsonResult(result);
-  }
-
-  public void deleteHandler() {
-    this.setStatus(Status.CLIENT_ERROR_METHOD_NOT_ALLOWED);
-  }
-
-  public Representation postPutHandler(String json) {
-    this.setStatus(Status.CLIENT_ERROR_METHOD_NOT_ALLOWED);
-    return createJsonResult(Status.CLIENT_ERROR_METHOD_NOT_ALLOWED.getDescription());
   }
 }

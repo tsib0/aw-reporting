@@ -12,11 +12,10 @@
 //See the License for the specific language governing permissions and
 //limitations under the License.
 
-package com.google.api.ads.adwords.awreporting.kratubackend.restserver.kratu;
+package com.google.api.ads.adwords.awreporting.kratubackend.restserver;
 
-import com.google.api.ads.adwords.awreporting.kratubackend.restserver.AbstractServerResource;
+import com.google.api.ads.adwords.awreporting.server.AbstractServerResource;
 
-import org.restlet.data.Status;
 import org.restlet.representation.Representation;
 
 /**
@@ -33,12 +32,12 @@ public class KratuRest extends AbstractServerResource {
 
       // Retrieve All Kratus for the MCC between the two dates.
       if (topAccountId != null && dateStart != null && dateEnd != null) {
-        result = gson.toJson(getStorageHelper().getKratus(topAccountId, dateStart, dateEnd));
+        result = gson.toJson(KratuRestServer.getKratuStorageHelper().getKratus(topAccountId, dateStart, dateEnd));
       }
 
       // Retrieve All Kratus for a single account.
       if (accountId != null) {
-        result = gson.toJson(getStorageHelper().getKratus(accountId));
+        result = gson.toJson(KratuRestServer.getKratuStorageHelper().getKratus(accountId));
       }
 
     } catch (Exception exception) {
@@ -46,14 +45,5 @@ public class KratuRest extends AbstractServerResource {
     }
     addReadOnlyHeaders();
     return createJsonResult(result);
-  }
-
-  public void deleteHandler() {
-    this.setStatus(Status.CLIENT_ERROR_METHOD_NOT_ALLOWED);
-  }
-
-  public Representation postPutHandler(String json) {
-    this.setStatus(Status.CLIENT_ERROR_METHOD_NOT_ALLOWED);
-    return createJsonResult(Status.CLIENT_ERROR_METHOD_NOT_ALLOWED.getDescription());
   }
 }

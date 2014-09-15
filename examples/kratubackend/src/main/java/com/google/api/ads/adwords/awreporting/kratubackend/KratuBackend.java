@@ -15,15 +15,10 @@
 package com.google.api.ads.adwords.awreporting.kratubackend;
 
 import com.google.api.ads.adwords.awreporting.AwReporting;
-import com.google.api.ads.adwords.awreporting.kratubackend.data.KratuProcessor;
-import com.google.api.ads.adwords.awreporting.kratubackend.restserver.RestServer;
+import com.google.api.ads.adwords.awreporting.kratubackend.restserver.KratuRestServer;
 import com.google.api.ads.adwords.awreporting.processors.ReportProcessor;
 import com.google.api.ads.adwords.awreporting.proxy.JaxWsProxySelector;
-import com.google.api.ads.adwords.awreporting.util.DataBaseType;
-import com.google.api.ads.adwords.awreporting.util.DynamicPropertyPlaceholderConfigurer;
 import com.google.api.ads.adwords.awreporting.util.FileUtil;
-import com.google.api.ads.adwords.awreporting.util.ProcessorType;
-import com.google.api.client.util.Lists;
 import com.google.api.client.util.Sets;
 
 import org.apache.commons.cli.BasicParser;
@@ -39,19 +34,13 @@ import org.apache.log4j.FileAppender;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.apache.log4j.PatternLayout;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.core.io.ClassPathResource;
-import org.springframework.core.io.FileSystemResource;
-import org.springframework.core.io.Resource;
-import org.springframework.core.io.support.PropertiesLoaderUtils;
 
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.ProxySelector;
 import java.util.List;
-import java.util.Properties;
 import java.util.Scanner;
 import java.util.Set;
 
@@ -68,32 +57,15 @@ import java.util.Set;
  *
  * @author jtoledo@google.com (Julian Toledo)
  */
-public class KratuMain {
+public class KratuBackend {
 
-  private static final Logger LOGGER = Logger.getLogger(KratuMain.class);
-
-  private static final int DEFAULT_SERVER_PORT = 8081; 
-  
-  /**
-   * The DB type key specified in the properties file.
-   */
-  private static final String AW_REPORT_MODEL_DB_TYPE = "aw.report.model.db.type";
-  
-  /**
-   * The Processor type key specified in the properties file.
-   */
-  private static final String AW_REPORT_PROCESSOR_TYPE = "aw.report.processor.type";
+  private static final Logger logger = Logger.getLogger(KratuBackend.class);
 
   /**
    * Default properties file name.
    */
   private static final String CLASSPATH_AW_REPORT_MODEL_PROPERTIES_LOCATION =
       "kratubackend-sample.properties";
-
-  /**
-   * The Spring application context used to get all the beans.
-   */
-  private static ApplicationContext appCtx;
 
   /**
    * Main method.
@@ -128,22 +100,18 @@ public class KratuMain {
         propertiesPath = cmdLine.getOptionValue("file");
       }
       System.out.println("Using properties from: " + propertiesPath);
-      
-      Properties properties = initApplicationContextAndProperties(propertiesPath);
-      String mccAccountId = properties.getProperty("mccAccountId").replaceAll("-", "");
+
+      KratuRestServer kratuRestServer = new KratuRestServer();
+      kratuRestServer.addClassPathXml("classpath:kratu-processor-beans.xml");
+      kratuRestServer.initApplicationContextAndProperties(propertiesPath);
+
+      String mccAccountId = KratuRestServer.getProperties().getProperty("mccAccountId").replaceAll("-", "");
 
       if (cmdLine.hasOption("startServer")) {
+
         // Start the Rest Server
         System.out.println("Starting Rest Server...");
-
-        // Set the server port from the properties file or use 8081 as default. 
-        int serverPort = DEFAULT_SERVER_PORT;
-        String strServerPort = properties.getProperty("serverport");
-        if (strServerPort != null && strServerPort.length() > 0) {
-          serverPort = Integer.valueOf(strServerPort);
-        }        
-
-        RestServer.createRestServer(appCtx, propertiesPath, serverPort);
+        kratuRestServer.startServer();
 
       } else {
         if (cmdLine.hasOption("startDate") && cmdLine.hasOption("endDate")) {
@@ -161,7 +129,7 @@ public class KratuMain {
               addAccountsFromFile(accountIdsSet, accountsFileName);
             }
 
-            KratuProcessor kratuProcessor = appCtx.getBean(KratuProcessor.class);
+            KratuProcessor kratuProcessor = KratuRestServer.getApplicationContext().getBean(KratuProcessor.class);
             kratuProcessor.processKratus(Long.valueOf(mccAccountId), accountIdsSet,
                 cmdLine.getOptionValue("startDate"), cmdLine.getOptionValue("endDate"));
             System.exit(0);
@@ -328,18 +296,18 @@ public class KratuMain {
   protected static void addAccountsFromFile(Set<Long> accountIdsSet, String accountsFileName)
       throws FileNotFoundException {
 
-    LOGGER.info("Using accounts file: " + accountsFileName);
+    logger.info("Using accounts file: " + accountsFileName);
 
     List<String> linesAsStrings = FileUtil.readFileLinesAsStrings(new File(accountsFileName));
 
-    LOGGER.debug("Acount IDs to be queried:");
+    logger.debug("Acount IDs to be queried:");
     for (String line : linesAsStrings) {
 
       String accountIdAsString = line.replaceAll("-", "");
       long accountId = Long.parseLong(accountIdAsString);
       accountIdsSet.add(accountId);
 
-      LOGGER.debug("Acount ID: " + accountId);
+      logger.debug("Acount ID: " + accountId);
     }
   }
 
@@ -375,57 +343,5 @@ public class KratuMain {
     fa.setAppend(true);
     fa.activateOptions();
     Logger.getLogger("com.google.api.ads.adwords.awreporting").addAppender(fa);
-  }
-
-  /**
-   * Initialize the application context, adding the properties configuration file depending on the
-   * specified path.
-   *
-   * @param propertiesPath the path to the file.
-   * @return the resource loaded from the properties file.
-   * @throws IOException error opening the properties file.
-   */
-  private static Properties initApplicationContextAndProperties(String propertiesPath)
-      throws IOException {
-
-    Resource resource = new ClassPathResource(propertiesPath);
-    if (!resource.exists()) {
-      resource = new FileSystemResource(propertiesPath);
-    }
-    DynamicPropertyPlaceholderConfigurer.setDynamicResource(resource);
-    Properties properties = PropertiesLoaderUtils.loadProperties(resource);
-
-    // Selecting the XMLs to choose the Spring Beans to load.
-    List<String> listOfClassPathXml = Lists.newArrayList();
-
-    // Load Project Beans
-    listOfClassPathXml.add("classpath:kratu-processor-beans.xml");
-    listOfClassPathXml.add("classpath:storage-helper-beans.xml");
-
-    // Load AwReporting Beans
-
-    // Choose the DB type to use based properties file
-    String dbType = (String) properties.get(AW_REPORT_MODEL_DB_TYPE);
-    if (dbType != null && dbType.equals(DataBaseType.MONGODB.name())) {
-      LOGGER.info("Using MONGO DB configuration properties.");
-      listOfClassPathXml.add("classpath:aw-report-mongodb-beans.xml");
-    } else {
-      LOGGER.info("Using SQL DB configuration properties.");
-      listOfClassPathXml.add("classpath:aw-report-sql-beans.xml");
-    }
-
-    // Choose the Processor type to use based properties file
-    String processorType = (String) properties.get(AW_REPORT_PROCESSOR_TYPE);
-    if (processorType != null && processorType.equals(ProcessorType.ONMEMORY.name())) {
-      LOGGER.info("Using ONMEMORY Processor.");
-      listOfClassPathXml.add("classpath:aw-report-processor-beans-onmemory.xml");
-    } else {
-      LOGGER.info("Using ONFILE Processor.");
-      listOfClassPathXml.add("classpath:aw-report-processor-beans-onfile.xml");
-    }
-
-    appCtx = new ClassPathXmlApplicationContext(listOfClassPathXml.toArray(new String[listOfClassPathXml.size()]));
-
-    return properties;
   }
 }

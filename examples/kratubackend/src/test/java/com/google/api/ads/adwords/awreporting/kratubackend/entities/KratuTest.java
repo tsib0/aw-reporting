@@ -12,12 +12,12 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package com.google.api.ads.adwords.awreporting.kratubackend.data;
+package com.google.api.ads.adwords.awreporting.kratubackend.entities;
 
 import static org.junit.Assert.assertEquals;
 
-import com.google.api.ads.adwords.awreporting.kratubackend.data.Account;
-import com.google.api.ads.adwords.awreporting.kratubackend.data.Kratu;
+import com.google.api.ads.adwords.awreporting.kratubackend.entities.Account;
+import com.google.api.ads.adwords.awreporting.kratubackend.entities.Kratu;
 import com.google.api.ads.adwords.awreporting.model.util.DateUtil;
 
 import org.junit.Test;
