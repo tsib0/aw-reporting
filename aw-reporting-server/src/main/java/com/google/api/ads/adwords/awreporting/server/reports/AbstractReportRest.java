@@ -16,6 +16,8 @@ package com.google.api.ads.adwords.awreporting.server.reports;
 
 import com.google.api.ads.adwords.awreporting.model.entities.Report;
 import com.google.api.ads.adwords.awreporting.server.AbstractServerResource;
+import com.google.api.ads.adwords.awreporting.server.RestServer;
+import com.google.api.ads.adwords.awreporting.server.util.StorageHelper;
 
 import org.restlet.representation.Representation;
 
@@ -29,6 +31,8 @@ import java.util.List;
 public abstract class AbstractReportRest<ReportSub extends Report> extends AbstractServerResource {
 
   private Class<ReportSub> classReportSub;
+  
+  private StorageHelper storageHelper = RestServer.getStorageHelper();
 
   protected AbstractReportRest(Class<ReportSub> classReportSub) {
     this.classReportSub = classReportSub;

@@ -84,8 +84,11 @@ public class AwReportingServer {
 
         // Start the Rest Server
         System.out.println("Starting Rest Server at Port: " + DEFAULT_SERVER_PORT);
-        RestServer.createRestServer(propertiesPath, DEFAULT_SERVER_PORT);
-        
+
+        RestServer restServer = new RestServer();
+        restServer.initApplicationContextAndProperties(propertiesPath);
+        restServer.startServer();
+
         System.out.println("Updating DB indexes... (may take long)");
         RestServer.getStorageHelper().createReportIndexes();
         System.out.println("DB indexes Updated.");

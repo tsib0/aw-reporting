@@ -13,8 +13,4 @@
     id="storageHelper">
   </bean>
 
-  <bean id="awReportProperties"
-    class="com.google.api.ads.adwords.awreporting.util.DynamicPropertyPlaceholderConfigurer">
-  </bean>
-
 </beans>

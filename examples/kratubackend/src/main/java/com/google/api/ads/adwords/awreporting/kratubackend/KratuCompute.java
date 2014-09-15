@@ -14,9 +14,9 @@
 
 package com.google.api.ads.adwords.awreporting.kratubackend;
 
-import com.google.api.ads.adwords.awreporting.kratubackend.data.Account;
-import com.google.api.ads.adwords.awreporting.kratubackend.data.Kratu;
-import com.google.api.ads.adwords.awreporting.kratubackend.data.StorageHelper;
+import com.google.api.ads.adwords.awreporting.kratubackend.entities.Account;
+import com.google.api.ads.adwords.awreporting.kratubackend.entities.Kratu;
+import com.google.api.ads.adwords.awreporting.kratubackend.util.KratuStorageHelper;
 import com.google.api.ads.adwords.awreporting.model.entities.ReportAccount;
 import com.google.api.ads.adwords.awreporting.model.entities.ReportAd;
 import com.google.api.ads.adwords.awreporting.model.entities.ReportAdExtension;
@@ -166,7 +166,7 @@ public class KratuCompute {
    * @returns Kratu the kratu for the day
    */
   public static Kratu createDailyKratuFromDB(
-      StorageHelper storageHelper,
+      KratuStorageHelper storageHelper,
       Long topAccountId,
       Account account,
       Date day) {

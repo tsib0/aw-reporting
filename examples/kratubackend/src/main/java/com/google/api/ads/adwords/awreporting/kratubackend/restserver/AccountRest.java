@@ -14,9 +14,9 @@
 
 package com.google.api.ads.adwords.awreporting.kratubackend.restserver;
 
-import com.google.api.ads.adwords.awreporting.kratubackend.data.Account;
+import com.google.api.ads.adwords.awreporting.kratubackend.entities.Account;
+import com.google.api.ads.adwords.awreporting.server.AbstractServerResource;
 
-import org.restlet.data.Status;
 import org.restlet.representation.Representation;
 
 import java.util.List;
@@ -34,7 +34,7 @@ public class AccountRest extends AbstractServerResource {
       getParameters();
 
       if (topAccountId != null ) {
-        List<Account> listAccounts = getStorageHelper().getEntityPersister().get(
+        List<Account> listAccounts = KratuRestServer.getKratuStorageHelper().getEntityPersister().get(
             Account.class, "topAccountId", topAccountId);
         result =  gson.toJson(listAccounts);
       }
@@ -44,14 +44,5 @@ public class AccountRest extends AbstractServerResource {
     }
     addReadOnlyHeaders();
     return createJsonResult(result);
-  }
-
-  public void deleteHandler() {
-    this.setStatus(Status.CLIENT_ERROR_METHOD_NOT_ALLOWED);
-  }
-
-  public Representation postPutHandler(String json) {
-    this.setStatus(Status.CLIENT_ERROR_METHOD_NOT_ALLOWED);
-    return createJsonResult(Status.CLIENT_ERROR_METHOD_NOT_ALLOWED.getDescription());
   }
 }

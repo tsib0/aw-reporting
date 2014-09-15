@@ -23,25 +23,27 @@ import com.google.api.ads.adwords.awreporting.server.reports.ReportCampaignNegat
 import com.google.api.ads.adwords.awreporting.server.reports.ReportCampaignRest;
 import com.google.api.ads.adwords.awreporting.server.reports.ReportKeywordRest;
 import com.google.api.ads.adwords.awreporting.server.util.StorageHelper;
+import com.google.api.ads.adwords.awreporting.util.DataBaseType;
 import com.google.api.ads.adwords.awreporting.util.DynamicPropertyPlaceholderConfigurer;
+import com.google.api.ads.adwords.awreporting.util.ProcessorType;
 import com.google.api.client.util.Lists;
 
+import org.apache.log4j.Logger;
 import org.restlet.Application;
 import org.restlet.Component;
 import org.restlet.Context;
-import org.restlet.Restlet;
 import org.restlet.data.Protocol;
-import org.restlet.resource.Directory;
-import org.restlet.routing.Redirector;
 import org.restlet.routing.Router;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
+import org.springframework.core.io.support.PropertiesLoaderUtils;
 
-import java.io.File;
+import java.io.IOException;
 import java.util.List;
+import java.util.Properties;
 
 /**
  * RestServer, add the Routing for the REST entry points and
@@ -51,71 +53,71 @@ import java.util.List;
  */
 public class RestServer extends Application {
 
+  private static final Logger logger = Logger.getLogger(RestServer.class);
+  
+  private static int serverPort = 8081;
+
   private static ApplicationContext appCtx;
 
   private static EntityPersister persister;
 
   private static StorageHelper storageHelper;
+  
+  private static Properties properties;
+  
+  private List<String> listOfClassPathXml = Lists.newArrayList();
 
-  private static String propertiesFilePath;
+  /**
+   * The DB type key specified in the properties file.
+   */
+  private static final String AW_REPORT_MODEL_DB_TYPE = "aw.report.model.db.type";
+
+  /**
+   * The Processor type key specified in the properties file.
+   */
+  private static final String AW_REPORT_PROCESSOR_TYPE = "aw.report.processor.type";
 
   public static ApplicationContext getApplicationContext() {
-    if (appCtx == null) {
-      synchronized (RestServer.class) {
-        if (appCtx == null) {
-          initApplicationContextAndProperties();
-        }
-      }
-    }
     return appCtx;
   }
 
   public static EntityPersister getPersister() {
-    if (persister == null || appCtx == null) {
-      synchronized (RestServer.class) {
-        if (persister == null || appCtx == null) {
-          initApplicationContextAndProperties();
-        }
-      }
-    }
     return persister;
   }
 
   public static StorageHelper getStorageHelper() {
-    if (storageHelper == null || appCtx == null) {
-      synchronized (RestServer.class) {
-        if (storageHelper == null || appCtx == null) {
-          initApplicationContextAndProperties();
-        }
-      }
-    }
     return storageHelper;
   }
 
-  public static void createRestServer(String propertiesPath, int port) throws Exception {
+  public static Properties getProperties() {
+    return properties;
+  }
 
-    propertiesFilePath = propertiesPath;
+  public void addClassPathXml(String path) {
+    listOfClassPathXml.add(path);
+  }
 
-    // Create a component
+  public RestServer() throws IOException {
+  }
+
+  public void startServer() throws Exception {
+    startServer(this);
+  }
+
+  protected void startServer(RestServer restServer) throws Exception {
     Component component = new Component();
-    component.getServers().add(Protocol.HTTP, port);
-    component.getClients().add(Protocol.FILE);
-
     Context context = component.getContext().createChildContext();
-    RestServer application = new RestServer(context);
-    
-    application.getContext().getParameters().add("useForwardedForHeader", "true");
-
-    // Attach the application to the component and start it
-    component.getDefaultHost().attach(application);
+    component.getServers().add(Protocol.HTTP, serverPort);
+    component.getClients().add(Protocol.FILE);
+    context.getParameters().add("useForwardedForHeader", "true");
+    setContext(context);
+    component.getDefaultHost().attach(restServer);
     component.start();
   }
 
-  private RestServer(Context context) {
-    super(context);
-  }
+  @Override
+  public synchronized Router createInboundRoot() {
 
-  public synchronized Restlet createInboundRoot() {
     Router router = new Router(getContext());
 
     // Accounts
@@ -174,6 +176,7 @@ public class RestServer extends Application {
 
     // *** Static files *** 
     // USING FILE
+    /*
     String target = "index.html";
     Redirector redirector = new Redirector(getContext(), target, Redirector.MODE_CLIENT_FOUND);
     router.attach("/", redirector);
@@ -181,6 +184,7 @@ public class RestServer extends Application {
     String htmlPath = "file:///" + currentPath.getParent() + "/html/";
     router.attach("/", redirector);
     router.attach("", new Directory(getContext(), htmlPath));
+    */
 
     return router;
   }
@@ -188,23 +192,47 @@ public class RestServer extends Application {
   /**
    * Initialize the application context, adding the properties configuration file depending on the
    * specified path.
+   * @throws IOException 
    */
-  protected synchronized static void initApplicationContextAndProperties() {
+  public void initApplicationContextAndProperties(String propertiesFilePath) throws IOException {
 
     Resource resource = new ClassPathResource(propertiesFilePath);
     if (!resource.exists()) {
       resource = new FileSystemResource(propertiesFilePath);
     }
     DynamicPropertyPlaceholderConfigurer.setDynamicResource(resource);
+    properties = PropertiesLoaderUtils.loadProperties(resource);
 
-    // Selecting the XMLs to choose the Spring Beans to load.
-    List<String> listOfClassPathXml = Lists.newArrayList();
+    // Set the server port from the properties file or use 8081 as default. 
+    String strServerPort = properties.getProperty("serverport");
+    if (strServerPort != null && strServerPort.length() > 0) {
+      serverPort = Integer.valueOf(strServerPort);
+    }
+
     listOfClassPathXml.add("classpath:storage-helper-beans.xml");
-    listOfClassPathXml.add("classpath:aw-report-sql-beans.xml");
-    appCtx = new ClassPathXmlApplicationContext(listOfClassPathXml.toArray(new String[listOfClassPathXml.size()]));
 
+    // Choose the DB type to use based properties file
+    String dbType = (String) properties.get(AW_REPORT_MODEL_DB_TYPE);
+    if (dbType != null && dbType.equals(DataBaseType.MONGODB.name())) {
+      logger.info("Using MONGO DB configuration properties.");
+      listOfClassPathXml.add("classpath:aw-report-mongodb-beans.xml");
+    } else {
+      logger.info("Using SQL DB configuration properties.");
+      listOfClassPathXml.add("classpath:aw-report-sql-beans.xml");
+    }
+
+    // Choose the Processor type to use based properties file
+    String processorType = (String) properties.get(AW_REPORT_PROCESSOR_TYPE);
+    if (processorType != null && processorType.equals(ProcessorType.ONMEMORY.name())) {
+      logger.info("Using ONMEMORY Processor.");
+      listOfClassPathXml.add("classpath:aw-report-processor-beans-onmemory.xml");
+    } else {
+      logger.info("Using ONFILE Processor.");
+      listOfClassPathXml.add("classpath:aw-report-processor-beans-onfile.xml");
+    }
+
+    appCtx = new ClassPathXmlApplicationContext(listOfClassPathXml.toArray(new String[listOfClassPathXml.size()]));    
     persister = appCtx.getBean(EntityPersister.class);
-
     storageHelper = getApplicationContext().getBean(StorageHelper.class);
   }
 }

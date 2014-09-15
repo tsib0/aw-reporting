@@ -47,7 +47,7 @@
               <manifest>
                 <addClasspath>true</addClasspath>
                 <classpathPrefix>dependency/</classpathPrefix>
-                <mainClass>com.google.api.ads.adwords.awreporting.kratubackend.KratuMain</mainClass>
+                <mainClass>com.google.api.ads.adwords.awreporting.kratubackend.KratuBackend</mainClass>
               </manifest>
               <manifestEntries>
                 <Class-Path>.</Class-Path>
@@ -135,6 +135,13 @@
       <version>${aw-reporting.version}</version>
       <type>jar</type>
     </dependency>
+
+    <dependency>
+      <groupId>com.google</groupId>
+      <artifactId>aw-reporting-server</artifactId>
+      <version>${aw-reporting.version}</version>
+      <type>jar</type>
+    </dependency>    
 
     <dependency>
       <groupId>mysql</groupId>

@@ -12,15 +12,15 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package com.google.api.ads.adwords.awreporting.kratubackend.data;
+package com.google.api.ads.adwords.awreporting.kratubackend;
 
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import com.google.api.ads.adwords.awreporting.kratubackend.data.Account;
-import com.google.api.ads.adwords.awreporting.kratubackend.data.RunnableKratu;
-import com.google.api.ads.adwords.awreporting.kratubackend.data.StorageHelper;
+import com.google.api.ads.adwords.awreporting.kratubackend.RunnableKratu;
+import com.google.api.ads.adwords.awreporting.kratubackend.entities.Account;
+import com.google.api.ads.adwords.awreporting.kratubackend.util.KratuStorageHelper;
 import com.google.api.ads.adwords.awreporting.model.entities.Report;
 import com.google.api.ads.adwords.awreporting.model.entities.ReportAccount;
 import com.google.api.ads.adwords.awreporting.model.persistence.EntityPersister;
@@ -53,7 +53,7 @@ public class RunnableKratuTest {
   @Mock
   private EntityPersister mockedEntitiesPersister;
 
-  private StorageHelper  storageHelper;
+  private KratuStorageHelper  storageHelper;
 
   private ImmutableList<Account> accountList;
   
@@ -69,7 +69,7 @@ public class RunnableKratuTest {
     account1.setExternalCustomerId(123L);
     accountList = ImmutableList.of(account1, account1, account1);
 
-    storageHelper = new StorageHelper();
+    storageHelper = new KratuStorageHelper();
 
     mockedRunnableKratu = new RunnableKratu(456L, accountList, storageHelper, dateStart, dateEnd);
 
