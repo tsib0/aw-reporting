@@ -16,6 +16,7 @@ package com.google.api.ads.adwords.awreporting.kratubackend.entities;
 
 import com.google.api.ads.adwords.awreporting.model.persistence.mongodb.MongoEntity;
 import com.google.api.ads.adwords.awreporting.model.util.DateUtil;
+import com.google.api.ads.adwords.awreporting.server.entities.Account;
 
 import java.math.BigDecimal;
 import java.util.Date;
@@ -34,9 +35,9 @@ import javax.persistence.Table;
 @Table(name = "AW_Kratu")
 public class Kratu implements MongoEntity {
 
-  public static final String _topAccountId = "topAccountId";
-  public static final String _externalCustomerId = "externalCustomerId";
-  public static final String _day = "day";
+  public static final String TOP_ACCOUNT_ID = "topAccountId";
+  public static final String EXTERNAL_CUSTOMER_ID = "externalCustomerId";
+  public static final String DAY = "day";
 
   @Id
   @Column(name = "ID")

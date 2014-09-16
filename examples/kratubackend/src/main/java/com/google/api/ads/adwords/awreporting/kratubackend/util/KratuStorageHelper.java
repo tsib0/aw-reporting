@@ -15,9 +15,9 @@
 package com.google.api.ads.adwords.awreporting.kratubackend.util;
 
 import com.google.api.ads.adwords.awreporting.kratubackend.KratuCompute;
-import com.google.api.ads.adwords.awreporting.kratubackend.entities.Account;
 import com.google.api.ads.adwords.awreporting.kratubackend.entities.Kratu;
 import com.google.api.ads.adwords.awreporting.model.persistence.EntityPersister;
+import com.google.api.ads.adwords.awreporting.server.entities.Account;
 import com.google.api.ads.adwords.awreporting.server.util.StorageHelper;
 import com.google.common.collect.Lists;
 
@@ -50,12 +50,12 @@ public class KratuStorageHelper extends StorageHelper {
   }
 
   public List<Kratu> getKratus(Long accountId) {
-    return getEntityPersister().get(Kratu.class, Kratu._externalCustomerId, accountId);
+    return getEntityPersister().get(Kratu.class, Kratu.EXTERNAL_CUSTOMER_ID, accountId);
   }
 
   public List<Kratu> getKratus(Long topAccountId, Date startDate, Date endDate) {
     List<Kratu> kratusSummary = Lists.newArrayList();
-    List<Account> listAccounts = getEntityPersister().get(Account.class, "topAccountId", topAccountId);
+    List<Account> listAccounts = getEntityPersister().get(Account.class, Account.TOP_ACCOUNT_ID, topAccountId);
 
     System.out.println("\n ** Summary Kratus (for: " + listAccounts.size() + ") **");
     long start = System.currentTimeMillis();
@@ -65,8 +65,8 @@ public class KratuStorageHelper extends StorageHelper {
     for (Account account : listAccounts) {
       System.out.println();
       System.out.print(i++ + " ");
-      List<Kratu> accountDailyKratus = getEntityPersister().get(Kratu.class, Kratu._externalCustomerId,
-          account.getExternalCustomerId(), Kratu._day, startDate, endDate);
+      List<Kratu> accountDailyKratus = getEntityPersister().get(Kratu.class, Kratu.EXTERNAL_CUSTOMER_ID,
+          account.getExternalCustomerId(), Kratu.DAY, startDate, endDate);
       if (accountDailyKratus != null && accountDailyKratus.size() > 0) {
         kratusSummary.add(KratuCompute.createKratuSummary(accountDailyKratus, startDate, endDate));
       }

@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package com.google.api.ads.adwords.awreporting.server;
+package com.google.api.ads.adwords.awreporting.server.rest;
 
 import com.google.api.ads.adwords.awreporting.model.entities.ReportBase;
 import com.google.api.ads.adwords.awreporting.model.util.DateUtil;
@@ -73,7 +73,7 @@ public abstract class AbstractServerResource extends ServerResource {
   @Get
   abstract public Representation getHandler();
 
-  // Not allow by default, subClass most implement if needed.
+  // Not allowed by default, subClass most implement if needed.
   @Delete
   public Representation deleteHandler() {
     this.setStatus(Status.CLIENT_ERROR_METHOD_NOT_ALLOWED);
@@ -81,7 +81,7 @@ public abstract class AbstractServerResource extends ServerResource {
         new ResourceException(Status.CLIENT_ERROR_METHOD_NOT_ALLOWED, "Delete not allowed"));
   }
 
-  // Not allow by default, subClass most implement if needed.
+  // Not allowed by default, subClass most implement if needed.
   @Post
   @Put
   public Representation postPutHandler(String json) {

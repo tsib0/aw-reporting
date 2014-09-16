@@ -17,8 +17,8 @@ package com.google.api.ads.adwords.awreporting.kratubackend.restserver;
 import com.google.api.ads.adwords.awreporting.kratubackend.util.InterestingQueries;
 import com.google.api.ads.adwords.awreporting.model.entities.AuthMcc;
 import com.google.api.ads.adwords.awreporting.model.entities.ReportAccount;
-import com.google.api.ads.adwords.awreporting.server.AbstractServerResource;
-import com.google.api.ads.adwords.awreporting.server.RestServer;
+import com.google.api.ads.adwords.awreporting.server.rest.AbstractServerResource;
+import com.google.api.ads.adwords.awreporting.server.rest.RestServer;
 
 import org.restlet.representation.Representation;
 

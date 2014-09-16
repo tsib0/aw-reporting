@@ -14,7 +14,6 @@
 
 package com.google.api.ads.adwords.awreporting.kratubackend;
 
-import com.google.api.ads.adwords.awreporting.kratubackend.entities.Account;
 import com.google.api.ads.adwords.awreporting.kratubackend.entities.Kratu;
 import com.google.api.ads.adwords.awreporting.kratubackend.util.KratuStorageHelper;
 import com.google.api.ads.adwords.awreporting.model.entities.ReportAccount;
@@ -24,6 +23,7 @@ import com.google.api.ads.adwords.awreporting.model.entities.ReportAdGroup;
 import com.google.api.ads.adwords.awreporting.model.entities.ReportCampaign;
 import com.google.api.ads.adwords.awreporting.model.entities.ReportCampaignNegativeKeyword;
 import com.google.api.ads.adwords.awreporting.model.entities.ReportKeyword;
+import com.google.api.ads.adwords.awreporting.server.entities.Account;
 
 import org.joda.time.DateTime;
 import org.joda.time.Days;

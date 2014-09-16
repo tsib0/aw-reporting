@@ -16,6 +16,7 @@ package com.google.api.ads.adwords.awreporting.server;
 
 import com.google.api.ads.adwords.awreporting.processors.ReportProcessor;
 import com.google.api.ads.adwords.awreporting.proxy.JaxWsProxySelector;
+import com.google.api.ads.adwords.awreporting.server.rest.RestServer;
 
 import org.apache.commons.cli.BasicParser;
 import org.apache.commons.cli.CommandLine;

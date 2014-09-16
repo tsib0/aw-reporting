@@ -14,11 +14,11 @@
 
 package com.google.api.ads.adwords.awreporting.kratubackend;
 
-import com.google.api.ads.adwords.awreporting.kratubackend.entities.Account;
 import com.google.api.ads.adwords.awreporting.kratubackend.util.KratuStorageHelper;
 import com.google.api.ads.adwords.awreporting.model.persistence.EntityPersister;
 import com.google.api.ads.adwords.awreporting.model.util.DateUtil;
 import com.google.api.ads.adwords.awreporting.processors.ReportProcessor;
+import com.google.api.ads.adwords.awreporting.server.entities.Account;
 import com.google.api.client.util.Lists;
 import com.google.common.base.Stopwatch;
 

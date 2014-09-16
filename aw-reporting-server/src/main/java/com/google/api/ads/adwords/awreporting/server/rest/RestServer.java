@@ -12,16 +12,16 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package com.google.api.ads.adwords.awreporting.server;
+package com.google.api.ads.adwords.awreporting.server.rest;
 
 import com.google.api.ads.adwords.awreporting.model.persistence.EntityPersister;
-import com.google.api.ads.adwords.awreporting.server.reports.ReportAccountRest;
-import com.google.api.ads.adwords.awreporting.server.reports.ReportAdExtensionRest;
-import com.google.api.ads.adwords.awreporting.server.reports.ReportAdGroupRest;
-import com.google.api.ads.adwords.awreporting.server.reports.ReportAdRest;
-import com.google.api.ads.adwords.awreporting.server.reports.ReportCampaignNegativeKeywordRest;
-import com.google.api.ads.adwords.awreporting.server.reports.ReportCampaignRest;
-import com.google.api.ads.adwords.awreporting.server.reports.ReportKeywordRest;
+import com.google.api.ads.adwords.awreporting.server.rest.reports.ReportAccountRest;
+import com.google.api.ads.adwords.awreporting.server.rest.reports.ReportAdExtensionRest;
+import com.google.api.ads.adwords.awreporting.server.rest.reports.ReportAdGroupRest;
+import com.google.api.ads.adwords.awreporting.server.rest.reports.ReportAdRest;
+import com.google.api.ads.adwords.awreporting.server.rest.reports.ReportCampaignNegativeKeywordRest;
+import com.google.api.ads.adwords.awreporting.server.rest.reports.ReportCampaignRest;
+import com.google.api.ads.adwords.awreporting.server.rest.reports.ReportKeywordRest;
 import com.google.api.ads.adwords.awreporting.server.util.StorageHelper;
 import com.google.api.ads.adwords.awreporting.util.DataBaseType;
 import com.google.api.ads.adwords.awreporting.util.DynamicPropertyPlaceholderConfigurer;
@@ -173,6 +173,12 @@ public class RestServer extends Application {
     router.attach("/mcc/{topAccountId}/reportadextension/{accountId}", ReportAdExtensionRest.class); //LIST Account level
     router.attach("/mcc/{topAccountId}/reportadextension/campaign/{campaignId}", ReportAdExtensionRest.class); //LIST Campaign level
     router.attach("/mcc/{topAccountId}/reportadextension/adextension/{adExtensionId}", ReportAdExtensionRest.class); //LIST Keyword level
+
+    // HTML to PDF conversion
+    router.attach("/html2pdf", HtmlToPdfRest.class);
+
+    // *** Accounts ***
+    router.attach("/mcc/{topAccountId}/accounts", AccountRest.class); //LIST All
 
     // *** Static files *** 
     // USING FILE
