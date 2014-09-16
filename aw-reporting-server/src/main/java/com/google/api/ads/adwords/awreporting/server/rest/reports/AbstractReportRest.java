@@ -12,11 +12,11 @@
 //See the License for the specific language governing permissions and
 //limitations under the License.
 
-package com.google.api.ads.adwords.awreporting.server.reports;
+package com.google.api.ads.adwords.awreporting.server.rest.reports;
 
 import com.google.api.ads.adwords.awreporting.model.entities.Report;
-import com.google.api.ads.adwords.awreporting.server.AbstractServerResource;
-import com.google.api.ads.adwords.awreporting.server.RestServer;
+import com.google.api.ads.adwords.awreporting.server.rest.AbstractServerResource;
+import com.google.api.ads.adwords.awreporting.server.rest.RestServer;
 import com.google.api.ads.adwords.awreporting.server.util.StorageHelper;
 
 import org.restlet.representation.Representation;
@@ -42,6 +42,7 @@ public abstract class AbstractReportRest<ReportSub extends Report> extends Abstr
     String result = null;
     try {
       getParameters();
+
       List<ReportSub> listReport = null;
 
       if (topAccountId != null &&
@@ -91,6 +92,7 @@ public abstract class AbstractReportRest<ReportSub extends Report> extends Abstr
     } catch (Exception exception) {
       return handleException(exception);
     }
+
     addReadOnlyHeaders();
     return createJsonResult(result);
   }

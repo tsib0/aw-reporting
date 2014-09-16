@@ -14,7 +14,7 @@
 
 package com.google.api.ads.adwords.awreporting.kratubackend.restserver;
 
-import com.google.api.ads.adwords.awreporting.server.AbstractServerResource;
+import com.google.api.ads.adwords.awreporting.server.rest.AbstractServerResource;
 
 import org.restlet.representation.Representation;
 

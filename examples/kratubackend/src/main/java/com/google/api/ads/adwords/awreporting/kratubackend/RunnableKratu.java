@@ -14,9 +14,9 @@
 
 package com.google.api.ads.adwords.awreporting.kratubackend;
 
-import com.google.api.ads.adwords.awreporting.kratubackend.entities.Account;
 import com.google.api.ads.adwords.awreporting.kratubackend.entities.Kratu;
 import com.google.api.ads.adwords.awreporting.kratubackend.util.KratuStorageHelper;
+import com.google.api.ads.adwords.awreporting.server.entities.Account;
 import com.google.common.collect.Lists;
 
 import java.util.Calendar;
@@ -59,7 +59,7 @@ public class RunnableKratu implements Runnable {
       // Get all the (not-MCC) Accounts under TopAccount
       int i = 0;
       for (Account account : accounts) {
-        if (account != null && !account.getIsCanManageClients()) {
+        if (account != null && !account.getCanManageClients()) {
           System.out.println();
           System.out.print(i++);
           Calendar calendar = Calendar.getInstance();
@@ -78,8 +78,8 @@ public class RunnableKratu implements Runnable {
       }
 
       List<String> indexes = Lists.newArrayList();
-      indexes.add(Kratu._externalCustomerId);
-      indexes.add(Kratu._day);
+      indexes.add(Kratu.EXTERNAL_CUSTOMER_ID);
+      indexes.add(Kratu.DAY);
       storageHelper.getEntityPersister().createIndex(Kratu.class, indexes);
 
       System.out.println("\n*** Finished generating Kratus in "

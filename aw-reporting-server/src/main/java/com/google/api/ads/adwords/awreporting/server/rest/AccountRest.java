@@ -12,10 +12,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package com.google.api.ads.adwords.awreporting.kratubackend.restserver;
+package com.google.api.ads.adwords.awreporting.server.rest;
 
-import com.google.api.ads.adwords.awreporting.kratubackend.entities.Account;
-import com.google.api.ads.adwords.awreporting.server.AbstractServerResource;
+import com.google.api.ads.adwords.awreporting.server.entities.Account;
 
 import org.restlet.representation.Representation;
 
@@ -27,21 +26,22 @@ import java.util.List;
  * @author jtoledo@google.com (Julian Toledo)
  */
 public class AccountRest extends AbstractServerResource {
-	
+
   public Representation getHandler() {
     String result = null;
     try {
       getParameters();
 
       if (topAccountId != null ) {
-        List<Account> listAccounts = KratuRestServer.getKratuStorageHelper().getEntityPersister().get(
-            Account.class, "topAccountId", topAccountId);
+        List<Account> listAccounts = RestServer.getStorageHelper().getEntityPersister().get(
+            Account.class, Account.TOP_ACCOUNT_ID, topAccountId);
         result =  gson.toJson(listAccounts);
       }
 
     } catch (Exception exception) {
       return handleException(exception);
     }
+
     addReadOnlyHeaders();
     return createJsonResult(result);
   }

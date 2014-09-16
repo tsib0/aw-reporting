@@ -19,13 +19,11 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import com.google.api.ads.adwords.awreporting.kratubackend.KratuProcessor;
-import com.google.api.ads.adwords.awreporting.kratubackend.RunnableKratu;
-import com.google.api.ads.adwords.awreporting.kratubackend.entities.Account;
 import com.google.api.ads.adwords.awreporting.kratubackend.util.KratuStorageHelper;
 import com.google.api.ads.adwords.awreporting.model.persistence.EntityPersister;
 import com.google.api.ads.adwords.awreporting.model.util.DateUtil;
 import com.google.api.ads.adwords.awreporting.processors.ReportProcessor;
+import com.google.api.ads.adwords.awreporting.server.entities.Account;
 import com.google.api.ads.adwords.jaxws.v201406.mcm.Customer;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;

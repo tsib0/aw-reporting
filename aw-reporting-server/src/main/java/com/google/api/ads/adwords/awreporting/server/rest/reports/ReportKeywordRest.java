@@ -12,17 +12,17 @@
 //See the License for the specific language governing permissions and
 //limitations under the License.
 
-package com.google.api.ads.adwords.awreporting.server.reports;
+package com.google.api.ads.adwords.awreporting.server.rest.reports;
 
-import com.google.api.ads.adwords.awreporting.model.entities.ReportAdExtension;
+import com.google.api.ads.adwords.awreporting.model.entities.ReportKeyword;
 
 /**
- * ReportAdExtensionRest
+ * ReportKeywordRest
  * 
  * @author jtoledo@google.com (Julian Toledo)
  */
-public class ReportAdExtensionRest extends AbstractReportRest<ReportAdExtension> {
-  public ReportAdExtensionRest() {
-    super(ReportAdExtension.class);
+public class ReportKeywordRest extends AbstractReportRest<ReportKeyword> {
+  public ReportKeywordRest() {
+    super(ReportKeyword.class);
   }
 }

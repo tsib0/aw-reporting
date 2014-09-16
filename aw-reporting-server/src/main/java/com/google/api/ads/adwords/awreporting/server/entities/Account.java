@@ -12,13 +12,16 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package com.google.api.ads.adwords.awreporting.kratubackend.entities;
+package com.google.api.ads.adwords.awreporting.server.entities;
 
 import com.google.api.ads.adwords.awreporting.model.persistence.mongodb.MongoEntity;
 import com.google.api.ads.adwords.jaxws.v201406.mcm.Customer;
 import com.google.api.ads.adwords.jaxws.v201406.mcm.ManagedCustomer;
 import com.google.common.collect.Lists;
 
+import com.googlecode.objectify.annotation.Index;
+
+import java.util.Date;
 import java.util.List;
 
 import javax.persistence.Column;
@@ -32,22 +35,27 @@ import javax.persistence.Table;
  * @author jtoledo@google.com (Julian Toledo)
  */
 @Entity
+@com.googlecode.objectify.annotation.Entity
 @Table(name = "AW_Account")
 public class Account implements MongoEntity {
 
-  public static final String __id = "_id";
   public static final String ID = "id";
-  public static final String TOP_ACCOUNT_ID = "topAccountId";  
+  public static final String TOP_ACCOUNT_ID = "topAccountId";
 
   @Id
+  @com.googlecode.objectify.annotation.Id
   @Column(name = "ID")
   private String id;
 
-  @Column(name = "EXTERNAL_CUSTOMER_ID")
-  private Long externalCustomerId;
-
+  @Index
   @Column(name = "TOP_ACCOUNT_ID")
-  protected Long topAccountId;
+  private Long topAccountId;
+
+  @Column(name = "LOGIN")
+  private String login;
+
+  @Column(name = "COMPANY_NAME")
+  private String companyName;
 
   @Column(name = "NAME")
   private String name;
@@ -58,9 +66,12 @@ public class Account implements MongoEntity {
   @Column(name = "DATE_TIME_ZONE")
   private String dateTimeZone;
 
-  @Column(name = "IS_CAN_MANAGE_CLIENTS")
-  private Boolean isCanManageClients;
-  
+  @Column(name = "CAN_MANAGE_CLIENTS")
+  private Boolean canManageClients;
+
+  @Column(name = "TIMESTAMP")
+  private Date timestamp;
+
   /**
    * C'tor to satisfy Hibernate.
    */
@@ -74,14 +85,16 @@ public class Account implements MongoEntity {
    */
   Account(ManagedCustomer managedCustomer, Long topAccountId) {
     id = String.valueOf(managedCustomer.getCustomerId());
-    externalCustomerId = managedCustomer.getCustomerId();
-    name = managedCustomer.getName()  + " (" + managedCustomer.getCompanyName() + ")";
+    this.topAccountId = topAccountId;
+    login = managedCustomer.getLogin();
+    companyName = managedCustomer.getCompanyName();
+    name = managedCustomer.getName();
     currencyCode = managedCustomer.getCurrencyCode();
     dateTimeZone = managedCustomer.getDateTimeZone();
-    isCanManageClients = managedCustomer.isCanManageClients();
-    this.topAccountId = topAccountId;
+    canManageClients = managedCustomer.isCanManageClients();
+    this.timestamp = new Date();
   }
-  
+
   /**
    * Creates a new Account from the API's Customer
    * @param customer
@@ -89,12 +102,14 @@ public class Account implements MongoEntity {
    */
   Account(Customer customer, Long topAccountId) {
     id = String.valueOf(customer.getCustomerId());
-    externalCustomerId = customer.getCustomerId();
-    name = customer.getDescriptiveName() + " (" + customer.getCompanyName() + ")";
+    this.topAccountId = topAccountId;
+    login = "";
+    companyName = customer.getCompanyName();
+    name = customer.getDescriptiveName();
     currencyCode = customer.getCurrencyCode();
     dateTimeZone = customer.getDateTimeZone();
-    isCanManageClients = customer.isCanManageClients();
-    this.topAccountId = topAccountId;
+    canManageClients = customer.isCanManageClients();
+    this.timestamp = new Date();
   }
 
   /**
@@ -124,13 +139,17 @@ public class Account implements MongoEntity {
     }
     return returnList;
   }
-  
+
   public String getId() {
     return id;
   }
 
-  public void setIid(String id) {
+  public void setId(String id) {
     this.id = id;
+  }
+
+  public Long getExternalCustomerId() {
+    return Long.valueOf(id.replaceAll("-", ""));
   }
 
   public Long getTopAccountId() {
@@ -140,15 +159,23 @@ public class Account implements MongoEntity {
   public void setTopAccountId(Long topAccountId) {
     this.topAccountId = topAccountId;
   }
+
+  public String getLogin() {
+    return login;
+  }
+
+  public void setLogin(String login) {
+    this.login = login;
+  }
+
+  public String getCompanyName() {
+    return companyName;
+  }
+
+  public void setCompanyName(String companyName) {
+    this.companyName = companyName;
+  }
   
-  public Long getExternalCustomerId() {
-    return externalCustomerId;
-  }
-
-  public void setExternalCustomerId(Long externalCustomerId) {
-    this.externalCustomerId = externalCustomerId;
-  }
-
   public String getName() {
     return name;
   }
@@ -173,11 +200,11 @@ public class Account implements MongoEntity {
     this.dateTimeZone = dateTimeZone;
   }
 
-  public Boolean getIsCanManageClients() {
-    return isCanManageClients;
+  public Boolean getCanManageClients() {
+    return canManageClients;
   }
 
-  public void setIsCanManageClients(Boolean isCanManageClients) {
-    this.isCanManageClients = isCanManageClients;
+  public void setCanManageClients(Boolean canManageClients) {
+    this.canManageClients = canManageClients;
   }
 }

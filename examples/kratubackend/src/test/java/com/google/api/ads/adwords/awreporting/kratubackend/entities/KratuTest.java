@@ -16,9 +16,8 @@ package com.google.api.ads.adwords.awreporting.kratubackend.entities;
 
 import static org.junit.Assert.assertEquals;
 
-import com.google.api.ads.adwords.awreporting.kratubackend.entities.Account;
-import com.google.api.ads.adwords.awreporting.kratubackend.entities.Kratu;
 import com.google.api.ads.adwords.awreporting.model.util.DateUtil;
+import com.google.api.ads.adwords.awreporting.server.entities.Account;
 
 import org.junit.Test;
 
@@ -41,7 +40,7 @@ public class KratuTest {
     Account account = new Account();
     account.setCurrencyCode("EUR");
     account.setDateTimeZone("Europe/Paris");
-    account.setExternalCustomerId(777L);
+    account.setId("777");
     account.setName("Account1");
 
     Kratu kratu1 = new Kratu(123L, account, date1);

@@ -16,8 +16,8 @@ package com.google.api.ads.adwords.awreporting.kratubackend.restserver;
 
 import com.google.api.ads.adwords.awreporting.kratubackend.RunnableReport;
 import com.google.api.ads.adwords.awreporting.processors.ReportProcessor;
-import com.google.api.ads.adwords.awreporting.server.AbstractServerResource;
-import com.google.api.ads.adwords.awreporting.server.RestServer;
+import com.google.api.ads.adwords.awreporting.server.rest.AbstractServerResource;
+import com.google.api.ads.adwords.awreporting.server.rest.RestServer;
 
 import org.restlet.representation.Representation;
 import org.restlet.service.TaskService;

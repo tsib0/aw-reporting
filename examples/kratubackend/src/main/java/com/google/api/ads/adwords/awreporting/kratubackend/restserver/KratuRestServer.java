@@ -15,7 +15,7 @@
 package com.google.api.ads.adwords.awreporting.kratubackend.restserver;
 
 import com.google.api.ads.adwords.awreporting.kratubackend.util.KratuStorageHelper;
-import com.google.api.ads.adwords.awreporting.server.RestServer;
+import com.google.api.ads.adwords.awreporting.server.rest.RestServer;
 
 import org.restlet.resource.Directory;
 import org.restlet.routing.Redirector;
@@ -59,9 +59,6 @@ public class KratuRestServer extends RestServer {
     // *** MCCs ***
     router.attach("/mcc", MccRest.class); //LIST All
 
-    // *** Accounts ***
-    router.attach("/mcc/{topAccountId}/accounts", AccountRest.class); //LIST All
-    
     // *** Kratu ***
     // ?includeZeroImpressions=false by default
     router.attach("/mcc/{topAccountId}/kratu", KratuRest.class); // List All
@@ -70,8 +67,6 @@ public class KratuRestServer extends RestServer {
     // Genereate Kratus MCC level
     // ?dateStart=yyyyMMdd&dateEnd=yyyyMMdd
     router.attach("/mcc/{topAccountId}/generatekratus", GenerateKratusRest.class);
-
-    router.attach("/html2pdf", HtmlToPdfRest.class); 
 
     // *** Static files *** 
     // USING FILE

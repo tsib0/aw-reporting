@@ -18,13 +18,12 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import com.google.api.ads.adwords.awreporting.kratubackend.RunnableKratu;
-import com.google.api.ads.adwords.awreporting.kratubackend.entities.Account;
 import com.google.api.ads.adwords.awreporting.kratubackend.util.KratuStorageHelper;
 import com.google.api.ads.adwords.awreporting.model.entities.Report;
 import com.google.api.ads.adwords.awreporting.model.entities.ReportAccount;
 import com.google.api.ads.adwords.awreporting.model.persistence.EntityPersister;
 import com.google.api.ads.adwords.awreporting.model.util.DateUtil;
+import com.google.api.ads.adwords.awreporting.server.entities.Account;
 import com.google.api.ads.adwords.lib.utils.ReportDownloadResponseException;
 import com.google.api.ads.adwords.lib.utils.ReportException;
 import com.google.api.ads.common.lib.exception.ValidationException;
@@ -64,9 +63,9 @@ public class RunnableKratuTest {
   public void setUp() {
     // creating one list wuth 3 nonMCC accounts
     Account account1 = new Account();
+    account1.setId("123");
     account1.setTopAccountId(456L);
-    account1.setIsCanManageClients(false);
-    account1.setExternalCustomerId(123L);
+    account1.setCanManageClients(false);
     accountList = ImmutableList.of(account1, account1, account1);
 
     storageHelper = new KratuStorageHelper();
