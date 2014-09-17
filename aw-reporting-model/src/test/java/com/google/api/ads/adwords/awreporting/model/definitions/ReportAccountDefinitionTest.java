@@ -118,6 +118,7 @@ public class ReportAccountDefinitionTest extends AbstractReportDefinitionTest<Re
         "CustomerDescriptiveName",
         "PrimaryCompanyName",
         "AccountCurrencyCode",
+        "HourOfDay",
         "Date",
         "DayOfWeek",
         "Week",
