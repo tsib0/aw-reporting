@@ -51,7 +51,7 @@ AbstractReportDefinitionTest<ReportPlacement> {
     Assert.assertEquals("[Generic] Private", first.getCampaignName());
     Assert.assertEquals("www.common.se", first.getDisplayName());
     Assert.assertEquals(" --", first.getCriterionId());
-    Assert.assertEquals(" --", first.getMaxCpm());
+    Assert.assertEquals(0l, first.getMaxCpm().longValue());
     Assert.assertEquals("www.common.se", first.getPlacementUrl());
     Assert.assertEquals("2014-03-01", first.getMonth());
     Assert.assertEquals(1.61, first.getCost().doubleValue());
@@ -75,7 +75,7 @@ AbstractReportDefinitionTest<ReportPlacement> {
     Assert.assertEquals("[SEARCH][DSA-Extracted]Kittens", last.getCampaignName());
     Assert.assertEquals("raspberry.com", last.getDisplayName());
     Assert.assertEquals(" --", last.getCriterionId());
-    Assert.assertEquals(" --", last.getMaxCpm());
+    Assert.assertEquals(0l, last.getMaxCpm().longValue());
     Assert.assertEquals("raspberry.com", last.getPlacementUrl());
     Assert.assertEquals("2014-03-01", last.getMonth());
     Assert.assertEquals(1.90, last.getCost().doubleValue());

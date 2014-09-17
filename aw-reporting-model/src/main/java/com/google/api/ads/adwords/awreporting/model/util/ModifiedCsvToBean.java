@@ -104,7 +104,12 @@ public class ModifiedCsvToBean<T> extends CsvToBean<T> implements Serializable{
           // Convert Money values to regular Decimals by dividing by a Million
           if (mapper instanceof AnnotationBasedMappingStrategy && 
               ((AnnotationBasedMappingStrategy) mapper).isMoneyField(prop.getName())) {
-            BigDecimal bigDecimal = new BigDecimal((String)obj);
+
+            String cleanedString = ((String) obj).replaceAll("[^\\d.]", "");
+            if (cleanedString == null || cleanedString.length() == 0) {
+              cleanedString = "0";
+            }
+            BigDecimal bigDecimal = new BigDecimal(cleanedString);
             obj = bigDecimal.divide(new BigDecimal(1000000));
           }
 
