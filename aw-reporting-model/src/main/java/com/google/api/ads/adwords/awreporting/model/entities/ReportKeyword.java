@@ -16,6 +16,7 @@ package com.google.api.ads.adwords.awreporting.model.entities;
 
 import com.google.api.ads.adwords.awreporting.model.csv.annotation.CsvField;
 import com.google.api.ads.adwords.awreporting.model.csv.annotation.CsvReport;
+import com.google.api.ads.adwords.awreporting.model.csv.annotation.MoneyField;
 import com.google.api.ads.adwords.awreporting.model.util.BigDecimalUtil;
 import com.google.api.ads.adwords.lib.jaxb.v201406.ReportDefinitionReportType;
 import com.google.common.collect.Lists;
@@ -122,10 +123,12 @@ public class ReportKeyword extends ReportBase {
   
   @Column(name = "MAX_CPC")
   @CsvField(value = "Max. CPC", reportField = "MaxCpc")
+  @MoneyField
   private BigDecimal maxCpc;
 
   @Column(name = "MAX_CPM")
   @CsvField(value = "Max. CPM", reportField = "MaxCpm")
+  @MoneyField
   private BigDecimal maxCpm;
 
   @Column(name = "SEARCH_EXACT_MATCH_IMPRESSION_SHARE")
@@ -405,31 +408,23 @@ public class ReportKeyword extends ReportBase {
   public void setPercentNewVisitors(String percentNewVisitors) {
     this.percentNewVisitors =  BigDecimalUtil.parseFromNumberString(percentNewVisitors);
   }
-  
-  public String getMaxCpc() {
-    return BigDecimalUtil.formatAsReadable(maxCpc);
-  }
 
-  public BigDecimal getMaxCpcAsBigDecimal() {
+  public BigDecimal getMaxCpc() {
     return maxCpc;
   }
 
-  public void setMaxCpc(String maxCpm) {
-    this.maxCpc = BigDecimalUtil.parseFromNumberString(maxCpm);
+  public void setMaxCpc(BigDecimal maxCpm) {
+    this.maxCpc = maxCpm;
   }
   
-  public String getMaxCpm() {
-    return BigDecimalUtil.formatAsReadable(maxCpm);
-  }
-
-  public BigDecimal getMaxCpmAsBigDecimal() {
+  public BigDecimal getMaxCpm() {
     return maxCpm;
   }
 
-  public void setMaxCpm(String maxCpm) {
-    this.maxCpm = BigDecimalUtil.parseFromNumberString(maxCpm);
+  public void setMaxCpm(BigDecimal maxCpm) {
+    this.maxCpm = maxCpm;
   }
-  
+
   public String getSearchImpressionShare() {
     return BigDecimalUtil.formatAsReadable(this.searchImpressionShare);
   }

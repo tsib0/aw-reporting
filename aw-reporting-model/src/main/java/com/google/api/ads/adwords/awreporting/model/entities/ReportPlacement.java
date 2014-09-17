@@ -20,7 +20,10 @@ import javax.persistence.Table;
 
 import com.google.api.ads.adwords.awreporting.model.csv.annotation.CsvField;
 import com.google.api.ads.adwords.awreporting.model.csv.annotation.CsvReport;
+import com.google.api.ads.adwords.awreporting.model.csv.annotation.MoneyField;
 import com.google.api.ads.adwords.lib.jaxb.v201406.ReportDefinitionReportType;
+
+import java.math.BigDecimal;
 
 /**
  * Specific Report class for GeoPerformanceReports
@@ -91,11 +94,13 @@ public class ReportPlacement extends ReportBase {
 
   @Column(name = "MAX_CPC")
   @CsvField(value = "Max. CPC", reportField = "MaxCpc")
-  private String maxCpc;
+  @MoneyField
+  private BigDecimal maxCpc;
 
   @Column(name = "MAX_CPM")
   @CsvField(value = "Max. CPM", reportField = "MaxCpm")
-  private String maxCpm;  
+  @MoneyField
+  private BigDecimal maxCpm;  
 
   @Column(name = "PLACEMENT_URL")
   @CsvField(value = "Placement", reportField = "PlacementUrl")
@@ -263,19 +268,19 @@ public class ReportPlacement extends ReportBase {
     this.isNegative = isNegative;
   }
 
-  public String getMaxCpc() {
+  public BigDecimal getMaxCpc() {
     return maxCpc;
   }
 
-  public void setMaxCpc(String maxCpc) {
-    this.maxCpc = maxCpc;
+  public void setMaxCpc(BigDecimal maxCpm) {
+    this.maxCpc = maxCpm;
   }
-
-  public String getMaxCpm() {
+  
+  public BigDecimal getMaxCpm() {
     return maxCpm;
   }
 
-  public void setMaxCpm(String maxCpm) {
+  public void setMaxCpm(BigDecimal maxCpm) {
     this.maxCpm = maxCpm;
   }
 

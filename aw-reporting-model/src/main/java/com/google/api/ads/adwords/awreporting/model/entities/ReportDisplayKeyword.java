@@ -20,6 +20,7 @@ import javax.persistence.Table;
 
 import com.google.api.ads.adwords.awreporting.model.csv.annotation.CsvField;
 import com.google.api.ads.adwords.awreporting.model.csv.annotation.CsvReport;
+import com.google.api.ads.adwords.awreporting.model.csv.annotation.MoneyField;
 import com.google.api.ads.adwords.lib.jaxb.v201406.ReportDefinitionReportType;
 
 /**
@@ -87,10 +88,12 @@ public class ReportDisplayKeyword extends ReportBase {
   
   @Column(name = "MAX_CPC")
   @CsvField(value = "Max. CPC", reportField = "MaxCpc")
+  @MoneyField
   private String maxCpc;
 
   @Column(name = "MAX_CPM")
   @CsvField(value = "Max. CPM", reportField = "MaxCpm")
+  @MoneyField
   private String maxCpm;
 
   @Column(name = "TARGETING_SETTING")
