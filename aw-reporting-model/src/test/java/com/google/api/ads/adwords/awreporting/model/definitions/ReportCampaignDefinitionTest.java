@@ -119,6 +119,7 @@ public class ReportCampaignDefinitionTest extends AbstractReportDefinitionTest<R
         "CustomerDescriptiveName",
         "PrimaryCompanyName",
         "AccountCurrencyCode",
+        "HourOfDay",
         "Date",
         "DayOfWeek",
         "Week",
