@@ -14,9 +14,13 @@
 
 package com.google.api.ads.adwords.awreporting.server;
 
+import com.google.api.ads.adwords.awreporting.AwReporting;
 import com.google.api.ads.adwords.awreporting.processors.ReportProcessor;
 import com.google.api.ads.adwords.awreporting.proxy.JaxWsProxySelector;
+import com.google.api.ads.adwords.awreporting.server.kratu.KratuProcessor;
 import com.google.api.ads.adwords.awreporting.server.rest.RestServer;
+import com.google.api.ads.adwords.awreporting.util.FileUtil;
+import com.google.api.client.util.Sets;
 
 import org.apache.commons.cli.BasicParser;
 import org.apache.commons.cli.CommandLine;
@@ -31,16 +35,23 @@ import org.apache.log4j.FileAppender;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.apache.log4j.PatternLayout;
+import org.springframework.core.io.ClassPathResource;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.net.ProxySelector;
+import java.util.List;
+import java.util.Scanner;
+import java.util.Set;
 
 /**
  * Main class that executes the report processing logic delegating to the {@link ReportProcessor}.
  *
- *  This class holds a Spring application context that manages the creation of all the beans needed.
+ * This class holds a Spring application context that manages the creation of all the beans needed.
  * No configuration is done in this class.
  *
- *  Credentials and properties are pulled from the ~/aw-report-sample.properties.properties file or
+ * Credentials and properties are pulled from the ~/aw-report-sample.properties.properties file or
  * -file <file> provided.
  *
  * See README for more info.
@@ -49,7 +60,11 @@ import java.net.ProxySelector;
  */
 public class AwReportingServer {
 
-  private static final int DEFAULT_SERVER_PORT = 8081; 
+  private static final int DEFAULT_SERVER_PORT = 8081;
+
+  private static final Logger logger = Logger.getLogger(AwReportingServer.class);
+
+  private static final String DAFAULT_PROPERTIES_LOCATION = "aw-reporting-server-sample.properties";
 
   /**
    * Main method.
@@ -65,7 +80,7 @@ public class AwReportingServer {
     Options options = createCommandLineOptions();
 
     boolean errors = false;
-    String propertiesPath;
+    String propertiesPath = DAFAULT_PROPERTIES_LOCATION;
 
     try {
       CommandLineParser parser = new BasicParser();
@@ -78,21 +93,68 @@ public class AwReportingServer {
       }
 
       setLogLevel(cmdLine);
-      
+
+      if (cmdLine.hasOption("file")) {
+        propertiesPath = cmdLine.getOptionValue("file");
+      }
+      System.out.println("Using properties from: " + propertiesPath);
+
+      RestServer restServer = new RestServer();
+      restServer.initApplicationContextAndProperties(propertiesPath);
+
+      String mccAccountId = RestServer.getProperties().getProperty("mccAccountId").replaceAll("-", "");
+
+      System.out.println("Updating DB indexes... (may take long the first time)");
+      RestServer.getStorageHelper().createReportIndexes();
+      System.out.println("DB indexes Updated.");
+
+      if (cmdLine.hasOption("startServer")) {
+
+        // Start the Rest Server
+        System.out.println("Starting Rest Server at Port: " + DEFAULT_SERVER_PORT);
+        restServer.startServer();
+
+      } else {
+
+        if (cmdLine.hasOption("startDate") && cmdLine.hasOption("endDate")) {
+
+          if (cmdLine.hasOption("processKratus")) {
+            // Process Kratus, this process runs for the whole MCC in the properties file
+            // within the given dates and creates a daily Kratu per account.
+            System.out.println("Starting Process Kratus...");
+
+            // Process only the accounts at accountIdsFile
+            Set<Long> accountIdsSet = Sets.newHashSet();
+            if (cmdLine.hasOption("accountIdsFile")) {
+              String accountsFileName = cmdLine.getOptionValue("accountIdsFile");
+              System.out.println("Using accounts file: " + accountsFileName);              
+              addAccountsFromFile(accountIdsSet, accountsFileName);
+            }
+
+            KratuProcessor kratuProcessor = RestServer.getApplicationContext().getBean(KratuProcessor.class);
+            kratuProcessor.processKratus(Long.valueOf(mccAccountId), accountIdsSet,
+                cmdLine.getOptionValue("startDate"), cmdLine.getOptionValue("endDate"));
+            System.exit(0);
+
+          } else {
+            // Download Reports,
+            // this porcess downloads 7 report types for each account under the MCC
+            System.out.println("Starting Download Reports porcess...");
+            AwReporting.main(args);
+            System.exit(0);
+
+          }
+        } else {
+          errors = true;
+          System.out.println("Configuration incomplete. Missing options for command line.");
+        }
+      }
+
       if (cmdLine.hasOption("file")) {
         propertiesPath = cmdLine.getOptionValue("file");
         System.out.println("Using properties from: " + propertiesPath);
 
-        // Start the Rest Server
-        System.out.println("Starting Rest Server at Port: " + DEFAULT_SERVER_PORT);
 
-        RestServer restServer = new RestServer();
-        restServer.initApplicationContextAndProperties(propertiesPath);
-        restServer.startServer();
-
-        System.out.println("Updating DB indexes... (may take long)");
-        RestServer.getStorageHelper().createReportIndexes();
-        System.out.println("DB indexes Updated.");
 
       } else {
         errors = true;
@@ -125,13 +187,52 @@ public class AwReportingServer {
     Option help = new Option("help", "print this message");
     options.addOption(help);
 
+    OptionBuilder.withArgName("startServer");
+    OptionBuilder.hasArg(false);
+    OptionBuilder.withDescription(
+        "Starts the Rest Server. No dates required");
+    OptionBuilder.isRequired(false);
+    options.addOption(OptionBuilder.create("startServer"));
+
+    OptionBuilder.withArgName("processKratus");
+    OptionBuilder.hasArg(false);
+    OptionBuilder.withDescription(
+        "Process Kratus processes the 7 reports peraccount and creates a daily Kratu");
+    OptionBuilder.isRequired(false);
+    options.addOption(OptionBuilder.create("processKratus"));
+
     OptionBuilder.withArgName("file");
     OptionBuilder.hasArg(true);
     OptionBuilder.withDescription(
-        "kratubackend-sample.properties file " + 
-        " (./kratubackend-sample.properties by default if not provided)");
+        "aw-reporting-server-sample.properties file " + 
+        " (./aw-reporting-server-sample.properties by default if not provided)");
     OptionBuilder.isRequired(false);
     options.addOption(OptionBuilder.create("file"));
+
+    OptionBuilder.withArgName("YYYYMMDD");
+    OptionBuilder.hasArg(true);
+    OptionBuilder.withDescription("Start date for CUSTOM_DATE Reports (YYYYMMDD)");
+    OptionBuilder.isRequired(false);
+    options.addOption(OptionBuilder.create("startDate"));
+
+    OptionBuilder.withArgName("YYYMMDD");
+    OptionBuilder.hasArg(true);
+    OptionBuilder.withDescription("End date for CUSTOM_DATE Reports (YYYYMMDD)");
+    OptionBuilder.isRequired(false);
+    options.addOption(OptionBuilder.create("endDate"));
+
+    OptionBuilder.withArgName("DateRangeType");
+    OptionBuilder.hasArg(true);
+    OptionBuilder.withDescription("ReportDefinitionDateRangeType");
+    OptionBuilder.isRequired(false);
+    options.addOption(OptionBuilder.create("dateRange"));
+    
+    OptionBuilder.withArgName("accountIdsFile");
+    OptionBuilder.hasArg(true);
+    OptionBuilder.withDescription(
+        "Consider ONLY the account IDs specified on the file to run the report");
+    OptionBuilder.isRequired(false);
+    options.addOption(OptionBuilder.create("accountIdsFile"));
 
     OptionBuilder.withArgName("verbose");
     OptionBuilder.hasArg(false);
@@ -156,12 +257,69 @@ public class AwReportingServer {
    * @param options the options available for the user.
    */
   private static void printHelpMessage(Options options) {
+
     // automatically generate the help statement
     System.out.println();
     HelpFormatter formatter = new HelpFormatter();
     formatter.setWidth(120);
-    formatter.printHelp("java -Xmx4G -jar aw-reporting-server.jar \n", options);
+
+    formatter.printHelp("java -Xmx4G -jar aw-reporting-server.jar -startDate YYYYMMDD -endDate YYYYMMDD -file <file>\n"
+        + "-Xmx4G -jar aw-reporting-server.jar -processKratus -startDate YYYYMMDD -endDate YYYYMMDD -file <file>\n"
+        + "-Xmx4G -jar aw-reporting-server.jar -startServer -file <file>\n", options);
+
+    printSamplePropertiesFile();
     System.out.println();
+  }
+
+  /**
+   * Prints the sample properties file on the default output.
+   */
+  private static void printSamplePropertiesFile() {
+
+    System.out.println("\n  File: aw-reporting-server-sample.properties example");
+
+    ClassPathResource sampleFile = new ClassPathResource(DAFAULT_PROPERTIES_LOCATION);
+    Scanner fileScanner = null;
+    try {
+      fileScanner = new Scanner(sampleFile.getInputStream());
+      while (fileScanner.hasNext()) {
+        System.out.println(fileScanner.nextLine());
+      }
+
+    } catch (FileNotFoundException e) {
+      e.printStackTrace();
+    } catch (IOException e) {
+      e.printStackTrace();
+    } finally {
+      if (fileScanner != null) {
+        fileScanner.close();
+      }
+    }
+  }
+
+  /**
+   * Reads the account ids from the file, and adds them to the given set.
+   *
+   * @param accountIdsSet the set to add the accounts
+   * @param accountsFileName the file to be read
+   * @throws FileNotFoundException file not found
+   */
+  protected static void addAccountsFromFile(Set<Long> accountIdsSet, String accountsFileName)
+      throws FileNotFoundException {
+
+    logger.info("Using accounts file: " + accountsFileName);
+
+    List<String> linesAsStrings = FileUtil.readFileLinesAsStrings(new File(accountsFileName));
+
+    logger.debug("Acount IDs to be queried:");
+    for (String line : linesAsStrings) {
+
+      String accountIdAsString = line.replaceAll("-", "");
+      long accountId = Long.parseLong(accountIdAsString);
+      accountIdsSet.add(accountId);
+
+      logger.debug("Acount ID: " + accountId);
+    }
   }
 
   /**

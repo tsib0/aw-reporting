@@ -15,6 +15,9 @@
 package com.google.api.ads.adwords.awreporting.server.rest;
 
 import com.google.api.ads.adwords.awreporting.model.persistence.EntityPersister;
+import com.google.api.ads.adwords.awreporting.server.rest.kratu.GenerateKratusRest;
+import com.google.api.ads.adwords.awreporting.server.rest.kratu.KratuRest;
+import com.google.api.ads.adwords.awreporting.server.rest.reports.GenerateReportsRest;
 import com.google.api.ads.adwords.awreporting.server.rest.reports.ReportAccountRest;
 import com.google.api.ads.adwords.awreporting.server.rest.reports.ReportAdExtensionRest;
 import com.google.api.ads.adwords.awreporting.server.rest.reports.ReportAdGroupRest;
@@ -33,6 +36,8 @@ import org.restlet.Application;
 import org.restlet.Component;
 import org.restlet.Context;
 import org.restlet.data.Protocol;
+import org.restlet.resource.Directory;
+import org.restlet.routing.Redirector;
 import org.restlet.routing.Router;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
@@ -41,6 +46,7 @@ import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.support.PropertiesLoaderUtils;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.List;
 import java.util.Properties;
@@ -120,6 +126,17 @@ public class RestServer extends Application {
 
     Router router = new Router(getContext());
 
+    // *** MCCs ***
+    router.attach("/mcc", MccRest.class); //LIST All
+    
+    // *** Accounts ***
+    router.attach("/mcc/{topAccountId}/accounts", AccountRest.class); //LIST All
+
+    // *** Reporting ***
+    // Generate
+    // ?dateStart=yyyyMMdd&dateEnd=yyyyMMdd
+    router.attach("/mcc/{topAccountId}/generatereports", GenerateReportsRest.class);
+    
     // Accounts
     // ?dateStart=yyyyMMdd&dateEnd=yyyyMMdd
     // dateRangeType=DAY or dateRangeType=MONTH
@@ -174,15 +191,20 @@ public class RestServer extends Application {
     router.attach("/mcc/{topAccountId}/reportadextension/campaign/{campaignId}", ReportAdExtensionRest.class); //LIST Campaign level
     router.attach("/mcc/{topAccountId}/reportadextension/adextension/{adExtensionId}", ReportAdExtensionRest.class); //LIST Keyword level
 
-    // HTML to PDF conversion
+    // *** HTML to PDF conversion ***
     router.attach("/html2pdf", HtmlToPdfRest.class);
 
-    // *** Accounts ***
-    router.attach("/mcc/{topAccountId}/accounts", AccountRest.class); //LIST All
+    // *** Kratu ***
+    // ?includeZeroImpressions=false by default
+    router.attach("/mcc/{topAccountId}/kratu", KratuRest.class); // List All
+    router.attach("/mcc/{topAccountId}/kratu/{accountId}", KratuRest.class); // LIST Account level
+
+    // Genereate Kratus MCC level
+    // ?dateStart=yyyyMMdd&dateEnd=yyyyMMdd
+    router.attach("/mcc/{topAccountId}/generatekratus", GenerateKratusRest.class);
 
     // *** Static files *** 
     // USING FILE
-    /*
     String target = "index.html";
     Redirector redirector = new Redirector(getContext(), target, Redirector.MODE_CLIENT_FOUND);
     router.attach("/", redirector);
@@ -190,7 +212,6 @@ public class RestServer extends Application {
     String htmlPath = "file:///" + currentPath.getParent() + "/html/";
     router.attach("/", redirector);
     router.attach("", new Directory(getContext(), htmlPath));
-    */
 
     return router;
   }
@@ -216,6 +237,8 @@ public class RestServer extends Application {
     }
 
     listOfClassPathXml.add("classpath:storage-helper-beans.xml");
+    
+    listOfClassPathXml.add("classpath:kratu-processor-beans.xml");
 
     // Choose the DB type to use based properties file
     String dbType = (String) properties.get(AW_REPORT_MODEL_DB_TYPE);
