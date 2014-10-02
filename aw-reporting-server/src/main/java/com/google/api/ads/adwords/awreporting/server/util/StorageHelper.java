@@ -24,10 +24,19 @@ import com.google.api.ads.adwords.awreporting.model.entities.ReportCampaignNegat
 import com.google.api.ads.adwords.awreporting.model.entities.ReportKeyword;
 import com.google.api.ads.adwords.awreporting.model.persistence.EntityPersister;
 import com.google.api.ads.adwords.awreporting.model.util.DateUtil;
+import com.google.api.ads.adwords.awreporting.server.entities.Account;
+import com.google.api.ads.adwords.awreporting.server.entities.Kratu;
+import com.google.api.ads.adwords.awreporting.server.kratu.KratuCompute;
 import com.google.common.collect.Lists;
 
+import org.hibernate.Criteria;
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
+import org.hibernate.criterion.Projections;
+import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
 import java.util.List;
@@ -40,11 +49,14 @@ import java.util.List;
 @Component
 public class StorageHelper {
 
+  @Autowired
+  private SessionFactory sessionFactory;
+
   private EntityPersister entityPersister;
 
   public StorageHelper() {
   }
-  
+
   public StorageHelper(EntityPersister entityPersister) {
     this.entityPersister = entityPersister;
   }
@@ -52,7 +64,7 @@ public class StorageHelper {
   public EntityPersister getEntityPersister() {
     return entityPersister;
   }
-  
+
   /**
    * @param persister the persister to set
    */
@@ -65,7 +77,7 @@ public class StorageHelper {
   public <R extends Report> List<R> getReportById(Class<R> classR, String id) {
     return entityPersister.get(classR, Report.ID, id);
   }
-  
+
   public <R extends Report> List<R> getReport(Class<R> classR, String key, Object value,
       String dateKey, Date dateStart, Date dateEnd) {
 
@@ -83,14 +95,14 @@ public class StorageHelper {
 
   public <R extends Report> List<R> getReportByTopAccountId(Class<R> classR, Long topAccountId,
       Date dateStart, Date dateEnd) {
-    
+
     return entityPersister.get(
         classR, ReportAccount.TOP_ACCOUNT_ID, topAccountId, Report.DAY, dateStart, dateEnd);
   }
 
   public <R extends Report> List<R> getReportByDates(Class<R> classR, Date dateStart,
       Date dateEnd) {
-    
+
     return entityPersister.get(classR, null, null, Report.DAY, dateStart, dateEnd);
   }
 
@@ -180,12 +192,47 @@ public class StorageHelper {
     return entityPersister.get(ReportCampaignNegativeKeyword.class, null, null, Report.DATE_END,
         DateUtil.formatYearMonthDayNoDash(dateStart), DateUtil.formatYearMonthDayNoDash(dateEnd));
   }
-  
+
   public List<ReportCampaignNegativeKeyword> getReportCampaignNegativeKeywordByAccountAndEndDateInRange(
       Long accountId, Date dateStart, Date dateEnd) {
 
     return entityPersister.get(ReportCampaignNegativeKeyword.class, Report.ACCOUNT_ID, accountId, Report.DATE_END,
         DateUtil.formatYearMonthDayNoDash(dateStart), DateUtil.formatYearMonthDayNoDash(dateEnd));
+  }
+
+  // Kratu
+  public Kratu saveKratu(Kratu kratu) {
+    return getEntityPersister().save(kratu);
+  }
+
+  public List<Kratu> getKratus(Long accountId) {
+    return getEntityPersister().get(Kratu.class, Kratu.EXTERNAL_CUSTOMER_ID, accountId);
+  }
+
+  public List<Kratu> getKratus(Long topAccountId, Date startDate, Date endDate) {
+    List<Kratu> kratusSummary = Lists.newArrayList();
+    List<Account> listAccounts = getEntityPersister().get(Account.class, Account.TOP_ACCOUNT_ID, topAccountId);
+
+    System.out.println("\n ** Summary Kratus (for: " + listAccounts.size() + ") **");
+    long start = System.currentTimeMillis();
+
+    // Get all the (not-MCC) Accounts under TopAccount
+    int i = 0;
+    for (Account account : listAccounts) {
+      System.out.println();
+      System.out.print(i++ + " ");
+      List<Kratu> accountDailyKratus = getEntityPersister().get(Kratu.class, Kratu.EXTERNAL_CUSTOMER_ID,
+          account.getExternalCustomerId(), Kratu.DAY, startDate, endDate);
+      if (accountDailyKratus != null && accountDailyKratus.size() > 0) {
+        kratusSummary.add(KratuCompute.createKratuSummary(accountDailyKratus, startDate, endDate));
+      }
+    }
+
+    System.out.println("\n*** Finished Summary Kratus in "
+        + ((System.currentTimeMillis() - start) / 1000) + " seconds ***");
+    System.out.println();
+
+    return kratusSummary;
   }
 
   public void createReportIndexes() {
@@ -223,5 +270,34 @@ public class StorageHelper {
     entityPersister.createIndex(ReportKeyword.class, Report.KEYWORD_ID);
 
     entityPersister.createIndex(ReportAdExtension.class, Report.ADEXTENSION_ID);
+
+    // Create Kratu Indexes
+    List<String> kratuIndexes = Lists.newArrayList();
+    kratuIndexes.add("externalCustomerId");
+    kratuIndexes.add("day");
+    entityPersister.createIndex(Kratu.class, kratuIndexes);
+  }
+
+  @Transactional
+  public List<?> getMin(Class<?> clazz, String mccid, String propertyName1, String propertyName2) {
+
+    return this.createCriteria(clazz)
+        .add(Restrictions.eq("topAccountId", Long.parseLong(mccid, 10)))
+        .setProjection(Projections.projectionList()
+            .add(Projections.min(propertyName1))
+            .add(Projections.max(propertyName2))).list();
+  }
+
+  /**
+   * Creates a new criteria for the current session
+   * 
+   * @param clazz
+   *            the class of the entity
+   * @return the criteria for the current session
+   */
+  private <T> Criteria createCriteria(Class<T> clazz) {
+
+    Session session = this.sessionFactory.getCurrentSession();
+    return session.createCriteria(clazz);
   }
 }
