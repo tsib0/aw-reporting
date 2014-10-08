@@ -131,6 +131,22 @@ public class ReportAd extends ReportBase {
   @CsvField(value = "Labels", reportField = "Labels")
   private String labels;
 
+<<<<<<< HEAD
+  // newly added fields:
+  @Column(name = "AD_TYPE", length = 255)
+  @CsvField(value = "Ad type", reportField = "AdType")
+  private String adType;
+
+  @Column(name = "ADGROUP_NAME", length = 255)
+  @CsvField(value = "Ad group", reportField = "AdGroupName")
+  private String adGroupName;
+
+  @Column(name = "CAMPAIGN_NAME", length=255)
+  @CsvField(value="Campaign", reportField = "CampaignName")
+  private String campaignName;
+
+=======
+>>>>>>> parent of 833965c... added AdType, CampaignName, AdGroupName to ReportAd.java
   /**
    * Hibernate needs an empty constructor
    */
@@ -176,6 +192,40 @@ public class ReportAd extends ReportBase {
     this.adId = adId;
   }
 
+<<<<<<< HEAD
+  // campaignName
+  public String getCampaignName() {
+    return campaignName;
+  }
+
+  public void setCampaignName(String campaignName) {
+    this.campaignName = campaignName;
+  }
+
+  // adGroupName 
+  public String getAdGroupName() {
+    return adGroupName;
+=======
+  // adGroupId
+  public Long getAdGroupId() {
+    return adGroupId;
+>>>>>>> parent of 833965c... added AdType, CampaignName, AdGroupName to ReportAd.java
+  }
+
+  public void setAdGroupName(String adGroupName) {
+    this.adGroupName = adGroupName;
+  }
+
+<<<<<<< HEAD
+  // adType
+  public String getAdType() {
+    return adType;
+  }
+
+  public void setAdType(String adType) {
+    this.adType = adType;
+  }
+ 
   // adGroupId
   public Long getAdGroupId() {
     return adGroupId;
@@ -185,6 +235,8 @@ public class ReportAd extends ReportBase {
     this.adGroupId = adGroupId;
   }
 
+=======
+>>>>>>> parent of 833965c... added AdType, CampaignName, AdGroupName to ReportAd.java
   // campaignId
   public Long getCampaignId() {
     return campaignId;
