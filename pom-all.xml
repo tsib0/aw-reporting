@@ -12,7 +12,7 @@
   <modules>
     <module>aw-reporting-model</module>
     <module>aw-reporting</module>
-    <module>examples/kratubackend</module>
+    <module>aw-reporting-server</module>
   </modules>
 
   <reporting>
