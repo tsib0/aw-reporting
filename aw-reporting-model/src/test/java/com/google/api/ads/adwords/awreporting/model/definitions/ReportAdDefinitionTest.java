@@ -172,6 +172,9 @@ public class ReportAdDefinitionTest extends AbstractReportDefinitionTest<ReportA
         "Description2",
         "CreativeApprovalStatus",
         "Labels",
+        "CampaignName",
+        "AdGroupName",
+        "AdType",
         // Analytics Fieds        
         "AveragePageviews",
         "AverageTimeOnSite",
