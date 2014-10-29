@@ -51,9 +51,9 @@ import java.util.concurrent.ConcurrentMap;
  */
 public abstract class AbstractServerResource extends ServerResource {
 
-  private static final Logger LOGGER = Logger.getLogger(AbstractServerResource.class.getName());
+  protected static final Logger LOGGER = Logger.getLogger(AbstractServerResource.class.getName());
 
-  private static final String HEADERS_KEY = "org.restlet.http.headers";
+  protected static final String HEADERS_KEY = "org.restlet.http.headers";
 
   protected static final Gson gson = GsonUtil.getGsonBuilder().create();
 
@@ -69,6 +69,10 @@ public abstract class AbstractServerResource extends ServerResource {
   protected String dateRangeType = null;
   protected Date dateStart = null;
   protected Date dateEnd = null;
+
+  protected String reportType = "html";
+  protected Long templateId = null;
+  protected boolean isPublic = false;
 
   @Get
   abstract public Representation getHandler();
@@ -96,33 +100,17 @@ public abstract class AbstractServerResource extends ServerResource {
   }
 
   protected void getParameters() {
-
     try {
 
       // Report Fields
-      String partnerIdString = (String)getRequestAttributes().get("partnerId");
-      partnerId = partnerIdString == null ? null : Long.parseLong(partnerIdString);
-      
-      String topAccountIdString = (String)getRequestAttributes().get("topAccountId");
-      topAccountId = topAccountIdString == null ? null : Long.parseLong(topAccountIdString);
-
-      String accountIdString = (String)getRequestAttributes().get("accountId");
-      accountId = accountIdString == null ? null : Long.parseLong(accountIdString);
-
-      String campaignIdString = (String)getRequestAttributes().get("campaignId");
-      campaignId = campaignIdString == null ? null : Long.parseLong(campaignIdString);
-      
-      String adGroupIdString = (String)getRequestAttributes().get("adGroupId");
-      adGroupId = adGroupIdString == null ? null : Long.parseLong(adGroupIdString);
-      
-      String adIdString = (String)getRequestAttributes().get("adId");
-      adId = adIdString == null ? null : Long.parseLong(adIdString);
-      
-      String criterionIdString = (String)getRequestAttributes().get("criterionId");
-      criterionId = criterionIdString == null ? null : Long.parseLong(criterionIdString);
-      
-      String adExtensionIdString = (String)getRequestAttributes().get("adExtensionId");
-      adExtensionId = adExtensionIdString == null ? null : Long.parseLong(adExtensionIdString);
+      partnerId = getRequestAttributeAsLong("partnerId");
+      topAccountId = getRequestAttributeAsLong("topAccountId");
+      accountId = getRequestAttributeAsLong("accountId");
+      campaignId = getRequestAttributeAsLong("campaignId");
+      adGroupId = getRequestAttributeAsLong("adGroupId");
+      adId = getRequestAttributeAsLong("adId");
+      criterionId = getRequestAttributeAsLong("criterionId");
+      adExtensionId = getRequestAttributeAsLong("adExtensionId");
 
       String dateRangeTypeString = this.getReference().getQueryAsForm().getFirstValue("dateRangeType");
       if (dateRangeTypeString != null && dateRangeTypeString.equalsIgnoreCase(ReportBase.MONTH)) {
@@ -137,6 +125,18 @@ public abstract class AbstractServerResource extends ServerResource {
         dateStart = DateUtil.parseDateTime(dateStartString).toDate();
         dateEnd = DateUtil.parseDateTime(dateEndString).toDate();
       }
+
+      reportType = this.getReference().getQueryAsForm().getFirstValue("reporttype");
+
+      String templateIdString = (String)getRequestAttributes().get("templateId");
+      if (templateIdString == null) {
+        // Get from Query
+        templateIdString = this.getReference().getQueryAsForm().getFirstValue("templateId");
+      }
+      templateId = templateIdString == null ? null : Long.parseLong(templateIdString);
+
+      String isPublicString = this.getReference().getQueryAsForm().getFirstValue("public");
+      isPublic = (isPublicString != null && isPublicString.equals("true"));
 
     } catch(Exception exception) {
       throw new IllegalArgumentException(exception);
@@ -255,5 +255,10 @@ public abstract class AbstractServerResource extends ServerResource {
       if (prev != null) { headers = prev; }
     }
     return headers;
+  }
+
+  protected Long getRequestAttributeAsLong(String attributeName) {
+    String attribute = (String) getRequestAttributes().get(attributeName);
+    return attribute == null ? null : Long.parseLong(attribute);
   }
 }

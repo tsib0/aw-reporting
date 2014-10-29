@@ -1,0 +1,455 @@
+body {
+  margin: 0;
+  padding: 0;
+}
+
+div#top_bar {
+  text-align: left;
+  background-color: #f2f2f2;
+  border-bottom: 1px solid #ddd;
+  height: 65px;
+}
+
+
+h2 {
+  font-weight: normal;
+  font-size: 175%;
+}
+
+div#top_bar a {
+  text-decoration: none;
+}
+div#top_bar .glyphicon {
+  float: left;
+  font-size: 400%;
+  padding-left: 20px;
+  padding-bottom: 10px;
+  padding-top: 3px;
+  padding-right: 20px;
+  color: #666;
+}
+
+div#top_bar div#title {
+  border-left: 1px solid #ccc;
+  font-family: Helvetica;
+  font-size: 28px;
+  height: 60px;
+  padding-left: 10px;
+  margin-left: 95px;
+  padding-top: 12px;
+  font-weight: 100;
+  color: #666;
+}
+
+
+input[type=text] {
+  padding: 3px;
+  border-radius: 4px;
+  border: 1px solid #bbb;
+}
+
+textarea {
+  padding: 3px;
+  border-radius: 4px;
+  border: 1px solid #bbb;
+}
+
+
+.pad-top-20 {
+  padding-top: 20px;
+}
+
+
+.lighter {
+color: #aaa;
+}
+
+
+div#ng-view {
+  width: 1000px;
+  margin: auto;
+  padding: 0 50px;
+}
+
+
+.show-on-hover {
+display: none;
+}
+
+div.hover-host:hover .show-on-hover {
+display: block;
+}
+
+/* Base styles (regardless of theme) */
+.bs-callout {
+  margin: 20px 0;
+  padding: 15px 30px 15px 15px;
+  border-left: 5px solid #eee;
+}
+.bs-callout h4 {
+  margin-top: 0;
+}
+.bs-callout p:last-child {
+  margin-bottom: 0;
+}
+.bs-callout code,
+.bs-callout .highlight {
+  background-color: #fff;
+}
+ 
+/* Themes for different contexts */
+.bs-callout-danger {
+  background-color: #fdf7f7;
+  border-color: #d9534f;
+}
+.bs-callout-danger h4 {
+  color: #d9534f;
+}
+
+.bs-callout-warning {
+  background-color: #fcf8f2;
+  border-color: #f0ad4e;
+}
+.bs-callout-warning h4 {
+  color: #f0ad4e;
+}
+
+.bs-callout-info {
+  background-color: #f4f8f;
+  border-color: #5bc0de;
+}
+.bs-callout-info h4 {
+  color: #5bc0de;
+}
+
+
+div.page_loading {
+  padding: 100px 20px;
+  text-align: center;   
+}
+
+
+div.block {
+  padding: 10px;
+  border-radius: 5px;
+  background-color: #f8f8f8;
+}
+
+div.tabblock {
+  padding: 10px;
+  border-bottom-left-radius: 5px;
+  border-bottom-right-radius: 5px;
+  border-right: 1px solid rgb(221,221,221);
+  border-bottom: 1px solid rgb(221,221,221);
+  border-left: 1px solid rgb(221,221,221);
+  background-color: #f8f8f8;
+}
+
+
+/**
+ * Home Partial
+ */
+
+div#home_partial .nav-tabs {
+  width: 100%;
+  margin-top: 40px;
+}
+div#home_partial .nav-tabs li {
+font-size: 140%;
+}
+
+div#home_partial div.instructions {
+  padding-top: 30px;
+  font-size: 150%;
+  width: 400px;
+  float: right;
+}
+div#home_partial div.instructions div.instruction div.pic {
+  float: left;
+  width: 40px;
+}
+div#home_partial div.instructions div.instruction div.text {
+  float: left;
+  width: 340px;
+}
+
+div#home_partial div#mccs {
+  width: 440px;
+  height: 250px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  background-color: white;
+  overflow-y: auto;
+}
+
+div#home_partial div#mccs a.list-group-item {
+  border-radius: 0;
+  border-top: 1px solid #ddd;
+  border-bottom: 1px solid #ddd;
+  border-left: none;
+  border-right: none;
+}
+div#home_partial div#mccs a.list-group-item.first {
+  border-radius: 0;
+  border-top: none;
+  border-bottom: 1px solid #ddd;
+  border-left: none;
+  border-right: none;
+}
+div#home_partial div#mccs a.list-group-item.last {
+  border-radius: 0;
+  border-bottom: none;
+  border-top: 1px solid #ddd;
+  border-left: none;
+  border-right: none;
+}
+
+div#home_partial div#mccs a.list-group-item:hover {
+  background-color: rgb(66,139,202);
+  cursor: pointer;
+  color: white;
+}
+
+div#home_partial div#mccs a.list-group-item:hover h4 {
+  color: white;
+}
+
+div#home_partial div#mccs a.list-group-item span.delete_button {
+color: #aaa;
+font-weight: normal;
+  cursor: pointer;
+}
+div#home_partial div#mccs a.list-group-item span.delete_button:hover {
+color: white;
+font-weight: bold;
+  cursor: pointer;
+}
+
+
+div#home_partial div#filter {
+  padding: 20px 0;
+}
+
+div#home_partial div#filter input {
+  width: 240px;
+  height: 35px;
+}
+
+div#home_partial div#filter button {
+  width: 150px;
+}
+
+div#home_partial div#templates {
+  margin-top: 20px;
+  width: 440px;
+  height: 300px;  
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  overflow-y: auto;
+}
+
+div#home_partial div#template_list .alert {
+  width: 440px;
+}
+
+div#home_partial div#template_list input {
+  width: 440px;
+  padding: 5px;
+}
+div#home_partial div#templates div.list-group-item {
+  border-radius: 0;
+  border: none;
+  border-top: 1px solid #ddd;
+  border-bottom: 1px solid #ddd;
+}
+div#home_partial div#templates div.list-group-item.first {
+  border-radius: 0;
+  border: none;
+  border-bottom: 1px solid #ddd;
+}
+div#home_partial div#templates div.list-group-item.last {
+  border-radius: 0;
+  border: none;
+  border-top: 1px solid #ddd;
+}
+
+
+div#home_partial div#templates  button {
+  width: 200px;
+}
+
+div#home_partial div#templates div.list-group-item span.glyphicon {
+  padding-top: 2px;
+  padding-left: 8px;
+  font-size: 200%;
+}
+div#home_partial div#templates div.list-group-item span.glyphicon:hover {
+  color: #f4f8f;
+}
+
+div#home_partial div#templates div.list-group-item a:hover {
+  text-decoration: none;
+}
+
+
+
+/**
+ * Template Partial
+ */
+
+div#template_partial dt {
+  margin-top: 10px;
+  margin-bottom: 3px;
+  font-weight: normal;
+  font-size: 140%;
+}
+div#template_partial div#get-help {
+  float: right;
+  width: 375px;
+  margin-top: 50px;
+  margin-right: 25px;
+}
+div#template_partial div#get-help  div#graphic {
+  float: left;
+  margin-right: 10px;
+  color: #383;
+}
+div#template_partial div#template_editor dt.tmpl_text {
+  margin-top: 20px;
+}
+div#template_partial div#template_editor dt.tmpl_text button {
+  padding: 3px 10px;
+  margin-bottom: 5px;
+  margin-left: 5px;
+}
+
+
+
+/**
+ * Account partial.
+ */
+
+div#account_partial div.action {
+  float: left;
+  width: 300px;
+  font-size: 135%;
+  text-align: center;
+  margin: 20px;
+}
+
+div#account_partial div.action img {
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  padding: 4px;
+  background-color: white;
+  width: 200px;
+  height: 111px;
+}
+div#account_partial div.action div.title {
+  padding: 10px 0;
+}
+
+div#account_partial div.action:hover img {
+  border: 1px solid #444;
+}
+
+div#account_partial div#call_to_action {
+  margin-top: 30px;
+  padding: 20px;
+  text-align: center;
+}
+
+div#account_partial div#templates h4 {
+  font-size: 110%;
+}
+
+div#account_partial div#templates {
+  margin-top: 10px;
+  width: 400px;
+  height: 250px;  
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  overflow-y: auto;
+}
+
+div#account_partial div#templates a.list-group-item {
+  font-size: 90%;
+  cursor: pointer;
+  border-radius: 0;
+  border: none;
+  border-top: 1px solid #ddd;
+  border-bottom: 1px solid #ddd;
+}
+div#account_partial div#templates a.list-group-item.first {
+  border-radius: 0;
+  border: none;
+  border-bottom: 1px solid #ddd;
+}
+div#account_partial div#templates a.list-group-item.last {
+  border-radius: 0;
+  border: none;
+  border-top: 1px solid #ddd;
+}
+
+
+
+
+div#account_partial div#templates  button {
+  width: 200px;
+}
+
+
+div#account_partial div#accounts {
+  margin-top: 10px;
+  width: 400px;
+  height: 400px;  
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  overflow-y: auto;
+}
+
+div#account_partial div#accounts h4 {
+font-size: 105%;
+font-weight: normal;
+}
+div#account_partial div#selected_accounts {
+  margin-top: 10px;
+  width: 400px;
+  height: 400px;  
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  overflow-y: auto;
+}
+
+div#account_partial div#selected_accounts h4 {
+  font-size: 105%;
+  font-weight: normal;
+}
+
+
+div#account_partial_loading .loading_status {
+  margin-left: 235px;
+  width: 400px;
+}
+
+
+
+
+
+div#raw_data_partial div.chart_holder div.title {
+  color: #888;
+  font-size: 85%
+}
+
+div#raw_data_partial_loading .loading_status {
+  margin-left: 235px;
+  width: 400px;
+}
+
+div#raw_data_partial div.account_row {
+margin-bottom: 20px;
+}
+
+div#raw_data_partial div.account_row h4 {
+color: #666;
+}

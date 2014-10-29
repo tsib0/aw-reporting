@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<cronentries>
+  <cron>
+    <url>/generatereportscron</url>
+    <description>Download the Report information for the whole previous month</description>
+    <schedule>5 of month 02:00</schedule>
+  </cron>
+</cronentries>
