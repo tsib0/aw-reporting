@@ -1,0 +1,95 @@
+<div id="home_partial" ng-show="loading_task_count == 0">
+
+  <ul class="nav nav-tabs" style="padding: 1px">
+    <li style="width: 50%">
+      <a href="#/accounts">
+        <span class="glyphicon glyphicon-lock"></span>
+        My MCCs / Accounts
+      </a>
+    </li>
+    <li class="active" style="width: 50%">
+      <a href="#/reports">
+        <span class="glyphicon glyphicon-folder-close"></span>
+        My Report Templates
+      </a>
+    </li>
+  </ul>
+
+    <div class="instructions">
+      <div class="instruction" style="text-align: center">
+        <button class="btn btn-primary"
+                style="padding: 10px;"
+                id="add_template_button"
+                ng-click="createTemplate();">
+          Create New Template
+        </button>
+      </div>
+      <div style="clear: left"></div>
+      <div class="instruction pad-top-20">
+        <div class="pic"><span class="glyphicon glyphicon-list"></span></div>
+        <div class="text"> Or select a previously created one to edit</div>
+      </div>
+    </div>
+
+    <div id="template_list" class="tabblock">
+      <div class="alert alert-danger" ng-show="load_templates_error">
+        {{ load_templates_error }}
+      </div>
+
+      <div id="add_template" style="margin-top: 20px">
+        <input type="text" ng-model="template_filter" 
+               placeholder="Search templates ...">
+      </div>
+      <div id="templates" class="list-group" ng-show="templates.length">
+        <div>
+          <div class="list-group-item hover-host"
+               ng-class="{first: $first, last: $index && $last}"
+               ng-repeat="template in matches = (templates | filter: template_filter)"
+               ng-click="editTemplate(template.templateName);">
+            <div class="show-on-hover pull-right" style="font-size: 80%">
+              <a ng-show="!template.isPublic || i_can_edit" ng-href="#/template/{{template.id}}">
+                <span title="Edit this template" style="font-size: 80%" class="glyphicon glyphicon-edit"></span>
+                <span >Edit</span>
+              </a>
+              <a ng-href="#/template/+{{template.id}}">
+                <span title="Create a new template from this one" class="glyphicon glyphicon-share"
+                      style="font-size: 80%"></span>
+                <span >Clone</span>
+              </a>
+            </div>
+            <div style="float: right">
+            </div>
+            <h4 class="list-group-item-heading">
+              {{ template.templateName }}
+              <span ng-show="!template.isPublic" style="color: #aaa; font-size: 90%"
+                    title="This is a private template only visible to you"
+                    popover-trigger="mouseenter"
+                    class="glyphicon glyphicon-user"></span>
+              <span ng-show="template.isPublic" style="color: #aaa; font-size: 90%"
+                    title="This is a public template, usable by all"
+                    popover-trigger="mouseenter"
+                    class="glyphicon glyphicon-cloud"></span>
+            </h4>
+            <p style="width: 355px"> {{ template.templateDescription }} </p>
+          </div>
+        </div>
+      </div>
+      <div id="no_templates" ng-show="templates.length == 0">
+        <div class="bs-callout bs-callout-danger" style="width: 400px">
+          <h4> You haven't created any templates yet </h4>
+          <p> Click on "Create New Template" now to create one! </p>
+        </div>
+      </div>
+    </div> <!-- #template_list -->
+
+
+
+</div> <!-- #home_partial -->
+
+
+<div id="home_partial_loading" class="page_loading" ng-show="loading_task_count">
+  <img src="media/loader_throb.gif" border="0"/> Loading ...
+</div>
+
+
+<div style="margin: 20px"></div>

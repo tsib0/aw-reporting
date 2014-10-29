@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+<head>
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+<script src="/stylesheets/templatemanagement.js"></script>
+
+
+<link href="/stylesheets/templates.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+<h2>Template Management</h2>
+<br><br>
+Select an HTML template to upload: <input type="file" multiple id="selectFile">
+<br><br>
+
+<form enctype="multipart/form-data" action="" method="post" id="form">
+	Template name: <input type="text" name="templateName" id="templateName" class="formtextbox"><br>
+	Template description: <input type="text" name="templateDescription" id="templateDescription" class="formtextbox"><br>
+	<input type="checkbox" name="isPublic" id="isPublic" value="false">Public template (Visible to all users)?<br> 
+	Template preview: <textarea name="templateHtml" id="templateHtml"></textarea>
+<p><input type="submit" id="submitTemplate"/></p>
+</form>
+</body>
+</html>
