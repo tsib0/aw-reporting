@@ -174,9 +174,8 @@ public class RestServer extends Application {
     Router router = new Router(getContext());
 
     // *** MCCs ***
-    
-    /*
-     * ## HTTP method: GET
+
+    /* ## HTTP method: GET
      *   Provides an array of 'UserToken' objects which includes info on the user (including user ID) 
      *   and the MCC.  Only includes tokens owned by the user.
      * 
@@ -190,9 +189,7 @@ public class RestServer extends Application {
      */
     router.attach("/mcc", MccRest.class);
 
-    
-    /*
-     * ## HTTP method: GET
+    /* ## HTTP method: GET
      *   Provides a single 'UserToken' object for the MCC CID provided which includes info
      *   on the user (including user ID) and the MCC.  MCC must be owned by the user.
      * 
@@ -211,9 +208,8 @@ public class RestServer extends Application {
 
 
     // *** Accounts ***
-    
-    /*
-     * ## HTTP method: GET
+
+    /* ## HTTP method: GET
      *   Provides an array of accounts managed by the MCC specified
      * 
      *   @param (url) topAccountId The MCC CID [REQUIRED]
@@ -226,9 +222,8 @@ public class RestServer extends Application {
      *   Not implemented
      */
     router.attach("/mcc/{topAccountId}/accounts", AccountRest.class);
-    
-    /*
-     * ## HTTP method: GET
+
+    /* ## HTTP method: GET
      *   Provides info on a single account
      * 
      *   @param (url) accountId MCC CID [REQUIRED]
@@ -244,9 +239,8 @@ public class RestServer extends Application {
 
 
     //*** Authentication ***
-    
-    /*
-     * ## HTTP method: GET
+
+    /* ## HTTP method: GET
      *   Authenticate an MCC for that user
      * 
      *   @param (url) topAccountId MCC to authenticate [REQUIRED]
@@ -263,11 +257,8 @@ public class RestServer extends Application {
     
     
     //*** Users ***
-    
-    
-    
-    /*
-     * ## HTTP method: GET
+
+    /* ## HTTP method: GET
      *   Get info on current user ("Who am I")
      * 
      *   @return User info
@@ -280,8 +271,7 @@ public class RestServer extends Application {
      */
     router.attach("/user", UserRest.class);
     
-    /*
-     * ## HTTP method: GET
+    /* ## HTTP method: GET
      *   User login or logout
      *   
      *   @param (url) other acceptable values are simply 'login' or logout.  i.e. /user/login
@@ -298,8 +288,7 @@ public class RestServer extends Application {
 
     // *** HTML template management ***
         
-    /*
-     * ## HTTP method: GET
+    /* ## HTTP method: GET
      *   Gets either templates owned by a user or 'public' templates
      *   
      *   @param (url) isPublic true to get public templates [OPTIONAL: defaults to false if not set]
@@ -319,9 +308,8 @@ public class RestServer extends Application {
      *   NOT IMPLEMENTED
      */
     router.attach("/template", HtmlTemplateRest.class);
-    
-    /*
-     * ## HTTP method: GET
+
+    /* ## HTTP method: GET
      *   Gets a template owned by a user using it's ID
      *   
      *   @param (url) templateId template to get
@@ -338,9 +326,8 @@ public class RestServer extends Application {
 
 
     // *** Reporting ***
-    
-    /*
-     * ## HTTP method: GET
+
+    /* ## HTTP method: GET
      *   Generates a report task for an MCC
      *   
      *   @param (url) topAccountId the MCC CID [REQUIRED]
@@ -356,8 +343,7 @@ public class RestServer extends Application {
      */
     router.attach("/mcc/{topAccountId}/generatereports", GenerateReportsRest.class);
     
-    /*
-     * ## HTTP method: GET
+    /* ## HTTP method: GET
      *   Generates an export report task for an MCC (all accounts within MCC)
      *   
      *   @param (url) topAccountId the MCC CID [REQUIRED]
@@ -374,8 +360,7 @@ public class RestServer extends Application {
      */
     router.attach("/mcc/{topAccountId}/exportreports", ExportReportsRest.class);
         
-    /*
-     * ## HTTP method: GET
+    /* ## HTTP method: GET
      *   Generates an export report task for a single account for complete monthly periods.
      *   
      *   @param (url) topAccountId the MCC CID [REQUIRED]
@@ -393,9 +378,7 @@ public class RestServer extends Application {
      */
     router.attach("/mcc/{topAccountId}/exportreports/account/{accountId}", ExportReportsRest.class);
 
-
-    /*
-     * ## HTTP method: GET
+    /* ## HTTP method: GET
      *   Returns the report in PDF or HTML
      *   
      *   @param (url) topAccountId the MCC CID [REQUIRED]
@@ -414,9 +397,7 @@ public class RestServer extends Application {
      */
     router.attach("/mcc/{topAccountId}/previewreports/account/{accountId}", PreviewReportRest.class);
 
-
-    /*
-     * ## HTTP method: GET
+    /* ## HTTP method: GET
      *   Provides a list map with the minimal and maximal dates available for each Report Type
      *   for a given topAccountId. Returns an error message if a usertoken does not exist for the account.
      * 
@@ -430,7 +411,6 @@ public class RestServer extends Application {
      *   Not implemented
      */
     router.attach("/mcc/{topAccountId}/dataavailable", DataAvailable.class);
-
 
     // LIST Top Account level
     router.attach("/mcc/{topAccountId}/reportaccount", ReportAccountRest.class);

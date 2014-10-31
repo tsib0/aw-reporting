@@ -19,6 +19,7 @@ import com.google.api.ads.adwords.awreporting.server.authentication.WebAuthentic
 import com.google.api.ads.adwords.awreporting.server.rest.kratu.GenerateKratusRest;
 import com.google.api.ads.adwords.awreporting.server.rest.kratu.KratuRest;
 import com.google.api.ads.adwords.awreporting.server.rest.reports.GenerateReportsRest;
+import com.google.api.ads.adwords.awreporting.server.rest.reports.PreviewReportRest;
 import com.google.api.ads.adwords.awreporting.server.rest.reports.ReportAccountRest;
 import com.google.api.ads.adwords.awreporting.server.rest.reports.ReportAdExtensionRest;
 import com.google.api.ads.adwords.awreporting.server.rest.reports.ReportAdGroupRest;
@@ -136,21 +137,35 @@ public class RestServer extends Application {
 
     // *** MCCs ***
     router.attach("/mcc", MccRest.class); //LIST All
-    
+
+
     // *** Accounts ***
+    /* ## HTTP method: GET
+     *   Provides an array of accounts managed by the MCC specified
+     * 
+     *   @param (url) topAccountId The MCC CID [REQUIRED]
+     *   @return Array of accounts
+     * 
+     * ## HTTP method: PUT/POST
+     *   Not implemented
+     * 
+     * ## HTTP method: DELETE
+     *   Not implemented
+     */
     router.attach("/mcc/{topAccountId}/accounts", AccountRest.class); //LIST All
+
 
     // *** Reporting ***
     // Generate
     // ?dateStart=yyyyMMdd&dateEnd=yyyyMMdd
     router.attach("/mcc/{topAccountId}/generatereports", GenerateReportsRest.class);
-    
+
     // Accounts
     // ?dateStart=yyyyMMdd&dateEnd=yyyyMMdd
     // dateRangeType=DAY or dateRangeType=MONTH
     router.attach("/mcc/{topAccountId}/reportaccount", ReportAccountRest.class); //LIST All
     router.attach("/mcc/{topAccountId}/reportaccount/{accountId}", ReportAccountRest.class); //LIST Account level
-    
+
     // Campaigns
     // ?dateStart=yyyyMMdd&dateEnd=yyyyMMdd
     // dateRangeType=DAY or dateRangeType=MONTH
@@ -210,8 +225,68 @@ public class RestServer extends Application {
     router.attach("/mcc/{topAccountId}/reportplaceholderfeeditem/feed/{feedId}", ReportPlaceholderFeedItemRest.class); //LIST Feed level
     router.attach("/mcc/{topAccountId}/reportplaceholderfeeditem/feeditem/{feedItemId}", ReportPlaceholderFeedItemRest.class); //LIST FeedItem level
 
-    // *** HTML to PDF conversion ***
+
+    // *** HTML to PDF conversion & Report Preview***
     router.attach("/html2pdf", HtmlToPdfRest.class);
+
+
+    /* ## HTTP method: GET
+     *   Returns the report in PDF or HTML
+     *   
+     *   @param (url) topAccountId the MCC CID [REQUIRED]
+     *   @param (url) accountId the MCC CID [REQUIRED]
+     *   @param (query) templateId ID of template to use for report doc [REQUIRED]
+     *   @param (query) monthStart formated yyyyMM [OPTIONAL - defaults to last month if both dates not provided]
+     *   @param (query) monthEnd formated yyyyMM [OPTIONAL - defaults to last month if both dates not provided]
+     *   @param (query) reporttype "pdf" or "html" [OPTIONAL - defaults to html]
+     *   @return "OK" (Needs to be changed to URL of Drive folder containing reports)
+     * 
+     * ## HTTP method: PUT/POST
+     *   NOT IMPLEMENTED
+     * 
+     * ## HTTP method: DELETE
+     *   NOT IMPLEMENTED
+     */
+    router.attach("/mcc/{topAccountId}/previewreports/account/{accountId}", PreviewReportRest.class);
+
+
+    // *** HTML template management ***
+    /* ## HTTP method: GET
+     *   Gets either templates owned by a user or 'public' templates
+     *   
+     *   @param (url) isPublic true to get public templates [OPTIONAL: defaults to false if not set]
+     *   @return Array of templates
+     * 
+     * ## HTTP method: PUT/POST
+     *   Add (upload) a new template or update an existing template.
+     *   Existing templates can be uploaded by ensuring that the existing templateId is set.
+     *   
+     *   @param (body) templateName [Optional, but should be changed to required]
+     *   @param (body) templateDescription  [Optional, but should be changed to required]
+     *   @param (body) isPublic  [Optional, defaults to false]
+     *   @param (body) templateHtml (encoded)  [Optional, but should be changed to required]
+     *   @return The persisted template object including the templateId
+     * 
+     * ## HTTP method: DELETE
+     *   NOT IMPLEMENTED
+     */
+    router.attach("/template", HtmlTemplateRest.class);
+
+    /* ## HTTP method: GET
+     *   Gets a template owned by a user using it's ID
+     *   
+     *   @param (url) templateId template to get
+     *   @return template object
+     * 
+     * ## HTTP method: PUT/POST
+     *   NOT IMPLEMENTED
+     * 
+     * ## HTTP method: DELETE
+     *   Deletes a template
+     *   @param (query) templateId the template to delete [REQUIRED]
+     */
+    router.attach("/template/{templateId}", HtmlTemplateRest.class);
+
 
     // *** Kratu ***
     // ?includeZeroImpressions=false by default
@@ -222,8 +297,8 @@ public class RestServer extends Application {
     // ?dateStart=yyyyMMdd&dateEnd=yyyyMMdd
     router.attach("/mcc/{topAccountId}/generatekratus", GenerateKratusRest.class);
 
+
     // *** Static files *** 
-    // USING FILE
     String target = "index.html";
     Redirector redirector = new Redirector(getContext(), target, Redirector.MODE_CLIENT_FOUND);
     router.attach("/", redirector);
@@ -287,6 +362,5 @@ public class RestServer extends Application {
     persister = appCtx.getBean(EntityPersister.class);
     storageHelper = appCtx.getBean(StorageHelper.class);
     webAuthenticator = appCtx.getBean(WebAuthenticator.class);
-
   }
 }
