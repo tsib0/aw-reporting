@@ -15,6 +15,7 @@
 package com.google.api.ads.adwords.awreporting.server.rest;
 
 import com.google.api.ads.adwords.awreporting.model.persistence.EntityPersister;
+import com.google.api.ads.adwords.awreporting.server.authentication.WebAuthenticator;
 import com.google.api.ads.adwords.awreporting.server.rest.kratu.GenerateKratusRest;
 import com.google.api.ads.adwords.awreporting.server.rest.kratu.KratuRest;
 import com.google.api.ads.adwords.awreporting.server.rest.reports.GenerateReportsRest;
@@ -25,6 +26,7 @@ import com.google.api.ads.adwords.awreporting.server.rest.reports.ReportAdRest;
 import com.google.api.ads.adwords.awreporting.server.rest.reports.ReportCampaignNegativeKeywordRest;
 import com.google.api.ads.adwords.awreporting.server.rest.reports.ReportCampaignRest;
 import com.google.api.ads.adwords.awreporting.server.rest.reports.ReportKeywordRest;
+import com.google.api.ads.adwords.awreporting.server.rest.reports.ReportPlaceholderFeedItemRest;
 import com.google.api.ads.adwords.awreporting.server.util.StorageHelper;
 import com.google.api.ads.adwords.awreporting.util.DataBaseType;
 import com.google.api.ads.adwords.awreporting.util.DynamicPropertyPlaceholderConfigurer;
@@ -69,6 +71,8 @@ public class RestServer extends Application {
 
   private static StorageHelper storageHelper;
   
+  private static WebAuthenticator webAuthenticator;
+  
   private static Properties properties;
   
   private List<String> listOfClassPathXml = Lists.newArrayList();
@@ -89,6 +93,10 @@ public class RestServer extends Application {
 
   public static EntityPersister getPersister() {
     return persister;
+  }
+
+  public static WebAuthenticator getWebAuthenticator() {
+    return webAuthenticator;
   }
 
   public static StorageHelper getStorageHelper() {
@@ -189,7 +197,18 @@ public class RestServer extends Application {
     router.attach("/mcc/{topAccountId}/reportadextension", ReportAdExtensionRest.class); //LIST All
     router.attach("/mcc/{topAccountId}/reportadextension/{accountId}", ReportAdExtensionRest.class); //LIST Account level
     router.attach("/mcc/{topAccountId}/reportadextension/campaign/{campaignId}", ReportAdExtensionRest.class); //LIST Campaign level
-    router.attach("/mcc/{topAccountId}/reportadextension/adextension/{adExtensionId}", ReportAdExtensionRest.class); //LIST Keyword level
+    router.attach("/mcc/{topAccountId}/reportadextension/adextension/{adExtensionId}", ReportAdExtensionRest.class); //LIST AdExtension level
+
+    // ReportPlaceholderFeedItem
+    // ?dateStart=yyyyMMdd&dateEnd=yyyyMMdd
+    // dateRangeType=DAY or dateRangeType=MONTH
+    router.attach("/mcc/{topAccountId}/reportplaceholderfeeditem", ReportPlaceholderFeedItemRest.class); //LIST All
+    router.attach("/mcc/{topAccountId}/reportplaceholderfeeditem/{accountId}", ReportPlaceholderFeedItemRest.class); //LIST Account level
+    router.attach("/mcc/{topAccountId}/reportplaceholderfeeditem/campaign/{campaignId}", ReportPlaceholderFeedItemRest.class); //LIST Campaign level
+    router.attach("/mcc/{topAccountId}/reportplaceholderfeeditem/adgroup/{adGroupId}", ReportPlaceholderFeedItemRest.class); //LIST AdGroup level
+    router.attach("/mcc/{topAccountId}/reportplaceholderfeeditem/ad/{adId}", ReportPlaceholderFeedItemRest.class); //LIST Ad level
+    router.attach("/mcc/{topAccountId}/reportplaceholderfeeditem/feed/{feedId}", ReportPlaceholderFeedItemRest.class); //LIST Feed level
+    router.attach("/mcc/{topAccountId}/reportplaceholderfeeditem/feeditem/{feedItemId}", ReportPlaceholderFeedItemRest.class); //LIST FeedItem level
 
     // *** HTML to PDF conversion ***
     router.attach("/html2pdf", HtmlToPdfRest.class);
@@ -237,8 +256,12 @@ public class RestServer extends Application {
     }
 
     listOfClassPathXml.add("classpath:storage-helper-beans.xml");
-    
+
     listOfClassPathXml.add("classpath:kratu-processor-beans.xml");
+
+    listOfClassPathXml.add("aw-reporting-server-webauthenticator.xml");
+    
+    listOfClassPathXml.add("aw-pdf-exporter-beans.xml");
 
     // Choose the DB type to use based properties file
     String dbType = (String) properties.get(AW_REPORT_MODEL_DB_TYPE);
@@ -262,6 +285,8 @@ public class RestServer extends Application {
 
     appCtx = new ClassPathXmlApplicationContext(listOfClassPathXml.toArray(new String[listOfClassPathXml.size()]));    
     persister = appCtx.getBean(EntityPersister.class);
-    storageHelper = getApplicationContext().getBean(StorageHelper.class);
+    storageHelper = appCtx.getBean(StorageHelper.class);
+    webAuthenticator = appCtx.getBean(WebAuthenticator.class);
+
   }
 }

@@ -34,7 +34,7 @@ import java.io.StringReader;
  * 
  * @author jtoledo@google.com (Julian Toledo)
  */
-public class HtmlToPdfRest extends AbstractServerResource {
+public class HtmlToPdfRest extends AbstractBaseResource {
 
   public Representation getHandler() {
     this.setStatus(Status.CLIENT_ERROR_METHOD_NOT_ALLOWED);
@@ -45,7 +45,6 @@ public class HtmlToPdfRest extends AbstractServerResource {
   public Representation postPutHandler(String html) {
     Representation result = null;
     try {
-      getParameters();
 
       StringReader stringReader = new StringReader(html);
       MemoryReportWriter memoryReportWriter = MemoryReportWriter.newMemoryReportWriter();      
@@ -61,7 +60,7 @@ public class HtmlToPdfRest extends AbstractServerResource {
     return result;
   }
 
-  protected InputRepresentation createPdfResult(InputStream inputStream) {
+  private InputRepresentation createPdfResult(InputStream inputStream) {
     InputRepresentation inputRepresentation = new InputRepresentation(inputStream);
     inputRepresentation.setMediaType(MediaType.APPLICATION_PDF);
     return inputRepresentation;

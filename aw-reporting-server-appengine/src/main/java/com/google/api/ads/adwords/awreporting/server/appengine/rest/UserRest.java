@@ -14,6 +14,7 @@
 
 package com.google.api.ads.adwords.awreporting.server.appengine.rest;
 
+import com.google.api.ads.adwords.awreporting.server.rest.AbstractBaseResource;
 import com.google.appengine.api.users.UserService;
 import com.google.appengine.api.users.UserServiceFactory;
 
@@ -25,12 +26,13 @@ import org.restlet.representation.Representation;
  * 
  * @author jtoledo@google.com (Julian Toledo)
  */
-public class UserRest extends GaeAbstractServerResource {
+public class UserRest extends AbstractBaseResource {
 
   public Representation getHandler() {
     String result = null;
     try {
-      getParameters();
+
+      String other = getParameter("other");
 
       if (other == null) {
         UserService userService = UserServiceFactory.getUserService();

@@ -16,6 +16,7 @@ package com.google.api.ads.adwords.awreporting.server.appengine.rest;
 
 import com.google.api.ads.adwords.awreporting.server.appengine.RestServer;
 import com.google.api.ads.adwords.awreporting.server.appengine.model.UserToken;
+import com.google.api.ads.adwords.awreporting.server.rest.AbstractBaseResource;
 import com.google.api.client.util.Lists;
 import com.google.common.collect.Maps;
 
@@ -30,14 +31,15 @@ import java.util.Map;
  * @author jtoledo@google.com (Julian Toledo)
  * @author joeltoby@google.com (Joel Toby)
  */
-public class MccRest extends GaeAbstractServerResource {
+public class MccRest extends AbstractBaseResource {
 
   public Representation getHandler() {
     String result = null;
 
     try {
 
-      getParameters();
+      Long topAccountId = getParameterAsLong("topAccountId");
+      String userId = RestServer.getWebAuthenticator().getCurrentUser();
 
       if (topAccountId != null) {
 
@@ -64,8 +66,10 @@ public class MccRest extends GaeAbstractServerResource {
     String result = null;
 
     try {
-      checkAuthentication();
-      getParameters();
+      RestServer.getWebAuthenticator().checkAuthentication();
+
+      Long topAccountId = getParameterAsLong("topAccountId");
+      String userId = RestServer.getWebAuthenticator().getCurrentUser();
 
       if (topAccountId != null) {
 

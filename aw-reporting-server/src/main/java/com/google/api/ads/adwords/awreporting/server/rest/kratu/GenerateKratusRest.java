@@ -16,32 +16,37 @@ package com.google.api.ads.adwords.awreporting.server.rest.kratu;
 
 import com.google.api.ads.adwords.awreporting.server.kratu.KratuProcessor;
 import com.google.api.ads.adwords.awreporting.server.kratu.RunnableKratu;
-import com.google.api.ads.adwords.awreporting.server.rest.AbstractServerResource;
+import com.google.api.ads.adwords.awreporting.server.rest.AbstractBaseResource;
 import com.google.api.ads.adwords.awreporting.server.rest.RestServer;
 
 import org.restlet.representation.Representation;
 import org.restlet.service.TaskService;
+
+import java.util.Date;
 
 /**
  * GenerateKratusRest
  * 
  * @author jtoledo@google.com (Julian Toledo)
  */
-public class GenerateKratusRest extends AbstractServerResource {
+public class GenerateKratusRest extends AbstractBaseResource {
 
   static TaskService taskService = new TaskService();
 
   public Representation getHandler() {
     String result = null;
+
     try {
-      getParameters();
+
+      Long topAccountId = getParameterAsLong("topAccountId");
+      Date dateStart = getParameterAsDate("dateStart");
+      Date dateEnd = getParameterAsDate("dateEnd");
 
       //Generate Kratus at Mcc level
       if (topAccountId != null && dateStart != null && dateEnd != null) {
-        // Launching a new Service(Thread) to make the request async.
-        
-        KratuProcessor kratuProcessor = RestServer.getApplicationContext().getBean(KratuProcessor.class);
 
+        // Launching a new Service(Thread) to make the request async.
+        KratuProcessor kratuProcessor = RestServer.getApplicationContext().getBean(KratuProcessor.class);
         RunnableKratu runnableKratu = kratuProcessor.createRunnableKratu(
             topAccountId, null, RestServer.getStorageHelper(), dateStart, dateEnd);
 

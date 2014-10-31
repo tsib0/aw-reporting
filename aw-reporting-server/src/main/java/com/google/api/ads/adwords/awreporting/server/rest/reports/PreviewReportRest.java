@@ -12,23 +12,17 @@
 //See the License for the specific language governing permissions and
 //limitations under the License.
 
-package com.google.api.ads.adwords.awreporting.server.appengine.rest.reporting;
+package com.google.api.ads.adwords.awreporting.server.rest.reports;
 
-import com.google.api.ads.adwords.awreporting.exporter.ReportExporter;
 import com.google.api.ads.adwords.awreporting.model.util.DateUtil;
-import com.google.api.ads.adwords.awreporting.server.appengine.RestServer;
-import com.google.api.ads.adwords.awreporting.server.appengine.exporter.ReportExporterAppEngine;
-import com.google.api.ads.adwords.awreporting.server.entities.HtmlTemplate;
+import com.google.api.ads.adwords.awreporting.server.exporter.ServerReportExporter;
 import com.google.api.ads.adwords.awreporting.server.rest.AbstractBaseResource;
+import com.google.api.ads.adwords.awreporting.server.rest.RestServer;
 
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
-import org.restlet.data.Status;
 import org.restlet.representation.Representation;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 import java.util.Properties;
 
 /**
@@ -55,34 +49,12 @@ public class PreviewReportRest extends AbstractBaseResource {
       String monthStart = getParameter("monthStart");
       String monthEnd = getParameter("monthEnd");
       String reportType = getParameter("reportType");
-      String userId = RestServer.getWebAuthenticator().getCurrentUser();
 
       String dateStart;
       String dateEnd;
 
       if (templateId != null) {
-
-        // Validate templateId
-        Map<String, Object> propertiesMap = new HashMap<String, Object>();
-        propertiesMap.put(HtmlTemplate.USER_ID, userId);
-        propertiesMap.put(HtmlTemplate.ID, templateId);
-
-        List<HtmlTemplate> htmlTemplateList = RestServer.getPersister().get(
-            HtmlTemplate.class, propertiesMap);
-
-        if(htmlTemplateList.isEmpty()) {
-          // Check 'public' templates
-          Map<String, Object> publicPropertiesMap = new HashMap<String, Object>();
-          publicPropertiesMap.put("isPublic", true);
-          publicPropertiesMap.put(HtmlTemplate.ID, templateId);
-          htmlTemplateList = RestServer.getPersister().get(HtmlTemplate.class, publicPropertiesMap);
-
-          if(htmlTemplateList.isEmpty()) {
-            this.setStatus(Status.CLIENT_ERROR_BAD_REQUEST);
-            throw new IllegalArgumentException("Invalid templateId");
-          }
-        }
-
+        
         // Export Reports uses YYYYMM month format and converts it to the 
         // YYYYMMDD with the first and last day of the month.
         if(monthStart == null)
@@ -105,7 +77,7 @@ public class PreviewReportRest extends AbstractBaseResource {
         }
 
         Properties properties = RestServer.getProperties();
-        ReportExporterAppEngine reportExporterAppEngine = createReportExporter();
+        ServerReportExporter serverReportExporter = RestServer.getApplicationContext().getBean(ServerReportExporter.class);
 
         // Export One Report in HTML or PDF
         if (topAccountId != null && accountId != null) {
@@ -119,12 +91,12 @@ public class PreviewReportRest extends AbstractBaseResource {
 
           if (reportType != null && reportType.equals("pdf")) {
             // PDF
-            byte[] pdfContent = reportExporterAppEngine.getReportPdf(accountId, properties, templateId, dateStart, dateEnd);
+            byte[] pdfContent = serverReportExporter.getReportPdf(accountId, properties, templateId, dateStart, dateEnd);
             return createPdfResult(pdfContent);
 
           } else {
             // HTML (default)
-            result = reportExporterAppEngine.getReportHtml(accountId, properties, templateId, dateStart, dateEnd);
+            result = serverReportExporter.getReportHtml(accountId, properties, templateId, dateStart, dateEnd);
             return createHtmlResult(result);
           }
         }
@@ -137,15 +109,5 @@ public class PreviewReportRest extends AbstractBaseResource {
     }
     addReadOnlyHeaders();
     return createJsonResult(result);
-  }
-
-  /**
-   * Creates a {@link ReportExporter} autowiring all the dependencies.
-   *
-   * @return the {@code ReportExporter} with all the dependencies properly injected.
-   */
-  private static ReportExporterAppEngine createReportExporter() {
-
-    return RestServer.getApplicationContext().getBean(ReportExporterAppEngine.class);
   }
 }

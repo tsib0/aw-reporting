@@ -8,6 +8,6 @@
   http://www.springframework.org/schema/context/spring-context.xsd">
 
   <context:component-scan
-    base-package="com.google.api.ads.adwords.awreporting.appengine.exporter" />
+    base-package="com.google.api.ads.adwords.awreporting.server.exporter" />
 
 </beans>

@@ -15,7 +15,6 @@
 package com.google.api.ads.adwords.awreporting.server.appengine.exporter;
 
 import com.google.api.ads.adwords.awreporting.exporter.HTMLExporter;
-import com.google.api.ads.adwords.awreporting.exporter.ReportExporter;
 import com.google.api.ads.adwords.awreporting.exporter.reportwriter.FileSystemReportWriter;
 import com.google.api.ads.adwords.awreporting.exporter.reportwriter.GoogleDriveReportWriter;
 import com.google.api.ads.adwords.awreporting.exporter.reportwriter.GoogleDriveService;
@@ -25,7 +24,7 @@ import com.google.api.ads.adwords.awreporting.exporter.reportwriter.ReportWriter
 import com.google.api.ads.adwords.awreporting.exporter.reportwriter.ReportWriterType;
 import com.google.api.ads.adwords.awreporting.server.appengine.RestServer;
 import com.google.api.ads.adwords.awreporting.server.appengine.util.MccTaskCounter;
-import com.google.api.ads.adwords.awreporting.server.entities.HtmlTemplate;
+import com.google.api.ads.adwords.awreporting.server.exporter.ServerReportExporter;
 import com.google.api.ads.common.lib.exception.OAuthException;
 import com.google.api.client.auth.oauth2.Credential;
 import com.google.appengine.api.taskqueue.QueueFactory;
@@ -59,18 +58,13 @@ import java.util.Set;
  * @author joeltoby@google.com (Joel Toby)
  */
 @Component
-public class ReportExporterAppEngine extends ReportExporter implements Serializable {
+public class ReportExporterAppEngine extends ServerReportExporter implements Serializable {
 
   private static final long serialVersionUID = 1L;
   private static final Logger LOGGER = Logger.getLogger(ReportExporterAppEngine.class);
-  
+
   private static final String HTML_2_PDF_SERVER_URL = "http://23.251.134.132:8081/html2pdf";
 
-  /**
-   * Creates the tasks that write export the Drive Doc reports.
-   */
-  
-  
   /**
    * Creates the tasks that write export the Drive Doc reports.
    * @return the URL of the top level drive folder that will contain the reports
@@ -82,12 +76,9 @@ public class ReportExporterAppEngine extends ReportExporter implements Serializa
 
     // Create the folder before creating the threads if it does not exist.
     Credential credential = RestServer.getAuthenticator().getOAuth2Credential(userId, mccAccountId, false);
-    
-    // Not working at the moment due to a Drive bug (https://code.google.com/p/google-apps-script-issues/issues/detail?id=3713).
-//    String driveFolderWebContentLink = 
-//        GoogleDriveService.getGoogleDriveService(credential).getReportsFolder(mccAccountId).getWebContentLink();
+
     GoogleDriveService.getGoogleDriveService(credential).getReportsFolder(mccAccountId).getWebContentLink();
-    
+
     MccTaskCounter.increasePendingExportTasks(Long.valueOf(mccAccountId), accountIds.size());    
 
     LOGGER.info("Generating PDF exporting tasks for " + accountIds.size() + " accounts");
@@ -107,84 +98,6 @@ public class ReportExporterAppEngine extends ReportExporter implements Serializa
               outputDirectory,
               sumAdExtensions)).countdownMillis(10*1000l));
     }
-  }
-
-  public String getReportHtml(Long accountId, Properties properties, Long templateId,
-      String dateStart, String dateEnd) throws IOException {
-
-    String result = null;
-
-    Map<String, Object> reportDataMap = createReportDataMap(dateStart, dateEnd,  accountId, properties, false);
-
-    List<HtmlTemplate> templatesList = RestServer.getPersister().get(HtmlTemplate.class, HtmlTemplate.ID, templateId);
-    if( templatesList != null && ! templatesList.isEmpty()) {
-      HtmlTemplate template = templatesList.get(0);
-
-      // Writing HTML to Memory
-      MemoryReportWriter mrwHtml = MemoryReportWriter.newMemoryReportWriter();
-      HTMLExporter.exportHtml(reportDataMap, template.getTemplateHtmlAsInputStream(), mrwHtml);
-
-      result = IOUtils.toString(mrwHtml.getAsSource(), "UTF-8");
-    }
-    return result;
-  }
-  
-  public byte[] getReportPdf(Long accountId, Properties properties, Long templateId,
-      String dateStart, String dateEnd) throws IOException, DocumentException {
-
-    byte[] result = null;
-
-    // Get the Fonts for the PDF from the properties file
-    String propertyReportFonts = properties.getProperty("aw.report.exporter.reportfonts");
-    List<String> fontPaths = Lists.newArrayList();
-    if (propertyReportFonts != null) {
-      fontPaths = Arrays.asList(propertyReportFonts.split(","));
-    }
-
-    Map<String, Object> reportDataMap = createReportDataMap(dateStart, dateEnd,  accountId, properties, false);
-
-    List<HtmlTemplate> templatesList = RestServer.getPersister().get(HtmlTemplate.class, HtmlTemplate.ID, templateId);
-    if( templatesList != null && ! templatesList.isEmpty()) {
-      HtmlTemplate template = templatesList.get(0);
-
-      // Writing HTML to Memory
-      MemoryReportWriter mrwHtml = MemoryReportWriter.newMemoryReportWriter();
-      HTMLExporter.exportHtml(reportDataMap, template.getTemplateHtmlAsInputStream(), mrwHtml);
-      
-      // Writing PDF to memory
-      MemoryReportWriter mrwPdf = MemoryReportWriter.newMemoryReportWriter();
-      HTMLExporter.exportHtmlToPdf(mrwHtml.getAsSource(), mrwPdf, fontPaths);
-
-      result = IOUtils.toByteArray(mrwPdf.getAsSource());
-    }
-    return result;
-  }
-
-  public static void html2PdfOverNet(InputStream htmlSource, ReportWriter reportWriter) {
-    try {
-      URL url = new URL(HTML_2_PDF_SERVER_URL); 
-      HttpURLConnection connection = (HttpURLConnection) url.openConnection();           
-      connection.setDoOutput(true);
-      connection.setDoInput(true);
-      connection.setInstanceFollowRedirects(false); 
-      connection.setRequestMethod("POST"); 
-      connection.setRequestProperty("Content-Type", "text/html"); 
-      connection.setRequestProperty("charset", "utf-8");
-      connection.setUseCaches (false);
-
-      DataOutputStream send = new DataOutputStream(connection.getOutputStream());
-      send.write(IOUtils.toByteArray(htmlSource));
-      send.flush();
-      
-      // Read from connection
-      reportWriter.write(connection.getInputStream());
-
-      send.close();
-      
-      connection.disconnect();
-    } catch (Exception e) {
-      e.printStackTrace();
-    } 
   }
 
   /**
@@ -305,5 +218,32 @@ public class ReportExporterAppEngine extends ReportExporter implements Serializa
         }
       }
     }
+  }
+
+  public static void html2PdfOverNet(InputStream htmlSource, ReportWriter reportWriter) {
+    try {
+      URL url = new URL(HTML_2_PDF_SERVER_URL); 
+      HttpURLConnection connection = (HttpURLConnection) url.openConnection();           
+      connection.setDoOutput(true);
+      connection.setDoInput(true);
+      connection.setInstanceFollowRedirects(false); 
+      connection.setRequestMethod("POST"); 
+      connection.setRequestProperty("Content-Type", "text/html"); 
+      connection.setRequestProperty("charset", "utf-8");
+      connection.setUseCaches (false);
+
+      DataOutputStream send = new DataOutputStream(connection.getOutputStream());
+      send.write(IOUtils.toByteArray(htmlSource));
+      send.flush();
+      
+      // Read from connection
+      reportWriter.write(connection.getInputStream());
+
+      send.close();
+      
+      connection.disconnect();
+    } catch (Exception e) {
+      e.printStackTrace();
+    } 
   }
 }

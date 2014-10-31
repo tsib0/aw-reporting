@@ -46,6 +46,10 @@ public final class DateUtil {
   private static final DateTimeFormatter dfYearMonth =
       DateTimeFormat.forPattern(DATE_FORMAT_SHORT_WITHOUTDAY);
 
+  private static final String DATE_FORMAT_SHORT_WITHOUTDAY_NODASH = "yyyyMM";
+  private static final DateTimeFormatter dfYearMonthNoDash =
+      DateTimeFormat.forPattern(DATE_FORMAT_SHORT_WITHOUTDAY_NODASH);
+
   private static final List<DateTimeFormatter> formatters = new ArrayList<DateTimeFormatter>();
   static {
     formatters.add(dfYearMonthDay);
@@ -119,6 +123,26 @@ public final class DateUtil {
   }
 
   /**
+   * Formats the date to the ISO format without the time zone and day information: yyyyMM
+   *
+   * @param date the date as a {@code java.util.Date}
+   * @return the {@code String} that represents the date in ISO format
+   */
+  public static String formatYearMonthNoDash(Date date) {
+    return DateUtil.formatYearMonthNoDash(new DateTime(date));
+  }
+
+  /**
+   * Formats the date to the ISO format without the time zone and day information: yyyyMM
+   *
+   * @param date the date as a {@code org.jodatime.DateTime}
+   * @return the {@code String} that represents the date in ISO format
+   */
+  public static String formatYearMonthNoDash(DateTime date) {
+    return DateUtil.dfYearMonthNoDash.print(date);
+  }
+  
+  /**
    * Attempts to parse the given {@code String} to a {@code DateTime} using one of the known
    * formatters.
    *
@@ -154,5 +178,37 @@ public final class DateUtil {
 
     DateTime lastMonth = new DateTime().minusMonths(1);
     return DateUtil.dfYearMonth.print(lastMonth);
+  }
+  
+  /**
+   * Get a DateTime for the first day of the previous month.
+   * @return DateTime
+   */
+  public static DateTime firstDayPreviousMonth() {
+    return new DateTime().minusMonths(1).dayOfMonth().withMinimumValue();
+  }
+
+  /**
+   * Get a DateTime for the last day of the previous month.
+   * @return DateTime
+   */
+  public static DateTime lastDayPreviousMonth() {
+    return new DateTime().minusMonths(1).dayOfMonth().withMaximumValue();
+  }
+
+  /**
+   * Get a DateTime for the first day of a month.
+   * @return DateTime
+   */
+  public static DateTime firstDayMonth(DateTime datetime) {
+    return datetime.dayOfMonth().withMinimumValue();
+  }
+
+  /**
+   * Get a DateTime for the last day of a month.
+   * @return DateTime
+   */
+  public static DateTime lastDayMonth(DateTime datetime) {
+    return datetime.dayOfMonth().withMaximumValue();
   }
 }

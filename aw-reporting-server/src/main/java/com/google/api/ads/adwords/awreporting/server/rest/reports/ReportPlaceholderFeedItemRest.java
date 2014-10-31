@@ -12,17 +12,17 @@
 //See the License for the specific language governing permissions and
 //limitations under the License.
 
-package com.google.api.ads.adwords.awreporting.server.appengine.rest.reporting;
+package com.google.api.ads.adwords.awreporting.server.rest.reports;
 
-import com.google.api.ads.adwords.awreporting.model.entities.ReportCampaign;
+import com.google.api.ads.adwords.awreporting.model.entities.ReportPlaceholderFeedItem;
 
 /**
- * Rest entry point to get Campaign Reports
+ * ReportPlaceholderFeedItemRest
  * 
  * @author jtoledo@google.com (Julian Toledo)
  */
-public class ReportCampaignRest extends ReportRest<ReportCampaign> {
-  public ReportCampaignRest() {
-	  classReportSub = ReportCampaign.class;
+public class ReportPlaceholderFeedItemRest extends AbstractReportRest<ReportPlaceholderFeedItem> {
+  public ReportPlaceholderFeedItemRest() {
+    super(ReportPlaceholderFeedItem.class);
   }
 }

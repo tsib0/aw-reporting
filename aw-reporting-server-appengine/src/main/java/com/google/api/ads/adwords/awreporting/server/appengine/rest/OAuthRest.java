@@ -15,6 +15,7 @@
 package com.google.api.ads.adwords.awreporting.server.appengine.rest;
 
 import com.google.api.ads.adwords.awreporting.server.appengine.RestServer;
+import com.google.api.ads.adwords.awreporting.server.rest.AbstractBaseResource;
 import com.google.gson.Gson;
 
 import org.json.JSONException;
@@ -29,7 +30,7 @@ import java.util.Map;
  * 
  * @author jtoledo@google.com (Julian Toledo)
  */
-public class OAuthRest extends GaeAbstractServerResource {
+public class OAuthRest extends AbstractBaseResource {
   
   private static final String RETURN_URL = "/index.html#/new_mcc/";
   
@@ -39,7 +40,10 @@ public class OAuthRest extends GaeAbstractServerResource {
     String result = null;
 
     try {
-      getParameters();
+
+      Long topAccountId = getParameterAsLong("topAccountId");
+      String code = getParameter("code");
+      String state = getParameter("state");
 
       if (topAccountId != null && state == null) {
         // Redirect the user to OAuth
@@ -51,18 +55,18 @@ public class OAuthRest extends GaeAbstractServerResource {
 
       if (code != null && code.length() > 0 && state != null && state.length() > 0) {
 
-        String topAccountId = "";
+        String topAccountIdFromState = "";
         String returnUrl = RETURN_URL;
         // State contains TopAccountId and Return URL without any separator
         if (state.indexOf("http") < 0) {
-          topAccountId = state;
+          topAccountIdFromState = state;
           returnUrl +=  topAccountId;
         } else {
-          topAccountId = state.substring(0, state.indexOf("http"));
+          topAccountIdFromState = state.substring(0, state.indexOf("http"));
           returnUrl = state.substring(state.indexOf("http"));
         }
 
-        RestServer.getAuthenticator().processOAuth2Credential(code, topAccountId);
+        RestServer.getAuthenticator().processOAuth2Credential(code, topAccountIdFromState);
         this.setStatus(Status.REDIRECTION_FOUND);
         this.setLocationRef(returnUrl);
         result = "";
@@ -89,9 +93,8 @@ public class OAuthRest extends GaeAbstractServerResource {
   public Representation postPutHandler(String json) {
 
     try {
-      getParameters();
 
-      topAccountId = Long.valueOf((String) new Gson().fromJson(json, Map.class).get("topAccountId"));
+      Long topAccountId = Long.valueOf((String) new Gson().fromJson(json, Map.class).get("topAccountId"));
 
       // Redirect the user to OAuth
       String url = RestServer.getAuthenticator().getOAuth2Url(topAccountId);

@@ -18,12 +18,13 @@ import com.google.api.ads.adwords.awreporting.exporter.ReportExporter;
 import com.google.api.ads.adwords.awreporting.model.util.DateUtil;
 import com.google.api.ads.adwords.awreporting.server.appengine.RestServer;
 import com.google.api.ads.adwords.awreporting.server.appengine.exporter.ReportExporterAppEngine;
-import com.google.api.ads.adwords.awreporting.server.appengine.rest.GaeAbstractServerResource;
-import com.google.api.ads.adwords.awreporting.server.appengine.util.DateUtility;
 import com.google.api.ads.adwords.awreporting.server.entities.Account;
 import com.google.api.ads.adwords.awreporting.server.entities.HtmlTemplate;
+import com.google.api.ads.adwords.awreporting.server.rest.AbstractBaseResource;
 import com.google.common.collect.Sets;
 
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
 import org.restlet.data.Status;
 import org.restlet.representation.Representation;
 
@@ -40,7 +41,10 @@ import java.util.Set;
  * @author joeltoby@google.com (Joel Toby)
  * @author jtoledo@google.com (Julian Toledo)
  */
-public class ExportReportsRest extends GaeAbstractServerResource {
+public class ExportReportsRest extends AbstractBaseResource {
+  
+  private static final String DATE_FORMAT_SHORT_WITHOUTDAY = "yyyyMM";
+  protected static final DateTimeFormatter dfYearMonthNoDash = DateTimeFormat.forPattern(DATE_FORMAT_SHORT_WITHOUTDAY);
 
   /* (non-Javadoc)
    * @see com.google.api.ads.adwords.awreporting.appengine.rest.AbstractServerResource#getHandler()
@@ -50,8 +54,15 @@ public class ExportReportsRest extends GaeAbstractServerResource {
     String result = null;
 
     try {
-      checkAuthentication();
-      getParameters();
+      RestServer.getWebAuthenticator().checkAuthentication();
+      
+      Long topAccountId = getParameterAsLong("topAccountId");
+      Long accountId = getParameterAsLong("accountId");
+      Long templateId = getParameterAsLong("templateId");
+      String userId = RestServer.getWebAuthenticator().getCurrentUser();
+      
+      String monthStart = getParameter("monthStart");
+      String monthEnd = getParameter("monthEnd");
 
       String dateStart;
       String dateEnd;
@@ -90,14 +101,14 @@ public class ExportReportsRest extends GaeAbstractServerResource {
           // Set date range to last month if dates are not provided
           LOGGER.info("Report date range not provided.  Defaulting to last month.");
 
-          dateStart = DateUtil.formatYearMonthDayNoDash(DateUtility.firstDayPreviousMonth());
-          dateEnd = DateUtil.formatYearMonthDayNoDash(DateUtility.lastDayPreviousMonth());
+          dateStart = DateUtil.formatYearMonthDayNoDash(DateUtil.firstDayPreviousMonth());
+          dateEnd = DateUtil.formatYearMonthDayNoDash(DateUtil.lastDayPreviousMonth());
 
         } else {
           dateStart = DateUtil.formatYearMonthDayNoDash(
-              DateUtility.firstDayMonth(dfYearMonthNoDash.parseDateTime(monthStart)));
+              DateUtil.firstDayMonth(dfYearMonthNoDash.parseDateTime(monthStart)));
           dateEnd = DateUtil.formatYearMonthDayNoDash(
-              DateUtility.lastDayMonth(dfYearMonthNoDash.parseDateTime(monthEnd)));
+              DateUtil.lastDayMonth(dfYearMonthNoDash.parseDateTime(monthEnd)));
         }
 
         Properties properties = RestServer.getProperties();
@@ -110,7 +121,7 @@ public class ExportReportsRest extends GaeAbstractServerResource {
         if (topAccountId != null && accountId == null) {
 
           // Check that the user owns that MCC
-          checkAuthentication(topAccountId);
+          RestServer.getWebAuthenticator().checkAuthentication(topAccountId);
 
           LOGGER.info(" Export Report Task for MCC for " + topAccountId +
               " using templateId: #" + templateId + ". Report date range: " + 
@@ -134,7 +145,7 @@ public class ExportReportsRest extends GaeAbstractServerResource {
         if (topAccountId != null && accountId != null) {
 
           // Check that the user owns that MCC
-          checkAuthentication(topAccountId);
+          RestServer.getWebAuthenticator().checkAuthentication(topAccountId);
 
           LOGGER.info(" Export Report Task for account for " + accountId +
               " using templateId: #" + templateId + ". Report date range: " +

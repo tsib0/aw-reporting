@@ -40,6 +40,7 @@ public class HtmlTemplate implements MongoEntity {
 
   public static final String ID = "id";
   public static final String USER_ID = "userId";
+  public static final String IS_PUBLIC = "isPublic";
 
   @Id
   @com.googlecode.objectify.annotation.Id

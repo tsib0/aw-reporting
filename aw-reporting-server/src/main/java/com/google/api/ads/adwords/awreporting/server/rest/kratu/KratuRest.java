@@ -14,22 +14,28 @@
 
 package com.google.api.ads.adwords.awreporting.server.rest.kratu;
 
-import com.google.api.ads.adwords.awreporting.server.rest.AbstractServerResource;
+import com.google.api.ads.adwords.awreporting.server.rest.AbstractBaseResource;
 import com.google.api.ads.adwords.awreporting.server.rest.RestServer;
 
 import org.restlet.representation.Representation;
+
+import java.util.Date;
 
 /**
  * KratuRest
  * 
  * @author jtoledo@google.com (Julian Toledo)
  */
-public class KratuRest extends AbstractServerResource {
+public class KratuRest extends AbstractBaseResource {
 
   public Representation getHandler() {
     String result = null;
     try {
-      getParameters();
+
+      Long topAccountId = getParameterAsLong("topAccountId");
+      Long accountId = getParameterAsLong("accountId");
+      Date dateStart = getParameterAsDate("dateStart");
+      Date dateEnd = getParameterAsDate("dateEnd");
 
       // Retrieve All Kratus for the MCC between the two dates.
       if (topAccountId != null && dateStart != null && dateEnd != null) {
