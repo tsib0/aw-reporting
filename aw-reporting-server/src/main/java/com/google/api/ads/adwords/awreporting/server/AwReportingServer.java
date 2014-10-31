@@ -154,8 +154,6 @@ public class AwReportingServer {
         propertiesPath = cmdLine.getOptionValue("file");
         System.out.println("Using properties from: " + propertiesPath);
 
-
-
       } else {
         errors = true;
         System.out.println("Configuration incomplete. Missing options for command line.");

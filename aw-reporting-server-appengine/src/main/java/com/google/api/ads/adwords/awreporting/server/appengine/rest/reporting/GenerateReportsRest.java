@@ -18,11 +18,12 @@ import com.google.api.ads.adwords.awreporting.model.util.DateUtil;
 import com.google.api.ads.adwords.awreporting.processors.ReportProcessor;
 import com.google.api.ads.adwords.awreporting.server.appengine.RestServer;
 import com.google.api.ads.adwords.awreporting.server.appengine.processors.ReportProcessorAppEngine;
-import com.google.api.ads.adwords.awreporting.server.appengine.rest.GaeAbstractServerResource;
+import com.google.api.ads.adwords.awreporting.server.rest.AbstractBaseResource;
 import com.google.api.ads.adwords.lib.jaxb.v201406.ReportDefinitionDateRangeType;
 
 import org.restlet.representation.Representation;
 
+import java.util.Date;
 import java.util.Properties;
 
 /**
@@ -30,14 +31,18 @@ import java.util.Properties;
  * 
  * @author jtoledo@google.com (Julian Toledo)
  */
-public class GenerateReportsRest extends GaeAbstractServerResource {
+public class GenerateReportsRest extends AbstractBaseResource {
 
   public Representation getHandler() {
     String result = null;
     
     try {
-      checkAuthentication();
-      getParameters();
+      RestServer.getWebAuthenticator().checkAuthentication();
+      
+      Long topAccountId = getParameterAsLong("topAccountId");
+      Date dateStart = getParameterAsDate("dateStart");
+      Date dateEnd = getParameterAsDate("dateEnd");
+      String userId = RestServer.getWebAuthenticator().getCurrentUser();
 
       if (topAccountId != null && dateStart != null && dateEnd != null) { // Generate Report Task for MCC
 
@@ -67,8 +72,7 @@ public class GenerateReportsRest extends GaeAbstractServerResource {
     String result = null;
     
     try {
-      checkAuthentication();
-      getParameters();
+      RestServer.getWebAuthenticator().checkAuthentication();
       
       /*
       HtmlTemplate template = new Gson().fromJson(json, HtmlTemplate.class);

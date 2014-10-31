@@ -53,9 +53,9 @@ import java.util.logging.Logger;
  * @author joeltoby@google.com  (Joel Toby)
  */
 @Component
-public class AppEngineAuthenticator implements Authenticator {
+public class AppEngineOAuth2Authenticator implements Authenticator {
 
-  private static final Logger LOGGER = Logger.getLogger(AppEngineAuthenticator.class.getName());
+  private static final Logger LOGGER = Logger.getLogger(AppEngineOAuth2Authenticator.class.getName());
 
   private static final String USER_AGENT = "AwReporting-AppEngine";
 
@@ -75,7 +75,7 @@ public class AppEngineAuthenticator implements Authenticator {
    *            the OAuth2 authentication clientSecret
    */
   @Autowired
-  public AppEngineAuthenticator(
+  public AppEngineOAuth2Authenticator(
       @Value("${developerToken}") String developerToken,
       @Value(value = "${clientId}") String clientId,
       @Value(value = "${clientSecret}") String clientSecret,

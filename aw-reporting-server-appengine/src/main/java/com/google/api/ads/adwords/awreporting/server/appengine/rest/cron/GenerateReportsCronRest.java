@@ -20,8 +20,7 @@ import com.google.api.ads.adwords.awreporting.server.appengine.RestServer;
 import com.google.api.ads.adwords.awreporting.server.appengine.model.UserToken;
 import com.google.api.ads.adwords.awreporting.server.appengine.processors.RefreshAccountsTask;
 import com.google.api.ads.adwords.awreporting.server.appengine.processors.ReportProcessorAppEngine;
-import com.google.api.ads.adwords.awreporting.server.appengine.rest.GaeAbstractServerResource;
-import com.google.api.ads.adwords.awreporting.server.appengine.util.DateUtility;
+import com.google.api.ads.adwords.awreporting.server.rest.AbstractBaseResource;
 import com.google.api.ads.adwords.lib.jaxb.v201406.ReportDefinitionDateRangeType;
 import com.google.common.collect.Sets;
 
@@ -36,12 +35,12 @@ import java.util.Set;
  * 
  * @author jtoledo@google.com (Julian Toledo)
  */
-public class GenerateReportsCronRest extends GaeAbstractServerResource {
+public class GenerateReportsCronRest extends AbstractBaseResource {
 
   public Representation getHandler() {
     String result = null;
+
     try {
-      getParameters();
 
       LOGGER.info(" Generate Report Cron Task");
       System.out.println(" Generate Report Cron Task");
@@ -66,8 +65,8 @@ public class GenerateReportsCronRest extends GaeAbstractServerResource {
           System.out.println(" Generate Report Task for MCC for " + tokenTopAccountId);
 
           // Get the dates for first day and last day of the previous month
-          String dateStart = DateUtil.formatYearMonthDayNoDash(DateUtility.firstDayPreviousMonth());
-          String dateEnd = DateUtil.formatYearMonthDayNoDash(DateUtility.lastDayPreviousMonth());
+          String dateStart = DateUtil.formatYearMonthDayNoDash(DateUtil.firstDayPreviousMonth());
+          String dateEnd = DateUtil.formatYearMonthDayNoDash(DateUtil.lastDayPreviousMonth());
 
           reportProcessorAppEngine.generateReportsForMCC(tokenUserId, String.valueOf(tokenTopAccountId),
               ReportDefinitionDateRangeType.CUSTOM_DATE, dateStart, dateEnd, null, properties, null, null);

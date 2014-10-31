@@ -15,12 +15,15 @@
 package com.google.api.ads.adwords.awreporting.server.rest.reports;
 
 import com.google.api.ads.adwords.awreporting.model.entities.Report;
-import com.google.api.ads.adwords.awreporting.server.rest.AbstractServerResource;
+import com.google.api.ads.adwords.awreporting.model.entities.ReportBase;
+import com.google.api.ads.adwords.awreporting.model.entities.ReportPlaceholderFeedItem;
+import com.google.api.ads.adwords.awreporting.server.rest.AbstractBaseResource;
 import com.google.api.ads.adwords.awreporting.server.rest.RestServer;
 import com.google.api.ads.adwords.awreporting.server.util.StorageHelper;
 
 import org.restlet.representation.Representation;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -28,7 +31,7 @@ import java.util.List;
  * 
  * @author jtoledo@google.com (Julian Toledo)
  */
-public abstract class AbstractReportRest<ReportSub extends Report> extends AbstractServerResource {
+public abstract class AbstractReportRest<ReportSub extends Report> extends AbstractBaseResource {
 
   private Class<ReportSub> classReportSub;
   
@@ -41,7 +44,27 @@ public abstract class AbstractReportRest<ReportSub extends Report> extends Abstr
   public Representation getHandler() {
     String result = null;
     try {
-      getParameters();
+      
+      Long topAccountId = getParameterAsLong("topAccountId");
+      Long accountId = getParameterAsLong("accountId");
+      Long campaignId = getParameterAsLong("campaignId");
+      Long adGroupId = getParameterAsLong("adGroupId");
+      Long adId = getParameterAsLong("adId");
+      Long adExtensionId = getParameterAsLong("adExtensionId");
+      Long criterionId = getParameterAsLong("criterionId");
+      Long feedId = getParameterAsLong("feedId");
+      Long feedItemId = getParameterAsLong("feedItemId");
+
+      Date dateStart = getParameterAsDate("dateStart");
+      Date dateEnd = getParameterAsDate("dateEnd");
+
+      String dateRangeType;
+      String dateRangeTypeString = getParameter("dateRangeType");
+      if (dateRangeTypeString != null && dateRangeTypeString.equalsIgnoreCase(ReportBase.MONTH)) {
+        dateRangeType = ReportBase.MONTH;
+      } else {
+        dateRangeType = ReportBase.DAY;
+      }
 
       List<ReportSub> listReport = null;
 
@@ -51,7 +74,9 @@ public abstract class AbstractReportRest<ReportSub extends Report> extends Abstr
           adGroupId == null && 
           adId == null &&
           adExtensionId == null &&
-          criterionId == null) {
+          criterionId == null &&
+          feedId == null &&
+          feedItemId == null) {
         listReport = storageHelper.getReport(classReportSub,
             Report.TOP_ACCOUNT_ID, topAccountId, dateRangeType, dateStart, dateEnd);
       }
@@ -84,6 +109,16 @@ public abstract class AbstractReportRest<ReportSub extends Report> extends Abstr
       if (criterionId != null) {
         listReport = storageHelper.getReport(classReportSub,
             Report.KEYWORD_ID, criterionId, dateRangeType, dateStart, dateEnd);
+      }
+
+      if (feedId != null) {
+        listReport = storageHelper.getReport(classReportSub,
+            ReportPlaceholderFeedItem.FEED_ID, feedId, dateRangeType, dateStart, dateEnd);
+      }
+
+      if (feedItemId != null) {
+        listReport = storageHelper.getReport(classReportSub,
+            ReportPlaceholderFeedItem.FEED_ITEM_ID, feedItemId, dateRangeType, dateStart, dateEnd);
       }
 
       if (listReport != null) {

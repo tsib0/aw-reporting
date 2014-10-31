@@ -21,18 +21,24 @@ import org.restlet.representation.Representation;
 import java.util.List;
 
 /**
- * AccountRest
+ * Rest entry point for Account objects
  * 
  * @author jtoledo@google.com (Julian Toledo)
  */
-public class AccountRest extends AbstractServerResource {
+public class AccountRest extends AbstractBaseResource {
 
   public Representation getHandler() {
     String result = null;
+
     try {
-      getParameters();
+      RestServer.getWebAuthenticator().checkAuthentication();
+
+      Long topAccountId = getParameterAsLong("topAccountId");
 
       if (topAccountId != null ) {
+        // Check that the user owns that MCC
+        RestServer.getWebAuthenticator().checkAuthentication(topAccountId);
+
         List<Account> listAccounts = RestServer.getStorageHelper().getEntityPersister().get(
             Account.class, Account.TOP_ACCOUNT_ID, topAccountId);
         result =  gson.toJson(listAccounts);

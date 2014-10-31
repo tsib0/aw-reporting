@@ -28,10 +28,9 @@ import com.google.api.ads.adwords.awreporting.model.entities.ReportKeyword;
 import com.google.api.ads.adwords.awreporting.model.entities.ReportPlaceholderFeedItem;
 import com.google.api.ads.adwords.awreporting.model.entities.ReportUrl;
 import com.google.api.ads.adwords.awreporting.model.persistence.EntityPersister;
-import com.google.api.ads.adwords.awreporting.server.appengine.authentication.AppEngineAuthenticator;
+import com.google.api.ads.adwords.awreporting.server.appengine.authentication.AppEngineOAuth2Authenticator;
+import com.google.api.ads.adwords.awreporting.server.appengine.authentication.AppEngineWebAuthenticator;
 import com.google.api.ads.adwords.awreporting.server.appengine.model.UserToken;
-import com.google.api.ads.adwords.awreporting.server.appengine.rest.AccountRest;
-import com.google.api.ads.adwords.awreporting.server.appengine.rest.HtmlTemplateRest;
 import com.google.api.ads.adwords.awreporting.server.appengine.rest.MccRest;
 import com.google.api.ads.adwords.awreporting.server.appengine.rest.OAuthRest;
 import com.google.api.ads.adwords.awreporting.server.appengine.rest.UserRest;
@@ -40,12 +39,15 @@ import com.google.api.ads.adwords.awreporting.server.appengine.rest.reporting.Da
 import com.google.api.ads.adwords.awreporting.server.appengine.rest.reporting.ExportReportsRest;
 import com.google.api.ads.adwords.awreporting.server.appengine.rest.reporting.GenerateReportsRest;
 import com.google.api.ads.adwords.awreporting.server.appengine.rest.reporting.PreviewReportRest;
-import com.google.api.ads.adwords.awreporting.server.appengine.rest.reporting.ReportAccountRest;
-import com.google.api.ads.adwords.awreporting.server.appengine.rest.reporting.ReportAdGroupRest;
-import com.google.api.ads.adwords.awreporting.server.appengine.rest.reporting.ReportCampaignRest;
-import com.google.api.ads.adwords.awreporting.server.appengine.rest.reporting.ReportPlaceholderFeedItemRest;
+import com.google.api.ads.adwords.awreporting.server.authentication.WebAuthenticator;
 import com.google.api.ads.adwords.awreporting.server.entities.Account;
 import com.google.api.ads.adwords.awreporting.server.entities.HtmlTemplate;
+import com.google.api.ads.adwords.awreporting.server.rest.AccountRest;
+import com.google.api.ads.adwords.awreporting.server.rest.HtmlTemplateRest;
+import com.google.api.ads.adwords.awreporting.server.rest.reports.ReportAccountRest;
+import com.google.api.ads.adwords.awreporting.server.rest.reports.ReportAdGroupRest;
+import com.google.api.ads.adwords.awreporting.server.rest.reports.ReportCampaignRest;
+import com.google.api.ads.adwords.awreporting.server.rest.reports.ReportPlaceholderFeedItemRest;
 import com.google.api.ads.adwords.awreporting.util.AdWordsSessionBuilderSynchronizer;
 import com.google.api.ads.adwords.awreporting.util.DynamicPropertyPlaceholderConfigurer;
 import com.google.api.ads.common.lib.exception.OAuthException;
@@ -87,7 +89,9 @@ public class RestServer extends Application {
 
   private static EntityPersister persister;
 
-  private static AppEngineAuthenticator authenticator;
+  private static AppEngineOAuth2Authenticator authenticator;
+  
+  private static WebAuthenticator webAuthenticator;
 
   public static ApplicationContext getApplicationContext() {
     if (appCtx == null) {
@@ -122,7 +126,7 @@ public class RestServer extends Application {
     return persister;
   }
 
-  public static AppEngineAuthenticator getAuthenticator() {
+  public static AppEngineOAuth2Authenticator getAuthenticator() {
     if (authenticator == null || appCtx == null) {
       synchronized (RestServer.class) {
         if (authenticator == null || appCtx == null) {
@@ -131,6 +135,17 @@ public class RestServer extends Application {
       }
     }
     return authenticator;
+  }
+
+  public static WebAuthenticator getWebAuthenticator() {
+    if (webAuthenticator == null || appCtx == null) {
+      synchronized (RestServer.class) {
+        if (webAuthenticator == null || appCtx == null) {
+          initApplicationContextAndProperties();
+        }
+      }
+    }
+    return webAuthenticator;
   }
 
   private static final HashMap<AdWordsSessionBuilderSynchronizer, AdWordsSessionBuilderSynchronizer>
@@ -489,7 +504,8 @@ public class RestServer extends Application {
 
     // Loading AppEngine DB type by default (ignoring DB type from properties file)
     appCtx = new ClassPathXmlApplicationContext("classpath:aw-reporting-appengine-beans.xml");    
-    authenticator = appCtx.getBean(AppEngineAuthenticator.class);
+    authenticator = appCtx.getBean(AppEngineOAuth2Authenticator.class);
     persister = appCtx.getBean(EntityPersister.class);
+    webAuthenticator = appCtx.getBean(AppEngineWebAuthenticator.class);
   }
 }

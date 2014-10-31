@@ -174,18 +174,6 @@ public class StorageHelper {
   }
 
   // ReportCampaignNegativeKeyword
-  public List<ReportCampaignNegativeKeyword> getReportCampaignNegativeKeywordByCampaignId(Long keywordId, Date dateStart,
-      Date dateEnd) {
-    return entityPersister.get(ReportCampaignNegativeKeyword.class, ReportCampaignNegativeKeyword.CAMPAIGN_ID, keywordId, Report.DAY,
-        dateStart, dateEnd);
-  }
-
-  public List<ReportCampaignNegativeKeyword> getReportCampaignNegativeKeywordByKeywordId(Long keywordId, Date dateStart,
-      Date dateEnd) {
-    return entityPersister.get(ReportCampaignNegativeKeyword.class, ReportCampaignNegativeKeyword.KEYWORD_ID, keywordId, Report.DAY,
-        dateStart, dateEnd);
-  }
-
   public List<ReportCampaignNegativeKeyword> getReportCampaignNegativeKeywordByEndDateInRange(
       Date dateStart, Date dateEnd) {
 
@@ -197,6 +185,13 @@ public class StorageHelper {
       Long accountId, Date dateStart, Date dateEnd) {
 
     return entityPersister.get(ReportCampaignNegativeKeyword.class, Report.ACCOUNT_ID, accountId, Report.DATE_END,
+        DateUtil.formatYearMonthDayNoDash(dateStart), DateUtil.formatYearMonthDayNoDash(dateEnd));
+  }
+
+  public List<ReportCampaignNegativeKeyword> getReportCampaignNegativeKeywordByAccountAndEndDateInRange(
+      String key, Object value, Date dateStart, Date dateEnd) {
+
+    return entityPersister.get(ReportCampaignNegativeKeyword.class, key, value, Report.DATE_END,
         DateUtil.formatYearMonthDayNoDash(dateStart), DateUtil.formatYearMonthDayNoDash(dateEnd));
   }
 

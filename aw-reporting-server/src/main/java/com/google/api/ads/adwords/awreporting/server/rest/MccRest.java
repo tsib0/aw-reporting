@@ -27,7 +27,8 @@ import java.util.List;
  * 
  * @author jtoledo@google.com (Julian Toledo)
  */
-public class MccRest extends AbstractServerResource {
+public class MccRest extends AbstractBaseResource {
+
   class AuthMccPlus {
     public AuthMcc mccInfo;
     public String minDate;
@@ -37,12 +38,12 @@ public class MccRest extends AbstractServerResource {
   public Representation getHandler() {
     String result = null;
     try {
-      getParameters();
 
       ArrayList<AuthMccPlus> fixed = new ArrayList<AuthMccPlus>();
 
       List<AuthMcc> listAuthMcc = RestServer.getStorageHelper().getEntityPersister()
           .get(AuthMcc.class);
+
       for (AuthMcc authMcc : listAuthMcc) {
         authMcc.setScope(null);
         authMcc.setAuthToken(null);

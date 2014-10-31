@@ -14,7 +14,6 @@
 
 package com.google.api.ads.adwords.awreporting.server.rest;
 
-import com.google.api.ads.adwords.awreporting.model.entities.ReportBase;
 import com.google.api.ads.adwords.awreporting.model.util.DateUtil;
 import com.google.api.ads.adwords.awreporting.model.util.GsonUtil;
 import com.google.api.ads.adwords.jaxws.v201406.mcm.ApiException;
@@ -45,34 +44,17 @@ import java.util.HashMap;
 import java.util.concurrent.ConcurrentMap;
 
 /**
- * Main Class for Rest entry points
+ * Defines commmon methods for all Rest entry points
  * 
  * @author jtoledo@google.com (Julian Toledo)
  */
-public abstract class AbstractServerResource extends ServerResource {
+public abstract class AbstractBaseResource extends ServerResource {
 
-  protected static final Logger LOGGER = Logger.getLogger(AbstractServerResource.class.getName());
+  protected static final Logger LOGGER = Logger.getLogger(AbstractBaseResource.class.getName());
 
   protected static final String HEADERS_KEY = "org.restlet.http.headers";
 
   protected static final Gson gson = GsonUtil.getGsonBuilder().create();
-
-  // HTTP Parameters
-  protected Long partnerId = null;
-  protected Long topAccountId = null;
-  protected Long accountId = null;
-  protected Long campaignId = null;
-  protected Long adGroupId = null;
-  protected Long adId = null;
-  protected Long criterionId = null;
-  protected Long adExtensionId = null;
-  protected String dateRangeType = null;
-  protected Date dateStart = null;
-  protected Date dateEnd = null;
-
-  protected String reportType = "html";
-  protected Long templateId = null;
-  protected boolean isPublic = false;
 
   @Get
   abstract public Representation getHandler();
@@ -99,50 +81,6 @@ public abstract class AbstractServerResource extends ServerResource {
     addHeaders();
   }
 
-  protected void getParameters() {
-    try {
-
-      // Report Fields
-      partnerId = getRequestAttributeAsLong("partnerId");
-      topAccountId = getRequestAttributeAsLong("topAccountId");
-      accountId = getRequestAttributeAsLong("accountId");
-      campaignId = getRequestAttributeAsLong("campaignId");
-      adGroupId = getRequestAttributeAsLong("adGroupId");
-      adId = getRequestAttributeAsLong("adId");
-      criterionId = getRequestAttributeAsLong("criterionId");
-      adExtensionId = getRequestAttributeAsLong("adExtensionId");
-
-      String dateRangeTypeString = this.getReference().getQueryAsForm().getFirstValue("dateRangeType");
-      if (dateRangeTypeString != null && dateRangeTypeString.equalsIgnoreCase(ReportBase.MONTH)) {
-        dateRangeType = ReportBase.MONTH;
-      } else {
-        dateRangeType = ReportBase.DAY;
-      }
-
-      String dateStartString = this.getReference().getQueryAsForm().getFirstValue("dateStart");
-      String dateEndString = this.getReference().getQueryAsForm().getFirstValue("dateEnd");     
-      if (dateStartString != null && dateEndString != null) {
-        dateStart = DateUtil.parseDateTime(dateStartString).toDate();
-        dateEnd = DateUtil.parseDateTime(dateEndString).toDate();
-      }
-
-      reportType = this.getReference().getQueryAsForm().getFirstValue("reporttype");
-
-      String templateIdString = (String)getRequestAttributes().get("templateId");
-      if (templateIdString == null) {
-        // Get from Query
-        templateIdString = this.getReference().getQueryAsForm().getFirstValue("templateId");
-      }
-      templateId = templateIdString == null ? null : Long.parseLong(templateIdString);
-
-      String isPublicString = this.getReference().getQueryAsForm().getFirstValue("public");
-      isPublic = (isPublicString != null && isPublicString.equals("true"));
-
-    } catch(Exception exception) {
-      throw new IllegalArgumentException(exception);
-    }
-  }
-
   protected void addHeaders() {
     getMessageHeaders(getResponse()).add("Access-Control-Allow-Origin", "*");
     getMessageHeaders(getResponse()).add("Access-Control-Allow-Methods", "GET,POST,PUT,DELETE,OPTIONS");
@@ -155,7 +93,7 @@ public abstract class AbstractServerResource extends ServerResource {
   protected void addReadOnlyHeaders() {
     getMessageHeaders(getResponse()).add("Access-Control-Allow-Origin", "*");
     getMessageHeaders(getResponse()).add("Access-Control-Allow-Methods", "GET");
-    
+
     getMessageHeaders(getResponse()).add("Cache-Control", "no-cache, no-store, must-revalidate");
     getMessageHeaders(getResponse()).add("Pragma", "no-cache"); 
     getMessageHeaders(getResponse()).add("Expires", "0");
@@ -190,7 +128,7 @@ public abstract class AbstractServerResource extends ServerResource {
       return null;
     }
     ByteArrayRepresentation byteArrayRepresentation = new ByteArrayRepresentation(byteArray, MediaType.APPLICATION_PDF);
-    
+
     return byteArrayRepresentation;
   }
 
@@ -216,7 +154,7 @@ public abstract class AbstractServerResource extends ServerResource {
       this.setStatus(Status.SERVER_ERROR_SERVICE_UNAVAILABLE);
       result.put("error", "mongo_db_is_down");
       result.put("message", "Check your MongoDB server and configuration");
-      
+
     } else if(exception instanceof ParseException) {
       this.setStatus(Status.CLIENT_ERROR_BAD_REQUEST);
       result.put("error", "invalid_text_params");
@@ -245,7 +183,7 @@ public abstract class AbstractServerResource extends ServerResource {
   }
 
   @SuppressWarnings("unchecked")
-  static Series<Header> getMessageHeaders(Message message) {
+  protected Series<Header> getMessageHeaders(Message message) {
     ConcurrentMap<String, Object> attrs = message.getAttributes();
     Series<Header> headers = (Series<Header>) attrs.get(HEADERS_KEY);
     if (headers == null) {
@@ -257,8 +195,59 @@ public abstract class AbstractServerResource extends ServerResource {
     return headers;
   }
 
-  protected Long getRequestAttributeAsLong(String attributeName) {
-    String attribute = (String) getRequestAttributes().get(attributeName);
-    return attribute == null ? null : Long.parseLong(attribute);
+  protected String getParameter(String name) {
+    try {
+      // Get from Request Attibutes
+      String tempString = (String) getRequestAttributes().get(name);
+      if (tempString == null) {
+        // Get from Query
+        tempString = getReference().getQueryAsForm().getFirstValue(name);
+      }
+      return tempString;
+    } catch(Exception exception) {
+      throw new IllegalArgumentException(exception);
+    }
+  }
+
+  protected Long getParameterAsLong(String name) {
+    try {
+      // Get from Request Attibutes
+      String tempString = (String) getRequestAttributes().get(name);
+      if (tempString == null) {
+        // Get from Query
+        tempString = getReference().getQueryAsForm().getFirstValue(name);
+      }
+      return tempString == null ? null : Long.parseLong(tempString);
+    } catch(Exception exception) {
+      throw new IllegalArgumentException(exception);
+    }
+  }
+
+  protected boolean getParameterAsBoolean(String name) {
+    try {
+      // Get from Request Attibutes
+      String tempString = (String) getRequestAttributes().get(name);
+      if (tempString == null) {
+        // Get from Query
+        tempString = getReference().getQueryAsForm().getFirstValue(name);
+      }
+      return (tempString != null && tempString.equals("true"));
+    } catch(Exception exception) {
+      throw new IllegalArgumentException(exception);
+    }
+  }
+
+  protected Date getParameterAsDate(String name) {
+    try {
+      // Get from Request Attibutes
+      String tempString = (String) getRequestAttributes().get(name);
+      if (tempString == null) {
+        // Get from Query
+        tempString = getReference().getQueryAsForm().getFirstValue(name);
+      }
+      return tempString == null ? null : DateUtil.parseDateTime(tempString).toDate();
+    } catch(Exception exception) {
+      throw new IllegalArgumentException(exception);
+    }
   }
 }

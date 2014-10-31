@@ -20,8 +20,8 @@ import com.google.api.ads.adwords.awreporting.model.entities.ReportBase;
 import com.google.api.ads.adwords.awreporting.model.entities.ReportCampaign;
 import com.google.api.ads.adwords.awreporting.server.appengine.RestServer;
 import com.google.api.ads.adwords.awreporting.server.appengine.persistence.objectify.ObjectifyEntityPersister;
-import com.google.api.ads.adwords.awreporting.server.appengine.rest.GaeAbstractServerResource;
 import com.google.api.ads.adwords.awreporting.server.appengine.util.MccTaskCounter;
+import com.google.api.ads.adwords.awreporting.server.rest.AbstractBaseResource;
 import com.google.api.client.util.Lists;
 import com.google.api.client.util.Maps;
 import com.google.common.collect.ImmutableList;
@@ -36,21 +36,22 @@ import java.util.Map;
  * 
  * @author jtoledo@google.com (Julian Toledo)
  */
-public class DataAvailable extends GaeAbstractServerResource {
-  
+public class DataAvailable extends AbstractBaseResource {
+
   private static final ImmutableList<Class<? extends ReportBase>> REPORT_TYPES = ImmutableList.of(
       ReportAccount.class, ReportCampaign.class, ReportAdGroup.class);
-  
+
   public Representation getHandler() {
     String result = null;
 
     try {
-      getParameters();
+
+      Long topAccountId = getParameterAsLong("topAccountId");
 
       if (topAccountId != null) { // LIST Top Account level
 
         // Check that the user owns that MCC
-        checkAuthentication(topAccountId);
+        RestServer.getWebAuthenticator().checkAuthentication(topAccountId);
 
         ObjectifyEntityPersister persister = (ObjectifyEntityPersister)RestServer.getPersister();
 

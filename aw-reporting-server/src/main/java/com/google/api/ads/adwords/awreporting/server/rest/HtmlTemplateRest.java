@@ -22,14 +22,16 @@ import org.restlet.data.Status;
 import org.restlet.representation.Representation;
 import org.restlet.resource.ResourceException;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
- * Rest entry point to get, create or update HTML templates for a user.
+ * Rest entry point to get, create or update HTML templates.
  * 
  * @author joeltoby@google.com
  */
-public class HtmlTemplateRest extends AbstractServerResource {
+public class HtmlTemplateRest extends AbstractBaseResource {
 
   /**
    * Gets a template by templateId or a complete list
@@ -42,30 +44,41 @@ public class HtmlTemplateRest extends AbstractServerResource {
     String result = null;
 
     try {
-      getParameters();
+      RestServer.getWebAuthenticator().checkAuthentication();
 
-      List<HtmlTemplate> htmlTemplateList = Lists.newArrayList();
+      Long templateId = getParameterAsLong("templateId");
+      boolean isPublic = getParameterAsBoolean("public");
+      String userId = RestServer.getWebAuthenticator().getCurrentUser();
 
-      // Get template by ID
-      if (templateId != null) {
-        LOGGER.info("templateId: " + templateId);
-        htmlTemplateList = RestServer.getPersister().get(HtmlTemplate.class, HtmlTemplate.ID, templateId);
+      if (userId != null) {
+        LOGGER.info("Getting user's templates");
+        List<HtmlTemplate> htmlTemplateList = Lists.newArrayList();
 
-        if (htmlTemplateList.size() == 0) {
-          throw new ResourceException(Status.CLIENT_ERROR_NOT_FOUND, "No template with that templateId was found");
+        // Get template by ID
+        if (templateId != null) {
+          Map<String, Object> propertiesMap = new HashMap<String, Object>();
+          propertiesMap.put(HtmlTemplate.USER_ID, userId);
+          LOGGER.info("templateId: " + templateId);
+          propertiesMap.put(HtmlTemplate.ID, templateId);
+
+          htmlTemplateList = RestServer.getPersister().get(HtmlTemplate.class, propertiesMap);
+
+          if (htmlTemplateList.size() == 0) {
+            throw new ResourceException(Status.CLIENT_ERROR_NOT_FOUND, "No template with that templateId was found");
+          }
+
+        } else if (isPublic == true) {
+          LOGGER.info("Getting public templates");
+          htmlTemplateList = RestServer.getPersister().get(HtmlTemplate.class, "isPublic", true);
+
+        } else {
+          // Get all user's templates
+          htmlTemplateList = RestServer.getPersister().get(
+              HtmlTemplate.class, HtmlTemplate.USER_ID, userId);
         }
 
-      } else if (isPublic == true) {
-        LOGGER.info("Getting public templates");
-        htmlTemplateList = RestServer.getPersister().get(HtmlTemplate.class, "isPublic", true);
-
-      } else {
-        // Get all templates
-        htmlTemplateList = RestServer.getPersister().get(HtmlTemplate.class);
+        result = gson.toJson(htmlTemplateList);
       }
-
-      result = gson.toJson(htmlTemplateList);
-    
 
     } catch (Exception exception) {
       return handleException(exception);
@@ -78,8 +91,9 @@ public class HtmlTemplateRest extends AbstractServerResource {
     String result = null;
 
     try {
-      getParameters();
+      RestServer.getWebAuthenticator().checkAuthentication();
 
+      Long templateId = getParameterAsLong("templateId");
       if (templateId != null) {
 
         // Delete template by ID
@@ -90,7 +104,7 @@ public class HtmlTemplateRest extends AbstractServerResource {
         result = "OK";
 
       } else {
-        throw new IllegalArgumentException("Missing templateId");
+        throw new IllegalArgumentException("Missing topAccountId or problem with the authenticated user");
       }
 
     } catch (Exception exception) {
@@ -103,11 +117,11 @@ public class HtmlTemplateRest extends AbstractServerResource {
   public Representation postPutHandler(String json) {
     String result = null;
     try {
-      getParameters();
+      String userId = RestServer.getWebAuthenticator().getCurrentUser();
 
       HtmlTemplate template = new Gson().fromJson(json, HtmlTemplate.class);
-
       // Set the userId on the template and save it
+      template.setUserId(userId);
       LOGGER.info("Persisting template...");
       HtmlTemplate savedTemplate = RestServer.getPersister().save(template);
 

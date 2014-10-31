@@ -16,25 +16,30 @@ package com.google.api.ads.adwords.awreporting.server.rest.reports;
 
 import com.google.api.ads.adwords.awreporting.processors.ReportProcessor;
 import com.google.api.ads.adwords.awreporting.server.RunnableReport;
-import com.google.api.ads.adwords.awreporting.server.rest.AbstractServerResource;
+import com.google.api.ads.adwords.awreporting.server.rest.AbstractBaseResource;
 import com.google.api.ads.adwords.awreporting.server.rest.RestServer;
 
 import org.restlet.representation.Representation;
 import org.restlet.service.TaskService;
+
+import java.util.Date;
 
 /**
  * 
  * @author jtoledo
  * 
  */
-public class GenerateReportsRest extends AbstractServerResource {
+public class GenerateReportsRest extends AbstractBaseResource {
 
   static TaskService taskService = new TaskService();
 
   public Representation getHandler() {
     String result = null;
     try {
-      getParameters();
+
+      Long topAccountId = getParameterAsLong("topAccountId");
+      Date dateStart = getParameterAsDate("dateStart");
+      Date dateEnd = getParameterAsDate("dateEnd");
 
       // Generate Reports at MCC level for dates
       if (topAccountId != null && dateStart != null && dateEnd != null ) { 
