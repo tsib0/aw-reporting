@@ -217,7 +217,12 @@ public abstract class AbstractBaseResource extends ServerResource {
         // Get from Query
         tempString = getReference().getQueryAsForm().getFirstValue(name);
       }
-      return tempString == null ? null : Long.parseLong(tempString);
+
+      if (tempString != null) {
+        tempString = tempString.replaceAll("[^\\d.]", "");
+      }
+
+      return tempString == null || tempString.length() == 0 ? null : Long.parseLong(tempString);
     } catch(Exception exception) {
       throw new IllegalArgumentException(exception);
     }

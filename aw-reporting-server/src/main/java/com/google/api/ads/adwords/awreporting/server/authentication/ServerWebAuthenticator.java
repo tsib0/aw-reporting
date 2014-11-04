@@ -14,12 +14,15 @@
 
 package com.google.api.ads.adwords.awreporting.server.authentication;
 
+import org.springframework.stereotype.Component;
+
 /**
  * Defines commmon methods for Web Authentication and user management
  * for the Standalone Server
  * 
  * @author jtoledo@google.com (Julian Toledo)
  */
+@Component
 public class ServerWebAuthenticator implements WebAuthenticator {
 
   //TODO: Pending implementation

@@ -11,6 +11,5 @@
   <import resource="classpath:aw-report-nosql-beans.xml" />
   <import resource="classpath:aw-report-processor-beans.xml" />
   <import resource="classpath:aw-pdf-exporter-beans.xml" />
-  <import resource="aw-reporting-server-webauthenticator.xml" />
 
 </beans>

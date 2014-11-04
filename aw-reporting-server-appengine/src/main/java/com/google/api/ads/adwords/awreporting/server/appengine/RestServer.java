@@ -29,7 +29,6 @@ import com.google.api.ads.adwords.awreporting.model.entities.ReportPlaceholderFe
 import com.google.api.ads.adwords.awreporting.model.entities.ReportUrl;
 import com.google.api.ads.adwords.awreporting.model.persistence.EntityPersister;
 import com.google.api.ads.adwords.awreporting.server.appengine.authentication.AppEngineOAuth2Authenticator;
-import com.google.api.ads.adwords.awreporting.server.appengine.authentication.AppEngineWebAuthenticator;
 import com.google.api.ads.adwords.awreporting.server.appengine.model.UserToken;
 import com.google.api.ads.adwords.awreporting.server.appengine.rest.MccRest;
 import com.google.api.ads.adwords.awreporting.server.appengine.rest.OAuthRest;
@@ -56,8 +55,6 @@ import com.google.api.client.util.Maps;
 import com.googlecode.objectify.ObjectifyService;
 import com.googlecode.objectify.impl.translate.opt.BigDecimalLongTranslatorFactory;
 
-import org.restlet.Application;
-import org.restlet.Restlet;
 import org.restlet.routing.Router;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
@@ -77,22 +74,18 @@ import java.util.logging.Logger;
  * @author jtoledo@google.com (Julian Toledo)
  * @author joeltoby@google.com (Joel Toby)
  */
-public class RestServer extends Application {
+public class RestServer extends com.google.api.ads.adwords.awreporting.server.rest.RestServer {
   
+  public RestServer() throws IOException {
+    super();
+  }
+
   private static final Logger LOGGER = Logger.getLogger(RestServer.class.getName());
   
   private static final String PROPERTIES_FILE = "aw-reporting-appengine-sample.properties";
 
-  private static ApplicationContext appCtx;
-
-  private static Properties properties;
-
-  private static EntityPersister persister;
-
   private static AppEngineOAuth2Authenticator authenticator;
   
-  private static WebAuthenticator webAuthenticator;
-
   public static ApplicationContext getApplicationContext() {
     if (appCtx == null) {
       synchronized (RestServer.class) {
@@ -167,7 +160,7 @@ public class RestServer extends Application {
    * Creates a root Restlet that will receive all incoming calls.
    */
   @Override
-  public synchronized Restlet createInboundRoot() {
+  public synchronized Router createInboundRoot() {
 
     initApplicationContextAndProperties();
 
@@ -483,9 +476,9 @@ public class RestServer extends Application {
     }
 
     // Loading AppEngine DB type by default (ignoring DB type from properties file)
-    appCtx = new ClassPathXmlApplicationContext("classpath:aw-reporting-appengine-beans.xml");    
-    authenticator = appCtx.getBean(AppEngineOAuth2Authenticator.class);
+    appCtx = new ClassPathXmlApplicationContext("classpath:aw-reporting-appengine-beans.xml");
     persister = appCtx.getBean(EntityPersister.class);
-    webAuthenticator = appCtx.getBean(AppEngineWebAuthenticator.class);
+    authenticator = appCtx.getBean(AppEngineOAuth2Authenticator.class);
+    webAuthenticator = appCtx.getBean(WebAuthenticator.class);
   }
 }

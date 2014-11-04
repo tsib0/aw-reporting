@@ -39,8 +39,7 @@ public class AccountRest extends AbstractBaseResource {
         // Check that the user owns that MCC
         RestServer.getWebAuthenticator().checkAuthentication(topAccountId);
 
-        List<Account> listAccounts = RestServer.getStorageHelper().getEntityPersister().get(
-            Account.class, Account.TOP_ACCOUNT_ID, topAccountId);
+        List<Account> listAccounts = RestServer.getPersister().get(Account.class, Account.TOP_ACCOUNT_ID, topAccountId);
         result =  gson.toJson(listAccounts);
       }
 

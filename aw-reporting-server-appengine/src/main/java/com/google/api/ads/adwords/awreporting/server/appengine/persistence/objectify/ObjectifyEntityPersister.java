@@ -374,12 +374,12 @@ public class ObjectifyEntityPersister implements EntityPersister, Serializable {
   public <T extends ReportBase> Map<String, Object> getReportDataAvailableMonth(Class<T> classT, long topAccountId) {
     Map<String, Object> map = Maps.newHashMap();
 
-    if(! accountExists(topAccountId)) {      
+    if (!accountExists(topAccountId)) {      
       map.put("error", "invalid_params");
       map.put("message", "The requested MCC does not exist in the database.");
 
     } else {
-      
+
       T tMin = ofy().load().type(classT).order(ReportBase.MONTH).filter(ReportBase.TOP_ACCOUNT_ID, topAccountId).first().now();
 
       T tMax = ofy().load().type(classT).order("-" + ReportBase.MONTH).filter(ReportBase.TOP_ACCOUNT_ID, topAccountId).first().now();

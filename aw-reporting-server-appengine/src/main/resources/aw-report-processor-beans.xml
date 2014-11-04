@@ -9,10 +9,10 @@
   ">
 
   <context:component-scan
-    base-package="com.google.api.ads.adwords.awreporting.appengine.authentication" />
+    base-package="com.google.api.ads.adwords.awreporting.server.appengine.authentication" />
   
   <context:component-scan
-    base-package="com.google.api.ads.adwords.awreporting.appengine.processors" />
+    base-package="com.google.api.ads.adwords.awreporting.server.appengine.processors" />
 
   <bean id="awReportProperties"
     class="com.google.api.ads.adwords.awreporting.util.DynamicPropertyPlaceholderConfigurer">

@@ -9,10 +9,12 @@ import com.google.common.collect.Maps;
 
 import org.restlet.data.Status;
 import org.restlet.resource.ResourceException;
+import org.springframework.stereotype.Component;
 
 import java.util.List;
 import java.util.Map;
 
+@Component
 public class AppEngineWebAuthenticator implements WebAuthenticator {
 
   public String getCurrentUser() {

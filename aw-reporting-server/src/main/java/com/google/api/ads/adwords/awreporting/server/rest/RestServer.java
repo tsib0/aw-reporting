@@ -66,15 +66,15 @@ public class RestServer extends Application {
   
   private static int serverPort = 8081;
 
-  private static ApplicationContext appCtx;
+  protected static ApplicationContext appCtx;
 
-  private static EntityPersister persister;
+  protected static EntityPersister persister;
 
-  private static StorageHelper storageHelper;
+  protected static StorageHelper storageHelper;
   
-  private static WebAuthenticator webAuthenticator;
+  protected static WebAuthenticator webAuthenticator;
   
-  private static Properties properties;
+  protected static Properties properties;
   
   private List<String> listOfClassPathXml = Lists.newArrayList();
 

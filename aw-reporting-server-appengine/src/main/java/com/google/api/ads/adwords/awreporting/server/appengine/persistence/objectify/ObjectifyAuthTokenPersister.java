@@ -32,6 +32,7 @@ import java.util.List;
  * @author gustavomoreira@google.com (Gustavo Moreira)
  */
 @Component
+@Qualifier("objectifyAuthTokenPersister")
 public class ObjectifyAuthTokenPersister implements AuthTokenPersister, Serializable {
 
   private static final long serialVersionUID = 1L;
