@@ -70,7 +70,7 @@ public class DataAvailable extends AbstractBaseResource {
         resultMap.put("pending_refresh_accounts_tasks", (Object) MccTaskCounter.getPendingProcessAccountsTaks(topAccountId));
         result = gson.toJson(resultMap);
       } else {
-        throw new IllegalArgumentException("Missing templateId parameter");
+        throw new IllegalArgumentException("Invalid topAccountId parameter");
       }
 
     } catch (Exception exception) {
