@@ -134,6 +134,10 @@ public class ReportCampaign extends ReportBase {
   @CsvField(value = "Labels", reportField = "Labels")
   private String labels;
 
+  @Column(name = "HOUR_OF_DAY")
+  @CsvField(value = "Hour of day", reportField = "HourOfDay")
+  private Long hourOfDay;
+
   /**
    * Hibernate needs an empty constructor
    */
@@ -428,5 +432,13 @@ public class ReportCampaign extends ReportBase {
 
   public void setLabels(String labels) {
     this.labels = labels;
+  }
+
+  public Long getHourOfDay() {
+    return hourOfDay;
+  }
+  
+  public void setHourOfDay(Long hourOfDay) {
+    this.hourOfDay = hourOfDay;
   }
 }

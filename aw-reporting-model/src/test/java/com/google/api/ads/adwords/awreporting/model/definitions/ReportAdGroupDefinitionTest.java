@@ -113,6 +113,7 @@ public class ReportAdGroupDefinitionTest extends AbstractReportDefinitionTest<Re
         "CustomerDescriptiveName",
         "PrimaryCompanyName",
         "AccountCurrencyCode",
+        "HourOfDay",
         "Date",
         "DayOfWeek",
         "Week",
