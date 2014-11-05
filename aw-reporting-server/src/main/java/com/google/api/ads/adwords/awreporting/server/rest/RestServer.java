@@ -156,6 +156,8 @@ public class RestServer extends Application {
      *   Provides an array of accounts managed by the MCC specified
      * 
      *   @param (url) topAccountId The MCC CID [REQUIRED]
+     *   @offset number of results to skip [OPTIONAL]
+     *   @limit number of results to return[OPTIONAL]
      *   @return Array of accounts
      * 
      * ## HTTP method: PUT/POST
@@ -175,12 +177,16 @@ public class RestServer extends Application {
     // Accounts
     // ?dateStart=yyyyMMdd&dateEnd=yyyyMMdd
     // dateRangeType=DAY or dateRangeType=MONTH
+    // @offset number of results to skip [OPTIONAL]
+    // @limit number of results to return[OPTIONAL]
     router.attach("/mcc/{topAccountId}/reportaccount", ReportAccountRest.class); //LIST All
     router.attach("/mcc/{topAccountId}/reportaccount/{accountId}", ReportAccountRest.class); //LIST Account level
 
     // Campaigns
     // ?dateStart=yyyyMMdd&dateEnd=yyyyMMdd
     // dateRangeType=DAY or dateRangeType=MONTH
+    // @offset number of results to skip [OPTIONAL]
+    // @limit number of results to return[OPTIONAL]
     router.attach("/mcc/{topAccountId}/reportcampaign", ReportCampaignRest.class); //LIST All
     router.attach("/mcc/{topAccountId}/reportcampaign/{accountId}", ReportCampaignRest.class); //LIST Account level
     router.attach("/mcc/{topAccountId}/reportcampaign/campaign/{campaignId}", ReportCampaignRest.class); //LIST Campaign level
@@ -188,6 +194,8 @@ public class RestServer extends Application {
     // AdGroups
     // ?dateStart=yyyyMMdd&dateEnd=yyyyMMdd
     // dateRangeType=DAY or dateRangeType=MONTH
+    // @offset number of results to skip [OPTIONAL]
+    // @limit number of results to return[OPTIONAL]
     router.attach("/mcc/{topAccountId}/reportadgroup", ReportAdGroupRest.class); //LIST All
     router.attach("/mcc/{topAccountId}/reportadgroup/{accountId}", ReportAdGroupRest.class); //LIST Account level
     router.attach("/mcc/{topAccountId}/reportadgroup/campaign/{campaignId}", ReportAdGroupRest.class); //LIST Campaign level
@@ -196,6 +204,8 @@ public class RestServer extends Application {
     // Ads
     // ?dateStart=yyyyMMdd&dateEnd=yyyyMMdd
     // dateRangeType=DAY or dateRangeType=MONTH
+    // @offset number of results to skip [OPTIONAL]
+    // @limit number of results to return[OPTIONAL]
     router.attach("/mcc/{topAccountId}/reportad", ReportAdRest.class); //LIST All
     router.attach("/mcc/{topAccountId}/reportad/{accountId}", ReportAdRest.class); //LIST Account level
     router.attach("/mcc/{topAccountId}/reportad/campaign/{campaignId}", ReportAdRest.class); //LIST Campaign level
@@ -205,6 +215,8 @@ public class RestServer extends Application {
     // Keywords
     // ?dateStart=yyyyMMdd&dateEnd=yyyyMMdd
     // dateRangeType=DAY or dateRangeType=MONTH
+    // @offset number of results to skip [OPTIONAL]
+    // @limit number of results to return[OPTIONAL]
     router.attach("/mcc/{topAccountId}/reportkeyword", ReportKeywordRest.class); //LIST All
     router.attach("/mcc/{topAccountId}/reportkeyword/{accountId}", ReportKeywordRest.class); //LIST Account level
     router.attach("/mcc/{topAccountId}/reportkeyword/campaign/{campaignId}", ReportKeywordRest.class); //LIST Campaign level
@@ -221,6 +233,8 @@ public class RestServer extends Application {
     // ReportAdExtension
     // ?dateStart=yyyyMMdd&dateEnd=yyyyMMdd
     // dateRangeType=DAY or dateRangeType=MONTH
+    // @offset number of results to skip [OPTIONAL]
+    // @limit number of results to return[OPTIONAL]
     router.attach("/mcc/{topAccountId}/reportadextension", ReportAdExtensionRest.class); //LIST All
     router.attach("/mcc/{topAccountId}/reportadextension/{accountId}", ReportAdExtensionRest.class); //LIST Account level
     router.attach("/mcc/{topAccountId}/reportadextension/campaign/{campaignId}", ReportAdExtensionRest.class); //LIST Campaign level
@@ -229,6 +243,8 @@ public class RestServer extends Application {
     // ReportPlaceholderFeedItem
     // ?dateStart=yyyyMMdd&dateEnd=yyyyMMdd
     // dateRangeType=DAY or dateRangeType=MONTH
+    // @offset number of results to skip [OPTIONAL]
+    // @limit number of results to return[OPTIONAL]
     router.attach("/mcc/{topAccountId}/reportplaceholderfeeditem", ReportPlaceholderFeedItemRest.class); //LIST All
     router.attach("/mcc/{topAccountId}/reportplaceholderfeeditem/{accountId}", ReportPlaceholderFeedItemRest.class); //LIST Account level
     router.attach("/mcc/{topAccountId}/reportplaceholderfeeditem/campaign/{campaignId}", ReportPlaceholderFeedItemRest.class); //LIST Campaign level
