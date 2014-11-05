@@ -64,6 +64,10 @@ public class ReportAccount extends ReportBase {
   @CsvField(value = "Search Exact match IS", reportField = "SearchExactMatchImpressionShare")
   private BigDecimal searchExactMatchImpressionShare;
 
+  @Column(name = "HOUR_OF_DAY")
+  @CsvField(value = "Hour of day", reportField = "HourOfDay")
+  private Long hourOfDay;
+
   /**
    * Hibernate needs an empty constructor
    */
@@ -179,5 +183,13 @@ public class ReportAccount extends ReportBase {
 
   public void setSearchExactMatchImpressionShare(String searchExactMatchImpressionShare) {
     this.searchExactMatchImpressionShare = BigDecimalUtil.parseFromNumberStringPercentage(searchExactMatchImpressionShare);
+  }
+
+  public Long getHourOfDay() {
+    return hourOfDay;
+  }
+  
+  public void setHourOfDay(Long hourOfDay) {
+    this.hourOfDay = hourOfDay;
   }
 }
