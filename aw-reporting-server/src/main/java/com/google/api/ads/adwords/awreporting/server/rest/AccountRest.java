@@ -34,12 +34,20 @@ public class AccountRest extends AbstractBaseResource {
       RestServer.getWebAuthenticator().checkAuthentication();
 
       Long topAccountId = getParameterAsLong("topAccountId");
+      Integer offset = getParameterAsInteger("offset");
+      Integer limit = getParameterAsInteger("limit");
 
       if (topAccountId != null ) {
         // Check that the user owns that MCC
         RestServer.getWebAuthenticator().checkAuthentication(topAccountId);
 
-        List<Account> listAccounts = RestServer.getPersister().get(Account.class, Account.TOP_ACCOUNT_ID, topAccountId);
+        List<Account> listAccounts;
+        if (offset != null && limit !=null) {
+          listAccounts = RestServer.getPersister().get(Account.class, Account.TOP_ACCOUNT_ID, topAccountId, offset, limit);
+        } else {
+          listAccounts = RestServer.getPersister().get(Account.class, Account.TOP_ACCOUNT_ID, topAccountId);
+        }
+
         result =  gson.toJson(listAccounts);
       }
 

@@ -79,6 +79,27 @@ public class StorageHelper {
   }
 
   public <R extends Report> List<R> getReport(Class<R> classR, String key, Object value,
+      String dateKey, Date dateStart, Date dateEnd, Integer offset, Integer limit) {
+
+    if (dateStart != null && dateEnd != null) {
+      
+      if (offset != null && limit != null) {
+        return entityPersister.get(classR, key, value, dateKey, dateStart, dateEnd, offset, limit);
+      } else {
+        return entityPersister.get(classR, key, value, dateKey, dateStart, dateEnd);
+      }
+
+    } else {
+      
+      if (offset != null && limit != null) {
+        return entityPersister.get(classR, key, value, offset, limit);
+      } else {
+        return entityPersister.get(classR, key, value);
+      }
+    }
+  }
+
+  public <R extends Report> List<R> getReport(Class<R> classR, String key, Object value,
       String dateKey, Date dateStart, Date dateEnd) {
 
     if (dateStart != null && dateEnd != null) {
@@ -87,6 +108,7 @@ public class StorageHelper {
       return entityPersister.get(classR, key, value);
     }
   }
+  
 
   public <R extends Report> List<R> getReportByAccountId(Class<R> classR, Long accountId, Date dateStart,
       Date dateEnd) {

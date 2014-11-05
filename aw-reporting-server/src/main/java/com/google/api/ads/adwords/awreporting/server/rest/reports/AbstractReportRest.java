@@ -58,6 +58,9 @@ public abstract class AbstractReportRest<ReportSub extends Report> extends Abstr
       Date dateStart = getParameterAsDate("dateStart");
       Date dateEnd = getParameterAsDate("dateEnd");
 
+      Integer offset = getParameterAsInteger("offset");
+      Integer limit = getParameterAsInteger("limit");
+
       String dateRangeType;
       String dateRangeTypeString = getParameter("dateRangeType");
       if (dateRangeTypeString != null && dateRangeTypeString.equalsIgnoreCase(ReportBase.MONTH)) {
@@ -78,47 +81,47 @@ public abstract class AbstractReportRest<ReportSub extends Report> extends Abstr
           feedId == null &&
           feedItemId == null) {
         listReport = storageHelper.getReport(classReportSub,
-            Report.TOP_ACCOUNT_ID, topAccountId, dateRangeType, dateStart, dateEnd);
+            Report.TOP_ACCOUNT_ID, topAccountId, dateRangeType, dateStart, dateEnd, offset, limit);
       }
 
       if (accountId != null) {
         listReport = storageHelper.getReport(classReportSub,
-            Report.ACCOUNT_ID, accountId, dateRangeType, dateStart, dateEnd);
+            Report.ACCOUNT_ID, accountId, dateRangeType, dateStart, dateEnd, offset, limit);
       }
 
       if (campaignId != null) {
         listReport = storageHelper.getReport(classReportSub,
-            Report.CAMPAIGN_ID, campaignId, dateRangeType, dateStart, dateEnd);
+            Report.CAMPAIGN_ID, campaignId, dateRangeType, dateStart, dateEnd, offset, limit);
       }
 
       if (adGroupId != null) {
         listReport = storageHelper.getReport(classReportSub,
-            Report.ADGROUP_ID, adGroupId, dateRangeType, dateStart, dateEnd);
+            Report.ADGROUP_ID, adGroupId, dateRangeType, dateStart, dateEnd, offset, limit);
       }
 
       if (adId != null) {
         listReport = storageHelper.getReport(classReportSub,
-            Report.AD_ID, adId, dateRangeType, dateStart, dateEnd);
+            Report.AD_ID, adId, dateRangeType, dateStart, dateEnd, offset, limit);
       }
 
       if (adExtensionId != null) {
         listReport = storageHelper.getReport(classReportSub,
-            Report.ADEXTENSION_ID, adExtensionId, dateRangeType, dateStart, dateEnd);
+            Report.ADEXTENSION_ID, adExtensionId, dateRangeType, dateStart, dateEnd, offset, limit);
       }
 
       if (criterionId != null) {
         listReport = storageHelper.getReport(classReportSub,
-            Report.KEYWORD_ID, criterionId, dateRangeType, dateStart, dateEnd);
+            Report.KEYWORD_ID, criterionId, dateRangeType, dateStart, dateEnd, offset, limit);
       }
 
       if (feedId != null) {
         listReport = storageHelper.getReport(classReportSub,
-            ReportPlaceholderFeedItem.FEED_ID, feedId, dateRangeType, dateStart, dateEnd);
+            ReportPlaceholderFeedItem.FEED_ID, feedId, dateRangeType, dateStart, dateEnd, offset, limit);
       }
 
       if (feedItemId != null) {
         listReport = storageHelper.getReport(classReportSub,
-            ReportPlaceholderFeedItem.FEED_ITEM_ID, feedItemId, dateRangeType, dateStart, dateEnd);
+            ReportPlaceholderFeedItem.FEED_ITEM_ID, feedItemId, dateRangeType, dateStart, dateEnd, offset, limit);
       }
 
       if (listReport != null) {
