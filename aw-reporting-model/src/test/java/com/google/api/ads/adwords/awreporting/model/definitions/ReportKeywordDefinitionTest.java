@@ -184,6 +184,8 @@ public class ReportKeywordDefinitionTest extends AbstractReportDefinitionTest<Re
         "SearchRankLostImpressionShare",
         "SearchExactMatchImpressionShare",
         "Labels",
+        "FirstPageCpc",
+        "TopOfPageCpc",
         // Analytics Fieds        
         "AveragePageviews",
         "AverageTimeOnSite",
