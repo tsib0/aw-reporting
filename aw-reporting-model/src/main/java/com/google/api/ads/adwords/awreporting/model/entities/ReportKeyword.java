@@ -148,6 +148,14 @@ public class ReportKeyword extends ReportBase {
   @CsvField(value = "Labels", reportField = "Labels")
   private String labels;
 
+  @Column(name = "FIRST_PAGE_CPC")
+  @CsvField(value = "First page CPC", reportField = "FirstPageCpc")
+  private String firstPageCpc;
+
+  @Column(name = "TOP_OF_PAGE_CPC")
+  @CsvField(value = "Top of page CPC", reportField = "TopOfPageCpc")
+  private String topOfPageCpc;
+
   /**
    * Hibernate needs an empty constructor
    */
@@ -475,5 +483,21 @@ public class ReportKeyword extends ReportBase {
 
   public void setLabels(String labels) {
     this.labels = labels;
+  }
+
+  public String getFirstPageCpc() {
+    return firstPageCpc;
+  }
+
+  public void setFirstPageCpc(String firstPageCpc) {
+    this.firstPageCpc = firstPageCpc;
+  }
+
+  public String getTopOfPageCpc() {
+    return topOfPageCpc;
+  }
+
+  public void setTopOfPageCpc(String topOfPageCpc) {
+    this.topOfPageCpc = topOfPageCpc;
   }
 }
