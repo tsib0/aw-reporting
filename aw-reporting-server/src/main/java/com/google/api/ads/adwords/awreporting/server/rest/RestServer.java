@@ -135,8 +135,20 @@ public class RestServer extends Application {
 
     Router router = new Router(getContext());
 
+
     // *** MCCs ***
-    router.attach("/mcc", MccRest.class); //LIST All
+    /* ## HTTP method: GET
+     *   Provides the list of 
+     *   @return Array of accounts
+     * 
+     * ## HTTP method: PUT/POST
+     *   Add/Modify an MCC Authenticated
+     * 
+     * ## HTTP method: DELETE
+     *   Deletes AuthMccRest by topAccountId
+     *   @param (url) topAccountId The MCC CID [REQUIRED]
+     */
+    router.attach("/mcc", AuthMccRest.class); //LIST All
 
 
     // *** Accounts ***

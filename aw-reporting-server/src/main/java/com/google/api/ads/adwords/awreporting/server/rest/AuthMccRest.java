@@ -16,6 +16,7 @@ package com.google.api.ads.adwords.awreporting.server.rest;
 
 import com.google.api.ads.adwords.awreporting.model.entities.AuthMcc;
 import com.google.api.ads.adwords.awreporting.model.entities.ReportAccount;
+import com.google.gson.Gson;
 
 import org.restlet.representation.Representation;
 
@@ -27,7 +28,7 @@ import java.util.List;
  * 
  * @author jtoledo@google.com (Julian Toledo)
  */
-public class MccRest extends AbstractBaseResource {
+public class AuthMccRest extends AbstractBaseResource {
 
   class AuthMccPlus {
     public AuthMcc mccInfo;
@@ -37,7 +38,9 @@ public class MccRest extends AbstractBaseResource {
 
   public Representation getHandler() {
     String result = null;
+
     try {
+      RestServer.getWebAuthenticator().checkAuthentication();
 
       ArrayList<AuthMccPlus> fixed = new ArrayList<AuthMccPlus>();
 
@@ -59,15 +62,61 @@ public class MccRest extends AbstractBaseResource {
         amp.maxDate = (String) ((Object[]) obj)[1];
 
         fixed.add(amp);
-
       }
+
       result = gson.toJson(fixed);
 
     } catch (Exception exception) {
-      System.out.println(exception.getMessage());
       return handleException(exception);
     }
     addReadOnlyHeaders();
+    return createJsonResult(result);
+  }
+
+  public Representation deleteHandler() {
+    String result = null;
+
+    try {
+      RestServer.getWebAuthenticator().checkAuthentication();
+
+      Long topAccountId = getParameterAsLong("topAccountId");
+      if (topAccountId != null) {
+
+        // Delete template by ID
+        List<AuthMcc> authMccs = 
+            RestServer.getPersister().get(AuthMcc.class, AuthMcc.TOP_ACCOUNT_ID, topAccountId);
+        RestServer.getPersister().remove(authMccs);
+
+        result = "OK";
+
+      } else {
+        throw new IllegalArgumentException("Missing topAccountId or problem with the authenticated user");
+      }
+
+    } catch (Exception exception) {
+      return handleException(exception);
+    }
+    addHeaders();
+    return createJsonResult(result);
+  }
+
+  public Representation postPutHandler(String json) {
+    String result = null;
+    try {
+
+      RestServer.getWebAuthenticator().checkAuthentication();
+
+      AuthMcc authMcc = new Gson().fromJson(json, AuthMcc.class);
+      // Set the userId on the template and save it
+      LOGGER.info("Persisting authMcc...");
+      AuthMcc savedAuthMcc = RestServer.getPersister().save(authMcc);
+
+      result = gson.toJson(savedAuthMcc);
+
+    } catch (Exception exception) {
+      return handleException(exception);
+    }
+    addHeaders();    
     return createJsonResult(result);
   }
 }
