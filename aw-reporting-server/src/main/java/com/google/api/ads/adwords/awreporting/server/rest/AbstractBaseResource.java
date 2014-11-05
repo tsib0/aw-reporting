@@ -227,6 +227,25 @@ public abstract class AbstractBaseResource extends ServerResource {
       throw new IllegalArgumentException(exception);
     }
   }
+  
+  protected Integer getParameterAsInteger(String name) {
+    try {
+      // Get from Request Attibutes
+      String tempString = (String) getRequestAttributes().get(name);
+      if (tempString == null) {
+        // Get from Query
+        tempString = getReference().getQueryAsForm().getFirstValue(name);
+      }
+
+      if (tempString != null) {
+        tempString = tempString.replaceAll("[^\\d.]", "");
+      }
+
+      return tempString == null || tempString.length() == 0 ? null : Integer.parseInt(tempString);
+    } catch(Exception exception) {
+      throw new IllegalArgumentException(exception);
+    }
+  }
 
   protected boolean getParameterAsBoolean(String name) {
     try {
