@@ -61,6 +61,7 @@ public abstract class AbstractReportRest<ReportSub extends Report> extends Abstr
       Integer offset = getParameterAsInteger("offset");
       Integer limit = getParameterAsInteger("limit");
 
+      // Defaults to DAY
       String dateRangeType;
       String dateRangeTypeString = getParameter("dateRangeType");
       if (dateRangeTypeString != null && dateRangeTypeString.equalsIgnoreCase(ReportBase.MONTH)) {

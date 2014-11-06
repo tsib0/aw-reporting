@@ -15,12 +15,10 @@
 package com.google.api.ads.adwords.awreporting.server.rest;
 
 import com.google.api.ads.adwords.awreporting.model.entities.AuthMcc;
-import com.google.api.ads.adwords.awreporting.model.entities.ReportAccount;
 import com.google.gson.Gson;
 
 import org.restlet.representation.Representation;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -30,41 +28,16 @@ import java.util.List;
  */
 public class AuthMccRest extends AbstractBaseResource {
 
-  class AuthMccPlus {
-    public AuthMcc mccInfo;
-    public String minDate;
-    public String maxDate;
-  }
-
   public Representation getHandler() {
     String result = null;
 
     try {
       RestServer.getWebAuthenticator().checkAuthentication();
 
-      ArrayList<AuthMccPlus> fixed = new ArrayList<AuthMccPlus>();
-
       List<AuthMcc> listAuthMcc = RestServer.getStorageHelper().getEntityPersister()
           .get(AuthMcc.class);
 
-      for (AuthMcc authMcc : listAuthMcc) {
-        authMcc.setScope(null);
-        authMcc.setAuthToken(null);
-
-        List<?> o = RestServer.getStorageHelper().getMin(ReportAccount.class,
-            authMcc.getTopAccountId(), "dateStart", "dateEnd");
-        Object obj = o.get(0);
-        System.out.println(((Object[]) obj)[0]);
-        System.out.println(((Object[]) obj)[1]);
-        AuthMccPlus amp = new AuthMccPlus();
-        amp.mccInfo = authMcc;
-        amp.minDate = (String) ((Object[]) obj)[0];
-        amp.maxDate = (String) ((Object[]) obj)[1];
-
-        fixed.add(amp);
-      }
-
-      result = gson.toJson(fixed);
+      result = gson.toJson(listAuthMcc);
 
     } catch (Exception exception) {
       return handleException(exception);

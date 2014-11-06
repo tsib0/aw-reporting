@@ -371,7 +371,7 @@ public class ObjectifyEntityPersister implements EntityPersister, Serializable {
      return query.list();
   }
 
-  public <T extends ReportBase> Map<String, Object> getReportDataAvailableMonth(Class<T> classT, long topAccountId) {
+  public <T extends ReportBase> Map<String, Object> getReportDataAvailableByDate(Class<T> classT, long topAccountId, String dateKey) {
     Map<String, Object> map = Maps.newHashMap();
 
     if (!accountExists(topAccountId)) {      
@@ -380,36 +380,38 @@ public class ObjectifyEntityPersister implements EntityPersister, Serializable {
 
     } else {
 
-      T tMin = ofy().load().type(classT).order(ReportBase.MONTH).filter(ReportBase.TOP_ACCOUNT_ID, topAccountId).first().now();
+      T tMin = ofy().load().type(classT).order(dateKey).filter(ReportBase.TOP_ACCOUNT_ID, topAccountId).first().now();
 
-      T tMax = ofy().load().type(classT).order("-" + ReportBase.MONTH).filter(ReportBase.TOP_ACCOUNT_ID, topAccountId).first().now();
+      T tMax = ofy().load().type(classT).order("-" + dateKey).filter(ReportBase.TOP_ACCOUNT_ID, topAccountId).first().now();
 
       if (tMax != null && tMin != null) {
         map.put("ReportType", classT.getSimpleName());
-        map.put("startMonth", tMin.getMonth());
-        map.put("endMonth", tMax.getMonth());
+
+        if (dateKey.equalsIgnoreCase(ReportBase.MONTH)) {
+          map.put("startMonth", tMin.getMonth());
+          map.put("endMonth", tMax.getMonth());
+        }
+        if (dateKey.equalsIgnoreCase(ReportBase.DAY)) {
+          map.put("startMonth", tMin.getDay());
+          map.put("endMonth", tMax.getDay());
+        }
       }
     }
     return map;
   }
-  
+
   /**
    * Checks if the account exists in the datastore.  This method does NOT validate an CID against AdWords.
    * @param topAccountId
    * @return true if account exists in datastore
    */
-  public boolean accountExists(long topAccountId) {
-    Query<UserToken> query = ofy().load().type(UserToken.class);
-    query = query.filter(UserToken.TOP_ACCOUNT_ID, topAccountId);
-    query = query.limit(1);
-    
-    List<UserToken> result = query.list();
-    
-    if(result != null && result.isEmpty()) {
-      return false;
+  private boolean accountExists(long topAccountId) {
+    List<UserToken> list = get(UserToken.class, UserToken.TOP_ACCOUNT_ID, topAccountId);
+    if(list != null && !list.isEmpty()) {
+      return true;
     }
     else {
-      return true;
+      return false;
     }
   }
 }
