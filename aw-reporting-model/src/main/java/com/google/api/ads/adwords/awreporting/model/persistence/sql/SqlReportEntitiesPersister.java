@@ -563,12 +563,16 @@ public class SqlReportEntitiesPersister implements EntityPersister {
     } else {
 
       Criteria criteriaMin = this.createCriteria(classT);
+      criteriaMin.add(Restrictions.eq(Report.TOP_ACCOUNT_ID, topAccountId));
+      criteriaMin.add(Restrictions.isNotNull(dateKey));
       criteriaMin.addOrder(Order.asc(dateKey));
       criteriaMin.setFirstResult(0);
       criteriaMin.setMaxResults(1);
       T tMin = (T) criteriaMin.uniqueResult();
 
       Criteria criteriaMax = this.createCriteria(classT);
+      criteriaMax.add(Restrictions.eq(Report.TOP_ACCOUNT_ID, topAccountId));
+      criteriaMax.add(Restrictions.isNotNull(dateKey));
       criteriaMax.addOrder(Order.desc(dateKey));
       criteriaMax.setFirstResult(0);
       criteriaMax.setMaxResults(1);
@@ -576,7 +580,7 @@ public class SqlReportEntitiesPersister implements EntityPersister {
 
       if (tMax != null && tMin != null) {
         map.put("ReportType", classT.getSimpleName());
-        
+
         if (dateKey.equalsIgnoreCase(ReportBase.MONTH)) {
           map.put("startMonth", tMin.getMonth());
           map.put("endMonth", tMax.getMonth());

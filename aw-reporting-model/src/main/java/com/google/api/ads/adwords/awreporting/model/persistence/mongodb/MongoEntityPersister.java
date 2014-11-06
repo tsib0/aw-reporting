@@ -443,6 +443,7 @@ public class MongoEntityPersister implements EntityPersister {
 
       BasicDBObject query = new BasicDBObject();
       query.put(ReportBase.TOP_ACCOUNT_ID, topAccountId);
+      query.put(dateKey, new BasicDBObject("$ne", null));
 
       DBCursor curMin = getCollection(classT).find(query).sort(new BasicDBObject(dateKey,1)).limit(1);
       T tMin = null;
@@ -460,7 +461,7 @@ public class MongoEntityPersister implements EntityPersister {
 
       if (tMax != null && tMin != null) {
         map.put("ReportType", classT.getSimpleName());
-        
+
         if (dateKey.equalsIgnoreCase(ReportBase.MONTH)) {
           map.put("startMonth", tMin.getMonth());
           map.put("endMonth", tMax.getMonth());
