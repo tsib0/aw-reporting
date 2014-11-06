@@ -18,6 +18,7 @@ import com.google.api.ads.adwords.awreporting.model.persistence.EntityPersister;
 import com.google.api.ads.adwords.awreporting.server.authentication.WebAuthenticator;
 import com.google.api.ads.adwords.awreporting.server.rest.kratu.GenerateKratusRest;
 import com.google.api.ads.adwords.awreporting.server.rest.kratu.KratuRest;
+import com.google.api.ads.adwords.awreporting.server.rest.reports.DataAvailable;
 import com.google.api.ads.adwords.awreporting.server.rest.reports.GenerateReportsRest;
 import com.google.api.ads.adwords.awreporting.server.rest.reports.PreviewReportRest;
 import com.google.api.ads.adwords.awreporting.server.rest.reports.ReportAccountRest;
@@ -252,6 +253,21 @@ public class RestServer extends Application {
     router.attach("/mcc/{topAccountId}/reportplaceholderfeeditem/ad/{adId}", ReportPlaceholderFeedItemRest.class); //LIST Ad level
     router.attach("/mcc/{topAccountId}/reportplaceholderfeeditem/feed/{feedId}", ReportPlaceholderFeedItemRest.class); //LIST Feed level
     router.attach("/mcc/{topAccountId}/reportplaceholderfeeditem/feeditem/{feedItemId}", ReportPlaceholderFeedItemRest.class); //LIST FeedItem level
+
+    /* ## HTTP method: GET
+     *   Provides a list map with the minimal and maximal dates available for each Report Type
+     *   for a given topAccountId. Returns an error message if a usertoken does not exist for the account.
+     * 
+     *   @param (url) topAccountId The MCC CID [REQUIRED]
+     *   @return Array of accounts
+     * 
+     * ## HTTP method: PUT/POST
+     *   Not implemented
+     * 
+     * ## HTTP method: DELETE
+     *   Not implemented
+     */
+    router.attach("/mcc/{topAccountId}/dataavailable", DataAvailable.class);
 
 
     // *** HTML to PDF conversion & Report Preview***

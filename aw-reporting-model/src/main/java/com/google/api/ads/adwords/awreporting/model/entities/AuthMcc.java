@@ -100,4 +100,3 @@ public class AuthMcc implements MongoEntity {
     this.scope = scope;
   }
 }
-

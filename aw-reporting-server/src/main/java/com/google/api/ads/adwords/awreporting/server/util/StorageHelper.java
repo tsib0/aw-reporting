@@ -29,14 +29,8 @@ import com.google.api.ads.adwords.awreporting.server.entities.Kratu;
 import com.google.api.ads.adwords.awreporting.server.kratu.KratuCompute;
 import com.google.common.collect.Lists;
 
-import org.hibernate.Criteria;
-import org.hibernate.Session;
-import org.hibernate.SessionFactory;
-import org.hibernate.criterion.Projections;
-import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
 import java.util.List;
@@ -48,9 +42,6 @@ import java.util.List;
  */
 @Component
 public class StorageHelper {
-
-  @Autowired
-  private SessionFactory sessionFactory;
 
   private EntityPersister entityPersister;
 
@@ -293,28 +284,5 @@ public class StorageHelper {
     kratuIndexes.add("externalCustomerId");
     kratuIndexes.add("day");
     entityPersister.createIndex(Kratu.class, kratuIndexes);
-  }
-
-  @Transactional
-  public List<?> getMin(Class<?> clazz, String mccid, String propertyName1, String propertyName2) {
-
-    return this.createCriteria(clazz)
-        .add(Restrictions.eq("topAccountId", Long.parseLong(mccid, 10)))
-        .setProjection(Projections.projectionList()
-            .add(Projections.min(propertyName1))
-            .add(Projections.max(propertyName2))).list();
-  }
-
-  /**
-   * Creates a new criteria for the current session
-   * 
-   * @param clazz
-   *            the class of the entity
-   * @return the criteria for the current session
-   */
-  private <T> Criteria createCriteria(Class<T> clazz) {
-
-    Session session = this.sessionFactory.getCurrentSession();
-    return session.createCriteria(clazz);
   }
 }

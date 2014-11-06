@@ -125,8 +125,8 @@
             } else {
                 for (var i = 0; i < data.length; i++) {
                     $("#mccids").append($("<option>", {
-                        value: data[i].mccInfo.topAccountId,
-                        text: data[i].mccInfo.topAccountId + " - " + data[i].mccInfo.topAccountName
+                        value: data[i].topAccountId,
+                        text: data[i].topAccountId + " - " + data[i].topAccountName
                     }));
                 }
             }

@@ -15,6 +15,7 @@
 package com.google.api.ads.adwords.awreporting.model.persistence;
 
 import com.google.api.ads.adwords.awreporting.model.entities.Report;
+import com.google.api.ads.adwords.awreporting.model.entities.ReportBase;
 
 import org.joda.time.DateTime;
 
@@ -271,5 +272,14 @@ public interface EntityPersister {
    * @param keys the entity keys
    */
   <T> void createIndex(Class<T> classT, List<String> keys);
+
+  /**
+   * Gets the Max and Min Dates for the data availalbe for an Mcc
+   *
+   * @param classT the ReportBase sub Class
+   * @param topAccountId the Top Account ID to get the data for
+   * @dateKey the Date column to filter the Data.
+   */
+  public <T extends ReportBase> Map<String, Object> getReportDataAvailableByDate(Class<T> classT, long topAccountId, String dateKey);
 
 }
