@@ -259,7 +259,8 @@ public class RestServer extends Application {
      *   for a given topAccountId. Returns an error message if a usertoken does not exist for the account.
      * 
      *   @param (url) topAccountId The MCC CID [REQUIRED]
-     *   @return Array of accounts
+     *   @param (query) dateRangeType Type of available data to check ('day' or 'month') [OPTIONAL - defaults to 'month' if not provided]
+     *   @return Array of available data objects. If data range is not provided, there is no data.
      * 
      * ## HTTP method: PUT/POST
      *   Not implemented
