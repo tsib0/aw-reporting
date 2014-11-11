@@ -18,6 +18,8 @@ import com.google.api.ads.adwords.awreporting.model.entities.ReportAccount;
 import com.google.api.ads.adwords.awreporting.model.entities.ReportAdGroup;
 import com.google.api.ads.adwords.awreporting.model.entities.ReportBase;
 import com.google.api.ads.adwords.awreporting.model.entities.ReportCampaign;
+import com.google.api.ads.adwords.awreporting.model.util.DateUtil;
+import com.google.api.ads.adwords.awreporting.server.entities.Kratu;
 import com.google.api.ads.adwords.awreporting.server.rest.AbstractBaseResource;
 import com.google.api.ads.adwords.awreporting.server.rest.RestServer;
 import com.google.api.client.util.Lists;
@@ -56,6 +58,7 @@ public class DataAvailable extends AbstractBaseResource {
       }
 
       if (topAccountId != null) { // LIST Top Account level
+        Map<String, Object> resultMap = Maps.newHashMap();
 
         // Check that the user owns that MCC
         RestServer.getWebAuthenticator().checkAuthentication(topAccountId);
@@ -68,7 +71,15 @@ public class DataAvailable extends AbstractBaseResource {
           }
         }
 
-        Map<String, Object> resultMap = Maps.newHashMap();
+        Kratu kratuMin = RestServer.getPersister().getMinByDateKey(Kratu.class, topAccountId, Kratu.DAY);
+        Kratu kratuMax = RestServer.getPersister().getMaxByDateKey(Kratu.class, topAccountId, Kratu.DAY);
+        if (kratuMin != null && kratuMax != null) {
+          Map<String, Object> map = Maps.newHashMap();
+          map.put("endDay", DateUtil.formatYearMonthDay(kratuMax.getDay()));
+          map.put("startDay", DateUtil.formatYearMonthDay(kratuMin.getDay()));
+          resultMap.put("kratus_available", map);
+        }
+
         resultMap.put("reports_available", reportsList);
         //resultMap.put("pending_process_tasks", (Object) MccTaskCounter.getPendingProcessTaks(topAccountId));
         //resultMap.put("pending_export_tasks", (Object) MccTaskCounter.getPendingExportTaks(topAccountId));

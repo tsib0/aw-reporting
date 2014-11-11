@@ -441,6 +441,29 @@ public class MongoEntityPersister implements EntityPersister {
       map.put("message", "The requested MCC does not exist in the database.");
     } else {
 
+      T tMin = getMinByDateKey(classT, topAccountId, dateKey);
+      T tMax = getMaxByDateKey(classT, topAccountId, dateKey);
+
+      if (tMax != null && tMin != null) {
+        map.put("ReportType", classT.getSimpleName());
+
+        if (dateKey.equalsIgnoreCase(ReportBase.MONTH)) {
+          map.put("startMonth", tMin.getMonth());
+          map.put("endMonth", tMax.getMonth());
+        }
+        if (dateKey.equalsIgnoreCase(ReportBase.DAY)) {
+          map.put("startDay", tMin.getDay());
+          map.put("endDay", tMax.getDay());
+        }
+      }
+    }
+    return map;
+  }
+
+  public <T> T getMinByDateKey(Class<T> classT, long topAccountId, String dateKey) {
+    if (!accountExists(topAccountId)) {      
+      return null;
+    } else {
       BasicDBObject query = new BasicDBObject();
       query.put(ReportBase.TOP_ACCOUNT_ID, topAccountId);
       query.put(dateKey, new BasicDBObject("$ne", null));
@@ -451,28 +474,26 @@ public class MongoEntityPersister implements EntityPersister {
         DBObject dbObject = curMin.next();
         tMin = gson.fromJson(com.mongodb.util.JSON.serialize(dbObject), classT);
       }
-      
-      DBCursor curMax = getCollection(classT).find(query).sort(new BasicDBObject(dateKey,-1)).limit(1);
-      T tMax = null;
-      while (curMax.hasNext()) {
-        DBObject dbObject = curMax.next();
-        tMax = gson.fromJson(com.mongodb.util.JSON.serialize(dbObject), classT);
-      }
-
-      if (tMax != null && tMin != null) {
-        map.put("ReportType", classT.getSimpleName());
-
-        if (dateKey.equalsIgnoreCase(ReportBase.MONTH)) {
-          map.put("startMonth", tMin.getMonth());
-          map.put("endMonth", tMax.getMonth());
-        }
-        if (dateKey.equalsIgnoreCase(ReportBase.DAY)) {
-          map.put("startMonth", tMin.getDay());
-          map.put("endMonth", tMax.getDay());
-        }
-      }
+      return tMin;
     }
-    return map;
+  }
+
+  public <T> T getMaxByDateKey(Class<T> classT, long topAccountId, String dateKey) {
+    if (!accountExists(topAccountId)) {      
+      return null;
+    } else {
+      BasicDBObject query = new BasicDBObject();
+      query.put(ReportBase.TOP_ACCOUNT_ID, topAccountId);
+      query.put(dateKey, new BasicDBObject("$ne", null));
+
+      DBCursor curMin = getCollection(classT).find(query).sort(new BasicDBObject(dateKey,-1)).limit(1);
+      T tMin = null;
+      while (curMin.hasNext()) {
+        DBObject dbObject = curMin.next();
+        tMin = gson.fromJson(com.mongodb.util.JSON.serialize(dbObject), classT);
+      }
+      return tMin;
+    }
   }
 
   /**

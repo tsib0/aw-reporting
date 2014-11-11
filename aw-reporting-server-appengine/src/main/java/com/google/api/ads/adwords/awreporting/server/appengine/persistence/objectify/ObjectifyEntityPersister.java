@@ -380,9 +380,8 @@ public class ObjectifyEntityPersister implements EntityPersister, Serializable {
 
     } else {
 
-      T tMin = ofy().load().type(classT).order(dateKey).filter(ReportBase.TOP_ACCOUNT_ID, topAccountId).first().now();
-
-      T tMax = ofy().load().type(classT).order("-" + dateKey).filter(ReportBase.TOP_ACCOUNT_ID, topAccountId).first().now();
+      T tMin = getMinByDateKey(classT, topAccountId, dateKey);
+      T tMax = getMaxByDateKey(classT, topAccountId, dateKey);
 
       if (tMax != null && tMin != null) {
         map.put("ReportType", classT.getSimpleName());
@@ -392,12 +391,20 @@ public class ObjectifyEntityPersister implements EntityPersister, Serializable {
           map.put("endMonth", tMax.getMonth());
         }
         if (dateKey.equalsIgnoreCase(ReportBase.DAY)) {
-          map.put("startMonth", tMin.getDay());
-          map.put("endMonth", tMax.getDay());
+          map.put("startDay", tMin.getDay());
+          map.put("endDay", tMax.getDay());
         }
       }
     }
     return map;
+  }
+  
+  public <T> T getMinByDateKey(Class<T> classT, long topAccountId, String dateKey){
+    return ofy().load().type(classT).order(dateKey).filter(ReportBase.TOP_ACCOUNT_ID, topAccountId).first().now();
+  }
+
+  public <T> T getMaxByDateKey(Class<T> classT, long topAccountId, String dateKey){
+    return ofy().load().type(classT).order("-" + dateKey).filter(ReportBase.TOP_ACCOUNT_ID, topAccountId).first().now();
   }
 
   /**

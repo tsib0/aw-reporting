@@ -553,7 +553,6 @@ public class SqlReportEntitiesPersister implements EntityPersister {
 
   @Override
   @Transactional
-  @SuppressWarnings("unchecked")
   public <T extends ReportBase> Map<String, Object> getReportDataAvailableByDate(Class<T> classT, long topAccountId, String dateKey) {
     Map<String, Object> map = Maps.newHashMap();
 
@@ -562,21 +561,8 @@ public class SqlReportEntitiesPersister implements EntityPersister {
       map.put("message", "The requested MCC does not exist in the database.");
     } else {
 
-      Criteria criteriaMin = this.createCriteria(classT);
-      criteriaMin.add(Restrictions.eq(Report.TOP_ACCOUNT_ID, topAccountId));
-      criteriaMin.add(Restrictions.isNotNull(dateKey));
-      criteriaMin.addOrder(Order.asc(dateKey));
-      criteriaMin.setFirstResult(0);
-      criteriaMin.setMaxResults(1);
-      T tMin = (T) criteriaMin.uniqueResult();
-
-      Criteria criteriaMax = this.createCriteria(classT);
-      criteriaMax.add(Restrictions.eq(Report.TOP_ACCOUNT_ID, topAccountId));
-      criteriaMax.add(Restrictions.isNotNull(dateKey));
-      criteriaMax.addOrder(Order.desc(dateKey));
-      criteriaMax.setFirstResult(0);
-      criteriaMax.setMaxResults(1);
-      T tMax = (T) criteriaMax.uniqueResult();
+      T tMin = getMinByDateKey(classT, topAccountId, dateKey);
+      T tMax = getMaxByDateKey(classT, topAccountId, dateKey);
 
       if (tMax != null && tMin != null) {
         map.put("ReportType", classT.getSimpleName());
@@ -586,13 +572,45 @@ public class SqlReportEntitiesPersister implements EntityPersister {
           map.put("endMonth", tMax.getMonth());
         }
         if (dateKey.equalsIgnoreCase(ReportBase.DAY)) {
-          map.put("startMonth", tMin.getDay());
-          map.put("endMonth", tMax.getDay());
+          map.put("startDay", tMin.getDay());
+          map.put("endDay", tMax.getDay());
         }
 
       }
     }
     return map;
+  }
+
+  @SuppressWarnings("unchecked")
+  @Transactional
+  public <T> T getMinByDateKey(Class<T> classT, long topAccountId, String dateKey) {
+    if (!accountExists(topAccountId)) {      
+      return null;
+    } else {
+      Criteria criteriaMin = this.createCriteria(classT);
+      criteriaMin.add(Restrictions.eq(Report.TOP_ACCOUNT_ID, topAccountId));
+      criteriaMin.add(Restrictions.isNotNull(dateKey));
+      criteriaMin.addOrder(Order.asc(dateKey));
+      criteriaMin.setFirstResult(0);
+      criteriaMin.setMaxResults(1);
+      return (T) criteriaMin.uniqueResult();
+    }
+  }
+
+  @SuppressWarnings("unchecked")
+  @Transactional
+  public <T> T getMaxByDateKey(Class<T> classT, long topAccountId, String dateKey) {
+    if (!accountExists(topAccountId)) {      
+      return null;
+    } else {
+      Criteria criteriaMin = this.createCriteria(classT);
+      criteriaMin.add(Restrictions.eq(Report.TOP_ACCOUNT_ID, topAccountId));
+      criteriaMin.add(Restrictions.isNotNull(dateKey));
+      criteriaMin.addOrder(Order.desc(dateKey));
+      criteriaMin.setFirstResult(0);
+      criteriaMin.setMaxResults(1);
+      return (T) criteriaMin.uniqueResult();
+    }
   }
 
   /**

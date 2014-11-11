@@ -282,4 +282,22 @@ public interface EntityPersister {
    */
   public <T extends ReportBase> Map<String, Object> getReportDataAvailableByDate(Class<T> classT, long topAccountId, String dateKey);
 
+  /**
+   * Gets the Min object by DateKey for one MCC
+   *
+   * @param T the object class to find
+   * @param topAccountId the Top Account ID to get the data for
+   * @dateKey the Date column to filter the Data.
+   */
+  public <T> T getMinByDateKey(Class<T> classT, long topAccountId, String dateKey);
+
+  /**
+   * Gets the Max object by DateKey for one MCC
+   *
+   * @param T the object class to find
+   * @param topAccountId the Top Account ID to get the data for
+   * @dateKey the Date column to filter the Data.
+   */
+  public <T> T getMaxByDateKey(Class<T> classT, long topAccountId, String dateKey);
+
 }

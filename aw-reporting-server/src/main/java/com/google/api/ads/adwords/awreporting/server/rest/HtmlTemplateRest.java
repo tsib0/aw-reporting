@@ -22,9 +22,7 @@ import org.restlet.data.Status;
 import org.restlet.representation.Representation;
 import org.restlet.resource.ResourceException;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Rest entry point to get, create or update HTML templates.
@@ -48,37 +46,29 @@ public class HtmlTemplateRest extends AbstractBaseResource {
 
       Long templateId = getParameterAsLong("templateId");
       boolean isPublic = getParameterAsBoolean("public");
-      String userId = RestServer.getWebAuthenticator().getCurrentUser();
 
-      if (userId != null) {
-        LOGGER.info("Getting user's templates");
-        List<HtmlTemplate> htmlTemplateList = Lists.newArrayList();
+      List<HtmlTemplate> htmlTemplateList = Lists.newArrayList();
+      if (templateId != null) {
 
+        LOGGER.info("Getting template by Id");
         // Get template by ID
-        if (templateId != null) {
-          Map<String, Object> propertiesMap = new HashMap<String, Object>();
-          propertiesMap.put(HtmlTemplate.USER_ID, userId);
-          LOGGER.info("templateId: " + templateId);
-          propertiesMap.put(HtmlTemplate.ID, templateId);
-
-          htmlTemplateList = RestServer.getPersister().get(HtmlTemplate.class, propertiesMap);
-
-          if (htmlTemplateList.size() == 0) {
-            throw new ResourceException(Status.CLIENT_ERROR_NOT_FOUND, "No template with that templateId was found");
-          }
-
-        } else if (isPublic == true) {
-          LOGGER.info("Getting public templates");
-          htmlTemplateList = RestServer.getPersister().get(HtmlTemplate.class, "isPublic", true);
-
-        } else {
-          // Get all user's templates
-          htmlTemplateList = RestServer.getPersister().get(
-              HtmlTemplate.class, HtmlTemplate.USER_ID, userId);
+        htmlTemplateList = RestServer.getPersister().get(HtmlTemplate.class, HtmlTemplate.ID, templateId);
+        if (htmlTemplateList.size() == 0) {
+          throw new ResourceException(Status.CLIENT_ERROR_NOT_FOUND, "No template with that templateId was found");
         }
 
-        result = gson.toJson(htmlTemplateList);
+      } else if (isPublic == true) {
+        
+        LOGGER.info("Getting public templates");
+        htmlTemplateList = RestServer.getPersister().get(HtmlTemplate.class, "isPublic", true);
+      } else {
+
+        LOGGER.info("Getting all templates");
+        // Get all user's templates
+        htmlTemplateList = RestServer.getPersister().get(HtmlTemplate.class);
       }
+
+      result = gson.toJson(htmlTemplateList);
 
     } catch (Exception exception) {
       return handleException(exception);
