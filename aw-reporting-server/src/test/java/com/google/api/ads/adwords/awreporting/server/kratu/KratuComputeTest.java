@@ -44,6 +44,7 @@ import org.mockito.stubbing.Answer;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -58,9 +59,11 @@ public class KratuComputeTest {
   private static final int SCALE = 2;
 
   private final List<Kratu> dailyKratus = Lists.newArrayList();
-
-  private final Date day1 = DateUtil.parseDateTime("20140601").toDate();
-  private final Date day2 = DateUtil.parseDateTime("20140602").toDate();
+ 
+  private final Calendar day1 = Calendar.getInstance();
+  private final Calendar day1LastMinute = Calendar.getInstance();
+  
+  private final Calendar day2 = Calendar.getInstance();
 
   private Kratu kratu1;
   private Kratu kratu2;
@@ -75,6 +78,21 @@ public class KratuComputeTest {
 
   @Before
   public <R extends Report> void setUp() {
+    
+    day1.setTime(DateUtil.parseDateTime("20140601").toDate());
+    day1.set(Calendar.HOUR_OF_DAY, 0);
+    day1.set(Calendar.MINUTE, 0);
+    day1.set(Calendar.SECOND, 0);
+    
+    day1LastMinute.setTime(DateUtil.parseDateTime("20140601").toDate());
+    day1LastMinute.set(Calendar.HOUR_OF_DAY, 23);
+    day1LastMinute.set(Calendar.MINUTE, 59);
+    day1LastMinute.set(Calendar.SECOND, 59);
+
+    day2.setTime(DateUtil.parseDateTime("20140602").toDate());
+    day2.set(Calendar.HOUR_OF_DAY, 0);
+    day2.set(Calendar.MINUTE, 0);
+    day2.set(Calendar.SECOND, 0);
 
     account = new Account();
     account.setCurrencyCode("EUR");
@@ -82,8 +100,8 @@ public class KratuComputeTest {
     account.setId("777");
     account.setName("Account1");
 
-    kratu1 = new Kratu(123L, account, day1);
-    kratu2 = new Kratu(123L, account, day2);
+    kratu1 = new Kratu(123L, account, day1.getTime());
+    kratu2 = new Kratu(123L, account, day2.getTime());
     kratu1.setAccountActive("Yes");
     kratu1.setAccountSuspended(false);
     kratu1.setAverageCpcDisplay(new BigDecimal(1L));
@@ -204,7 +222,7 @@ public class KratuComputeTest {
   @Test
   public void test_createKratuSummary() {    
 
-    Kratu kratuSummarized = KratuCompute.createKratuSummary(dailyKratus, day1, day2);
+    Kratu kratuSummarized = KratuCompute.createKratuSummary(dailyKratus, day1.getTime(), day2.getTime());
 
     // From Account
     assertEquals(kratuSummarized.getTopAccountId(), new Long(123));
@@ -342,7 +360,7 @@ public class KratuComputeTest {
   @Test
   public void test_createDailyKratuFromDB() {
 
-    KratuCompute.createDailyKratuFromDB(storageHelper, 1L, account, day1);
+    KratuCompute.createDailyKratuFromDB(storageHelper, 1L, account, day1.getTime());
 
     ArgumentCaptor<Long> accountIdCaptor = ArgumentCaptor.forClass(Long.class);
     ArgumentCaptor<Date> date1Captor = ArgumentCaptor.forClass(Date.class);
@@ -368,20 +386,20 @@ public class KratuComputeTest {
     assertEquals(accountIds.get(5), new Long(777));
     
     List<Date> date1Captors = date1Captor.getAllValues();
-    assertEquals(date1Captors.get(0), day1);
-    assertEquals(date1Captors.get(1), day1);
-    assertEquals(date1Captors.get(2), day1);
-    assertEquals(date1Captors.get(3), day1);
-    assertEquals(date1Captors.get(4), day1);
-    assertEquals(date1Captors.get(5), day1);
+    assertEquals(date1Captors.get(0), day1.getTime());
+    assertEquals(date1Captors.get(1), day1.getTime());
+    assertEquals(date1Captors.get(2), day1.getTime());
+    assertEquals(date1Captors.get(3), day1.getTime());
+    assertEquals(date1Captors.get(4), day1.getTime());
+    assertEquals(date1Captors.get(5), day1.getTime());
     
     List<Date> date2Captors = date2Captor.getAllValues();
-    assertEquals(date1Captors.get(0), day1);
-    assertEquals(date2Captors.get(1), day1);
-    assertEquals(date2Captors.get(2), day1);
-    assertEquals(date2Captors.get(3), day1);
-    assertEquals(date2Captors.get(4), day1);
-    assertEquals(date2Captors.get(5), day1);
+    assertEquals(date2Captors.get(0), day1LastMinute.getTime());
+    assertEquals(date2Captors.get(1), day1LastMinute.getTime());
+    assertEquals(date2Captors.get(2), day1LastMinute.getTime());
+    assertEquals(date2Captors.get(3), day1LastMinute.getTime());
+    assertEquals(date2Captors.get(4), day1LastMinute.getTime());
+    assertEquals(date2Captors.get(5), day1LastMinute.getTime());
   }
 
   private BigDecimal dailyAverage(BigDecimal bigDecimal1, BigDecimal bigDecimal2) {

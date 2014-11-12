@@ -51,10 +51,15 @@ public class RunnableKratu implements Runnable {
   }
 
   public void run() {
-    try {
-
+    try {     
       System.out.println("\n ** Generating Kratus (for: " + accounts.size() + ") **");
       long start = System.currentTimeMillis();
+
+      // Make sure Index exists
+      List<String> indexes = Lists.newArrayList();
+      indexes.add(Kratu.EXTERNAL_CUSTOMER_ID);
+      indexes.add(Kratu.DAY);
+      storageHelper.getEntityPersister().createIndex(Kratu.class, indexes);
 
       // Get all the (not-MCC) Accounts under TopAccount
       int i = 0;
@@ -62,25 +67,33 @@ public class RunnableKratu implements Runnable {
         if (account != null && !account.getCanManageClients()) {
           System.out.println();
           System.out.print(i++);
-          Calendar calendar = Calendar.getInstance();
-          calendar.setTime(dateStart);
-          while(calendar.getTime().compareTo(dateEnd) <= 0) {
+
+          Calendar dayToProcess = Calendar.getInstance();
+          dayToProcess.setTime(dateStart);
+          dayToProcess.set(Calendar.HOUR_OF_DAY, 0);
+          dayToProcess.set(Calendar.MINUTE, 0);
+          dayToProcess.set(Calendar.SECOND, 0);
+
+          Calendar lastDay = Calendar.getInstance();
+          lastDay.setTime(dateEnd);
+          lastDay.set(Calendar.HOUR_OF_DAY, 23);
+          lastDay.set(Calendar.MINUTE, 59);
+          lastDay.set(Calendar.SECOND, 59);
+
+          while(dayToProcess.compareTo(lastDay) <= 0) {
 
             Kratu kratu = KratuCompute.createDailyKratuFromDB(
-                storageHelper, topAccountId, account, calendar.getTime());
+                storageHelper, topAccountId, account, dayToProcess.getTime());
             if (kratu != null){
               storageHelper.saveKratu(kratu);
             }
-            calendar.add(Calendar.DATE, 1);
+
+            // Process next day
+            dayToProcess.add(Calendar.DATE, 1);
             System.out.print(".");
           }
         }
       }
-
-      List<String> indexes = Lists.newArrayList();
-      indexes.add(Kratu.EXTERNAL_CUSTOMER_ID);
-      indexes.add(Kratu.DAY);
-      storageHelper.getEntityPersister().createIndex(Kratu.class, indexes);
 
       System.out.println("\n*** Finished generating Kratus in "
           + ((System.currentTimeMillis() - start) / 1000) + " seconds ***");

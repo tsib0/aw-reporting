@@ -30,6 +30,7 @@ import org.joda.time.Days;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -170,11 +171,23 @@ public class KratuCompute {
       Long topAccountId,
       Account account,
       Date day) {
+    
+    Calendar dayStart = Calendar.getInstance();
+    dayStart.setTime(day);
+    dayStart.set(Calendar.HOUR_OF_DAY, 0);
+    dayStart.set(Calendar.MINUTE, 0);
+    dayStart.set(Calendar.SECOND, 0);
+    
+    Calendar dayEnd = Calendar.getInstance();
+    dayEnd.setTime(day);
+    dayEnd.set(Calendar.HOUR_OF_DAY, 23);
+    dayEnd.set(Calendar.MINUTE, 59);
+    dayEnd.set(Calendar.SECOND, 59);
 
     Long accountId = account.getExternalCustomerId();
 
     // Get all ReportAccount rows for the day
-    List<ReportAccount> reportAccountList = storageHelper.getReportByAccountId(ReportAccount.class, accountId, day, day);
+    List<ReportAccount> reportAccountList = storageHelper.getReportByAccountId(ReportAccount.class, accountId, dayStart.getTime(), dayEnd.getTime());
 
     // We only process a Kratu if they have ReportAccount data
     if (reportAccountList.size() == 0) {
@@ -182,8 +195,7 @@ public class KratuCompute {
     } else {
 
       // Creating a new Kratu with the base Account Info
-      Kratu kratu = new Kratu(topAccountId, account, day);
-
+      Kratu kratu = new Kratu(topAccountId, account, dayStart.getTime());
 
       // Process ReportAccount Info
       for (ReportAccount reportAccount : reportAccountList) {
@@ -250,7 +262,7 @@ public class KratuCompute {
 
 
       // Process ReportCampaign Info
-      List<ReportCampaign> reportCampaignList = storageHelper.getReportByAccountId(ReportCampaign.class, accountId, day, day);
+      List<ReportCampaign> reportCampaignList = storageHelper.getReportByAccountId(ReportCampaign.class, accountId, dayStart.getTime(), dayEnd.getTime());
       for (ReportCampaign reportCampaign : reportCampaignList) {
         if (reportCampaign.getStatus().equals(ACTIVE)) {
           kratu.addNumberOfActiveCampaigns(BigDecimal.ONE);
@@ -263,7 +275,7 @@ public class KratuCompute {
 
 
       // Process ReportAdGroup Info
-      List<ReportAdGroup> reportAdGroupList = storageHelper.getReportByAccountId(ReportAdGroup.class, accountId, day, day);
+      List<ReportAdGroup> reportAdGroupList = storageHelper.getReportByAccountId(ReportAdGroup.class, accountId, dayStart.getTime(), dayEnd.getTime());
       for (ReportAdGroup reportAdGroup : reportAdGroupList) {
         if (reportAdGroup.getStatus().equals(ENABLE)) {
           kratu.addNumberOfActiveAdGroups(BigDecimal.ONE);
@@ -272,7 +284,7 @@ public class KratuCompute {
 
 
       // Process ReportAd Info
-      List<ReportAd> reportAdList = storageHelper.getReportByAccountId(ReportAd.class, accountId, day, day);
+      List<ReportAd> reportAdList = storageHelper.getReportByAccountId(ReportAd.class, accountId, dayStart.getTime(), dayEnd.getTime());
       Map<Long, Integer> activeAdsPerAdGroup = new HashMap<Long, Integer>();
 
       for (ReportAd reportAd : reportAdList) {
@@ -303,7 +315,7 @@ public class KratuCompute {
 
 
       // Process ReportKeyword Info
-      List<ReportKeyword> reportKeywordList = storageHelper.getReportByAccountId(ReportKeyword.class, accountId, day, day);
+      List<ReportKeyword> reportKeywordList = storageHelper.getReportByAccountId(ReportKeyword.class, accountId, dayStart.getTime(), dayEnd.getTime());
       Long sumImpressions = 0l;
       BigDecimal totalPositions = BigDecimal.ZERO;
       BigDecimal totalWeight = BigDecimal.ZERO;
@@ -355,7 +367,7 @@ public class KratuCompute {
 
 
       // Process ReportAdExtension Info
-      List<ReportAdExtension> reportAdExtensionsList = storageHelper.getReportByAccountId(ReportAdExtension.class, accountId, day, day);
+      List<ReportAdExtension> reportAdExtensionsList = storageHelper.getReportByAccountId(ReportAdExtension.class, accountId, dayStart.getTime(), dayEnd.getTime());
       for (ReportAdExtension reportAdExtension : reportAdExtensionsList) {
         if (reportAdExtension.getStatus().equals(ACTIVE)) {
           if (reportAdExtension.getAdExtensionType().equals(LOCATION_EXTENSION)) {
@@ -373,7 +385,7 @@ public class KratuCompute {
 
       // Process ReportCampaignNegativeKeyword Info
       List<ReportCampaignNegativeKeyword> reportCampaignNegativeKeywordList =
-          storageHelper.getReportCampaignNegativeKeywordByAccountAndEndDateInRange(accountId, day, day);
+          storageHelper.getReportCampaignNegativeKeywordByAccountAndEndDateInRange(accountId, dayStart.getTime(), dayEnd.getTime());
       kratu.addNumberOfNegativeActiveKeywords(new BigDecimal(reportCampaignNegativeKeywordList.size()));
       kratu.addNumberOfCampaignNegativeActiveKeywords(new BigDecimal(reportCampaignNegativeKeywordList.size())); 
 
