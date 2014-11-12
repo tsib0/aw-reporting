@@ -1,0 +1,93 @@
+<div id="home_partial" ng-show="loading_task_count == 0">
+
+  <ul class="nav nav-tabs">
+    <li class="active" style="width: 50%">
+      <a href="#/accounts">
+        <span class="glyphicon glyphicon-lock"></span>
+        My MCCs / Accounts
+      </a>
+    </li>
+    <li style="width: 50%">
+      <a href="#/reports">
+        <span class="glyphicon glyphicon-folder-close"></span>
+        My Report Templates
+      </a>
+    </li>
+  </ul>
+
+  <div class="instructions">
+    <div class="instruction">
+      <div class="pic"><span class="glyphicon glyphicon-arrow-left"></span></div>
+      <div class="text"> Add or search for an MCC</div>
+    </div>
+    <div style="clear: left"></div>
+    <div class="instruction pad-top-20">
+      <div class="pic"><span class="glyphicon glyphicon-list"></span></div>
+      <div class="text"> Or select a previously authenticated one for further work</div>
+    </div>
+  </div>
+
+  <div id="mcc_list" class="tabblock">
+    <div class="alert alert-danger" ng-show="load_mccs_error" style="width: 450px">
+      {{ load_mccs_error }}
+    </div>
+
+    <div id="filter">
+      <input id="business_type" type="text" placeholder="Enter an MCC id ..." ng-model="mccid" style="padding: 5px"/>
+      <button class="btn btn-primary" type="button"
+              ng-click="authenticateMCC(mccid)"
+              id="authenticate_button"
+              ng-disabled="mccid.trim().length < 10 || mccid.trim().length > 12"
+              ng-show="filtered.length == 0">
+        Add MCC to List
+      </button>
+    </div>
+
+    <div id="mccs" class="list-group" ng-show="mccs.length">
+      <div>
+        <a class="list-group-item"
+           ng-repeat="mcc in filtered = (mccs | filter: mccid)"
+           ng-class="{first: $first, last: $index && $last}"
+           ng-click="selectMCC(mcc.topAccountId);">
+         <div style="float: right" ng-click="$event.stopPropagation(); deleteMCC(mcc.topAccountId);">
+            <span class="delete_button glyphicon glyphicon-remove"></span>
+          </div>
+          <h4 class="list-group-item-heading">{{ mcc.topAccountId | formatccid }}</h4>
+          <p class="list-group-item-text">{{ mcc.name ? mcc.name : "(Unknown Name)" }}</p>
+        </a>
+      </div>
+    </div>
+    <div id="no_mccs" ng-show="mccs.length == 0">
+      <div class="bs-callout bs-callout-danger" style="width: 400px">
+        <h4> You haven't added any accounts yet </h4>
+        <p> Enter an MCC id above to start working with your first account! </p>
+      </div>
+    </div>
+  </div> <!-- #mcc_list -->
+
+  <div style="clear: both; padding-bottom: 30px"></div>
+
+
+  <script type="text/ng-template" id="myYesNoDialog.html">
+    <div class="modal-header">
+      <h3 class="modal-title">I'm a modal!</h3>
+    </div>
+    <div class="modal-body">
+      Are you sure you want to remove this MCC from your list of accounts?
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-primary" ng-click="ok()">Yes</button>
+      <button class="btn btn-warning" ng-click="cancel()">No</button>
+    </div>
+  </script>
+
+
+</div> <!-- #home_partial -->
+
+
+<div id="home_partial_loading" class="page_loading" ng-show="loading_task_count">
+  <img src="media/loader_throb.gif" border="0"/> Loading ...
+</div>
+
+
+<div style="margin: 20px"></div>

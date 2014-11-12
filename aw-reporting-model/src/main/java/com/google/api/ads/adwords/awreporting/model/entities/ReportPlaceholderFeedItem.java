@@ -33,6 +33,9 @@ import javax.persistence.Table;
 @Table(name = "AW_ReportPlaceholderFeedItem")
 @CsvReport(value = ReportDefinitionReportType.PLACEHOLDER_FEED_ITEM_REPORT)
 public class ReportPlaceholderFeedItem extends ReportBase {
+  
+  public static final String FEED_ID = "feedId";
+  public static final String FEED_ITEM_ID = "FeedItemId";
 
   @Column(name = "CAMPAIGN_ID")
   @CsvField(value = "Campaign ID", reportField = "CampaignId")
