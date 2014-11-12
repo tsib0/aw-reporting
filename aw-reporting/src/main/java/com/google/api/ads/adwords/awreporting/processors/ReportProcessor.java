@@ -216,13 +216,13 @@ public abstract class ReportProcessor {
         dateStart, dateEnd, selector);
 
     return this.instantiateReportDefinition(reportDefinitionReportType,
-        dateRangeType, selector);
+        dateRangeType, selector, properties);
   }
   
   protected ReportDefinition getReportDefinition(
       ReportDefinitionReportType reportDefinitionReportType,
       ReportDefinitionDateRangeType dateRangeType, String dateStart,
-      String dateEnd, List<String> reportFieldsToInclude) {
+      String dateEnd, List<String> reportFieldsToInclude, Properties properties) {
 
     // Create the Selector with all the fields defined in the Mapping
     Selector selector = new Selector();
@@ -239,7 +239,7 @@ public abstract class ReportProcessor {
         dateStart, dateEnd, selector);
 
     return this.instantiateReportDefinition(reportDefinitionReportType,
-        dateRangeType, selector);
+        dateRangeType, selector, properties);
   }
 
   /**
@@ -285,8 +285,19 @@ public abstract class ReportProcessor {
    */
   protected ReportDefinition instantiateReportDefinition(
       ReportDefinitionReportType reportDefinitionReportType,
-      ReportDefinitionDateRangeType dateRangeType, Selector selector) {
+      ReportDefinitionDateRangeType dateRangeType, Selector selector,
+      Properties properties) {
 
+    // retrieve relevant properties
+    boolean bIncludeZeroImpressions = false;  // default to false when property is missing or of invalid value
+    String sIncludeZeroImpressions = properties.getProperty("aw.report.definition.includeZeroImpressions");
+    if (null != sIncludeZeroImpressions) {
+      bIncludeZeroImpressions = sIncludeZeroImpressions.equalsIgnoreCase("true");
+    }
+
+    LOGGER.info("Instantiate report definition for " + reportDefinitionReportType.value() + 
+                " with includeZeroImpressions=" + String.valueOf(bIncludeZeroImpressions));
+    
     // Create the Report Definition
     ReportDefinition reportDefinition = new ReportDefinition();
     reportDefinition.setReportName(REPORT_PREFIX
@@ -295,7 +306,7 @@ public abstract class ReportProcessor {
     reportDefinition.setDateRangeType(dateRangeType);
     reportDefinition.setReportType(reportDefinitionReportType);
     reportDefinition.setDownloadFormat(DownloadFormat.GZIPPED_CSV);
-    reportDefinition.setIncludeZeroImpressions(false);
+    reportDefinition.setIncludeZeroImpressions(bIncludeZeroImpressions);
     reportDefinition.setSelector(selector);
     return reportDefinition;
   }
