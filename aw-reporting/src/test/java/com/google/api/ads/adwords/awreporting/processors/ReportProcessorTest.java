@@ -101,7 +101,8 @@ public class ReportProcessorTest {
         anyString(), anyString(), any(Properties.class));
     
     doCallRealMethod().when(reportProcessor).instantiateReportDefinition(
-        any(ReportDefinitionReportType.class), any(ReportDefinitionDateRangeType.class), any(Selector.class));
+        any(ReportDefinitionReportType.class), any(ReportDefinitionDateRangeType.class),
+        any(Selector.class), any(Properties.class));
 
     reportProcessor.setCsvReportEntitiesMapping(appCtx.getBean(CsvReportEntitiesMapping.class));
     reportProcessor.setPersister(mockedEntitiesPersister);
