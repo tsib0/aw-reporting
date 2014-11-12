@@ -14,8 +14,11 @@
 
 package com.google.api.ads.adwords.awreporting.model.persistence.sql;
 
+import com.google.api.ads.adwords.awreporting.model.entities.AuthMcc;
 import com.google.api.ads.adwords.awreporting.model.entities.Report;
+import com.google.api.ads.adwords.awreporting.model.entities.ReportBase;
 import com.google.api.ads.adwords.awreporting.model.persistence.EntityPersister;
+import com.google.common.collect.Maps;
 
 import org.hibernate.Criteria;
 import org.hibernate.SQLQuery;
@@ -535,16 +538,93 @@ public class SqlReportEntitiesPersister implements EntityPersister {
   @SuppressWarnings("unchecked")
   private <T extends Report> List<T> listMonthReportsForCriteria(
       long accountId, DateTime startDate, DateTime endDate, Criteria criteria) {
-    criteria.add(Restrictions.isNull("day"));
-    criteria.add(Restrictions.isNotNull("month"));
-    criteria.add(Restrictions.eq("accountId", accountId));
-    criteria.addOrder(Order.asc("month"));
+    criteria.add(Restrictions.isNull(ReportBase.DAY));
+    criteria.add(Restrictions.isNotNull(ReportBase.MONTH));
+    criteria.add(Restrictions.eq(ReportBase.ACCOUNT_ID, accountId));
+    criteria.addOrder(Order.asc(ReportBase.MONTH));
     if (startDate != null) {
-      criteria.add(Restrictions.ge("month", startDate.toDate()));
+      criteria.add(Restrictions.ge(ReportBase.MONTH, startDate.toDate()));
     }
     if (endDate != null) {
-      criteria.add(Restrictions.le("month", endDate.toDate()));
+      criteria.add(Restrictions.le(ReportBase.MONTH, endDate.toDate()));
     }
     return criteria.list();
+  }
+
+  @Override
+  @Transactional
+  public <T extends ReportBase> Map<String, Object> getReportDataAvailableByDate(Class<T> classT, long topAccountId, String dateKey) {
+    Map<String, Object> map = Maps.newHashMap();
+
+    if (!accountExists(topAccountId)) {      
+      map.put("error", "invalid_params");
+      map.put("message", "The requested MCC does not exist in the database.");
+    } else {
+
+      T tMin = getMinByDateKey(classT, topAccountId, dateKey);
+      T tMax = getMaxByDateKey(classT, topAccountId, dateKey);
+
+      if (tMax != null && tMin != null) {
+        map.put("ReportType", classT.getSimpleName());
+
+        if (dateKey.equalsIgnoreCase(ReportBase.MONTH)) {
+          map.put("startMonth", tMin.getMonth());
+          map.put("endMonth", tMax.getMonth());
+        }
+        if (dateKey.equalsIgnoreCase(ReportBase.DAY)) {
+          map.put("startDay", tMin.getDay());
+          map.put("endDay", tMax.getDay());
+        }
+
+      }
+    }
+    return map;
+  }
+
+  @SuppressWarnings("unchecked")
+  @Transactional
+  public <T> T getMinByDateKey(Class<T> classT, long topAccountId, String dateKey) {
+    if (!accountExists(topAccountId)) {      
+      return null;
+    } else {
+      Criteria criteriaMin = this.createCriteria(classT);
+      criteriaMin.add(Restrictions.eq(Report.TOP_ACCOUNT_ID, topAccountId));
+      criteriaMin.add(Restrictions.isNotNull(dateKey));
+      criteriaMin.addOrder(Order.asc(dateKey));
+      criteriaMin.setFirstResult(0);
+      criteriaMin.setMaxResults(1);
+      return (T) criteriaMin.uniqueResult();
+    }
+  }
+
+  @SuppressWarnings("unchecked")
+  @Transactional
+  public <T> T getMaxByDateKey(Class<T> classT, long topAccountId, String dateKey) {
+    if (!accountExists(topAccountId)) {      
+      return null;
+    } else {
+      Criteria criteriaMin = this.createCriteria(classT);
+      criteriaMin.add(Restrictions.eq(Report.TOP_ACCOUNT_ID, topAccountId));
+      criteriaMin.add(Restrictions.isNotNull(dateKey));
+      criteriaMin.addOrder(Order.desc(dateKey));
+      criteriaMin.setFirstResult(0);
+      criteriaMin.setMaxResults(1);
+      return (T) criteriaMin.uniqueResult();
+    }
+  }
+
+  /**
+   * Checks if the account exists in the datastore.  This method does NOT validate an CID against AdWords.
+   * @param topAccountId
+   * @return true if account exists in datastore
+   */
+  private boolean accountExists(long topAccountId) {
+    List<AuthMcc> list = get(AuthMcc.class, AuthMcc.TOP_ACCOUNT_ID, String.valueOf(topAccountId));
+    if(list != null && !list.isEmpty()) {
+      return true;
+    }
+    else {
+      return false;
+    }
   }
 }

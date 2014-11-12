@@ -1,0 +1,57 @@
+
+<div id="account_partial">
+
+  <div class="alert alert-danger" ng-show="load_error" style="margin-top: 30px">
+    <p ng-show="load_error.error != 'no_such_mcc'">
+      Unable to load info for this MCC. Make sure you have added it to your
+      account list and have permissions to work with it ({{ load_error.error }}):
+      {{ load_error.message }}
+    </p>
+    <div ng-show="load_error.error == 'no_such_mcc'">
+      <p> You haven't added this MCC to your list yet.</p>
+      <p>
+        <a href="/oauth/{{mccid}}"><button class="btn btn-primary"> Add the MCC {{ mccid }} to my list</button></a>
+      </p>
+    </div>
+  </div>
+
+
+  <div id="call_to_action" class="block" ng-show="show_choices">
+    <div style="margin-left: 90px">
+      <div class="action">
+        <a ng-href="#/account/{{mccid}}/export">
+          <div class="img-holder"><img src="/media/drive_doc.png" border="0"/></div>
+          <div class="title">Export reports to Google Drive</div>
+        </a>
+      </div>
+      <div class="action">
+        <a ng-href="#/account/{{mccid}}/rawdata">
+          <div class="img-holder"><img src="/media/charts.png" border="0"/></div>
+          <div class="title">View raw performance data</div>
+        </a>
+      </div>
+    </div>
+    <div style="clear: left"></div>
+
+  </div> <!-- #call_to_action -->
+
+</div> <!-- #account_partial -->
+
+
+<div id="home_partial_loading" class="page_loading" ng-show="!load_error && !no_data_yet && !show_choices">
+  <img src="media/loader_throb.gif" border="0"/> Loading MCC Info ...
+</div>
+
+
+<div id="no_account_data" ng-show="no_data_yet">
+    <div id="no_data_yet" class="block" style="text-align: center; margin-top: 30px">
+      <p> This account appears to still be downloding reports. Please wait a few minutes and try again.</p>
+      <p ng-show="mcc_tasks_remaining == -1"><img src="media/transparent_throb.gif" border="0"/> </p>
+      <p ng-show="mcc_tasks_remaining != -1">
+        Tasks remaining to perform: <span style="font-family: Courier">{{ mcc_tasks_remaining }}</span>
+      </p>
+    </div>
+</div>
+
+
+<div style="margin: 20px"></div>

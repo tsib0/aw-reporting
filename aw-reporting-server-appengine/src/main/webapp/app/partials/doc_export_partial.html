@@ -1,0 +1,205 @@
+<div id="account_partial" ng-show="!loading_task_count">
+
+  <div class="alert alert-danger" ng-show="load_error_text" style="margin-top: 30px">
+    <p>{{ load_error_text }}</p>
+    <p ng-show="load_error == 'no_such_mcc'">
+      <a href="/oauth/{{mccid}}"><button class="btn btn-primary"> Add the MCC {{ mccid }} to my list</button></a>
+    </p>
+  </div>
+
+
+  <div ng-show="!load_error_text">
+    <h2> {{ mcc_info.name }} </h2>
+
+    <div id="select_report_type" style="margin-top: 20px">
+      <div ng-show="templates.length" style="float: right; text-align: center; margin-right: 40px">
+        <div style=" font-size: 1300%; color: rgb(92,184,92); margin-top: 50px">
+          <span class="glyphicon glyphicon-list-alt"></span>
+        </div>
+        <p style="font-size: 125%; margin-top: 10px"> Choose the report type you'd like to generate </p>
+
+      </div>
+
+      <input type="text" placeholder="Search for reports ..." ng-model="filter_reports"
+             style="width: 400px; padding: 5px; margin: 5px 0"/>
+
+      <div id="templates" class="list-group" ng-show="templates.length">
+        <div>
+          <a class="list-group-item"
+             ng-repeat="template in matches = (templates | filter: filter_reports)"
+             ng-class="{ 'active': $index == report_selectedIndex, first: $first, last: $index && $last }"
+             ng-click="selectReport($index, template.templateName);">
+            <div style="float: right">
+              <span ng-show="template.isPublic" style="font-size: 100%"
+                    title="Public Shared Template"
+                    class="glyphicon glyphicon-cloud pull-right"></span>
+              <span ng-show="!template.isPublic" style="font-size: 100%"
+                    title="Private Template"
+                    class="glyphicon glyphicon-user pull-right"></span>
+            </div>
+            <h4 class="list-group-item-heading">{{ template.templateName }}</h4>
+            <p style=""> {{ template.templateDescription }} </p>
+          </a>
+        </div>
+      </div>
+      <div id="no_templates" ng-show="templates.length == 0">
+        <div class="bs-callout bs-callout-danger" style="width: 400px">
+          <h4> You haven't created any templates yet </h4>
+          <p> Click <a href="#/template">here</a> to create your first template </p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <section id="pdf-step2">
+    <div id="pdf_step2" ng-show="step >= 2">
+      <h2> Select Dates </h2>
+      <div id="date_selection" class="block">
+
+        <div style="float: left; margin: 20px">
+          <h4> Start Date </h4>
+          <div >
+            <datepicker ng-model="dts" datepicker-mode="'month'" min-mode="month" min-date="min_date" class="well well-sm"></datepicker>
+          </div>
+        </div>
+
+        <div style="float: left; font-size: 1000%; color: #f0ad4e; padding: 40px; padding-top: 70px">
+          <span class="glyphicon glyphicon-calendar"></span>
+        </div>
+
+        <div style="float: left; margin: 20px">
+          <h4> End Date </h4>
+          <div>
+            <datepicker ng-model="dte" datepicker-mode="'month'" min-mode="month" max-date="max_date" class="well well-sm"></datepicker>
+          </div>
+        </div>
+        <div style="clear: left"></div>
+        <div style="text-align: center; font-size: 135%; margin-bottom: 20px" ng-show="dte && dts">
+          Generate Reports from <strong>{{ dts | date: 'yyyy-MM-dd' }}</strong>
+          to <strong>{{ dte | date: 'yyyy-MM-dd' }}</strong>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="pdf-step3">
+    <div id="pdf_step3" ng-show="step >= 3">
+
+      <h2> Select Accounts </h2>
+      <div id="account_list" class="block">
+
+        <div style="text-align: center">
+          <button type="button" class="btn btn-primary" ng-model="select_all"
+                  btn-checkbox btn-checkbox-true="1"
+                  ng-disabled="go_button == 'disable'"
+                  btn-checkbox-false="0">
+            <span ng-class="{ lighter: select_all != 1 }">Use all accounts</span>
+          </button>
+        </div>
+
+        <div  class="animate-show" ng-show="select_all != 1">
+          <div class="alert alert-warning" style="margin-top: 20px"
+               ng-show="selected_accounts.length > 5 && selected_accounts.length != accounts.length">
+            You've selected a lot of individual accounts. This can be a bit slow if you
+            select more than 100 accounts. For large #s of accounts, "Use all accounts" is
+            your best bet.
+          </div>
+          <div>
+            <div style="float: left">
+              <h3 style="font-size: 140%; margin: 10px 0"> Available Accounts</h3>
+              <input type="text" placeholder="Search for accounts ..." ng-model="filter_accounts"
+                     style="width: 330px; padding: 5px; margin: 5px 0"/>
+              <button id="add_accounts" class="btn btn-primary" style="width: 65px;"
+                      ng-click="shiftMatches(account_matches);">
+                Add <span class="glyphicon glyphicon-chevron-right"></span>
+              </button>
+            </div>
+            <div style="float: left; margin-left: 60px">
+              <h3 style="font-size: 140%; margin: 10px 0"> Generate reports for these accounts:</h3>
+              <p style="text-align: center; margin-top: 15px">
+                <button id="reset_selected" class="btn btn-primary" style="width: 200px;"
+                        ng-click="resetMatches();">
+                  Reset
+                </button>
+              </p>
+            </div>
+          </div>
+          <div style="clear: left"></div>
+          <div style="float: left">
+            <div id="accounts" class="list-group" ng-show="accounts.length">
+              <div>
+                <a class="list-group-item" href=""
+                   ng-class="{ 'active': account_selectedIndexes.contains($index) }"
+                   ng-repeat="account in account_matches = (source_accounts | filter: filter_accounts)"
+                   ng-click="selectAccount($index, account.name);">
+                  <h4 class="list-group-item-heading">{{ account.name }} ({{ account._accountId }})</h4>
+                </a>
+              </div>
+            </div>
+            <div id="no_accounts" ng-show="accounts.length == 0">
+              <div class="bs-callout bs-callout-danger" style="width: 400px">
+                <h4> This MCC has no accounts!!! </h4>
+              </div>
+            </div>
+          </div>
+
+          <div style="float: left; margin-left: 60px">
+            <div id="selected_accounts" class="list-group">
+              <div>
+                <a class="list-group-item"
+                   ng-repeat="sacc in selected_accounts"
+                   ng-class="{ 'active': selectedAccount_selectedIndexes.contains($index) }"
+                   ng-click="toggleSelectedAccountSelected($index, sacc.name);">
+                  <h4 class="list-group-item-heading">{{ sacc.name }} ({{ sacc.accountId | formatccid }})</h4>
+                </a>
+              </div>
+            </div>
+          </div>
+          <div style="clear: left"></div>
+        </div>
+      </div>
+
+      <div id="go_button" class="block" style="margin: 20px 0; text-align: center">
+        <progressbar class="progress-striped active" type="warning" value="100" max="100"
+                     style="width: 400px; margin-left: 235px;"
+                     ng-show="go_button == 'hide' && export_tasks_remaining != 0">
+          Tasks remaining: {{ export_tasks_remaining != -1 ? export_tasks_remaining : "initialising" }} 
+        </progressbar>
+        <div ng-show="go_button == 'hide' && export_tasks_remaining == 0" style="margin: 10px 0">
+          <a target="_blank" href="http://drive.google.com">
+            <button type="button" class="btn btn-primary">
+              Take me to Google Drive
+            </button>
+          </a>
+        </div>
+        <p class="light"> Note: Accounts with no data will not be exported. </p>
+        <button type="button" class="btn btn-success" ng-click="go();"
+                ng-show="go_button != 'hide'"
+                ng-disabled="go_button == 'disable' || (!select_all && selected_accounts.length == 0)" style="width: 150px">
+          Go!
+        </button>
+        <a href="#/">
+          <button class="btn btn-success" ng-show="go_button == 'hide'">
+            I'm Bored &mdash; Go back to the to home page
+          </button>
+        </a>                  
+      </div>
+
+
+
+    </div>
+  </section>
+
+  </div> <!-- {{ load_error_text }} -->
+</div> <!-- #account_partial -->
+
+
+<div id="account_partial_loading" class="page_loading" ng-show="loading_task_count">
+  <progressbar class="loading_status" type="success" value="TOTAL_LOADING_TASKS - loading_task_count"
+               max="TOTAL_LOADING_TASKS">
+    Loading {{ TOTAL_LOADING_TASKS - loading_task_count }} of {{ TOTAL_LOADING_TASKS }}
+  </progressbar>
+</div>
+
+
+<div style="margin: 20px"></div>
