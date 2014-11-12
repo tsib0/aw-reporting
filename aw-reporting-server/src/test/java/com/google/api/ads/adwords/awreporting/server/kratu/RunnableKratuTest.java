@@ -37,6 +37,7 @@ import org.mockito.Spy;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.Calendar;
 import java.util.Date;
 
 /**
@@ -56,11 +57,24 @@ public class RunnableKratuTest {
 
   private ImmutableList<Account> accountList;
   
-  private final Date dateStart = DateUtil.parseDateTime("20140101").toDate();
+  private final Calendar dateStart = Calendar.getInstance();
+  private final Calendar dateStartLastMinute = Calendar.getInstance();
+  
   private final Date dateEnd = DateUtil.parseDateTime("20140131").toDate();
 
   @Before
   public void setUp() {
+
+    dateStart.setTime(DateUtil.parseDateTime("20140101").toDate());
+    dateStart.set(Calendar.HOUR_OF_DAY, 0);
+    dateStart.set(Calendar.MINUTE, 0);
+    dateStart.set(Calendar.SECOND, 0);
+
+    dateStartLastMinute.setTime(DateUtil.parseDateTime("20140101").toDate());
+    dateStartLastMinute.set(Calendar.HOUR_OF_DAY, 23);
+    dateStartLastMinute.set(Calendar.MINUTE, 59);
+    dateStartLastMinute.set(Calendar.SECOND, 59);
+
     // creating one list wuth 3 nonMCC accounts
     Account account1 = new Account();
     account1.setId("123");
@@ -70,7 +84,7 @@ public class RunnableKratuTest {
 
     storageHelper = new StorageHelper();
 
-    mockedRunnableKratu = new RunnableKratu(456L, accountList, storageHelper, dateStart, dateEnd);
+    mockedRunnableKratu = new RunnableKratu(456L, accountList, storageHelper, dateStart.getTime(), dateEnd);
 
     MockitoAnnotations.initMocks(this);
 
@@ -90,6 +104,6 @@ public class RunnableKratuTest {
     verify(mockedRunnableKratu, times(1)).run();
 
     verify(mockedEntitiesPersister, times(3)).get(
-        ReportAccount.class, Report.ACCOUNT_ID, 123L, Report.DAY, dateStart, dateStart);    
+        ReportAccount.class, Report.ACCOUNT_ID, 123L, Report.DAY, dateStart.getTime(), dateStartLastMinute.getTime());    
   }
 }
