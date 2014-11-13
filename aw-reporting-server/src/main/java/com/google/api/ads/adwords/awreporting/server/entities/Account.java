@@ -15,8 +15,8 @@
 package com.google.api.ads.adwords.awreporting.server.entities;
 
 import com.google.api.ads.adwords.awreporting.model.persistence.mongodb.MongoEntity;
-import com.google.api.ads.adwords.jaxws.v201406.mcm.Customer;
-import com.google.api.ads.adwords.jaxws.v201406.mcm.ManagedCustomer;
+import com.google.api.ads.adwords.jaxws.v201409.mcm.Customer;
+import com.google.api.ads.adwords.jaxws.v201409.mcm.ManagedCustomer;
 import com.google.common.collect.Lists;
 
 import com.googlecode.objectify.annotation.Index;
@@ -51,9 +51,6 @@ public class Account implements MongoEntity {
   @Column(name = "TOP_ACCOUNT_ID")
   private Long topAccountId;
 
-  @Column(name = "LOGIN")
-  private String login;
-
   @Column(name = "COMPANY_NAME")
   private String companyName;
 
@@ -86,7 +83,6 @@ public class Account implements MongoEntity {
   Account(ManagedCustomer managedCustomer, Long topAccountId) {
     id = String.valueOf(managedCustomer.getCustomerId());
     this.topAccountId = topAccountId;
-    login = managedCustomer.getLogin();
     companyName = managedCustomer.getCompanyName();
     name = managedCustomer.getName();
     currencyCode = managedCustomer.getCurrencyCode();
@@ -103,7 +99,6 @@ public class Account implements MongoEntity {
   Account(Customer customer, Long topAccountId) {
     id = String.valueOf(customer.getCustomerId());
     this.topAccountId = topAccountId;
-    login = "";
     companyName = customer.getCompanyName();
     name = customer.getDescriptiveName();
     currencyCode = customer.getCurrencyCode();
@@ -158,14 +153,6 @@ public class Account implements MongoEntity {
 
   public void setTopAccountId(Long topAccountId) {
     this.topAccountId = topAccountId;
-  }
-
-  public String getLogin() {
-    return login;
-  }
-
-  public void setLogin(String login) {
-    this.login = login;
   }
 
   public String getCompanyName() {
