@@ -138,6 +138,14 @@ public class ReportCampaign extends ReportBase {
   @CsvField(value = "Hour of day", reportField = "HourOfDay")
   private Long hourOfDay;
 
+  @Column(name = "ADVERTISING_CHANNEL_TYPE", length = 32)
+  @CsvField(value = "Advertising Channel", reportField = "AdvertisingChannelType")
+  protected String advertisingChannelType;
+
+  @Column(name = "ADVERTISING_CHANNEL_SUBTYPE", length = 32)
+  @CsvField(value = "Advertising Sub Channel", reportField = "AdvertisingChannelSubType")
+  protected String advertisingChannelSubType;
+
   /**
    * Hibernate needs an empty constructor
    */
@@ -440,5 +448,21 @@ public class ReportCampaign extends ReportBase {
   
   public void setHourOfDay(Long hourOfDay) {
     this.hourOfDay = hourOfDay;
+  }
+  
+  public String getAdvertisingChannelType() {
+    return advertisingChannelType;
+  }
+
+  public void setAdvertisingChannelType(String advertisingChannelType) {
+    this.advertisingChannelType = advertisingChannelType;
+  }
+
+  public String getAdvertisingChannelSubType() {
+    return advertisingChannelSubType;
+  }
+
+  public void setAdvertisingChannelSubType(String advertisingChannelSubType) {
+    this.advertisingChannelSubType = advertisingChannelSubType;
   }
 }

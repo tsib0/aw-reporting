@@ -172,6 +172,8 @@ public class ReportCampaignDefinitionTest extends AbstractReportDefinitionTest<R
         "ContentRankLostImpressionShare",
         "SearchExactMatchImpressionShare",
         "Labels",
+        "AdvertisingChannelType",
+        "AdvertisingChannelSubType",
         // Analytics Fieds        
         "AveragePageviews",
         "AverageTimeOnSite",
