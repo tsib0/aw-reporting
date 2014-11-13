@@ -58,8 +58,8 @@ import com.google.api.ads.adwords.awreporting.processors.onmemory.RunnableProces
 import com.google.api.ads.adwords.awreporting.util.DynamicPropertyPlaceholderConfigurer;
 import com.google.api.ads.adwords.awreporting.util.FileUtil;
 import com.google.api.ads.adwords.lib.client.AdWordsSession;
-import com.google.api.ads.adwords.lib.jaxb.v201406.ReportDefinitionDateRangeType;
-import com.google.api.ads.adwords.lib.jaxb.v201406.ReportDefinitionReportType;
+import com.google.api.ads.adwords.lib.jaxb.v201409.ReportDefinitionDateRangeType;
+import com.google.api.ads.adwords.lib.jaxb.v201409.ReportDefinitionReportType;
 import com.google.api.ads.adwords.lib.utils.ReportDownloadResponseException;
 import com.google.api.ads.adwords.lib.utils.ReportException;
 import com.google.api.ads.common.lib.exception.OAuthException;

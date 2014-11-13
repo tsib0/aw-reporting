@@ -23,7 +23,7 @@ import com.google.api.ads.adwords.awreporting.model.entities.Report;
 import com.google.api.ads.adwords.awreporting.model.persistence.EntityPersister;
 import com.google.api.ads.adwords.awreporting.model.util.CsvParserIterator;
 import com.google.api.ads.adwords.awreporting.model.util.ModifiedCsvToBean;
-import com.google.api.ads.adwords.lib.jaxb.v201406.ReportDefinitionDateRangeType;
+import com.google.api.ads.adwords.lib.jaxb.v201409.ReportDefinitionDateRangeType;
 import com.google.api.ads.adwords.lib.utils.AdHocReportDownloadHelper;
 import com.google.api.ads.adwords.lib.utils.RawReportDownloadResponse;
 import com.google.api.ads.adwords.lib.utils.ReportDownloadResponseException;
@@ -68,7 +68,7 @@ public class TaskProcessorOnMemory<R extends Report> implements DeferredTask {
   private static final long serialVersionUID = 1L;
   private static final Logger LOGGER = Logger.getLogger(TaskProcessorOnMemory.class.getName());
 
-  private static final String VERSION = "v201406";
+  private static final String VERSION = "v201409";
 
   private ReportDefinitionDateRangeType dateRangeType;
   private String dateStart;
