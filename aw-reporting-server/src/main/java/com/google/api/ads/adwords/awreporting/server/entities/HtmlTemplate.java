@@ -15,12 +15,12 @@
 package com.google.api.ads.adwords.awreporting.server.entities;
 
 import com.google.api.ads.adwords.awreporting.model.persistence.mongodb.MongoEntity;
+import com.google.common.base.Charsets;
 
 import com.googlecode.objectify.annotation.Index;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
-import java.nio.charset.StandardCharsets;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -75,6 +75,10 @@ public class HtmlTemplate implements MongoEntity {
     this.isPublic = isPublic;
   }
 
+  public void setId(String id) {
+    this.id = id;
+  }
+
   public String getId() {
     return id;
   }
@@ -108,7 +112,7 @@ public class HtmlTemplate implements MongoEntity {
   }
 
   public InputStream getTemplateHtmlAsInputStream() {
-    return new ByteArrayInputStream(templateHtml.getBytes(StandardCharsets.UTF_8));
+    return new ByteArrayInputStream(templateHtml.getBytes(Charsets.UTF_8));
   }
 
   public void setTemplateHtml(String templateHtml) {
