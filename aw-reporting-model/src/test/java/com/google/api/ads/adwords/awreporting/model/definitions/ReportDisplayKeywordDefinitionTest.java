@@ -15,7 +15,7 @@
 package com.google.api.ads.adwords.awreporting.model.definitions;
 
 import com.google.api.ads.adwords.awreporting.model.entities.ReportDisplayKeyword;
-import com.google.api.ads.adwords.lib.jaxb.v201406.ReportDefinitionReportType;
+import com.google.api.ads.adwords.lib.jaxb.v201409.ReportDefinitionReportType;
 
 import junit.framework.Assert;
 
@@ -166,8 +166,8 @@ public class ReportDisplayKeywordDefinitionTest extends AbstractReportDefinition
         "Id",
         "IsNegative",
         "KeywordText",
-        "MaxCpc",
-        "MaxCpm",
+        "CpcBid",
+        "CpmBid",
         "TargetingSetting",
         "TotalConvValue"
     };
