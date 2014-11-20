@@ -23,6 +23,7 @@ import org.restlet.representation.Representation;
 import org.restlet.resource.ResourceException;
 
 import java.util.List;
+import java.util.UUID;
 
 /**
  * Rest entry point to get, create or update HTML templates.
@@ -112,6 +113,11 @@ public class HtmlTemplateRest extends AbstractBaseResource {
       HtmlTemplate template = new Gson().fromJson(json, HtmlTemplate.class);
       // Set the userId on the template and save it
       template.setUserId(userId);
+      
+      if (template.getId() == null || template.getId().length() == 0) {
+        template.setId(UUID.randomUUID().toString());
+      }
+
       LOGGER.info("Persisting template...");
       HtmlTemplate savedTemplate = RestServer.getPersister().save(template);
 

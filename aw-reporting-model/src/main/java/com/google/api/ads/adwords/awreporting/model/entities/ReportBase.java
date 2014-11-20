@@ -27,7 +27,7 @@ import com.google.api.ads.adwords.awreporting.model.entities.dateranges.TodayDat
 import com.google.api.ads.adwords.awreporting.model.entities.dateranges.YesterdayDateRangeHandler;
 import com.google.api.ads.adwords.awreporting.model.util.BigDecimalUtil;
 import com.google.api.ads.adwords.awreporting.model.util.DateUtil;
-import com.google.api.ads.adwords.lib.jaxb.v201406.ReportDefinitionDateRangeType;
+import com.google.api.ads.adwords.lib.jaxb.v201409.ReportDefinitionDateRangeType;
 import com.google.api.client.util.Maps;
 
 import com.googlecode.objectify.annotation.Index;
