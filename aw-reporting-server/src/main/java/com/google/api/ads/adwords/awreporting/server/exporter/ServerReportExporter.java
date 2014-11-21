@@ -63,7 +63,7 @@ public class ServerReportExporter extends ReportExporter implements Serializable
     }
   }
 
-  public String getReportHtml(Long accountId, Properties properties, Long templateId,
+  public String getReportHtml(Long accountId, Properties properties, String templateId,
       String dateStart, String dateEnd) throws IOException {
 
     String result = null;
@@ -83,7 +83,7 @@ public class ServerReportExporter extends ReportExporter implements Serializable
     return result;
   }
 
-  public byte[] getReportPdf(Long accountId, Properties properties, Long templateId,
+  public byte[] getReportPdf(Long accountId, Properties properties, String templateId,
       String dateStart, String dateEnd) throws IOException, DocumentException {
 
     byte[] result = null;

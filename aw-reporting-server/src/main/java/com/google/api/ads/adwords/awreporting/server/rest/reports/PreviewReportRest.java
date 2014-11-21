@@ -45,7 +45,7 @@ public class PreviewReportRest extends AbstractBaseResource {
 
       Long topAccountId = getParameterAsLong("topAccountId");
       Long accountId = getParameterAsLong("accountId");
-      Long templateId = getParameterAsLong("templateId");
+      String templateId = getParameter("templateId");
       String monthStart = getParameter("monthStart");
       String monthEnd = getParameter("monthEnd");
       String reportType = getParameter("reportType");
