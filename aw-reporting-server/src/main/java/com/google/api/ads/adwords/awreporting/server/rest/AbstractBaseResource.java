@@ -102,7 +102,7 @@ public abstract class AbstractBaseResource extends ServerResource {
   /**
    * Adds the 'Content-Disposition' header which suggests a file name for downloads
    * to browsers. <br>
-   * This should be invoked for any file responses to be downloaded such as PDFs.
+   * This should be invoked for any file responses to be saved such as PDFs.
    * 
    * @param fileName the suggested name of the file to be returned
    * @param forceFileDownload whether or not to foce the browser to download the file and not to try displaying it

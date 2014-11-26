@@ -19,7 +19,6 @@ import com.google.api.ads.adwords.awreporting.server.exporter.ServerReportExport
 import com.google.api.ads.adwords.awreporting.server.rest.AbstractBaseResource;
 import com.google.api.ads.adwords.awreporting.server.rest.RestServer;
 
-import org.apache.commons.io.FilenameUtils;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 import org.restlet.representation.Representation;
