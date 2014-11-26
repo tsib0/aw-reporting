@@ -19,6 +19,7 @@ import com.google.api.ads.adwords.awreporting.server.exporter.ServerReportExport
 import com.google.api.ads.adwords.awreporting.server.rest.AbstractBaseResource;
 import com.google.api.ads.adwords.awreporting.server.rest.RestServer;
 
+import org.apache.commons.io.FilenameUtils;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 import org.restlet.representation.Representation;
@@ -92,6 +93,9 @@ public class PreviewReportRest extends AbstractBaseResource {
           if (reportType != null && reportType.equals("pdf")) {
             // PDF
             byte[] pdfContent = serverReportExporter.getReportPdf(accountId, properties, templateId, dateStart, dateEnd);
+            
+            String reportFileName = "performance-report-" + accountId + "_" + dateStart + "_" + dateEnd + ".pdf";
+            addFileNameHeader(reportFileName, false);
             return createPdfResult(pdfContent);
 
           } else {
