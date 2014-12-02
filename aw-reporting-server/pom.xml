@@ -98,6 +98,12 @@
 	            </goals>
 	            <configuration>
 	              <outputDirectory>${basedir}/target/html</outputDirectory>
+	              <nonFilteredFileExtensions>
+            		<nonFilteredFileExtension>ttf</nonFilteredFileExtension>
+            		<nonFilteredFileExtension>eot</nonFilteredFileExtension>
+            		<nonFilteredFileExtension>woff</nonFilteredFileExtension>
+            		<nonFilteredFileExtension>svg</nonFilteredFileExtension>
+          		  </nonFilteredFileExtensions>
 	              <resources>          
 	                <resource>
 	                  <directory>src/html</directory>
