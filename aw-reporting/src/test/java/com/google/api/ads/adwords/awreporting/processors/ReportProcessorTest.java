@@ -38,6 +38,7 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 
 import org.joda.time.DateTime;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -62,22 +63,23 @@ public class ReportProcessorTest {
 
   @Mock
   private ReportProcessor reportProcessor;
-  
+
   @Mock
   private EntityPersister mockedEntitiesPersister;
 
   @Mock
   private Authenticator authenticator;
-  
+
   private Properties properties;
-  
+
   private ApplicationContext appCtx;
-  
-  private static final Set<Long> accountIds = ImmutableSet.of(1L, 2L, 3L, 4L, 5L, 6L, 7L, 8L, 9L, 10L);
-  
+
+  private static final Set<Long> accountIds =
+      ImmutableSet.of(1L, 2L, 3L, 4L, 5L, 6L, 7L, 8L, 9L, 10L);
+
   private final ReportAccount reportAccount = new ReportAccount();
   private final List<ReportAccount> listAccounts = ImmutableList.of(reportAccount);
-  
+
   private static final String dateStart = "20140101";
   private static final String dateEnd = "20140131";
 
@@ -90,16 +92,19 @@ public class ReportProcessorTest {
     appCtx = new ClassPathXmlApplicationContext("classpath:aw-report-test-beans.xml");
 
     MockitoAnnotations.initMocks(this);
-    doCallRealMethod().when(reportProcessor).setCsvReportEntitiesMapping(
-        any(CsvReportEntitiesMapping.class));
+    doCallRealMethod().when(reportProcessor)
+        .setCsvReportEntitiesMapping(any(CsvReportEntitiesMapping.class));
 
-    doCallRealMethod().when(reportProcessor).setPersister(
-        any(EntityPersister.class));
+    doCallRealMethod().when(reportProcessor).setPersister(any(EntityPersister.class));
 
-    doCallRealMethod().when(reportProcessor).getReportDefinition(
-        any(ReportDefinitionReportType.class), any(ReportDefinitionDateRangeType.class),
-        anyString(), anyString(), any(Properties.class));
-    
+    doCallRealMethod().when(reportProcessor)
+        .getReportDefinition(any(ReportDefinitionReportType.class),
+            any(ReportDefinitionDateRangeType.class),
+            anyString(),
+            anyString(),
+            anyString(),
+            any(Properties.class));
+
     doCallRealMethod().when(reportProcessor).instantiateReportDefinition(
         any(ReportDefinitionReportType.class), any(ReportDefinitionDateRangeType.class),
         any(Selector.class), any(Properties.class));
@@ -117,23 +122,79 @@ public class ReportProcessorTest {
     reportAccount.setAvgCpc(new BigDecimal(12L));
     reportAccount.setAvgCpm(new BigDecimal(4L));
 
-    when(mockedEntitiesPersister.listMonthReports(
-        (Class<ReportAccount>) anyObject(),
-        anyLong(), any(DateTime.class), any(DateTime.class))).thenReturn(listAccounts);
+    when(mockedEntitiesPersister.listMonthReports((Class<ReportAccount>) anyObject(), anyLong(),
+        any(DateTime.class), any(DateTime.class))).thenReturn(listAccounts);
 
     when(reportProcessor.retrieveAccountIds(anyString(), anyString())).thenReturn(accountIds);
   }
 
   @Test
-  public void testGetReportDefinition() throws Exception { 
-    ReportDefinition reportDefinition = reportProcessor.getReportDefinition(
-        ReportDefinitionReportType.ACCOUNT_PERFORMANCE_REPORT,
-        ReportDefinitionDateRangeType.CUSTOM_DATE, dateStart, dateEnd, properties);
+  public void testGetReportDefinition() throws Exception {
+    ReportDefinition reportDefinition =
+        reportProcessor.getReportDefinition(ReportDefinitionReportType.ACCOUNT_PERFORMANCE_REPORT,
+            ReportDefinitionDateRangeType.CUSTOM_DATE,
+            dateStart,
+            dateEnd,
+            ReportDefinitionReportType.ACCOUNT_PERFORMANCE_REPORT.name(),
+            properties);
 
     assertEquals(reportDefinition.getReportName().split(" ")[0],
         ReportProcessor.REPORT_PREFIX + ReportDefinitionReportType.ACCOUNT_PERFORMANCE_REPORT);
     assertEquals(reportDefinition.getDateRangeType(), ReportDefinitionDateRangeType.CUSTOM_DATE);
     assertEquals(reportDefinition.getDownloadFormat(), DownloadFormat.GZIPPED_CSV);
     assertEquals(reportDefinition.isIncludeZeroImpressions(), false);
+  }
+
+  @Test
+  public void testGetReportDefinitionForThreeKeywordReports() {
+
+    String reportDefinitionKey = ReportDefinitionReportType.KEYWORDS_PERFORMANCE_REPORT.name();
+    ReportDefinition reportDefinition =
+        reportProcessor.getReportDefinition(ReportDefinitionReportType.KEYWORDS_PERFORMANCE_REPORT,
+            ReportDefinitionDateRangeType.CUSTOM_DATE,
+            dateStart,
+            dateEnd,
+            reportDefinitionKey,
+            properties);
+
+    Assert.assertNotNull(reportDefinition);
+    assertEquals(reportDefinition.getReportName().split(" ")[0],
+        ReportProcessor.REPORT_PREFIX + ReportDefinitionReportType.KEYWORDS_PERFORMANCE_REPORT);
+    String reportDefinitionValue = properties.getProperty(reportDefinitionKey);
+    Assert.assertTrue(reportDefinitionValue.contains("Date"));
+
+    reportDefinitionKey = ReportDefinitionReportType.KEYWORDS_PERFORMANCE_REPORT.name()
+        + ReportProcessor.REPORT_KEY_SEPARATOR + "MONTH";
+    reportDefinition =
+        reportProcessor.getReportDefinition(ReportDefinitionReportType.KEYWORDS_PERFORMANCE_REPORT,
+            ReportDefinitionDateRangeType.CUSTOM_DATE,
+            dateStart,
+            dateEnd,
+            reportDefinitionKey,
+            properties);
+
+    Assert.assertNotNull(reportDefinition);
+    assertEquals(reportDefinition.getReportName().split(" ")[0],
+        ReportProcessor.REPORT_PREFIX + ReportDefinitionReportType.KEYWORDS_PERFORMANCE_REPORT);
+    reportDefinitionValue = properties.getProperty(reportDefinitionKey);
+    Assert.assertTrue(reportDefinitionValue.contains("Month"));
+    Assert.assertFalse(reportDefinitionValue.contains("Date"));
+
+    reportDefinitionKey = ReportDefinitionReportType.KEYWORDS_PERFORMANCE_REPORT.name()
+        + ReportProcessor.REPORT_KEY_SEPARATOR + "YEAR";
+    reportDefinition =
+        reportProcessor.getReportDefinition(ReportDefinitionReportType.KEYWORDS_PERFORMANCE_REPORT,
+            ReportDefinitionDateRangeType.CUSTOM_DATE,
+            dateStart,
+            dateEnd,
+            reportDefinitionKey,
+            properties);
+
+    Assert.assertNotNull(reportDefinition);
+    assertEquals(reportDefinition.getReportName().split(" ")[0],
+        ReportProcessor.REPORT_PREFIX + ReportDefinitionReportType.KEYWORDS_PERFORMANCE_REPORT);
+    reportDefinitionValue = properties.getProperty(reportDefinitionKey);
+    Assert.assertTrue(reportDefinitionValue.contains("Year"));
+    Assert.assertFalse(reportDefinitionValue.contains("Date"));
   }
 }

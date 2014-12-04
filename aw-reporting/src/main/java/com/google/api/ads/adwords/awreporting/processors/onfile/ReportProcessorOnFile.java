@@ -86,8 +86,7 @@ public class ReportProcessorOnFile extends ReportProcessor {
     }
   }
 
-  private <R extends Report> void processFiles(String userId,
-      String mccAccountId,
+  private <R extends Report> void processFiles(String mccAccountId,
       Class<R> reportBeanClass,
       Collection<File> localFiles,
       ReportDefinitionDateRangeType dateRangeType,
@@ -105,7 +104,7 @@ public class ReportProcessorOnFile extends ReportProcessor {
     for (File file : localFiles) {
       LOGGER.trace(".");
       try {
-        
+
         // We need to create a csvToBean and mappingStrategy for each thread
         ModifiedCsvToBean<R> csvToBean = new ModifiedCsvToBean<R>();
         MappingStrategy<R> mappingStrategy = new AnnotationBasedMappingStrategy<R>(reportBeanClass);
@@ -197,9 +196,9 @@ public class ReportProcessorOnFile extends ReportProcessor {
     } else {
       LOGGER.info("Accounts loaded from file.");
     }
-    
-    AdWordsSessionBuilderSynchronizer sessionBuilder =
-        new AdWordsSessionBuilderSynchronizer(authenticator.authenticate(userId, mccAccountId, false));
+
+    AdWordsSessionBuilderSynchronizer sessionBuilder = new AdWordsSessionBuilderSynchronizer(
+        authenticator.authenticate(userId, mccAccountId, false));
 
     LOGGER.info("*** Generating Reports for " + accountIdsSet.size() + " accounts ***");
 
@@ -208,16 +207,20 @@ public class ReportProcessorOnFile extends ReportProcessor {
     Set<ReportDefinitionReportType> reports = this.csvReportEntitiesMapping.getDefinedReports();
 
     // reports
-    for (ReportDefinitionReportType reportType : reports) {
-      if (properties.containsKey(reportType.name())) {
-        this.downloadAndProcess(userId,
-            mccAccountId,
+    Set<Object> propertiesKeys = properties.keySet();
+    for (Object key : propertiesKeys) {
+
+      String reportDefinitionKey = key.toString();
+      ReportDefinitionReportType reportType = this.extractReportTypeFromKey(reportDefinitionKey);
+      if (reportType != null && reports.contains(reportType)) {
+        this.downloadAndProcess(mccAccountId,
             sessionBuilder,
             reportType,
             dateRangeType,
             dateStart,
             dateEnd,
             accountIdsSet,
+            reportDefinitionKey,
             properties);
       }
     }
@@ -233,7 +236,7 @@ public class ReportProcessorOnFile extends ReportProcessor {
    * Downloads all the files from the API and process all the rows, saving the data to the
    * configured data base.
    *
-   * @param builder the session builder.
+   * @param sessionBuilder the session builder.
    * @param reportType the report type.
    * @param dateRangeType the date range type.
    * @param dateStart the start date.
@@ -241,14 +244,14 @@ public class ReportProcessorOnFile extends ReportProcessor {
    * @param acountIdList the account IDs.
    * @param properties the properties resource.
    */
-  private <R extends Report> void downloadAndProcess(String userId,
-      String mccAccountId,
+  private <R extends Report> void downloadAndProcess(String mccAccountId,
       AdWordsSessionBuilderSynchronizer sessionBuilder,
       ReportDefinitionReportType reportType,
       ReportDefinitionDateRangeType dateRangeType,
       String dateStart,
       String dateEnd,
       Set<Long> acountIdList,
+      String reportDefinitionKey,
       Properties properties) {
 
     // Download Reports to local files and Generate Report objects
@@ -257,11 +260,15 @@ public class ReportProcessorOnFile extends ReportProcessor {
     Collection<File> localFiles = Lists.newArrayList();
     try {
 
-      ReportDefinition reportDefinition =
-          getReportDefinition(reportType, dateRangeType, dateStart, dateEnd, properties);
+      ReportDefinition reportDefinition = getReportDefinition(reportType,
+          dateRangeType,
+          dateStart,
+          dateEnd,
+          reportDefinitionKey,
+          properties);
 
-      localFiles = this.multipleClientReportDownloader.downloadReports(sessionBuilder, reportDefinition,
-          acountIdList);
+      localFiles = this.multipleClientReportDownloader.downloadReports(sessionBuilder,
+          reportDefinition, acountIdList);
 
     } catch (InterruptedException e) {
       LOGGER.error(e.getMessage());
@@ -273,13 +280,7 @@ public class ReportProcessorOnFile extends ReportProcessor {
       return;
     }
 
-    this.processLocalFiles(userId,
-        mccAccountId,
-        reportType,
-        localFiles,
-        dateStart,
-        dateEnd,
-        dateRangeType);
+    this.processLocalFiles(mccAccountId, reportType, localFiles, dateStart, dateEnd, dateRangeType);
 
     this.deleteTemporaryFiles(localFiles, reportType);
   }
@@ -293,8 +294,7 @@ public class ReportProcessorOnFile extends ReportProcessor {
    * @param dateEnd the end date.
    * @param dateRangeType the date range type.
    */
-  private <R extends Report> void processLocalFiles(String userId,
-      String mccAccountId,
+  private <R extends Report> void processLocalFiles(String mccAccountId,
       ReportDefinitionReportType reportType,
       Collection<File> localFiles,
       String dateStart,
@@ -306,13 +306,7 @@ public class ReportProcessorOnFile extends ReportProcessor {
     @SuppressWarnings("unchecked")
     Class<R> reportBeanClass =
         (Class<R>) this.csvReportEntitiesMapping.getReportBeanClass(reportType);
-    this.processFiles(userId,
-        mccAccountId,
-        reportBeanClass,
-        localFiles,
-        dateRangeType,
-        dateStart,
-        dateEnd);
+    this.processFiles(mccAccountId, reportBeanClass, localFiles, dateRangeType, dateStart, dateEnd);
 
     stopwatch.stop();
     LOGGER.info("\n* DB Process finished in " + (stopwatch.elapsed(TimeUnit.MILLISECONDS) / 1000)

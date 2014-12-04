@@ -82,7 +82,7 @@ public class ReportProcessorOnMemoryTest {
   
   private static final int NUMBER_OF_THREADS = 50;
   
-  private static final int CALLS_TO_PERSIST_ENTITIES = 6600;
+  private static final int CALLS_TO_PERSIST_ENTITIES = 14100;
 
   private Properties properties;
 

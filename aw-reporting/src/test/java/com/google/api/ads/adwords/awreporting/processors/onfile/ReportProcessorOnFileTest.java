@@ -76,9 +76,9 @@ public class ReportProcessorOnFileTest {
   
   private static final int NUMBER_OF_THREADS = 50;
   
-  private static final int REPORT_TYPES_SIZE = 13;
+  private static final int REPORT_TYPES_SIZE = 15; // 13 plus 2 repetitions of the KEYWORD report
   
-  private static final int CALLS_TO_PERSIST_ENTITIES = 3000;
+  private static final int CALLS_TO_PERSIST_ENTITIES = 6000;
   
   private static final Set<Long> CIDS = Sets.newHashSet();
   
