@@ -80,7 +80,7 @@
             ng-disabled="selected_account == null || ! valid_date_range">Update</button>
         </div>
       </div>
-    </div>
+    </div> <!-- # settings-side-bar -->
     <div id="raw-data" style="margin:10px;">
       <div id="no_accounts" ng-show="raw_data.length == 0">
         <div class="bs-callout bs-callout-danger" style="width: 400px">
@@ -144,42 +144,41 @@
           </tr>
         </table>
       </div>
+      <div style="clear: left"></div>
     
-    
-    <div class="data-fields-container">
-    
-      <!-- Account fields selectable list -->
-      <div id="account-fields-container" class ="block" ng-show="raw_data.length > 0 && raw_data_type == 'account'">
-        <h3 class="heading">Account data columns</h3>
-      	<div ng-repeat="column in partitionedAccountFieldsList" class="data-field-list-group">
-       	  <p ng-repeat="field in column">
-            <input type="checkbox" ng-model="field.show"> {{field.name}}
-          </p>
-        </div>
-        <br style="clear: left;" />
-      </div>
+      <div class="data-fields-container">
       
-      <!-- Campaign fields selectable list -->
-      <div id="campaign-fields-container" class ="block" ng-show="raw_data.length > 0 && raw_data_type == 'campaign'">
-        <h3 class="heading">Campaign data columns</h3>
-        <div ng-repeat="column in partitionedCampaignFieldsList" class="data-field-list-group">
-          <p ng-repeat="field in column">
-            <input type="checkbox" ng-model="field.show"> {{field.name}}
-          </p>
+        <!-- Account fields selectable list -->
+        <div id="account-fields-container" class ="block" ng-show="raw_data.length > 0 && raw_data_type == 'account'">
+          <h3 class="heading">Account data columns</h3>
+        	<div ng-repeat="column in partitionedAccountFieldsList" class="data-field-list-group">
+         	  <p ng-repeat="field in column">
+              <input type="checkbox" ng-model="field.show"> {{field.name}}
+            </p>
+          </div>
+          <div style="clear: left"></div>
         </div>
-        <br style="clear: left;" />
+        
+        <!-- Campaign fields selectable list -->
+        <div id="campaign-fields-container" class ="block" ng-show="raw_data.length > 0 && raw_data_type == 'campaign'">
+          <h3 class="heading">Campaign data columns</h3>
+          <div ng-repeat="column in partitionedCampaignFieldsList" class="data-field-list-group">
+            <p ng-repeat="field in column">
+              <input type="checkbox" ng-model="field.show"> {{field.name}}
+            </p>
+          </div>
+          <div style="clear: left"></div>
+        </div>
       </div>
     </div>
-  </div>
+  </div> <!-- #raw-data-main-container -->
 </div> <!-- #raw_data_partial -->
-
 
 <div id="raw_data_partial_loading" class="page_loading" ng-show="loading_task_count">
   <progressbar class="loading_status" type="success" value="TOTAL_LOADING_TASKS - loading_task_count"
-               max="TOTAL_LOADING_TASKS">
-    Loading {{ TOTAL_LOADING_TASKS - loading_task_count }} of {{ TOTAL_LOADING_TASKS }}
+  	 max="TOTAL_LOADING_TASKS">
+     Loading {{ TOTAL_LOADING_TASKS - loading_task_count }} of {{ TOTAL_LOADING_TASKS }}
   </progressbar>
 </div>
-
 
 <div style="margin: 20px"></div>
