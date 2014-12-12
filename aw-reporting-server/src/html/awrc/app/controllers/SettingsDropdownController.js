@@ -5,7 +5,6 @@ awrcApp.controller("SettingsDropdownController", function ($scope, $log) {
 	              };
 
 	              $scope.toggled = function(open) {
-	                $log.log('Dropdown is now: ', open);
 	              };
 
 	              $scope.toggleDropdown = function($event) {

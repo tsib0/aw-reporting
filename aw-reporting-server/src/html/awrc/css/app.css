@@ -10,7 +10,6 @@ div#top_bar {
   height: 65px;
 }
 
-
 h2 {
   font-weight: normal;
   font-size: 175%;
@@ -73,7 +72,6 @@ div#top_bar div#settings-container .dropdown-menu > li > a:focus {
   background-color: rgb(66,139,202);
 }
 
-
 input[type=text] {
   padding: 3px;
   border-radius: 4px;
@@ -86,24 +84,18 @@ textarea {
   border: 1px solid #bbb;
 }
 
-
 .pad-top-20 {
   padding-top: 20px;
 }
 
-
 .lighter {
 color: #aaa;
 }
-
-
 div#ng-view {
   width: 1000px;
   margin: auto;
   padding: 0 50px;
 }
-
-
 .show-on-hover {
 display: none;
 }
@@ -182,6 +174,9 @@ div.tabblock {
  * Home Partial
  */
 
+.home-partial {
+ padding-top:10px;
+}
 .home-partial .nav-tabs {
   width: 100%;
   margin-top: 40px;
@@ -373,7 +368,6 @@ div#account_partial div.action div.disabled {
 	opacity: 0.6;
 }
 
-
 div#account_partial div.action img, div#account_partial div.action .glyphicon {
   border: 1px solid #ccc;
   border-radius: 4px;
@@ -431,4 +425,156 @@ margin-bottom: 20px;
 
 div#raw_data_partial div.account_row h4 {
 color: #666;
+}
+
+div#raw_data_partial div#raw-data-main-container {
+  width: 1000px;
+  margin: 0 auto;
+}
+
+div#raw_data_partial div#settings-side-bar, div#raw_data_partial div#raw-data {
+    border: 1px solid white;
+    float: left;
+    min-height: 450px;
+}
+div#raw_data_partial div#raw-data {
+    width: 700px;
+}
+
+/**
+ * Raw data: settings side bar
+ */
+div#raw_data_partial div#settings-side-bar {
+    width: 252px;
+}
+div#raw_data_partial div#settings-panel {
+    width: 100%;
+    min-height: 150px;
+    border-radius: 10px;
+    height: 600px;
+}
+div#raw_data_partial div#settings-panel .section {
+    padding-bottom:5px;
+}
+div#raw_data_partial div#settings-panel #action-button-section {
+  padding-top: 20px;
+  padding-bottom: 20px;
+  text-align: center;
+}
+
+div#raw_data_partial div#table-fields-panel {
+    margin-top: 20px;
+    border-radius: 10px;
+}
+div#raw_data_partial div#settings-side-bar h2{
+  color: #428bca;
+  font-size: 200%;
+}
+
+div#raw_data_partial div#settings-side-bar h3{
+  font-size: 20px;
+  color:black;
+  margin-top:0px;
+}
+
+div#raw_data_partial div#settings-side-bar div#accounts-list-small-section {
+  width: 100%;
+}
+
+div#raw_data_partial div#settings-side-bar div#account-fields-selection {
+  height: 200px;
+  overflow-y: auto; 
+}
+
+
+div#raw_data_partial div#accounts-list-small-section #filter-container {
+  width: 100%;
+  margin: 5px 0px 10px 0px;
+}
+div#raw_data_partial div#accounts-list-small-section #accounts-filter {
+  float:left;
+  padding: 5px;
+  color: black;
+  width: 170px;
+}
+div#raw_data_partial div#accounts-list-small-section #clear-filter-button {
+  font-size: 12px;
+  margin-left: 5px;
+}
+div#raw_data_partial div#accounts-list-small-section div.accounts-list-group {
+  width: 100%;
+  height: 200px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  background-color: white;
+  overflow-y: auto;
+}
+
+div#raw_data_partial div#accounts-list-small-section a.list-group-item {
+  border-radius: 0;
+  border-top: 1px solid #ddd;
+  border-bottom: 1px solid #ddd;
+  border-left: none;
+  border-right: none;
+}
+
+div#raw_data_partial div#accounts-list-small-section .list-group-item-text {
+  font-size: 12px;
+}
+div#raw_data_partial div#accounts-list-small-section a.list-group-item.first {
+  border-radius: 0;
+  border-top: none;
+  border-bottom: 1px solid #ddd;
+  border-left: none;
+  border-right: none;
+}
+div#raw_data_partial div#accounts-list-small-section a.list-group-item.last {
+  border-radius: 0;
+  border-bottom: none;
+  border-top: 1px solid #ddd;
+  border-left: none;
+  border-right: none;
+}
+
+div#raw_data_partial div#accounts-list-small-section a.list-group-item:hover {
+  background-color: rgb(66,139,202);
+  cursor: pointer;
+  color: white;
+}
+
+div#raw_data_partial div#accounts-list-small-section a.list-group-item:hover h4 {
+  color: white;
+}
+
+div#raw_data_partial .cal-button {
+  padding-top: 9px;
+  padding-bottom: 9px;
+}
+
+div#raw_data_partial #invalid_date_alert {
+  padding: 5px;
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+div#raw_data_partial .data-table-container {
+	max-height: 600px;
+	overflow-y: auto;
+	overflow-x: auto;
+}
+
+div#raw_data_partial .data-fields-container .data-field-list-group {
+	float: left;
+	margin-right: 15px;
+	width: 30%;
+}
+
+div#raw_data_partial .data-fields-container {
+	margin-top: 20px;
+}
+
+div#raw_data_partial .data-fields-container h3{
+  font-size: 20px;
+  color:black;
+  margin-top:0px;
 }

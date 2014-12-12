@@ -126,12 +126,8 @@
 
         $scope.selectReport = function (idx, name, template) {
             $scope.report_selectedIndex = idx;
-            console.info("template name: " + template.templateName);
             $scope.report_selected = template;
             $scope.switchStep(3);
-            //var section2 = angular.element(document.getElementById('pdf-step2'));
-            //$document.scrollTo(section2, 0, 700);
-            //$scope.step = 3;
         };
 
         $scope.showGenerateReports = function () {
@@ -160,7 +156,6 @@
 
         $scope.selectAccount = function (index, account) {
             if ($scope.source_accounts[index].name) {
-            	console.info("account selected. Name: " + account.name + ", CID: " + account._accountId);
             	$scope.selected_account = account;
             	$scope.switchStep(2);
             } else {
@@ -214,10 +209,8 @@ console.log(                    _fix_date($scope.dte));
         };
         
         var watch_selected_dates = function() {
-        	console.info("This is watch_selected_dates");
         	if($scope.date_start && $scope.date_end) {
         	  if( ! ($scope.date_start > $scope.date_end) ) {
-        		console.info("Valid dates - move on");
         		$scope.switchStep(4);
         	  }
         	  else {
@@ -229,40 +222,28 @@ console.log(                    _fix_date($scope.dte));
         
         
         $scope.switchStep = function (step) {
-        	console.info("This is switchStep");
         	if(! step)
         		return;
         	switch(step) {
         	case 1:
-        		console.info("switching to step 1");
         		var section = angular.element(document.getElementById('pdf_export_step1'));
         		$document.scrollTo(section, 0, 700);
         		$scope.step = 1;
-        		console.info("switched to step 1");
         		break;
         	case 2:
-        		console.info("switching to step 2");
         		$scope.step = 2;
         		var section = angular.element(document.getElementById('pdf_export_step2'));
         		$document.scrollTo(section, 0, 700);
-        		//$document.scrollTo(section, document.getElementById('pdf_export_step2').offsetHeight + 100, 700);
-        		console.info("switched to step 2");
         		break;
         	case 3:
-        		console.info("switching to step 3");
         		$scope.step = 3;
         		var section = angular.element(document.getElementById('pdf_export_step3'));
         		$document.scrollTo(section, 0, 700);
-        		//$document.scrollTo(section, document.getElementById('pdf_export_step3').offsetHeight + 100, 700);
-        		console.info("switched to step 3");
         		break;
         	case 4:
-        		console.info("switching to step 4");
         		$scope.step = 3;
         		var section = angular.element(document.getElementById('pdf_export_step4'));
         		$document.scrollTo(section, 0, 700);
-        		//$document.scrollTo(section, document.getElementById('pdf_export_step4').offsetHeight + 100, 700);
-        		console.info("switched to step 4");
         		break;
         	default:
         		return;
@@ -271,8 +252,7 @@ console.log(                    _fix_date($scope.dte));
         $scope.resetDatePickers = function() {
         	$scope.date_start = null;
             $scope.date_end = null;
-        	console.info("datepickers reset");
-        }
+        };
     }
 
     awrcApp.controller("DocExportController", DocExportController);
@@ -285,8 +265,6 @@ console.log(                    _fix_date($scope.dte));
 
         var m = dt.getMonth() + 1;
         if (m < 10) m = "0" + m;
-//        var day = dt.getDate();
-//        if (day < 10) day = "0" + day;
 
         return dt.getFullYear() + m /* + day */;
     }

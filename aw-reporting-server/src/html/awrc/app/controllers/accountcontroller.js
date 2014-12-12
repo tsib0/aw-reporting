@@ -104,11 +104,9 @@
         };
         
         $scope.scroll_to_date_selection = function () {
-        	console.info("this is date selection");
         	//$scope.show_date_picker = true;
         	var date_section = angular.element(document.getElementById('date_section'));
     		$document.scrollTo(date_section, 0, 700);
-    		console.info("done scrolling");
         }
     }
 

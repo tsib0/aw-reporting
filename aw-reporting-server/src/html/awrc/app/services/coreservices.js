@@ -290,6 +290,9 @@
             }
             if (!ccids) {
                 var url = "/mcc/" + mccid + "/report" + report_type;
+                if(date_start != null && date_end != null) {
+              	  url += "?dateStart=" + date_start + "&dateEnd=" + date_end;
+              	}
                 $http.get(url)
                     .success(function (data, status, headers, conf) {
                         callback(null, data);
@@ -304,10 +307,14 @@
                 async.eachSeries(
                     ccids,
                     function (item, cb) {
-                        var url = "/mcc/" + mccid + "/account/" + item + "/report" + report_type;
+                    	var url = "/mcc/" + mccid + "/report" + report_type + "/" + item;
+                    	if(date_start != null && date_end != null) {
+                    	  url += "?dateStart=" + date_start + "&dateEnd=" + date_end;
+                    	}
                         $http.get(url)
                             .success(function (data, status, headers, conf) {
-                                cb(null);
+//                                cb(null);
+                            	callback(null, data);
                             })
                             .error(function (data, status, headers, conf) {
                                 cb({ error: "error_loading_report", message: "Can't get account report", data: data });
