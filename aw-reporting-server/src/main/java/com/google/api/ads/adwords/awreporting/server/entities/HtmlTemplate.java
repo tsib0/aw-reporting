@@ -25,10 +25,7 @@ import java.io.InputStream;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
-<<<<<<< HEAD
 import javax.persistence.Lob;
-=======
->>>>>>> 2f2a7486c98ac121ad93d5d5bb44c6f875fcbc1a
 import javax.persistence.Table;
 
 /**
@@ -61,12 +58,8 @@ public class HtmlTemplate implements MongoEntity {
   @Column(name = "TEMPLATE_DESCRIPTION")
   protected String templateDescription;
 
-<<<<<<< HEAD
   @Lob
   @Column(name = "TEMPLATE_HTML", length = 100000)
-=======
-  @Column(name = "TEMPLATE_HTML")
->>>>>>> 2f2a7486c98ac121ad93d5d5bb44c6f875fcbc1a
   protected String templateHtml;
 
   @Index

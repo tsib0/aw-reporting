@@ -38,10 +38,7 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 
 import org.joda.time.DateTime;
-<<<<<<< HEAD
-=======
 import org.junit.Assert;
->>>>>>> 2f2a7486c98ac121ad93d5d5bb44c6f875fcbc1a
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -66,28 +63,12 @@ public class ReportProcessorTest {
 
   @Mock
   private ReportProcessor reportProcessor;
-<<<<<<< HEAD
-  
-=======
 
->>>>>>> 2f2a7486c98ac121ad93d5d5bb44c6f875fcbc1a
   @Mock
   private EntityPersister mockedEntitiesPersister;
 
   @Mock
   private Authenticator authenticator;
-<<<<<<< HEAD
-  
-  private Properties properties;
-  
-  private ApplicationContext appCtx;
-  
-  private static final Set<Long> accountIds = ImmutableSet.of(1L, 2L, 3L, 4L, 5L, 6L, 7L, 8L, 9L, 10L);
-  
-  private final ReportAccount reportAccount = new ReportAccount();
-  private final List<ReportAccount> listAccounts = ImmutableList.of(reportAccount);
-  
-=======
 
   private Properties properties;
 
@@ -99,7 +80,6 @@ public class ReportProcessorTest {
   private final ReportAccount reportAccount = new ReportAccount();
   private final List<ReportAccount> listAccounts = ImmutableList.of(reportAccount);
 
->>>>>>> 2f2a7486c98ac121ad93d5d5bb44c6f875fcbc1a
   private static final String dateStart = "20140101";
   private static final String dateEnd = "20140131";
 
@@ -112,18 +92,6 @@ public class ReportProcessorTest {
     appCtx = new ClassPathXmlApplicationContext("classpath:aw-report-test-beans.xml");
 
     MockitoAnnotations.initMocks(this);
-<<<<<<< HEAD
-    doCallRealMethod().when(reportProcessor).setCsvReportEntitiesMapping(
-        any(CsvReportEntitiesMapping.class));
-
-    doCallRealMethod().when(reportProcessor).setPersister(
-        any(EntityPersister.class));
-
-    doCallRealMethod().when(reportProcessor).getReportDefinition(
-        any(ReportDefinitionReportType.class), any(ReportDefinitionDateRangeType.class),
-        anyString(), anyString(), any(Properties.class));
-    
-=======
     doCallRealMethod().when(reportProcessor)
         .setCsvReportEntitiesMapping(any(CsvReportEntitiesMapping.class));
 
@@ -137,7 +105,6 @@ public class ReportProcessorTest {
             anyString(),
             any(Properties.class));
 
->>>>>>> 2f2a7486c98ac121ad93d5d5bb44c6f875fcbc1a
     doCallRealMethod().when(reportProcessor).instantiateReportDefinition(
         any(ReportDefinitionReportType.class), any(ReportDefinitionDateRangeType.class),
         any(Selector.class), any(Properties.class));
@@ -155,25 +122,13 @@ public class ReportProcessorTest {
     reportAccount.setAvgCpc(new BigDecimal(12L));
     reportAccount.setAvgCpm(new BigDecimal(4L));
 
-<<<<<<< HEAD
-    when(mockedEntitiesPersister.listMonthReports(
-        (Class<ReportAccount>) anyObject(),
-        anyLong(), any(DateTime.class), any(DateTime.class))).thenReturn(listAccounts);
-=======
     when(mockedEntitiesPersister.listMonthReports((Class<ReportAccount>) anyObject(), anyLong(),
         any(DateTime.class), any(DateTime.class))).thenReturn(listAccounts);
->>>>>>> 2f2a7486c98ac121ad93d5d5bb44c6f875fcbc1a
 
     when(reportProcessor.retrieveAccountIds(anyString(), anyString())).thenReturn(accountIds);
   }
 
   @Test
-<<<<<<< HEAD
-  public void testGetReportDefinition() throws Exception { 
-    ReportDefinition reportDefinition = reportProcessor.getReportDefinition(
-        ReportDefinitionReportType.ACCOUNT_PERFORMANCE_REPORT,
-        ReportDefinitionDateRangeType.CUSTOM_DATE, dateStart, dateEnd, properties);
-=======
   public void testGetReportDefinition() throws Exception {
     ReportDefinition reportDefinition =
         reportProcessor.getReportDefinition(ReportDefinitionReportType.ACCOUNT_PERFORMANCE_REPORT,
@@ -182,7 +137,6 @@ public class ReportProcessorTest {
             dateEnd,
             ReportDefinitionReportType.ACCOUNT_PERFORMANCE_REPORT.name(),
             properties);
->>>>>>> 2f2a7486c98ac121ad93d5d5bb44c6f875fcbc1a
 
     assertEquals(reportDefinition.getReportName().split(" ")[0],
         ReportProcessor.REPORT_PREFIX + ReportDefinitionReportType.ACCOUNT_PERFORMANCE_REPORT);
@@ -190,8 +144,6 @@ public class ReportProcessorTest {
     assertEquals(reportDefinition.getDownloadFormat(), DownloadFormat.GZIPPED_CSV);
     assertEquals(reportDefinition.isIncludeZeroImpressions(), false);
   }
-<<<<<<< HEAD
-=======
 
   @Test
   public void testGetReportDefinitionForThreeKeywordReports() {
@@ -245,5 +197,4 @@ public class ReportProcessorTest {
     Assert.assertTrue(reportDefinitionValue.contains("Year"));
     Assert.assertFalse(reportDefinitionValue.contains("Date"));
   }
->>>>>>> 2f2a7486c98ac121ad93d5d5bb44c6f875fcbc1a
 }
