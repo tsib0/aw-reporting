@@ -184,7 +184,6 @@ Next import the database code:
 
 
 ## Details about the code
-<<<<<<< HEAD
 
 For better organization and encapsulation, the project groups the reporting workflow into two parts:
 **Aw-Report-Model** for the logic (API services, downloader and processors) and **Aw-Reporting** for persistence, entities and the CSV mapping to AdWords information.
@@ -272,7 +271,6 @@ PDF generation works monthly and also needs the use of a HTML template like ACCO
 
 First run the the date range without the -generatePdf to download the data needed to generate them.
 
->>>>>>> 2f2a7486c98ac121ad93d5d5bb44c6f875fcbc1a
 Here's an example properties file for PDF generation:
 
 > aw-report-sample-for-pdf.properties
