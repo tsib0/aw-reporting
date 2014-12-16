@@ -1,9 +1,9 @@
 (function () {
 
-    function StaticContentController ($scope) {
+	function StaticContentController ($scope) {
 
-    }
+	}
 
-    awrcApp.controller("StaticContentController", StaticContentController);
+	awrcApp.controller("StaticContentController", StaticContentController);
 
 })();

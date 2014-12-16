@@ -103,30 +103,7 @@
 
 
         this.getTemplates = function (callback) {
-/*
-            $http.get("/template")
-                .success(function (data, status, headers, conf) {
-                    if (!data) return callback(null, []);
-                    else return callback(null, data);
-                })
-                .error(function (data, status, headers, conf) {
-                    console.error("oops, got an error back from the server fetching accounts");
-                    return callback(err);
-                });
-
-*/
             async.parallel({
-            	/*
-                privatetmpls: function (cb) {
-                    $http.get("/template")
-                        .success(function (data, status, headers, conf) {
-                            cb(null, data);
-                        })
-                        .error(function (data, status, headers, conf) {
-                            console.error("oops, got an error back from the server fetching accounts");
-                            cb(err);
-                        });
-                },*/
                 publictmpls: function (cb) {
                     $http.get("/template?public=true")
                         .success(function (data, status, headers, conf) {
@@ -145,12 +122,6 @@
             });
         };
 
-        //
-        // Option 1:
-        //      exportPDFReports(mccid, start date, end date, templateId, callback);
-        // Option 2:
-        //      exportPDFReports(mccid, start date, end date, [array of ccids], templateId, callback);
-        //
         this.exportPDFReports = function () {
             var mccid, templateId, ccids, callback;
             if (arguments.length == 5) {
@@ -182,7 +153,6 @@
                         callback(data);
                     });
             } else {
-                // gotta do this one at a time.
                 async.eachSeries(
                     ccids,
                     function (item, cb) {
@@ -195,7 +165,6 @@
                                 cb(null);
                             })
                             .error(function () {
-                                // *shrug*. don't really care.
                                 cb(null);
                             });
                     }

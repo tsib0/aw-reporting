@@ -1,6 +1,7 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <html ng-app="awrcApp">
 <head>
-  <title>AwReporting</title>
+  <title>AdWords Reporting Console</title>
 
   <link href="css/bootstrap.css" rel="stylesheet" type="text/css" />
   <link href="css/app.css" rel="stylesheet" type="text/css" />
@@ -22,14 +23,15 @@
   <script type="text/javascript" src="app/controllers/homeaccountslistcontroller.js"></script>
   <script type="text/javascript" src="app/controllers/accountcontroller.js"></script>
   <script type="text/javascript" src="app/controllers/docexportcontroller.js"></script> 
-  <!-- <script type="text/javascript" src="app/controllers/rawdatacontroller.js"></script> -->
-  <script type="text/javascript" src="app/controllers/rawdatacontroller2.js"></script>
+  <script type="text/javascript" src="app/controllers/rawdatacontroller.js"></script>
   <script type="text/javascript" src="app/controllers/templatecontroller.js"></script>
   <script type="text/javascript" src="app/controllers/staticcontentcontroller.js"></script>
+  <script type="text/javascript" src="app/controllers/onboardingcontroller.js"></script>
+  <script type="text/javascript" src="app/controllers/nvsptecontroller.js"></script>
   <script type="text/javascript" src="app/controllers/errorcontroller.js"></script>
   <script type="text/javascript" src="app/controllers/healthcheckcontroller.js"></script>
   <script type="text/javascript" src="app/controllers/hometemplatescontroller.js"></script>
-  <script type="text/javascript" src="app/controllers/SettingsDropdownController.js"></script>
+  <script type="text/javascript" src="app/controllers/settingsdropdowncontroller.js"></script>
 
   <!-- services, factories, configs -->
   <script type="text/javascript" src="app/services/coreservices.js"></script>
@@ -44,7 +46,7 @@
   <div id="top_bar">
     <a href="index.html#/"><div style="color: #225" class="glyphicon glyphicon-th"></div></a>
     <div id="title"> AdWords Reporting Console </div>
-    <div id="settings-container" style="float:right;" ng-controller="SettingsDropdownController">
+    <div id="settings-container" style="float:right;" ng-controller="settingsdropdowncontroller">
     	<!-- <a href=""><div class="glyphicon glyphicon-cog"></div></a> -->
       <div class="btn-group" dropdown is-open="status.isopen">
         <button type="button" class="btn btn-primary dropdown-toggle" dropdown-toggle ng-disabled="disabled" ng-click="toggleDropdown($event)">

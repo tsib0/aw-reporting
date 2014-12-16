@@ -1,301 +1,358 @@
-/*
-accountId: 1834866136
-avgCpc: 0.15
-avgCpm: 0.83
-clicks: 784
-conversions: 0
-conversionsManyPerClick: 0
-cost: 121.38
-ctr: 0.53
-impressions: 146558
-*/
-
 (function () {
+	function RawDataController ($scope, $location, $routeParams, $timeout, $filter, coreProvider, ngTableParams) {
 
-    var month_names = [ "January", "February", "March", "April", "May", "June",
-                        "July", "August", "September", "October", "November", "December" ];
+		$scope.mccid = $routeParams.mccid;
 
-    function RawDataController ($scope, $location, $routeParams, $timeout, coreProvider) {
+		// make sure we've verified we have data ready to go.
+		if (!coreProvider.get_value_for_key("verified_loaded_" + $scope.mccid)) {
+			$location.path("/account/" + $scope.mccid);
+			return;
+		}
 
-        $scope.mccid = $routeParams.mccid;
+		$scope.TOTAL_LOADING_TASKS = 3;
+		$scope.loading_task_count = 3;
+		$scope.load_error_text = '';
+		$scope.mcc_info = null;
 
-        // make sure we've verified we have data ready to go.
-        if (!coreProvider.get_value_for_key("verified_loaded_" + $scope.mccid)) {
-            $location.path("/account/" + $scope.mccid);
-            return;
-        }
+		$scope.accounts = [];
+		$scope.source_accounts = [];
 
-        $scope.TOTAL_LOADING_TASKS = 4;
-        $scope.loading_task_count = 4;
-        $scope.load_error_text = '';
-        $scope.client_accounts = [];
-        $scope.mcc_info = null;
+		$scope.report_selectedIndex = -1;
+		$scope.account_selectedIndexes = [];
+		$scope.selectedAccount_selectedIndexes = [];
 
-        $scope.accounts = [];
-        $scope.source_accounts = [];
-        $scope.selected_accounts = [];
+		$scope.dataType = "account";
 
-        $scope.report_selectedIndex = -1;
-        $scope.account_selectedIndexes = [];
-        $scope.selectedAccount_selectedIndexes = [];
+		$scope.selected_account = null;
+		$scope.valid_date_range = false;
+		$scope.formDisabed = false;
 
-        $scope.processed_reports = null;
-        $scope.charts = null;
+		$scope.raw_data = [];
+		$scope.raw_data_type = "account";
 
-        var emsg = "Unable to load account info";
+		$scope.account_fields_show = [
+		                              { name: 'day', show: true },
+		                              { name: 'cost', show: true },
+		                              { name: 'clicks', show: true },
+		                              { name: 'impressions', show: true },
+		                              { name: 'ctr', show: true },
+		                              { name: 'avgCpm', show: true },
+		                              { name: 'avgCpc', show: true },
+		                              { name: 'avgPosition', show: false },
+		                              { name: 'conversions', show: false },
+		                              { name: 'searchImpressionShare', show: false },
+		                              { name: 'searchLostISBudget', show: false },
+		                              { name: 'searchLostISRank', show: false },
+		                              { name: 'contentImpressionShare', show: false },
+		                              { name: 'contentLostISBudget', show: false },
+		                              { name: 'contentLostISRank', show: false },
+		                              { name: 'currencyCode', show: false },
+		                              { name: 'adNetwork', show: false },
+		                              { name: 'conversionsManyPerClick', show: false },
+		                              { name: 'viewThroughConversions', show: false },
+		                              { name: 'timestamp', show: false },
+		                              { name: 'dateStart', show: false },
+		                              { name: 'dateEnd', show: false }
+		                              ];
 
-        async.waterfall([
-            function (cb) {
-                // 1. get the core mcc info
-                coreProvider.getMccById($scope.mccid, cb);
-            },
-            function (mcc, cb) {
-                $scope.mcc_info = mcc;
-                if (!$scope.mcc_info.name)
-                    $scope.mcc_info.name = format_ccid($scope.mcc_info.topAccountId) + " (Unknown Name)";
+		$scope.campaign_fields_show = [
+		                               { name: 'campaignId', show: true },
+		                               { name: 'campaignName', show: true },
+		                               { name: 'status', show: false },
+		                               { name: 'budget', show: true },
+		                               { name: 'accountDescriptiveName', show: false },
+		                               { name: 'currencyCode', show: false },
+		                               { name: 'day', show: false },
+		                               { name: 'cost', show: true },
+		                               { name: 'clicks', show: true },
+		                               { name: 'impressions', show: true },
+		                               { name: 'ctr', show: false },
+		                               { name: 'avgCpm', show: false },
+		                               { name: 'avgCpc', show: false },
+		                               { name: 'avgPosition', show: false },
+		                               { name: 'conversionsManyPerClick', show: false },
+		                               { name: 'conversions', show: false },
+		                               { name: 'viewThroughConversions', show: false },
+		                               { name: 'dateStart', show: false },
+		                               { name: 'dateEnd', show: false }
+		                               ];
 
-                // 2. see if it has any reports downloaded, if not, abort.
-                $scope.loading_task_count--;
-                emsg = "Unable to load accounts for this MCC";
-                coreProvider.getAccountsForMcc($scope.mccid, true, cb);
-            },
-            function (accounts, cb) {
-                // make them more searchable!
-                if (Array.isArray(accounts)) {
-                    for (var i = 0; i < accounts.length; i++) {
-                        accounts[i]._accountId = format_ccid(accounts[i].topAccountId);
-                    }
-                }
+		var emsg = "Unable to load account info";
 
-                $scope.total_number_items = accounts.length;
-                $scope.max_visible_pages = 10;
-                $scope.current_page = 0;
-                $scope.loading_task_count--;
-                $scope.accounts = accounts;
-                $scope.source_accounts = JSON.parse(JSON.stringify(accounts));
+		async.waterfall([
+		                 function (cb) {
+		                	 // 1. Get MCC info
+		                	 coreProvider.getMccById($scope.mccid, cb);
+		                 },
+		                 function (mcc, cb) {
+		                	 $scope.mcc_info = mcc;
+		                	 if (!$scope.mcc_info.name)
+		                		 $scope.mcc_info.name = format_ccid($scope.mcc_info.topAccountId) + " (Unknown Name)";
 
-                // dates don't work currently with this API :(
-                coreProvider.getReportXYZ(
-                    "account",
-                    $scope.mccid,
-                    "2014-01-01",
-                    "2014-06-01",
-                    cb
-                );
-            },
-            function (reports, cb) {
-                $scope.loading_task_count--;
-                $scope.processed_reports = __process(reports);
-                cb(null);
-            }
-        ], function (err, reports) {
-            if (err) {
-                $scope.loading_task_count = 0;
-                $scope.load_error = err.error;
-                $scope.load_error_text = emsg + "(" + err.error + "): " + err.message + ")";
-            } else {
-                $scope.loading_task_count = 0;
-                $timeout(function () {
-                    $scope.current_page = 1;
-                    $scope.pageChanged();
-//                    $scope.setPage(1);
-                }, 100);
-            }
-        });
+		                	 $scope.loading_task_count--;
 
-        $scope.setPage = function (page) {
-            $scope.charts = $scope.processed_reports.slice(0, 10);
-        }
+		                	 // 2. Get available report date range
+		                	 emsg = "Unable to load accounts for this MCC";
+		                	 coreProvider.dataAvailableForMcc($scope.mccid, 'day', cb);
+		                 },
 
+		                 function (available_data, cb) {
+		                	 if (available_data && available_data.reports_available
+		                			 && Array.isArray(available_data.reports_available)) {
+		                		 for (var i = 0; i < available_data.reports_available.length; i++) {
+		                			 var rad = available_data.reports_available[i];
+		                			 if (rad.ReportType == "ReportAccount") {
+		                				 $scope.reports_account_min_date = new Date(rad.startDay);
+		                				 $scope.reports_account_max_date = new Date(rad.endDay);
+		                			 } else if (rad.ReportType == "ReportCampaign") {
+		                				 $scope.reports_campaign_min_date = new Date(rad.startDay);
+		                				 $scope.reports_campaign_max_date = new Date(rad.endDay);
+		                			 }
+		                		 }
+		                	 }
 
-        $scope.pageChanged = function () {
-            var pg = $scope.current_page;
-            var start = (pg - 1) * 10
-            $scope.charts = $scope.processed_reports.slice(start, start + 10); 
+		                	 $scope.loading_task_count--;
+		                	 // 3. see if it has any reports downloaded, if not, abort.
+		                	 emsg = "Unable to load accounts for this MCC";
+		                	 coreProvider.getAccountsForMcc($scope.mccid, true, cb);
+		                 },
+		                 function (accounts, cb) {
+		                	 // make them more searchable!
+		                	 if (Array.isArray(accounts)) {
+		                		 for (var i = 0; i < accounts.length; i++) {
+		                			 accounts[i]._accountId = format_ccid(accounts[i].id);
+		                		 }
+		                	 }
 
+		                	 $scope.total_number_items = accounts.length;
+		                	 $scope.max_visible_pages = 10;
+		                	 $scope.current_page = 0;
+		                	 $scope.loading_task_count--;
+		                	 $scope.accounts = accounts;
+		                	 $scope.source_accounts = JSON.parse(JSON.stringify(accounts));
 
-            /**
-             * this is pretty UN-angular -- this should probably go in a 
-             * directive somewhere. CLEAN ME UP YA LAZY ARSE!
-             */
+		                	 cb(null);
+		                 },
+		                 ], function (err, reports) {
+			if (err) {
+				$scope.loading_task_count = 0;
+				$scope.load_error = err.error;
+				$scope.load_error_text = emsg + "(" + err.error + "): " + err.message + ")";
+			} else {
+				$scope.loading_task_count = 0;
+				$timeout(function () {
+					$scope.current_page = 1;
+				}, 100);
 
-            /**
-             * I'm not 100% positive this is necessary, but I instinctively
-             * feel it is because I suspect need to let the elements settle
-             * down from the ng-repeat before we start dumping crap into
-             * them.
-             */
-            $timeout(function () {
-                for (var i = 0; i < $scope.charts.length; i++) {
-                    var c = $scope.charts[i];
-                    var el, ctx;
+				// Watch filter fields for changes
+				$scope.$watch("dataType", watch_data_type);
+				$scope.$watch("date_start", watch_date_range);
+				$scope.$watch("date_end", watch_date_range);
+			}
+		});
 
-                    el = document.getElementById("chart1_" + c.chart_data.accountid);
-                    ctx = el.getContext("2d");
-                    var data1 = {
-	                labels : ["","","","",""],
-	                datasets : [
-		            {
-			        fillColor : "rgba(220,220,220,0.5)",
-			        strokeColor : "rgba(220,220,220,1)",
-			        pointColor : "rgba(220,220,220,1)",
-			        pointStrokeColor : "#fff",
-			        data : c.chart_data.impressions
-		            },
-	                ]
-                    };
-                    new Chart(ctx).Line(data1, {scaleShowLabels: false});
-                    el = document.getElementById("chart2_" + c.chart_data.accountid);
-                    ctx = el.getContext("2d");
-                    var data2 = {
-	                labels : ["","","","",""],
-	                datasets : [
-		            {
-			        fillColor : "rgba(220,220,220,0.5)",
-			        strokeColor : "rgba(220,220,220,1)",
-			        pointColor : "rgba(220,220,220,1)",
-			        pointStrokeColor : "#fff",
-			        data : c.chart_data.clicks
-		            },
-	                ]
-                    };
-                    new Chart(ctx).Line(data2, {scaleShowLabels: false});
-
-                    el = document.getElementById("chart3_" + c.chart_data.accountid);
-                    ctx = el.getContext("2d");
-                    var data3 = {
-	                labels : ["","","","",""],
-	                datasets : [
-		            {
-			        fillColor : "rgba(220,220,220,0.5)",
-			        strokeColor : "rgba(220,220,220,1)",
-			        pointColor : "rgba(220,220,220,1)",
-			        pointStrokeColor : "#fff",
-			        data : c.chart_data.ctr
-		            },
-		            {
-			        fillColor : "rgba(151,187,205,0.5)",
-			        strokeColor : "rgba(151,187,205,1)",
-			        pointColor : "rgba(151,187,205,1)",
-			        pointStrokeColor : "#fff",
-			        data : c.chart_data.avgCpc
-		            }
-	                ]
-                    };
-                    new Chart(ctx).Line(data3, {scaleShowLabels: false});
-
-                    el = document.getElementById("chart4_" + c.chart_data.accountid);
-                    ctx = el.getContext("2d");
-                    var data4 = {
-	                labels : ["","","","",""],
-	                datasets : [
-		            {
-			        fillColor : "rgba(220,220,220,0.5)",
-			        strokeColor : "rgba(220,220,220,1)",
-			        pointColor : "rgba(220,220,220,1)",
-			        pointStrokeColor : "#fff",
-			        data : c.chart_data.cost
-		            },
-	                ]
-                    };
-                    new Chart(ctx).Line(data4, {scaleShowLabels: false});
-                }
-            }, 500);
-        }
-
-    }
-
- 
-    awrcApp.controller("RawDataController", RawDataController);
+		$scope.setPage = function (page) {
+			$scope.charts = $scope.processed_reports.slice(0, 10);
+		};
 
 
+		/*
+		 * Account selection
+		 */
+		$scope.selectAccount = function (index, account) {
+			if ($scope.source_accounts[index].name) {
+				$scope.selected_account = account;
+				$scope.filter_accounts = account.name;
+			} else {
+				$scope.filter_accounts = $scope.source_accounts[index]._accountId;
+			}
+		};
 
-    /**
-     * Processing is in two parts,
-     *
-     * 1. sort and set up data arrays for the reports.
-     * 2. set up the data that chartjs will need.
-     */
-    function __process(reports) {
+		$scope.isSelectedAccount = function (account) {
+			if($scope.selected_account != null && $scope.selected_account.id == account.id) {
+				return true;
+			} else {
+				return false;
+			}
+		};
 
-        var new_reports = _extract_and_sort_data(reports);
-        return _generate_chart_data(new_reports);
-    }
+		$scope.resetAccountFilter = function() {
+			$scope.selected_account = null;
+			$scope.filter_accounts = "";
+		};
 
-    function _extract_and_sort_data(reports) {
-        var out = {};
-        for (var i = 0; i < reports.length; i++) {
-            reports[i].accountId = format_ccid(reports[i].accountId);
-            if (!out["" + reports[i].accountId])
-                out["" + reports[i].accountId] = [];
-            out["" + reports[i].accountId].push(reports[i]);
-        }
+		/*
+		 * Date selection
+		 */
+		 $scope.start_cal_open = function($event) {
+			 $event.preventDefault();
+			 $event.stopPropagation();
+			 $scope.start_cal_opened = true;
+		 };
 
-        var k = Object.keys(out);
-        for (var j = 0; j < k.length; j++) {
-            out[k[j]].sort(function (a, b) { return a.dateStart > b.dateStart; });
-        }
+		 $scope.end_cal_open = function($event) {
+			 $event.preventDefault();
+			 $event.stopPropagation();
+			 $scope.end_cal_opened = true;
+		 };
+
+		 $scope.dateOptions = {
+				 showWeeks: false,
+				 formatYear: 'yy',
+				 startingDay: 1
+		 };
+
+		 $scope.resetDatePickers = function() {
+			 $scope.date_start = null;
+			 $scope.date_end = null;
+		 };
+
+		 /*
+		  * Data type selection
+		  */
+		 $scope.resetDataType = function() {
+			 $scope.dataType = "account";
+		 };
+
+		 /*
+		  * Filter settings
+		  */
+
+		 $scope.resetSettings = function() {
+			 $scope.resetAccountFilter();
+			 $scope.resetDatePickers();
+			 $scope.resetDataType();
+		 };
+
+		 $scope.disableForm = function(disable) {
+			 if(disable == true)
+				 $scope.formDisabed = true;
+			 else
+				 $scope.formDisabed = false;
+		 };
+
+		 $scope.updateRawData = function() {
+			 var cids = [$scope.selected_account.id];
+			 coreProvider.getReportXYZ(
+					 $scope.dataType,
+					 $scope.mccid,
+					 cids, // TODO: single account, not array
+					 $filter('date')($scope.date_start, "yyyy-MM-dd"),
+					 $filter('date')($scope.date_end, "yyyy-MM-dd"),
+					 function (err, data) {
+						 if (err) {
+							 $scope.load_error = err; // TODO - display error properly
+						 } else {
+							 $scope.raw_data = data;
+							 $scope.raw_data_type = $scope.dataType;
+
+							 if($scope.raw_data_type == "account")
+								 $scope.tableParams.reload();
+							 else if($scope.raw_data_type == "campaign")
+								 $scope.tableParams2.reload();
+						 }
+					 }
+			 );
+		 };
+
+		 /*
+		  * Account table params
+		  */
+		 $scope.tableParams = new ngTableParams({
+			 page: 1,            
+			 count: 10,
+			 sorting: {
+				 day: 'asc'
+			 }
+		 }, {
+			 total: $scope.raw_data.length,
+			 counts: [10, 25, 50],
+			 getData: function($defer, params) {
+				 var data = $scope.raw_data;
+				 var orderedData = params.sorting() ? $filter('orderBy')(data, params.orderBy()) : data;
+				 params.total(orderedData.length); // set total for recalc pagination
+				 $defer.resolve(orderedData.slice((params.page() - 1) * params.count(), params.page() * params.count()));
+			 }
+		 });
+
+		 $scope.tableParams2 = new ngTableParams({
+			 page: 1,            
+			 count: 10,
+			 sorting: {
+				 campaignId: 'asc'
+			 }
+		 }, {
+			 total: $scope.raw_data.length,
+			 counts: [10, 25, 50],
+			 getData: function($defer, params) {
+				 var data = $scope.raw_data;
+				 var orderedData = params.sorting() ? $filter('orderBy')(data, params.orderBy()) : data;
+				 params.total(orderedData.length); // set total for recalc pagination
+				 $defer.resolve(orderedData.slice((params.page() - 1) * params.count(), params.page() * params.count()));
+			 }
+		 });
+
+		 $scope.partitionedAccountFieldsList = partitionArray($scope.account_fields_show, 8);
+		 $scope.partitionedCampaignFieldsList = partitionArray($scope.campaign_fields_show, 8);
 
 
-        // now sort and return the reports.
-        k.sort();
+		 $scope.showTableField = function( fieldName, tableType) {
+			 // Defaults to true
+			 var show = true;
 
-        var results = [];
-        for (i = 0; i < k.length; i++) {
-            results.push(out[k[i]]);
-        }
+			 switch(tableType) {
+			 case "account":
+				 var result = $.grep($scope.account_fields_show, function(e){ return e.name == fieldName; });
+				 if(result.length == 1 && result[0].show == false)
+					 show = false;
+				 break;
+			 case "campaign":
+				 var result = $.grep($scope.campaign_fields_show, function(e){ return e.name == fieldName; });
+				 if(result.length == 1 && result[0].show == false)
+					 show = false;
+				 break;
+			 default:
+				 break;
+			 };
 
-        return results;
-    }
+			 return show;
+		 };
 
+		 var watch_date_range = function() {
+			 if($scope.date_start && $scope.date_end && !($scope.date_end < $scope.date_start)) {
+				 $scope.valid_date_range = true;
+			 } else {
+				 $scope.valid_date_range = false;
+			 }
+		 };
 
-    function _generate_chart_data (reports) {
-        var out = [];
+		 var watch_data_type = function() {
+			 if($scope.dataType == "account") {
+				 $scope.min_date = $scope.reports_account_min_date;
+				 $scope.max_date = $scope.reports_account_max_date;
 
-        for (var i = 0; i < reports.length; i++) {
-            if (!Array.isArray(reports[i])) {
-                console.error("WAT, this should be an array of reports: " + reports[i]);
-                continue;
-            }
+			 } else if($scope.dataType == "campaign") {
+				 $scope.min_date = $scope.reports_campaign_min_date;
+				 $scope.max_date = $scope.reports_campaign_max_date;
+			 }
 
-            // if we have more than 12 months, just show the last 12.
-            var list = reports[i];
-            if (list.length > 12) list = list.slice(list.length - 12);
+			 // If the selected date range is outside of the new min - max, reset
+			 // both start and end fields
+			 if( ($scope.date_start != null && $scope.date_start < $scope.min_date) || 
+					 ($scope.date_end != null && $scope.date_end > $scope.max_date)) {
+				 resetDatePickers();
+			 }
+		 };
+	}
 
-            var obj = {
-                reports: null,
-                chart_data: {
-                    accountid: list[0].accountId,
-                    name: list[0].accountDescriptiveName,
-                    labels: [],
-                    impressions: [],
-                    clicks: [],
-                    ctr: [],
-                    avgCpc: [],
-                    cost: [],
-                    avgCpm: [],
-                }
-            };
+	awrcApp.controller("RawDataController", RawDataController);
 
-
-
-            for (var j = 0; j < list.length; j++) {
-                var r = list[j];
-                var label = month_names[new Date(r.month).getMonth()];
-                obj.chart_data.labels.push(label);
-                obj.chart_data.impressions.push(r.impressions);
-                obj.chart_data.clicks.push(r.clicks);
-                obj.chart_data.ctr.push(r.ctr);
-                obj.chart_data.avgCpc.push(r.avgCpc);
-                obj.chart_data.cost.push(r.cost);
-                obj.chart_data.avgCpm.push(r.avgCpm);
-            }
-
-            obj.reports = reports[i];
-            out.push(obj);
-        }
-
-        return out;
-    }
+	function partitionArray(arr, size) {
+		var newArr = [];
+		for (var i=0; i<arr.length; i+=size) {
+			newArr.push(arr.slice(i, i+size));
+		}
+		return newArr;
+	};
 
 })();
