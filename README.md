@@ -1,8 +1,6 @@
 # AwReporting (Beta)
 
 ## Special Note
-<<<<<<< HEAD
-=======
 
 If you are using this project, please follow the API anouncements and API version Sunsets:
 https://developers.google.com/adwords/api/community/aw-announcements
@@ -10,7 +8,6 @@ https://developers.google.com/adwords/api/docs/sunset-dates
 
 The AdWords API changes version more or less every 4 months, so you would need to upgrade your project around that timeframe.
 
->>>>>>> 2f2a7486c98ac121ad93d5d5bb44c6f875fcbc1a
 Please let us know if you run into issues in the project's issue tracker (https://github.com/googleads/aw-reporting/issues), this Beta release may not fit your needs if you work with very large accounts but we are working to make the project better, your feedback is very important.
 
 ## Overview
