@@ -98,6 +98,7 @@ public abstract class AbstractBaseResource extends ServerResource {
     getMessageHeaders(getResponse()).add("Pragma", "no-cache"); 
     getMessageHeaders(getResponse()).add("Expires", "0");
   }
+<<<<<<< HEAD
   
   /**
    * Adds the 'Content-Disposition' header which suggests a file name for downloads
@@ -116,6 +117,8 @@ public abstract class AbstractBaseResource extends ServerResource {
 	}
 	getMessageHeaders(getResponse()).add("Content-Disposition", contentDisposition);
   }
+=======
+>>>>>>> 2f2a7486c98ac121ad93d5d5bb44c6f875fcbc1a
 
   protected Representation createJsonResult(String result) {
     this.setAutoCommitting(true);
