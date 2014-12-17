@@ -28,61 +28,65 @@ import org.junit.Test;
  * @author joeltoby
  */
 public class TemplateStringsUtilTest {
-	
-	private Calendar calendar = Calendar.getInstance();
-	
-	/**
-	 * Tests formatting date ranges e.g. 'March 2014 - April 2014'
-	 */
-	@Test
-	public void testFormatFullMonthDateRange() {
-		calendar.set(2014, Calendar.MARCH, 1);
-		Date startDate = calendar.getTime();
-		calendar.set(2014, Calendar.APRIL, 30);
-		Date endDate = calendar.getTime();
-		String dateRange = TemplateStringsUtil.formatFullMonthDateRange(startDate, endDate);
-		Assert.assertEquals("March 2014 - April 2014", dateRange);
-		
-		calendar.set(2014, Calendar.MARCH, 10);
-		endDate = calendar.getTime();
-		dateRange = TemplateStringsUtil.formatFullMonthDateRange(startDate, endDate);
-		Assert.assertEquals("March 2014", dateRange);
-		
-		DateTime startDateTime = new DateTime(2014, 3, 1, 0, 0);
-		DateTime endDateTime = new DateTime(2014, 4, 30, 0, 0);
-		dateRange = TemplateStringsUtil.formatFullMonthDateRange(startDateTime, endDateTime);
-		Assert.assertEquals("March 2014 - April 2014", dateRange);
-		
-		endDateTime = new DateTime(2014, 3, 10, 0, 0);
-		dateRange = TemplateStringsUtil.formatFullMonthDateRange(startDateTime, endDateTime);
-		Assert.assertEquals("March 2014", dateRange);
-	}
-	
-	/**
-	 * Tests formatting date ranges to 'MMMM yyyy' e.g. 'March 2014'
-	 */
-	@Test
-	public void testFormatDateFullMonthYear() {
-		calendar.set(2014, Calendar.MARCH, 8);
-		Date date = calendar.getTime();
-		String formatted = TemplateStringsUtil.formatDateFullMonthYear(date);
-		Assert.assertEquals("March 2014", formatted);
-		
-		DateTime dateTime = new DateTime(2014, 3, 8, 0, 0);
-		formatted = TemplateStringsUtil.formatDateFullMonthYear(dateTime);
-	}
-	
-	/**
-	 * Tests formatting date ranges to 'MMM yyyy' e.g. 'Sep 2015'
-	 */
-	@Test
-	public void testFormatDateAbrieviatedMonthYear() {
-		calendar.set(2015, Calendar.SEPTEMBER, 21);
-		Date date = calendar.getTime();
-		String formatted = TemplateStringsUtil.formatDateAbrieviatedMonthYear(date);
-		Assert.assertEquals("Sep 2015", formatted);
-		
-		DateTime dateTime = new DateTime(2015, 9, 21, 0, 0);
-		formatted = TemplateStringsUtil.formatDateAbrieviatedMonthYear(dateTime);
-	}
+
+  private Calendar calendar = Calendar.getInstance();
+
+  /**
+   * Tests formatting date ranges e.g. 'March 2014 - April 2014'
+   */
+  @Test
+  public void testFormatFullMonthDateRange() {
+    calendar.set(2014, Calendar.MARCH, 1);
+    Date startDate = calendar.getTime();
+    calendar.set(2014, Calendar.APRIL, 30);
+    Date endDate = calendar.getTime();
+    String dateRange = TemplateStringsUtil.formatFullMonthDateRange(startDate,
+        endDate);
+    Assert.assertEquals("March 2014 - April 2014", dateRange);
+
+    calendar.set(2014, Calendar.MARCH, 10);
+    endDate = calendar.getTime();
+    dateRange = TemplateStringsUtil
+        .formatFullMonthDateRange(startDate, endDate);
+    Assert.assertEquals("March 2014", dateRange);
+
+    DateTime startDateTime = new DateTime(2014, 3, 1, 0, 0);
+    DateTime endDateTime = new DateTime(2014, 4, 30, 0, 0);
+    dateRange = TemplateStringsUtil.formatFullMonthDateRange(startDateTime,
+        endDateTime);
+    Assert.assertEquals("March 2014 - April 2014", dateRange);
+
+    endDateTime = new DateTime(2014, 3, 10, 0, 0);
+    dateRange = TemplateStringsUtil.formatFullMonthDateRange(startDateTime,
+        endDateTime);
+    Assert.assertEquals("March 2014", dateRange);
+  }
+
+  /**
+   * Tests formatting date ranges to 'MMMM yyyy' e.g. 'March 2014'
+   */
+  @Test
+  public void testFormatDateFullMonthYear() {
+    calendar.set(2014, Calendar.MARCH, 8);
+    Date date = calendar.getTime();
+    String formatted = TemplateStringsUtil.formatDateFullMonthYear(date);
+    Assert.assertEquals("March 2014", formatted);
+
+    DateTime dateTime = new DateTime(2014, 3, 8, 0, 0);
+    formatted = TemplateStringsUtil.formatDateFullMonthYear(dateTime);
+  }
+
+  /**
+   * Tests formatting date ranges to 'MMM yyyy' e.g. 'Sep 2015'
+   */
+  @Test
+  public void testFormatDateAbrieviatedMonthYear() {
+    calendar.set(2015, Calendar.SEPTEMBER, 21);
+    Date date = calendar.getTime();
+    String formatted = TemplateStringsUtil.formatDateAbrieviatedMonthYear(date);
+    Assert.assertEquals("Sep 2015", formatted);
+
+    DateTime dateTime = new DateTime(2015, 9, 21, 0, 0);
+    formatted = TemplateStringsUtil.formatDateAbrieviatedMonthYear(dateTime);
+  }
 }
