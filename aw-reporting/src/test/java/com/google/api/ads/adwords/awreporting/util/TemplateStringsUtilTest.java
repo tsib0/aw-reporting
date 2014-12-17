@@ -88,5 +88,6 @@ public class TemplateStringsUtilTest {
 
     DateTime dateTime = new DateTime(2015, 9, 21, 0, 0);
     formatted = TemplateStringsUtil.formatDateAbrieviatedMonthYear(dateTime);
+    Assert.assertEquals("Sep 2015", formatted);
   }
 }

@@ -70,7 +70,7 @@ public final class TemplateStringsUtil {
     String formattedEndDate = formatDateFullMonthYear(endDate);
     String formattedDateRange = "";
 
-    if(formattedStartDate.equals(formattedEndDate)) {
+    if (formattedStartDate.equals(formattedEndDate)) {
       formattedDateRange = formattedStartDate;
     } else {
       formattedDateRange = formattedStartDate + " - " + formattedEndDate;
