@@ -25,15 +25,16 @@ import com.google.api.ads.adwords.awreporting.model.entities.Report;
 import com.google.api.ads.adwords.awreporting.model.entities.ReportPlaceholderFeedItem;
 import com.google.api.ads.adwords.awreporting.model.persistence.EntityPersister;
 import com.google.api.ads.adwords.awreporting.model.util.DateUtil;
+import com.google.api.ads.adwords.awreporting.util.TemplateStringsUtil;
 import com.google.api.ads.adwords.lib.jaxb.v201409.ReportDefinitionReportType;
 import com.google.api.ads.common.lib.exception.OAuthException;
 import com.google.api.client.auth.oauth2.Credential;
 import com.google.api.client.util.Maps;
 import com.google.common.collect.Lists;
-
 import com.lowagie.text.DocumentException;
 
 import org.apache.log4j.Logger;
+import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -361,6 +362,20 @@ public abstract class ReportExporter {
 
         if (monthlyReports != null && monthlyReports.size() > 0) {
           reportDataMap.put(reportType.name(), monthlyReports);
+          
+          // Add formatted string values to reportDateMap for use in templates
+          DateTime startDate = DateUtil.parseDateTime(dateStart);
+          DateTime endDate = DateUtil.parseDateTime(dateEnd);
+          String monthStartText = TemplateStringsUtil.formatDateFullMonthYear(startDate);
+          String monthEndText = TemplateStringsUtil.formatDateFullMonthYear(endDate);
+          String monthRangeText = TemplateStringsUtil.formatFullMonthDateRange(startDate, endDate);
+          
+          Map<String, String> dateStrings = new HashMap<String, String>();
+          dateStrings.put("monthStart", monthStartText);
+          dateStrings.put("monthEnd", monthEndText);
+          dateStrings.put("monthRange", monthRangeText);
+          
+          reportDataMap.put("FORMATTED_DATE_STRINGS", dateStrings);
         }
       }
     }
