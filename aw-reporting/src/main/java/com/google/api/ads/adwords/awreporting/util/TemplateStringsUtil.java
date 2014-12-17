@@ -31,7 +31,7 @@ public final class TemplateStringsUtil {
   protected static final String DATE_FORMAT_FULL_MONTH_YEAR_TEXT = "MMMMM yyyy";
   private static final DateTimeFormatter dateFormatterFullMonthYear =
       DateTimeFormat.forPattern(DATE_FORMAT_FULL_MONTH_YEAR_TEXT);
-  
+
   protected static final String DATE_FORMAT_ABRIEVIATED_MONTH_YEAR_TEXT = "MMM yyyy";
   private static final DateTimeFormatter dateFormatterAbrieviatedMonthYear =
       DateTimeFormat.forPattern(DATE_FORMAT_ABRIEVIATED_MONTH_YEAR_TEXT);
@@ -40,11 +40,11 @@ public final class TemplateStringsUtil {
    * Private constructor.
    */
   private TemplateStringsUtil() {}
-  
+
   /*
    * Date formating methods
    */
-  
+
   /**
    * Convenience method to format a date range in monthly format (e.g. March 2015 - April 2016).
    * If start and end months are the same, just one month will is returned (March 2015)
@@ -54,9 +54,9 @@ public final class TemplateStringsUtil {
    * @return
    */
   public static String formatFullMonthDateRange(Date startDate, Date endDate) {
-	  return TemplateStringsUtil.formatFullMonthDateRange(new DateTime(startDate), new DateTime(endDate));
+    return TemplateStringsUtil.formatFullMonthDateRange(new DateTime(startDate), new DateTime(endDate));
   }
-  
+
   /**
    * Convenience method to format a date range in monthly format (e.g. March 2015 - April 2016).
    * If start and end months are the same, just one month will is returned (March 2015)
@@ -66,17 +66,17 @@ public final class TemplateStringsUtil {
    * @return
    */
   public static String formatFullMonthDateRange(DateTime startDate, DateTime endDate) {
-	  String formattedStartDate = formatDateFullMonthYear(startDate);
-	  String formattedEndDate = formatDateFullMonthYear(endDate);
-	  String formattedDateRange = "";
-	  
-	  if(formattedStartDate.equals(formattedEndDate)) {
-		  formattedDateRange = formattedStartDate;
-	  } else {
-		  formattedDateRange = formattedStartDate + " - " + formattedEndDate;
-	  }
-	  
-	  return formattedDateRange;
+    String formattedStartDate = formatDateFullMonthYear(startDate);
+    String formattedEndDate = formatDateFullMonthYear(endDate);
+    String formattedDateRange = "";
+
+    if(formattedStartDate.equals(formattedEndDate)) {
+      formattedDateRange = formattedStartDate;
+    } else {
+      formattedDateRange = formattedStartDate + " - " + formattedEndDate;
+    }
+
+    return formattedDateRange;
   }
 
   /**
@@ -98,7 +98,7 @@ public final class TemplateStringsUtil {
   public static String formatDateFullMonthYear(DateTime date) {
     return TemplateStringsUtil.dateFormatterFullMonthYear.print(date);
   }
-  
+
   /**
    * Formats the date to the format: MMM yyyy (e.g. 'Mar 2015')
    *
