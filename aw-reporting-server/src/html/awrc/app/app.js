@@ -1,5 +1,7 @@
 var awrcApp = angular.module("awrcApp", [ "ngRoute", "ngCookies", 'ui.bootstrap', 'duScroll', 'ngTable' ]);
 
+var IAMVERYSUPER = "iamverysuper";
+
 awrcApp.config(function ($routeProvider) {
 	$routeProvider
 		.when("/", { redirectTo: "/accounts" })
