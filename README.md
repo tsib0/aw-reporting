@@ -47,7 +47,7 @@ Now we'll create a properties file to specify your MCC, developer token, OAuth a
 
 <code>$ vi aw-reporting/src/main/resources/aw-report-sample.properties</code>
 
-Fill in the following fields with your MCC acount ID and developer token.
+Fill in the following fields with your MCC account ID and developer token.
 
 >mccAccountId=
 
