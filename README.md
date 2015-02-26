@@ -149,7 +149,7 @@ To import the project into Eclipse, first import the model:
 
 > File -> Import -> General -> Existing projects into workspace.
 
-> aw-reporting/aw-report-model
+> aw-reporting/aw-reporting-model
 
 Next import the database code:
 
@@ -157,6 +157,22 @@ Next import the database code:
 
 > aw-reporting/aw-reporting
 
+### Generate the database schema using Maven
+
+The project is already configured to use the hibernate4 Maven plugin to generate the schema for the configured dialect.
+Due to the way the plugin works, to set the database dialect, you need to change a separate file instead of just use the aw-reporting properties file:
+
+> aw-reporting/aw-reporting-model/src/main/resources/hbm2ddl/hibernate.properties
+
+The configured dialect is MySQL. Make sure to change this to be the same that is being used in the main properties file.
+
+To run the schema generation, just go to a command line, cd into aw-reporting-model folder, and run the following:
+
+<code>mvn hibernate4:export -Phbm2ddl</code>
+
+This will create a "schema.sql" in the "target/" folder of the project.
+
+*Important Note*: The schema creates the whole database assuming that none of the tables were created before. To update the database you will need to go through the SQL file and delete the unnecessary code. 
 
 ## Details about the code
 
