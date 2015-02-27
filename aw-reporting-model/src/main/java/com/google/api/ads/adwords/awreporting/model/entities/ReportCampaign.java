@@ -178,6 +178,9 @@ public class ReportCampaign extends ReportBase {
     if (this.getClickType() != null && this.getClickType().length() > 0) {
       this.id += "-" + this.getClickType();
     }
+    if (this.getHourOfDay() != null) {
+      this.id += "-" + this.getHourOfDay();
+    }
   }
 
   public Long getCampaignId() {
