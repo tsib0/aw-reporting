@@ -14,7 +14,6 @@ awrcApp.config(function ($routeProvider) {
 		.when("/healthcheck", { controller: "HealthCheckController", templateUrl: "app/partials/health_check_partial.html" })
 		.when("/account/:mccid/export", { controller: "DocExportController", templateUrl: "app/partials/doc_export_partial.html" })
 		.when("/account/:mccid/rawdata", { controller: "RawDataController", templateUrl: "app/partials/raw_data_partial.html" })
-		.when("/new_mcc/:mccid", { controller: "OnboardingController", templateUrl: "app/partials/onboarding_partial.html" })
 		.when("/error/:error_code", { controller: "ErrorController", templateUrl: "app/partials/error_partial.html" })
 		.when("/404_page", { controller: "Controller404", templateUrl: "app/partials/404_page_partial.html" })
 		.otherwise( { redirectTo: "/" });
