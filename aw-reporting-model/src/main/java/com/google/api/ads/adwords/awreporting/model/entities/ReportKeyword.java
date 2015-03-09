@@ -65,6 +65,10 @@ public class ReportKeyword extends ReportBase {
   @CsvField(value = "Ad group ID", reportField = "AdGroupId")
   private Long adGroupId;
 
+  @Column(name = "ADGROUP_NAME")
+  @CsvField(value = "Ad group", reportField = "AdGroupName")
+  private String adGroupName;
+
   @Column(name = "CAMPAIGN_ID")
   @CsvField(value = "Campaign ID", reportField = "CampaignId")
   private Long campaignId;
@@ -253,6 +257,15 @@ public class ReportKeyword extends ReportBase {
 
   public void setAdGroupId(Long adGroupId) {
     this.adGroupId = adGroupId;
+  }
+  
+  // adGroupName
+  public String getAdGroupName() {
+    return adGroupName;
+  }
+  
+  public void setAdGroupName(String adGroupName) {
+    this.adGroupName = adGroupName;
   }
 
   // campaignId
