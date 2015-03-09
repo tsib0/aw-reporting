@@ -39,12 +39,12 @@ public class JaxWsProxySelector extends ProxySelector {
   private static final String HTTP_PROXY_HOST = "http.proxyHost";
   private static final String HTTP_PROXY_PORT = "http.proxyPort";
   private static final String HTTP_PROXY_USER = "http.proxyUser";
-  private static final String HTTP_PROXY_PASSWORD = "http.proxyUser";
+  private static final String HTTP_PROXY_PASSWORD = "http.proxyPassword";
 
   private static final String HTTPS_PROXY_HOST = "https.proxyHost";
   private static final String HTTPS_PROXY_PORT = "https.proxyPort";
   private static final String HTTPS_PROXY_USER = "https.proxyUser";
-  private static final String HTTPS_PROXY_PASSWORD = "https.proxyUser";
+  private static final String HTTPS_PROXY_PASSWORD = "https.proxyPassword";
 
   private static final String FTP_PROXY_HOST = "ftp.proxyHost";
   private static final String FTP_PROXY_PORT = "ftp.proxyPort";
@@ -78,7 +78,10 @@ public class JaxWsProxySelector extends ProxySelector {
       throw new IllegalArgumentException("URI can't be null.");
     }
 
-    if (System.getProperty(HTTP_PROXY_HOST) != null
+    String scheme = uri.getScheme().toLowerCase();
+    
+    if (scheme.equals("http")
+        && System.getProperty(HTTP_PROXY_HOST) != null
         && System.getProperty(HTTP_PROXY_PORT) != null) {
 
       if (System.getProperty(HTTP_PROXY_USER) != null
@@ -89,7 +92,8 @@ public class JaxWsProxySelector extends ProxySelector {
           Integer.parseInt(System.getProperty(HTTP_PROXY_PORT)))));
     }
 
-    if (System.getProperty(HTTPS_PROXY_HOST) != null
+    if (scheme.equals("https")
+        && System.getProperty(HTTPS_PROXY_HOST) != null
         && System.getProperty(HTTPS_PROXY_PORT) != null) {
 
       if (System.getProperty(HTTP_PROXY_USER) != null
@@ -101,7 +105,8 @@ public class JaxWsProxySelector extends ProxySelector {
           Integer.parseInt(System.getProperty(HTTPS_PROXY_PORT)))));
     }
 
-    if (System.getProperty(FTP_PROXY_HOST) != null && System.getProperty(FTP_PROXY_PORT) != null) {
+    if (scheme.equals("ftp")
+        && System.getProperty(FTP_PROXY_HOST) != null && System.getProperty(FTP_PROXY_PORT) != null) {
 
       if (System.getProperty(FTP_PROXY_USER) != null
           && System.getProperty(FTP_PROXY_USER).length() > 0) {
@@ -111,7 +116,8 @@ public class JaxWsProxySelector extends ProxySelector {
           Integer.parseInt(System.getProperty(FTP_PROXY_PORT)))));
     }
 
-    if (System.getProperty(SOCKS_PROXY_HOST) != null
+    if ((scheme.startsWith("http") || scheme.equals("ftp") || scheme.startsWith("socks"))
+        && System.getProperty(SOCKS_PROXY_HOST) != null
         && System.getProperty(SOCKS_PROXY_PORT) != null) {
 
       if (System.getProperty(SOCKS_PROXY_USER) != null
