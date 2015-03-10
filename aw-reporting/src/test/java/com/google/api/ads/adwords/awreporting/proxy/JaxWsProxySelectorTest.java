@@ -50,7 +50,10 @@ public class JaxWsProxySelectorTest {
   private static final String SOCKS_PROXY_HOST = "socksProxyHost";
   private static final String SOCKS_PROXY_PORT = "socksProxyPort";
 
-  private URI testHttpUri, testHttpsUri, testFtpUri, testSocksUri;
+  private URI testHttpUri;
+  private URI testHttpsUri;
+  private URI testFtpUri;
+  private URI testSocksUri;
 
   @Before
   public void setUp() throws URISyntaxException {
