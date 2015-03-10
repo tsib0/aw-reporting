@@ -50,11 +50,17 @@ public class JaxWsProxySelectorTest {
   private static final String SOCKS_PROXY_HOST = "socksProxyHost";
   private static final String SOCKS_PROXY_PORT = "socksProxyPort";
 
-  private URI testUri;
+  private URI testHttpUri;
+  private URI testHttpsUri;
+  private URI testFtpUri;
+  private URI testSocksUri;
 
   @Before
   public void setUp() throws URISyntaxException {
-    testUri = new URI("http://www.test.com");
+    testHttpUri  = new URI("http://www.test.com");
+    testHttpsUri = new URI("https://www.test.com");
+    testFtpUri   = new URI("ftp://www.test.com");
+    testSocksUri = new URI("socks://www.test.com");
   }
 
   /**
@@ -65,7 +71,7 @@ public class JaxWsProxySelectorTest {
     JaxWsProxySelector ps = new JaxWsProxySelector(ProxySelector.getDefault());
     ProxySelector.setDefault(ps);
 
-    List<Proxy> list = ps.select(testUri);
+    List<Proxy> list = ps.select(testHttpUri);
     assertEquals(list.get(0), Proxy.NO_PROXY);
   }
 
@@ -80,7 +86,7 @@ public class JaxWsProxySelectorTest {
     JaxWsProxySelector ps = new JaxWsProxySelector(ProxySelector.getDefault());
     ProxySelector.setDefault(ps);
 
-    List<Proxy> list = ps.select(testUri);
+    List<Proxy> list = ps.select(testHttpUri);
 
     assertEquals(list.get(0),
         new Proxy(Type.HTTP, new InetSocketAddress(InetAddress.getByName("127.0.0.1"), 8888)));
@@ -100,7 +106,7 @@ public class JaxWsProxySelectorTest {
     JaxWsProxySelector ps = new JaxWsProxySelector(ProxySelector.getDefault());
     ProxySelector.setDefault(ps);
 
-    List<Proxy> list = ps.select(testUri);
+    List<Proxy> list = ps.select(testHttpsUri);
     assertEquals(list.get(0),
         new Proxy(Type.HTTP, new InetSocketAddress(InetAddress.getByName("127.0.0.1"), 8888)));
 
@@ -119,7 +125,7 @@ public class JaxWsProxySelectorTest {
     JaxWsProxySelector ps = new JaxWsProxySelector(ProxySelector.getDefault());
     ProxySelector.setDefault(ps);
 
-    List<Proxy> list = ps.select(testUri);
+    List<Proxy> list = ps.select(testFtpUri);
     assertEquals(list.get(0),
         new Proxy(Type.HTTP, new InetSocketAddress(InetAddress.getByName("127.0.0.1"), 8888)));
 
@@ -138,7 +144,7 @@ public class JaxWsProxySelectorTest {
     JaxWsProxySelector ps = new JaxWsProxySelector(ProxySelector.getDefault());
     ProxySelector.setDefault(ps);
 
-    List<Proxy> list = ps.select(testUri);
+    List<Proxy> list = ps.select(testSocksUri);
     assertEquals(list.get(0),
         new Proxy(Type.SOCKS, new InetSocketAddress(InetAddress.getByName("127.0.0.1"), 8888)));
 
