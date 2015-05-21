@@ -2,7 +2,6 @@ package com.google.api.ads.adwords.awreporting.model.entities;
 
 import com.google.api.ads.adwords.awreporting.model.csv.annotation.CsvField;
 import com.google.api.ads.adwords.awreporting.model.csv.annotation.CsvReport;
-import com.google.api.ads.adwords.awreporting.model.csv.annotation.MoneyField;
 import com.google.api.ads.adwords.awreporting.model.util.BigDecimalUtil;
 import com.google.api.ads.adwords.awreporting.model.util.DateUtil;
 import com.google.api.ads.adwords.lib.jaxb.v201409.ReportDefinitionReportType;
@@ -97,8 +96,7 @@ public class ReportVideoCampaign extends Report {
 
   @Column(name = "BUDGET")
   @CsvField(value = "Budget", reportField = "")
-  @MoneyField
-  private BigDecimal budget;
+  private Long budget;
 
   @Column(name = "IMPRESSIONS")
   @CsvField(value = "Impressions", reportField = "")
@@ -330,11 +328,11 @@ public class ReportVideoCampaign extends Report {
     this.status = status;
   }
 
-  public BigDecimal getBudget() {
+  public Long getBudget() {
     return budget;
   }
 
-  public void setBudget(BigDecimal budget) {
+  public void setBudget(Long budget) {
     this.budget = budget;
   }
 

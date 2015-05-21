@@ -59,6 +59,7 @@ public class ReportVideoCampaignDefinitionTest extends
     Assert.assertEquals(42.15, first.getViewPlayed75BigDecimal().doubleValue());
     Assert.assertEquals(41.82, first.getViewPlayed100BigDecimal().doubleValue());
     Assert.assertEquals(0.00, first.getCtrBigDecimal().doubleValue());
+    Assert.assertEquals(1300L, first.getBudget().longValue());
     Assert.assertEquals(0L, first.getWebsiteClicks().longValue());
   }
 
@@ -80,6 +81,7 @@ public class ReportVideoCampaignDefinitionTest extends
     Assert.assertEquals(27.93, last.getViewPlayed75BigDecimal().doubleValue());
     Assert.assertEquals(23.42, last.getViewPlayed100BigDecimal().doubleValue());
     Assert.assertEquals(0.01, last.getCtrBigDecimal().doubleValue());
+    Assert.assertEquals(1200L, last.getBudget().longValue());
     Assert.assertEquals(75L, last.getWebsiteClicks().longValue());
   }
 
