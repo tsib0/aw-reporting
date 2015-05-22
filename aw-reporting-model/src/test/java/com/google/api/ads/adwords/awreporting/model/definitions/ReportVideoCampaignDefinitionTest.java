@@ -48,7 +48,7 @@ public class ReportVideoCampaignDefinitionTest extends
   @Override
   protected void testFirstEntry(ReportVideoCampaign first) {
 
-    Assert.assertEquals(7848880157L, first.getAccountId().longValue());
+    Assert.assertEquals(123L, first.getAccountId().longValue());
     Assert.assertEquals("a", first.getAccount());
     Assert.assertEquals("a", first.getCampaignName());
     Assert.assertEquals("enabled", first.getStatus());
@@ -70,7 +70,7 @@ public class ReportVideoCampaignDefinitionTest extends
   @Override
   protected void testLastEntry(ReportVideoCampaign last) {
 
-    Assert.assertEquals(4107016434L, last.getAccountId().longValue());
+    Assert.assertEquals(125L, last.getAccountId().longValue());
     Assert.assertEquals("c", last.getAccount());
     Assert.assertEquals("l", last.getCampaignName());
     Assert.assertEquals("enabled", last.getStatus());
