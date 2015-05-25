@@ -159,7 +159,7 @@ public final class DateUtil {
       for (DateTimeFormatter formatter : DateUtil.formatters) {
         try {
           LocalDateTime localDateTime = formatter.parseLocalDateTime(timestamp);
-          return localDateTime.plusHours(12).toDateTime(DateTimeZone.UTC);
+          return localDateTime.toDateTime(DateTimeZone.UTC);
 
         } catch (IllegalArgumentException e) {
           // silently skips to the next formatter
