@@ -254,7 +254,7 @@ $ java -Xmx1G -jar aw-reporting/target/aw-reporting.jar -startDate YYYYMMDD -end
 
 ## **Experimental:** Video Campaign Performance report
 
-With the offline data import feature available, we added the Video Campaign Performance Report to AwReporting model. This means that it's now possible to download the Video Performance reports from the interface, import them into AwReporting and make the data available in the database.
+With the offline data import feature available, we added the Video Campaign Performance Report to AwReporting model. This means that it's now possible to download the Video Performance reports from the interface, import it into AwReporting and make the data available in the database.
 
 This report still an experiment, and we want to hear more feedback from users in order to further improve this, and make sure that this is in fact a necessity.
 
@@ -266,7 +266,7 @@ $ java -Xmx1G -jar aw-reporting/target/aw-reporting.jar -startDate YYYYMMDD -end
 -onFileReport VIDEO_CAMPAIGN_REPORT -csvReportFile <CSV FILE LOCATION>
 ```
 
-**IMPORTANT NOTE:** The API *doesn not support* video campaign reports. This is a work around to import video campaign reports into the database, facilitating the usage of the data in your applications.
+**IMPORTANT NOTE:** The API *does not support* video campaign reports. This is a work around to import video campaign reports into the database, facilitating the usage of the data in your applications.
 
 ## PDF Generation
 
