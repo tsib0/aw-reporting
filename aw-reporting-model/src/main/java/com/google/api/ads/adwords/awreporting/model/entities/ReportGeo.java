@@ -32,8 +32,6 @@ import com.google.api.ads.adwords.lib.jaxb.v201502.ReportDefinitionReportType;
 @Table(name = "AW_ReportGeoPerformance")
 @CsvReport(value = ReportDefinitionReportType.GEO_PERFORMANCE_REPORT)
 public class ReportGeo extends ReportBase {
-  
-  final private static String EMPTY = "--";
 
   @Column(name = "ADFORMAT")
   @CsvField(value = "Ad type", reportField = "AdFormat")
@@ -100,11 +98,6 @@ public class ReportGeo extends ReportBase {
    */
   public ReportGeo() {}
 
-  private boolean isEmptyId(String id) {
-    // Assumption: id string is not null
-    return id.trim().equals(EMPTY);
-  }
-  
   @Override
   public void setId() {
     // Generating unique id after having accountId, campaignId and date
@@ -122,19 +115,19 @@ public class ReportGeo extends ReportBase {
     this.id += setIdDates();
 
     // Geo Ids
-    if (this.getCountryCriteriaId() != null && !isEmptyId(this.getCountryCriteriaId())) {
+    if (this.getCountryCriteriaId() != null && !isEmptyValue(this.getCountryCriteriaId())) {
       this.id += "-" + this.getCountryCriteriaId().toString();
     }
-    if (this.getRegionCriteriaId() != null && !isEmptyId(this.getRegionCriteriaId())) {
+    if (this.getRegionCriteriaId() != null && !isEmptyValue(this.getRegionCriteriaId())) {
       this.id += "-" + this.getRegionCriteriaId().toString();
     }
-    if (this.getMetroCriteriaId() != null && !isEmptyId(this.getMetroCriteriaId())) {
+    if (this.getMetroCriteriaId() != null && !isEmptyValue(this.getMetroCriteriaId())) {
       this.id += "-" + this.getMetroCriteriaId().toString();
     }
-    if (this.getCityCriteriaId() != null && !isEmptyId(this.getCityCriteriaId())) {
+    if (this.getCityCriteriaId() != null && !isEmptyValue(this.getCityCriteriaId())) {
       this.id += "-" + this.getCityCriteriaId().toString();
     }
-    if (this.getMostSpecificCriteriaId() != null && !isEmptyId(this.getMostSpecificCriteriaId())) {
+    if (this.getMostSpecificCriteriaId() != null && !isEmptyValue(this.getMostSpecificCriteriaId())) {
       this.id += "-" + this.getMostSpecificCriteriaId().toString();
     }
 
