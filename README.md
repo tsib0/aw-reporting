@@ -137,10 +137,6 @@ Note: aw-reporting.jar is in the aw-reporting/aw-reporting/target/ directory.
    -file &lt;file&gt;
                               aw-report-sample.properties file.
 
-   -generatePdf &lt;htmlTemplateFile&gt; &lt;outputDirectory&
-                           Generate Monthly Account Reports for all Accounts in PDF
-                           NOTE: For PDF use aw-report-sample-for-pdf.properties instead, the fields need to be different.
-
    -help
                               Print this message.
 
@@ -267,16 +263,6 @@ $ java -Xmx1G -jar aw-reporting/target/aw-reporting.jar -startDate YYYYMMDD -end
 ```
 
 **IMPORTANT NOTE:** The API *does not support* video campaign reports. This is a work around to import video campaign reports into the database, facilitating the usage of the data in your applications.
-
-## PDF Generation
-
-PDF generation works monthly and also needs the use of a HTML template like ACCOUNT\_PERFORMANCE\_REPORT.tmpl
-
-First run the date range without the -generatePdf to download the data needed to generate them.
-
-Here's an example properties file for PDF generation:
-
-> aw-report-sample-for-pdf.properties
 
 ### Fine print
 Pull requests are very much appreciated. Please sign the [Google Individual Contributor License Agreement](http://code.google.com/legal/individual-cla-v1.0.html) (There is a convenient online form) before submitting.
