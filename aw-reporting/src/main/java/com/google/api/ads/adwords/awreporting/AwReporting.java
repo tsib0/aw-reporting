@@ -71,7 +71,7 @@ import java.util.Set;
  * @author jtoledo@google.com (Julian Toledo)
  * @author gustavomoreira@google.com (Gustavo Moreira)
  */
-public class AwReporting{
+ public class AwReporting{
 
   private static final Logger LOGGER = Logger.getLogger(AwReporting.class);
 
@@ -153,7 +153,7 @@ public class AwReporting{
       String mccAccountId = properties.getProperty("mccAccountId").replaceAll("-", "");
 
      
-     if (cmdLine.hasOption("startDate") && cmdLine.hasOption("endDate")) {
+       if (cmdLine.hasOption("startDate") && cmdLine.hasOption("endDate")) {
         // Generate Reports
 
         String dateStart = cmdLine.getOptionValue("startDate");
