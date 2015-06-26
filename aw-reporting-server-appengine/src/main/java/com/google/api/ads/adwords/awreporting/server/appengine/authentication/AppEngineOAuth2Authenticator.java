@@ -21,8 +21,8 @@ import com.google.api.ads.adwords.awreporting.server.appengine.RestServer;
 import com.google.api.ads.adwords.awreporting.server.appengine.model.UserToken;
 import com.google.api.ads.adwords.awreporting.server.appengine.processors.RefreshAccountsTask;
 import com.google.api.ads.adwords.awreporting.util.CustomerDelegate;
-import com.google.api.ads.adwords.jaxws.v201409.mcm.ApiException;
-import com.google.api.ads.adwords.jaxws.v201409.mcm.Customer;
+import com.google.api.ads.adwords.jaxws.v201502.mcm.ApiException;
+import com.google.api.ads.adwords.jaxws.v201502.mcm.Customer;
 import com.google.api.ads.adwords.lib.client.AdWordsSession;
 import com.google.api.ads.common.lib.exception.OAuthException;
 import com.google.api.ads.common.lib.exception.ValidationException;
@@ -129,7 +129,7 @@ public class AppEngineOAuth2Authenticator implements Authenticator {
       RestServer.getPersister().save(userToken);
       
       // Get Accounts List for the MCC and store it.
-      RefreshAccountsTask.createRefreshAccountsTask(userId, topAccountId);
+      RefreshAccountsTask.createRefreshAccountsTask(topAccountId);
       
     } catch(ApiException exception) {
       throw new ApiException("AdWords API error, your account may not have access to this MCC", exception.getFaultInfo(), exception);
@@ -147,8 +147,9 @@ public class AppEngineOAuth2Authenticator implements Authenticator {
     return builder;
   }
 
-  public Credential getOAuth2Credential(String userId, String mccAccountId, boolean force) throws OAuthException {
+  public Credential getOAuth2Credential(String mccAccountId, boolean force) throws OAuthException {
 
+    String userId = RestServer.getWebAuthenticator().getCurrentUser();
     LOGGER.info("getOAuth2Credential for " + userId);
 
     Map<String, Object> query = Maps.newHashMap();
@@ -178,10 +179,9 @@ public class AppEngineOAuth2Authenticator implements Authenticator {
     }
   }
 
-  public AdWordsSession.Builder authenticate(String userId, String mccAccountId, boolean force) throws OAuthException,
-  IOException {
+  public AdWordsSession.Builder authenticate(String mccAccountId, boolean force) throws OAuthException {
     // Construct a AdWordsSession.
-    AdWordsSession.Builder builder = new AdWordsSession.Builder().withOAuth2Credential(getOAuth2Credential(userId, mccAccountId, force))
+    AdWordsSession.Builder builder = new AdWordsSession.Builder().withOAuth2Credential(getOAuth2Credential(mccAccountId, force))
         .withUserAgent(USER_AGENT).withDeveloperToken(developerToken).withClientCustomerId(mccAccountId);
     return builder;
   }

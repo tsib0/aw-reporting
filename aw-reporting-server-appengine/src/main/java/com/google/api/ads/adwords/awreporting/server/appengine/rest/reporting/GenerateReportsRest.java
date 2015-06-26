@@ -19,7 +19,7 @@ import com.google.api.ads.adwords.awreporting.processors.ReportProcessor;
 import com.google.api.ads.adwords.awreporting.server.appengine.RestServer;
 import com.google.api.ads.adwords.awreporting.server.appengine.processors.ReportProcessorAppEngine;
 import com.google.api.ads.adwords.awreporting.server.rest.AbstractBaseResource;
-import com.google.api.ads.adwords.lib.jaxb.v201409.ReportDefinitionDateRangeType;
+import com.google.api.ads.adwords.lib.jaxb.v201502.ReportDefinitionDateRangeType;
 
 import org.restlet.representation.Representation;
 
@@ -42,7 +42,6 @@ public class GenerateReportsRest extends AbstractBaseResource {
       Long topAccountId = getParameterAsLong("topAccountId");
       Date dateStart = getParameterAsDate("dateStart");
       Date dateEnd = getParameterAsDate("dateEnd");
-      String userId = RestServer.getWebAuthenticator().getCurrentUser();
 
       if (topAccountId != null && dateStart != null && dateEnd != null) { // Generate Report Task for MCC
 
@@ -52,7 +51,7 @@ public class GenerateReportsRest extends AbstractBaseResource {
 
         ReportProcessorAppEngine reportProcessorAppEngine = createReportProcessor();
 
-        reportProcessorAppEngine.generateReportsForMCC(userId, String.valueOf(topAccountId),
+        reportProcessorAppEngine.generateReportsForMCC(String.valueOf(topAccountId),
             ReportDefinitionDateRangeType.CUSTOM_DATE, DateUtil.formatYearMonthDayNoDash(dateStart),
             DateUtil.formatYearMonthDayNoDash(dateEnd), null, properties, null, null);
 

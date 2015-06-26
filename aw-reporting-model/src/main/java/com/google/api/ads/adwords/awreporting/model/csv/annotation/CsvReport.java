@@ -17,7 +17,7 @@ package com.google.api.ads.adwords.awreporting.model.csv.annotation;
 import static java.lang.annotation.ElementType.TYPE;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
-import com.google.api.ads.adwords.lib.jaxb.v201409.ReportDefinitionReportType;
+import com.google.api.ads.adwords.lib.jaxb.v201502.ReportDefinitionReportType;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
@@ -51,5 +51,13 @@ public @interface CsvReport {
    * @return the array with the names of the report fields to be excluded.
    */
   String[] reportExclusions() default {};
+
+  /**
+   * This is an experimental attribute used to add the support for reports not yet available in the
+   * API. In order to use it, you have to set the report type as {@code UNKNOWN}.
+   *
+   * @return the name of this report that will be available only via CSV files. It has to be unique.
+   */
+  String fileOnlyReportType() default "";
 
 }

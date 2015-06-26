@@ -57,9 +57,9 @@ import com.google.api.ads.adwords.awreporting.processors.onfile.ReportProcessorO
 import com.google.api.ads.adwords.awreporting.util.AdWordsSessionBuilderSynchronizer;
 import com.google.api.ads.adwords.awreporting.util.DynamicPropertyPlaceholderConfigurer;
 import com.google.api.ads.adwords.lib.client.AdWordsSession;
-import com.google.api.ads.adwords.lib.jaxb.v201409.ReportDefinition;
-import com.google.api.ads.adwords.lib.jaxb.v201409.ReportDefinitionDateRangeType;
-import com.google.api.ads.adwords.lib.jaxb.v201409.ReportDefinitionReportType;
+import com.google.api.ads.adwords.lib.jaxb.v201502.ReportDefinition;
+import com.google.api.ads.adwords.lib.jaxb.v201502.ReportDefinitionDateRangeType;
+import com.google.api.ads.adwords.lib.jaxb.v201502.ReportDefinitionReportType;
 import com.google.api.ads.common.lib.exception.OAuthException;
 import com.google.api.ads.common.lib.exception.ValidationException;
 import com.google.common.collect.Lists;
@@ -76,9 +76,9 @@ public class ReportProcessorOnFileTest {
   
   private static final int NUMBER_OF_THREADS = 50;
   
-  private static final int REPORT_TYPES_SIZE = 15; // 13 plus 2 repetitions of the KEYWORD report
+  private static final int REPORT_TYPES_SIZE = 14;
   
-  private static final int CALLS_TO_PERSIST_ENTITIES = 6000;
+  private static final int CALLS_TO_PERSIST_ENTITIES = 5700;
   
   private static final Set<Long> CIDS = Sets.newHashSet();
   
@@ -145,14 +145,13 @@ public class ReportProcessorOnFileTest {
     // Mocking the Authentication because in OAuth2 we are force to call buildOAuth2Credentials
     AdWordsSession.Builder builder = new AdWordsSession.Builder().withClientCustomerId("1");
     Mockito.doReturn(builder).when(authenticator)
-        .authenticate(Mockito.anyString(), Mockito.anyString(), Mockito.anyBoolean());
+        .authenticate(Mockito.anyString(), Mockito.anyBoolean());
   }
 
   @Test
   public void testGenerateReportsForMCC() throws Exception {
 
-    reportProcessorOnFile.generateReportsForMCC(null,
-        "123",
+    reportProcessorOnFile.generateReportsForMCC("123",
         ReportDefinitionDateRangeType.CUSTOM_DATE,
         "20130101",
         "20130131",
@@ -188,11 +187,6 @@ public class ReportProcessorOnFileTest {
         if (reportType.equals(ReportDefinitionReportType.ACCOUNT_PERFORMANCE_REPORT)) {
           return getReportFiles(
               "reportDownload-ACCOUNT_PERFORMANCE_REPORT-2602198216-1370030134500.report",
-              numberOfFiles);
-        }
-        if (reportType.equals(ReportDefinitionReportType.AD_EXTENSIONS_PERFORMANCE_REPORT)) {
-          return getReportFiles(
-              "reportDownload-AD_EXTENSIONS_PERFORMANCE_REPORT-2602198216-1370029629538.report",
               numberOfFiles);
         }
         if (reportType.equals(ReportDefinitionReportType.ADGROUP_PERFORMANCE_REPORT)) {

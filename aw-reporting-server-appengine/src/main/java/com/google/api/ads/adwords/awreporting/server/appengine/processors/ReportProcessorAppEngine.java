@@ -18,10 +18,9 @@ import com.google.api.ads.adwords.awreporting.model.entities.Report;
 import com.google.api.ads.adwords.awreporting.processors.ReportProcessor;
 import com.google.api.ads.adwords.awreporting.server.appengine.util.MccTaskCounter;
 import com.google.api.ads.adwords.awreporting.server.entities.Account;
-import com.google.api.ads.adwords.lib.jaxb.v201409.ReportDefinition;
-import com.google.api.ads.adwords.lib.jaxb.v201409.ReportDefinitionDateRangeType;
-import com.google.api.ads.adwords.lib.jaxb.v201409.ReportDefinitionReportType;
-import com.google.api.ads.common.lib.soap.jaxb.JaxBSerializer;
+import com.google.api.ads.adwords.lib.jaxb.v201502.ReportDefinition;
+import com.google.api.ads.adwords.lib.jaxb.v201502.ReportDefinitionDateRangeType;
+import com.google.api.ads.adwords.lib.jaxb.v201502.ReportDefinitionReportType;
 import com.google.api.client.util.Sets;
 import com.google.appengine.api.taskqueue.QueueFactory;
 import com.google.appengine.api.taskqueue.TaskOptions;
@@ -39,8 +38,6 @@ import java.util.Set;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Logger;
 
-import javax.xml.namespace.QName;
-
 /**
  * Main reporting processor responsible for downloading and saving the files to
  * the file system. The persistence of the parsed beans is delegated to the
@@ -54,9 +51,6 @@ public class ReportProcessorAppEngine extends ReportProcessor {
 
   private static final Logger LOGGER = Logger
       .getLogger(ReportProcessorAppEngine.class.getName());
-
-  private final JaxBSerializer<ReportDefinition> serializer = 
-      new JaxBSerializer<ReportDefinition>(ReportDefinition.class, new QName("reportDefinition"));
 
   /**
    * Constructor.
@@ -102,7 +96,7 @@ public class ReportProcessorAppEngine extends ReportProcessor {
    * 
    * @throws Exception error reaching the API.
    */
-  public void generateReportsForMCC(String userId, String mccAccountId,
+  public void generateReportsForMCC(String mccAccountId,
       ReportDefinitionDateRangeType dateRangeType, String dateStart,
       String dateEnd, Set<Long> accountIdsSet, Properties properties,
       ReportDefinitionReportType onDemandReportType, List<String> reportFieldsToInclude)
@@ -129,7 +123,7 @@ public class ReportProcessorAppEngine extends ReportProcessor {
     if (onDemandReportType != null) {
 
       // Skip properties file
-      this.downloadAndProcess(userId, mccAccountId, onDemandReportType, dateRangeType, dateStart, dateEnd, accountIdsSet, properties);
+      this.downloadAndProcess(mccAccountId, onDemandReportType, dateRangeType, dateStart, dateEnd, accountIdsSet, properties);
       
     } else {
       
@@ -138,7 +132,7 @@ public class ReportProcessorAppEngine extends ReportProcessor {
       // Iterate over properties file
       for (ReportDefinitionReportType propertiesReportType : allReportTypes) {
         if (properties.containsKey(propertiesReportType.name())) {
-          this.downloadAndProcess(userId, mccAccountId, propertiesReportType, dateRangeType,dateStart, dateEnd, accountIdsSet, properties);
+          this.downloadAndProcess(mccAccountId, propertiesReportType, dateRangeType,dateStart, dateEnd, accountIdsSet, properties);
         }
       }
     }
@@ -162,7 +156,7 @@ public class ReportProcessorAppEngine extends ReportProcessor {
    * @param properties the properties resource.
    */
   private <R extends Report> void downloadAndProcess(
-      String userId, String mccAccountId,
+      String mccAccountId,
       ReportDefinitionReportType reportType,
       ReportDefinitionDateRangeType dateRangeType, String dateStart,
       String dateEnd, Set<Long> acountIdList, Properties properties) {
@@ -170,11 +164,10 @@ public class ReportProcessorAppEngine extends ReportProcessor {
     // Download Reports to local files and Generate Report objects
     LOGGER.info("\n\n ** Generating Taks for : " + reportType.name() + " **");
 
+    // No multiple reports of the same type
     ReportDefinition reportDefinition = getReportDefinition(reportType,
-        dateRangeType, dateStart, dateEnd, properties);
-
-    String reportDefinitionStr = serializer.serialize(reportDefinition);
-
+        dateRangeType, dateStart, dateEnd, reportType.value(), properties);
+        
     @SuppressWarnings("unchecked")
     Class<R> reportBeanClass = (Class<R>) this.csvReportEntitiesMapping.getReportBeanClass(reportType);
 
@@ -183,15 +176,14 @@ public class ReportProcessorAppEngine extends ReportProcessor {
     // Create a task for each 500 accounts that will create sub-tasks
     for (List<Long> partition : Iterables.partition(acountIdList, 500)) {
 
-      // We will make the queues wait 10 seconds to make sure all Cretion tasks get queued.
+      // We will make the queues wait 10 seconds to make sure all Creation tasks get queued.
       // Partition needs to be serializable
       LOGGER.info(reportType.name() + " " + partition.size()); 
       QueueFactory.getDefaultQueue().add(TaskOptions.Builder.withPayload(    
           new ReportTaskCreator<R>(
-              userId,
               mccAccountId,
               Lists.newArrayList(partition),
-              reportDefinitionStr,
+              reportDefinition,
               dateStart,
               dateEnd,
               reportRowsSetSize,

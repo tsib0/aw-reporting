@@ -15,8 +15,9 @@
 package com.google.api.ads.adwords.awreporting.server.appengine.processors;
 
 import com.google.api.ads.adwords.awreporting.model.entities.Report;
-import com.google.api.ads.adwords.lib.jaxb.v201409.ReportDefinitionDateRangeType;
-import com.google.api.ads.adwords.lib.jaxb.v201409.ReportDefinitionReportType;
+import com.google.api.ads.adwords.lib.jaxb.v201502.ReportDefinition;
+import com.google.api.ads.adwords.lib.jaxb.v201502.ReportDefinitionDateRangeType;
+import com.google.api.ads.adwords.lib.jaxb.v201502.ReportDefinitionReportType;
 import com.google.appengine.api.taskqueue.DeferredTask;
 import com.google.appengine.api.taskqueue.QueueFactory;
 import com.google.appengine.api.taskqueue.TaskOptions;
@@ -34,9 +35,8 @@ public class ReportTaskCreator<R extends Report> implements DeferredTask {
   private static final long serialVersionUID = 1L;
   private static final Logger LOGGER = Logger.getLogger(ReportTaskCreator.class.getName());
   
-  private String userId;
   private Collection<Long> acountIdList;
-  private String reportDefinition;
+  private ReportDefinition reportDefinition;
   private String dateStart;
   private String dateEnd;
   private String mccAccountId;
@@ -46,10 +46,9 @@ public class ReportTaskCreator<R extends Report> implements DeferredTask {
   private Class<R> reportBeanClass;
   
   public ReportTaskCreator(
-    String userId,
     String mccAccountId,
     Collection<Long> acountIdList,
-    String reportDefinition,
+    ReportDefinition reportDefinition,
     String dateStart,
     String dateEnd,
     int reportRowsSetSize,
@@ -57,7 +56,6 @@ public class ReportTaskCreator<R extends Report> implements DeferredTask {
     ReportDefinitionDateRangeType dateRangeType,
     Class<R> reportBeanClass) {
 
-    this.userId = userId;
     this.acountIdList = acountIdList;
     this.reportDefinition = reportDefinition;
     this.dateStart = dateStart;
@@ -80,7 +78,7 @@ public class ReportTaskCreator<R extends Report> implements DeferredTask {
         LOGGER.info("Task for account: " + accountId + reportType.name());
 
         QueueFactory.getQueue("reports").add(TaskOptions.Builder.withPayload(
-            new TaskProcessorOnMemory<R>(userId, accountId, reportDefinition, dateRangeType,
+            new TaskProcessorOnMemory<R>(accountId, reportDefinition, dateRangeType,
                 dateStart, dateEnd, mccAccountId, reportRowsSetSize, reportBeanClass)));
 
       } catch (Exception e) {

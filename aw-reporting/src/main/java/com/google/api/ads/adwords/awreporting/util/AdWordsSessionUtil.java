@@ -16,6 +16,7 @@ package com.google.api.ads.adwords.awreporting.util;
 
 import com.google.api.ads.adwords.lib.client.AdWordsSession;
 import com.google.api.ads.adwords.lib.client.AdWordsSession.Builder;
+import com.google.api.ads.adwords.lib.client.reporting.ReportingConfiguration;
 import com.google.api.ads.common.lib.auth.OfflineCredentials;
 import com.google.api.ads.common.lib.auth.OfflineCredentials.Api;
 import com.google.api.ads.common.lib.conf.ConfigurationLoadException;
@@ -73,13 +74,21 @@ public class AdWordsSessionUtil {
     if (adWordsSession.getOAuth2Credential() != null) {
       builder = builder.withOAuth2Credential(adWordsSession.getOAuth2Credential());
     }
+    
+    if (adWordsSession.getReportingConfiguration() != null) {
+      ReportingConfiguration reportingConfig = new ReportingConfiguration.Builder()
+          .skipReportHeader(adWordsSession.getReportingConfiguration().isSkipReportHeader())
+          .skipColumnHeader(adWordsSession.getReportingConfiguration().isSkipColumnHeader())
+          .skipReportSummary(adWordsSession.getReportingConfiguration().isSkipReportSummary())
+          .build();
+      builder = builder.withReportingConfiguration(reportingConfig);
+    }
 
     try {
       AdWordsSession newAdWordsSession;
       newAdWordsSession = builder.build();
       newAdWordsSession.setPartialFailure(adWordsSession.isPartialFailure());
       newAdWordsSession.setValidateOnly(adWordsSession.isValidateOnly());
-      newAdWordsSession.setReportMoneyInMicros(adWordsSession.isReportMoneyInMicros());
       return newAdWordsSession;
     } catch (ValidationException e) {
       LOGGER.warn("Error @addUtilityUserAgent, returning unchanged AdWordsSession");

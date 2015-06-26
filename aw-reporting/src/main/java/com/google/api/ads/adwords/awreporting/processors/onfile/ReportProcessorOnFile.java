@@ -20,9 +20,9 @@ import com.google.api.ads.adwords.awreporting.model.entities.Report;
 import com.google.api.ads.adwords.awreporting.model.util.ModifiedCsvToBean;
 import com.google.api.ads.adwords.awreporting.processors.ReportProcessor;
 import com.google.api.ads.adwords.awreporting.util.AdWordsSessionBuilderSynchronizer;
-import com.google.api.ads.adwords.lib.jaxb.v201409.ReportDefinition;
-import com.google.api.ads.adwords.lib.jaxb.v201409.ReportDefinitionDateRangeType;
-import com.google.api.ads.adwords.lib.jaxb.v201409.ReportDefinitionReportType;
+import com.google.api.ads.adwords.lib.jaxb.v201502.ReportDefinition;
+import com.google.api.ads.adwords.lib.jaxb.v201502.ReportDefinitionDateRangeType;
+import com.google.api.ads.adwords.lib.jaxb.v201502.ReportDefinitionReportType;
 import com.google.api.ads.common.lib.exception.ValidationException;
 import com.google.common.base.Stopwatch;
 import com.google.common.collect.Lists;
@@ -179,8 +179,7 @@ public class ReportProcessorOnFile extends ReportProcessor {
    * @throws Exception error reaching the API.
    */
   @Override
-  public void generateReportsForMCC(String userId,
-      String mccAccountId,
+  public void generateReportsForMCC(String mccAccountId,
       ReportDefinitionDateRangeType dateRangeType,
       String dateStart,
       String dateEnd,
@@ -192,13 +191,13 @@ public class ReportProcessorOnFile extends ReportProcessor {
     LOGGER.info("*** Retrieving account IDs ***");
 
     if (accountIdsSet == null || accountIdsSet.size() == 0) {
-      accountIdsSet = this.retrieveAccountIds(userId, mccAccountId);
+      accountIdsSet = this.retrieveAccountIds(mccAccountId);
     } else {
       LOGGER.info("Accounts loaded from file.");
     }
 
     AdWordsSessionBuilderSynchronizer sessionBuilder = new AdWordsSessionBuilderSynchronizer(
-        authenticator.authenticate(userId, mccAccountId, false));
+        authenticator.authenticate(mccAccountId, false));
 
     LOGGER.info("*** Generating Reports for " + accountIdsSet.size() + " accounts ***");
 
@@ -306,6 +305,44 @@ public class ReportProcessorOnFile extends ReportProcessor {
     @SuppressWarnings("unchecked")
     Class<R> reportBeanClass =
         (Class<R>) this.csvReportEntitiesMapping.getReportBeanClass(reportType);
+    this.processFiles(mccAccountId, reportBeanClass, localFiles, dateRangeType, dateStart, dateEnd);
+
+    stopwatch.stop();
+    LOGGER.info("\n* DB Process finished in " + (stopwatch.elapsed(TimeUnit.MILLISECONDS) / 1000)
+        + " seconds ***");
+  }
+
+  /**
+   * Process the local files delegating the call to the concrete implementation.
+   *
+   * @param reportTypeName the report type name as String.
+   * @param localFiles the local files.
+   * @param dateStart the start date.
+   * @param dateEnd the end date.
+   * @param dateRangeType the date range type.
+   */
+  @SuppressWarnings("unchecked")
+  public <R extends Report> void processLocalFiles(String mccAccountId,
+      String reportTypeName,
+      Collection<File> localFiles,
+      String dateStart,
+      String dateEnd,
+      ReportDefinitionDateRangeType dateRangeType) {
+
+    Stopwatch stopwatch = Stopwatch.createStarted();
+
+    Class<R> reportBeanClass;
+    try {
+      ReportDefinitionReportType reportType = ReportDefinitionReportType.valueOf(reportTypeName);
+      reportBeanClass = (Class<R>) this.csvReportEntitiesMapping.getReportBeanClass(reportType);
+    } catch (IllegalArgumentException e) {
+      reportBeanClass =
+          (Class<R>) this.csvReportEntitiesMapping.getExperimentalReportBeanClass(reportTypeName);
+    }
+    if (reportBeanClass == null) {
+      throw new IllegalArgumentException("Report type not found: " + reportTypeName);
+    }
+
     this.processFiles(mccAccountId, reportBeanClass, localFiles, dateRangeType, dateStart, dateEnd);
 
     stopwatch.stop();

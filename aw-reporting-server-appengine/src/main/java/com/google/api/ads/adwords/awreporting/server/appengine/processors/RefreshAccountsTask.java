@@ -18,7 +18,7 @@ import com.google.api.ads.adwords.awreporting.server.appengine.RestServer;
 import com.google.api.ads.adwords.awreporting.server.appengine.exporter.ExportTaskCreator;
 import com.google.api.ads.adwords.awreporting.server.appengine.util.MccTaskCounter;
 import com.google.api.ads.adwords.awreporting.server.entities.Account;
-import com.google.api.ads.adwords.jaxws.v201409.mcm.ManagedCustomer;
+import com.google.api.ads.adwords.jaxws.v201502.mcm.ManagedCustomer;
 import com.google.appengine.api.taskqueue.DeferredTask;
 import com.google.appengine.api.taskqueue.QueueFactory;
 import com.google.appengine.api.taskqueue.TaskOptions;
@@ -36,11 +36,9 @@ public class RefreshAccountsTask implements DeferredTask {
   private static final long serialVersionUID = 1L;
   private static final Logger LOGGER = Logger.getLogger(ExportTaskCreator.class.getName());
 
-  private String userId;
   private String mccAccountId;
 
-  public RefreshAccountsTask(final String userId, final String mccAccountId) {
-    this.userId = userId;
+  public RefreshAccountsTask(final String mccAccountId) {
     this.mccAccountId = mccAccountId;
   }
 
@@ -56,7 +54,7 @@ public class RefreshAccountsTask implements DeferredTask {
       ReportProcessorAppEngine reportProcessor = RestServer.getApplicationContext().getBean(ReportProcessorAppEngine.class);
       
       List<ManagedCustomer> listAccountsApi =
-          reportProcessor.getAccounts(userId, mccAccountId);
+          reportProcessor.getAccounts(mccAccountId);
 
       List<Account> accounts = Account.fromManagedCustomerList(listAccountsApi, Long.valueOf(mccAccountId));      
 
@@ -68,12 +66,12 @@ public class RefreshAccountsTask implements DeferredTask {
     }
   }
 
-  public static void createRefreshAccountsTask(String userId, String mccAccountId) {
+  public static void createRefreshAccountsTask(String mccAccountId) {
 
     MccTaskCounter.increasePendingProcessAccountsTasks(Long.valueOf(mccAccountId));
 
     QueueFactory.getQueue("default").add(TaskOptions.Builder.withPayload(
-        new RefreshAccountsTask(userId, mccAccountId)));
+        new RefreshAccountsTask(mccAccountId)));
   }
 }
 

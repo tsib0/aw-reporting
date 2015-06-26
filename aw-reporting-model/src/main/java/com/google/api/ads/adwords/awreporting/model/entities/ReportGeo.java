@@ -20,7 +20,7 @@ import javax.persistence.Table;
 
 import com.google.api.ads.adwords.awreporting.model.csv.annotation.CsvField;
 import com.google.api.ads.adwords.awreporting.model.csv.annotation.CsvReport;
-import com.google.api.ads.adwords.lib.jaxb.v201409.ReportDefinitionReportType;
+import com.google.api.ads.adwords.lib.jaxb.v201502.ReportDefinitionReportType;
 
 /**
  * Specific Report class for GeoPerformanceReports
@@ -61,7 +61,7 @@ public class ReportGeo extends ReportBase {
   @CsvField(value = "Campaign state", reportField = "CampaignStatus")
   private String campaignStatus;
 
-  @Column(name = "CITY_CRITERIA_ID", length = 64)
+  @Column(name = "CITY_CRITERIA_ID")
   @CsvField(value = "City", reportField = "CityCriteriaId")
   private String cityCriteriaId;
 
@@ -69,9 +69,9 @@ public class ReportGeo extends ReportBase {
   @CsvField(value = "Conversion Tracker Id", reportField = "ConversionTrackerId")
   private String conversionTrackerId;
 
-  @Column(name = "COUNTRY_CRITERIA_ID", length = 64)
+  @Column(name = "COUNTRY_CRITERIA_ID")
   @CsvField(value = "Country/Territory", reportField = "CountryCriteriaId")
-  private String countryTerritory;
+  private String countryCriteriaId;
 
   @Column(name = "IS_TARGETING_LOCATION")
   @CsvField(value = "Is Targetable", reportField = "IsTargetingLocation")
@@ -81,17 +81,17 @@ public class ReportGeo extends ReportBase {
   @CsvField(value = "Location type", reportField = "LocationType")
   private String locationType;
 
-  @Column(name = "METRO_CRITERIA_ID", length = 64)
+  @Column(name = "METRO_CRITERIA_ID")
   @CsvField(value = "Metro area", reportField = "MetroCriteriaId")
-  private String metroArea;
+  private String metroCriteriaId;
 
-  @Column(name = "MOST_SPECIFIC_LOCATION", length = 64)
+  @Column(name = "MOST_SPECIFIC_CRITERIA_ID")
   @CsvField(value = "Most specific location", reportField = "MostSpecificCriteriaId")
-  private String mostSpecificLocation;
+  private String mostSpecificCriteriaId;
 
-  @Column(name = "REGION_CRITERIA_ID", length = 64)
+  @Column(name = "REGION_CRITERIA_ID")
   @CsvField(value = "Region", reportField = "RegionCriteriaId")
-  private String region;
+  private String regionCriteriaId;
 
   /**
    * Hibernate needs an empty constructor
@@ -115,30 +115,20 @@ public class ReportGeo extends ReportBase {
     this.id += setIdDates();
 
     // Geo Ids
-    if (this.getCountryTerritory() != null) {
-      this.id += "-" + this.getCountryTerritory().toString();
-    } else {
-      this.id += "-";
+    if (this.getCountryCriteriaId() != null && !isEmptyValue(this.getCountryCriteriaId())) {
+      this.id += "-" + this.getCountryCriteriaId().toString();
     }
-    if (this.getRegion() != null) {
-      this.id += "-" + this.getRegion().toString();
-    } else {
-      this.id += "-";
+    if (this.getRegionCriteriaId() != null && !isEmptyValue(this.getRegionCriteriaId())) {
+      this.id += "-" + this.getRegionCriteriaId().toString();
     }
-    if (this.getMetroArea() != null) {
-      this.id += "-" + this.getMetroArea().toString();
-    } else {
-      this.id += "-";
+    if (this.getMetroCriteriaId() != null && !isEmptyValue(this.getMetroCriteriaId())) {
+      this.id += "-" + this.getMetroCriteriaId().toString();
     }
-    if (this.getCityCriteriaId() != null) {
+    if (this.getCityCriteriaId() != null && !isEmptyValue(this.getCityCriteriaId())) {
       this.id += "-" + this.getCityCriteriaId().toString();
-    } else {
-      this.id += "-";
     }
-    if (this.getMostSpecificLocation() != null) {
-      this.id += "-" + this.getMostSpecificLocation().toString();
-    } else {
-      this.id += "-";
+    if (this.getMostSpecificCriteriaId() != null && !isEmptyValue(this.getMostSpecificCriteriaId())) {
+      this.id += "-" + this.getMostSpecificCriteriaId().toString();
     }
 
     // Adding extra fields for unique ID
@@ -164,28 +154,28 @@ public class ReportGeo extends ReportBase {
     this.adFormat = adFormat;
   }
 
-  public String getRegion() {
-    return region;
+  public String getRegionCriteriaId() {
+    return regionCriteriaId;
   }
 
-  public void setRegion(String region) {
-    this.region = region;
+  public void setRegionCriteriaId(String regionCriteriaId) {
+    this.regionCriteriaId = regionCriteriaId;
   }
 
-  public String getMostSpecificLocation() {
-    return mostSpecificLocation;
+  public String getMostSpecificCriteriaId() {
+    return mostSpecificCriteriaId;
   }
 
-  public void setMostSpecificLocation(String mostSpecificLocation) {
-    this.mostSpecificLocation = mostSpecificLocation;
+  public void setMostSpecificCriteriaId(String mostSpecificCriteriaId) {
+    this.mostSpecificCriteriaId = mostSpecificCriteriaId;
   }
 
-  public String getMetroArea() {
-    return metroArea;
+  public String getMetroCriteriaId() {
+    return metroCriteriaId;
   }
 
-  public void setMetroArea(String metroArea) {
-    this.metroArea = metroArea;
+  public void setMetroCriteriaId(String metroCriteriaId) {
+    this.metroCriteriaId = metroCriteriaId;
   }
 
   public Long getAdGroupId() {
@@ -228,12 +218,12 @@ public class ReportGeo extends ReportBase {
     this.isTargetable = isTargetable;
   }
 
-  public String getCountryTerritory() {
-    return countryTerritory;
+  public String getCountryCriteriaId() {
+    return countryCriteriaId;
   }
 
-  public void setCountryTerritory(String countryTerritory) {
-    this.countryTerritory = countryTerritory;
+  public void setCountryCriteriaId(String countryCriteriaId) {
+    this.countryCriteriaId = countryCriteriaId;
   }
 
   public String getConversionTrackerId() {

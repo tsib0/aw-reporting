@@ -35,12 +35,12 @@ import com.google.api.ads.adwords.awreporting.model.util.CsvParserIterator;
 import com.google.api.ads.adwords.awreporting.model.util.ModifiedCsvToBean;
 import com.google.api.ads.adwords.awreporting.util.AdWordsSessionBuilderSynchronizer;
 import com.google.api.ads.adwords.lib.client.AdWordsSession;
-import com.google.api.ads.adwords.lib.jaxb.v201409.ReportDefinition;
-import com.google.api.ads.adwords.lib.jaxb.v201409.ReportDefinitionDateRangeType;
+import com.google.api.ads.adwords.lib.jaxb.v201502.ReportDefinition;
+import com.google.api.ads.adwords.lib.jaxb.v201502.ReportDefinitionDateRangeType;
 import com.google.api.ads.adwords.lib.utils.ReportDownloadResponse;
 import com.google.api.ads.adwords.lib.utils.ReportDownloadResponseException;
 import com.google.api.ads.adwords.lib.utils.ReportException;
-import com.google.api.ads.adwords.lib.utils.v201409.ReportDownloader;
+import com.google.api.ads.adwords.lib.utils.v201502.ReportDownloader;
 import com.google.api.ads.common.lib.exception.ValidationException;
 import com.google.common.collect.Lists;
 
@@ -89,7 +89,6 @@ public class RunnableProcessorOnMemory<R extends Report> implements Runnable {
    * @param reportDefinition
    * @param csvToBean the {@code CsvToBean}
    * @param mappingStrategy
-   * @param file the CSV file.
    * @param dateRangeType
    * @param dateStart
    * @param dateEnd

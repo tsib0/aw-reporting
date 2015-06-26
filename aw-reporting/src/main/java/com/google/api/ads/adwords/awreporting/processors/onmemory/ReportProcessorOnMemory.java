@@ -20,9 +20,9 @@ import com.google.api.ads.adwords.awreporting.model.util.ModifiedCsvToBean;
 import com.google.api.ads.adwords.awreporting.processors.ReportProcessor;
 import com.google.api.ads.adwords.awreporting.util.AdWordsSessionBuilderSynchronizer;
 import com.google.api.ads.adwords.lib.client.AdWordsSession;
-import com.google.api.ads.adwords.lib.jaxb.v201409.ReportDefinition;
-import com.google.api.ads.adwords.lib.jaxb.v201409.ReportDefinitionDateRangeType;
-import com.google.api.ads.adwords.lib.jaxb.v201409.ReportDefinitionReportType;
+import com.google.api.ads.adwords.lib.jaxb.v201502.ReportDefinition;
+import com.google.api.ads.adwords.lib.jaxb.v201502.ReportDefinitionDateRangeType;
+import com.google.api.ads.adwords.lib.jaxb.v201502.ReportDefinitionReportType;
 import com.google.common.base.Stopwatch;
 
 import org.apache.log4j.Logger;
@@ -93,8 +93,7 @@ public class ReportProcessorOnMemory extends ReportProcessor {
    * @throws Exception error reaching the API.
    */
   @Override
-  public void generateReportsForMCC(String userId,
-      String mccAccountId,
+  public void generateReportsForMCC(String mccAccountId,
       ReportDefinitionDateRangeType dateRangeType,
       String dateStart,
       String dateEnd,
@@ -106,13 +105,13 @@ public class ReportProcessorOnMemory extends ReportProcessor {
     LOGGER.info("*** Retrieving account IDs ***");
 
     if (accountIdsSet == null || accountIdsSet.size() == 0) {
-      accountIdsSet = this.retrieveAccountIds(userId, mccAccountId);
+      accountIdsSet = this.retrieveAccountIds(mccAccountId);
     } else {
       LOGGER.info("Accounts loaded from file.");
     }
 
     AdWordsSessionBuilderSynchronizer sessionBuilder = new AdWordsSessionBuilderSynchronizer(
-        authenticator.authenticate(userId, mccAccountId, false));
+        authenticator.authenticate(mccAccountId, false));
 
     LOGGER.info("*** Generating Reports for " + accountIdsSet.size() + " accounts ***");
 

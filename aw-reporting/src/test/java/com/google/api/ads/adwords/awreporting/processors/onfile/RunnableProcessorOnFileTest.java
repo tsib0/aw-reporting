@@ -25,11 +25,7 @@ import com.google.api.ads.adwords.awreporting.model.entities.ReportAccount;
 import com.google.api.ads.adwords.awreporting.model.persistence.EntityPersister;
 import com.google.api.ads.adwords.awreporting.model.util.ModifiedCsvToBean;
 import com.google.api.ads.adwords.awreporting.processors.onfile.RunnableProcessorOnFile;
-import com.google.api.ads.adwords.lib.jaxb.v201409.ReportDefinitionDateRangeType;
-import com.google.api.ads.adwords.lib.utils.ReportDownloadResponseException;
-import com.google.api.ads.adwords.lib.utils.ReportException;
-import com.google.api.ads.common.lib.exception.OAuthException;
-import com.google.api.ads.common.lib.exception.ValidationException;
+import com.google.api.ads.adwords.lib.jaxb.v201502.ReportDefinitionDateRangeType;
 
 import org.apache.commons.io.FileUtils;
 import org.junit.Before;
@@ -70,8 +66,7 @@ public class RunnableProcessorOnFileTest {
   ArgumentCaptor<List<? extends Report>> reportEntitiesCaptor;
 
   @Before
-  public void setUp() throws OAuthException, IOException, ValidationException,
-  ReportException, ReportDownloadResponseException {
+  public void setUp() throws IOException {
 
     ModifiedCsvToBean<ReportAccount> csvToBean = new ModifiedCsvToBean<ReportAccount>();
     MappingStrategy<ReportAccount> mappingStrategy =

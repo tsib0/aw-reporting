@@ -17,7 +17,6 @@ package com.google.api.ads.adwords.awreporting.server.appengine;
 import com.google.api.ads.adwords.awreporting.model.entities.AuthMcc;
 import com.google.api.ads.adwords.awreporting.model.entities.ReportAccount;
 import com.google.api.ads.adwords.awreporting.model.entities.ReportAd;
-import com.google.api.ads.adwords.awreporting.model.entities.ReportAdExtension;
 import com.google.api.ads.adwords.awreporting.model.entities.ReportAdGroup;
 import com.google.api.ads.adwords.awreporting.model.entities.ReportBudget;
 import com.google.api.ads.adwords.awreporting.model.entities.ReportCampaign;
@@ -144,12 +143,12 @@ public class RestServer extends com.google.api.ads.adwords.awreporting.server.re
   private static final HashMap<AdWordsSessionBuilderSynchronizer, AdWordsSessionBuilderSynchronizer>
     adWordsSessionBuilderSynchronizerMap = Maps.newHashMap();
 
-  public static synchronized AdWordsSessionBuilderSynchronizer getAdWordsSessionBuilderSynchronizer(String userId, String mccAccountId) throws OAuthException, IOException {
+  public static synchronized AdWordsSessionBuilderSynchronizer getAdWordsSessionBuilderSynchronizer(String mccAccountId) throws OAuthException, IOException {
     AdWordsSessionBuilderSynchronizer adWordsSessionBuilderSynchronizer = adWordsSessionBuilderSynchronizerMap.get(mccAccountId);
     if (adWordsSessionBuilderSynchronizer == null) {
       synchronized (RestServer.class) {
         if (adWordsSessionBuilderSynchronizer == null) {
-          adWordsSessionBuilderSynchronizer = new AdWordsSessionBuilderSynchronizer(getAuthenticator().authenticate(userId, mccAccountId, false));
+          adWordsSessionBuilderSynchronizer = new AdWordsSessionBuilderSynchronizer(getAuthenticator().authenticate(mccAccountId, false));
         }
       }
     }
@@ -451,7 +450,6 @@ public class RestServer extends com.google.api.ads.adwords.awreporting.server.re
     ObjectifyService.register(AuthMcc.class);
     ObjectifyService.register(ReportAccount.class);
     ObjectifyService.register(ReportAd.class);
-    ObjectifyService.register(ReportAdExtension.class);
     ObjectifyService.register(ReportAdGroup.class);
     ObjectifyService.register(ReportBudget.class);
     ObjectifyService.register(ReportCampaign.class);

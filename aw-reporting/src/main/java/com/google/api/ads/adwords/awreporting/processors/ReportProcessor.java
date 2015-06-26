@@ -19,16 +19,16 @@ import com.google.api.ads.adwords.awreporting.model.csv.CsvReportEntitiesMapping
 import com.google.api.ads.adwords.awreporting.model.persistence.EntityPersister;
 import com.google.api.ads.adwords.awreporting.util.CustomerDelegate;
 import com.google.api.ads.adwords.awreporting.util.ManagedCustomerDelegate;
-import com.google.api.ads.adwords.jaxws.v201409.mcm.ApiException;
-import com.google.api.ads.adwords.jaxws.v201409.mcm.Customer;
-import com.google.api.ads.adwords.jaxws.v201409.mcm.ManagedCustomer;
+import com.google.api.ads.adwords.jaxws.v201502.mcm.ApiException;
+import com.google.api.ads.adwords.jaxws.v201502.mcm.Customer;
+import com.google.api.ads.adwords.jaxws.v201502.mcm.ManagedCustomer;
 import com.google.api.ads.adwords.lib.client.AdWordsSession;
-import com.google.api.ads.adwords.lib.jaxb.v201409.DateRange;
-import com.google.api.ads.adwords.lib.jaxb.v201409.DownloadFormat;
-import com.google.api.ads.adwords.lib.jaxb.v201409.ReportDefinition;
-import com.google.api.ads.adwords.lib.jaxb.v201409.ReportDefinitionDateRangeType;
-import com.google.api.ads.adwords.lib.jaxb.v201409.ReportDefinitionReportType;
-import com.google.api.ads.adwords.lib.jaxb.v201409.Selector;
+import com.google.api.ads.adwords.lib.jaxb.v201502.DateRange;
+import com.google.api.ads.adwords.lib.jaxb.v201502.DownloadFormat;
+import com.google.api.ads.adwords.lib.jaxb.v201502.ReportDefinition;
+import com.google.api.ads.adwords.lib.jaxb.v201502.ReportDefinitionDateRangeType;
+import com.google.api.ads.adwords.lib.jaxb.v201502.ReportDefinitionReportType;
+import com.google.api.ads.adwords.lib.jaxb.v201502.Selector;
 import com.google.api.ads.common.lib.exception.OAuthException;
 import com.google.api.ads.common.lib.exception.ValidationException;
 import com.google.api.client.util.Sets;
@@ -74,8 +74,7 @@ public abstract class ReportProcessor {
 
   abstract protected void cacheAccounts(Set<Long> accountIdsSet);
 
-  abstract public void generateReportsForMCC(String userId,
-      String mccAccountId,
+  abstract public void generateReportsForMCC(String mccAccountId,
       ReportDefinitionDateRangeType dateRangeType,
       String dateStart,
       String dateEnd,
@@ -94,7 +93,7 @@ public abstract class ReportProcessor {
    * @throws ApiException
    * @throws Exception error reading the API.
    */
-  public Set<Long> retrieveAccountIds(String userId, String mccAccountId) throws OAuthException,
+  public Set<Long> retrieveAccountIds(String mccAccountId) throws OAuthException,
       ValidationException, IOException, ApiException {
 
     Set<Long> accountIdsSet = Sets.newHashSet();
@@ -102,7 +101,7 @@ public abstract class ReportProcessor {
 
       LOGGER.info("Account IDs being recovered from the API. This may take a while...");
       accountIdsSet = new ManagedCustomerDelegate(
-          authenticator.authenticate(userId, mccAccountId, false).build()).getAccountIds();
+          authenticator.authenticate(mccAccountId, false).build()).getAccountIds();
 
     } catch (ApiException e) {
       if (e.getMessage().contains("AuthenticationError")) {
@@ -111,7 +110,7 @@ public abstract class ReportProcessor {
         LOGGER.info("AuthenticationError, Getting a new Token...");
         LOGGER.info("Account IDs being recovered from the API. This may take a while...");
         accountIdsSet = new ManagedCustomerDelegate(
-            authenticator.authenticate(userId, mccAccountId, true).build()).getAccountIds();
+            authenticator.authenticate(mccAccountId, true).build()).getAccountIds();
 
       } else {
         LOGGER.error("API error: " + e.getMessage());
@@ -131,18 +130,18 @@ public abstract class ReportProcessor {
    * @return the account IDs for all the managed accounts.
    * @throws Exception error reading the API.
    */
-  public List<ManagedCustomer> getAccounts(String userId, String mccAccountId) throws Exception {
+  public List<ManagedCustomer> getAccounts(String mccAccountId) throws Exception {
 
     List<ManagedCustomer> accounts = Lists.newArrayList();
     try {
       accounts = new ManagedCustomerDelegate(
-          authenticator.authenticate(userId, mccAccountId, false).build()).getAccounts();
+          authenticator.authenticate(mccAccountId, false).build()).getAccounts();
     } catch (ApiException e) {
       if (e.getMessage().contains("AuthenticationError")) {
         // retries Auth once for expired Tokens
         LOGGER.info("AuthenticationError, Getting a new Token...");
         accounts = new ManagedCustomerDelegate(
-            authenticator.authenticate(userId, mccAccountId, true).build()).getAccounts();
+            authenticator.authenticate(mccAccountId, true).build()).getAccounts();
       } else {
         LOGGER.error("API error: " + e.getMessage());
         e.printStackTrace();
@@ -152,10 +151,10 @@ public abstract class ReportProcessor {
     return accounts;
   }
 
-  public List<Customer> getAccountsInfo(String userId, String mccAccountId, Set<Long> accountIds)
-      throws OAuthException, ValidationException, IOException {
+  public List<Customer> getAccountsInfo(String mccAccountId, Set<Long> accountIds)
+      throws OAuthException, ValidationException {
     List<Customer> accounts = Lists.newArrayList();
-    AdWordsSession adWordsSession = authenticator.authenticate(userId, mccAccountId, false).build();
+    AdWordsSession adWordsSession = authenticator.authenticate(mccAccountId, false).build();
 
     CustomerDelegate customerDelegate = new CustomerDelegate(adWordsSession);
     for (Long accountId : accountIds) {
@@ -166,7 +165,7 @@ public abstract class ReportProcessor {
         if (e.getMessage().contains("AuthenticationError")) {
           // retries Auth once for expired Tokens
           LOGGER.info("AuthenticationError, Getting a new Token...");
-          adWordsSession = authenticator.authenticate(userId, mccAccountId, false).build();
+          adWordsSession = authenticator.authenticate(mccAccountId, false).build();
           customerDelegate = new CustomerDelegate(adWordsSession);
           try {
             accounts.add(customerDelegate.getCustomer());
